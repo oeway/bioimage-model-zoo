@@ -60,16 +60,14 @@
 
           <ul v-show="imjoy" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
           for="demo-menu-lower-right" id="plugin-menu">
-            <li class="mdl-menu__item mdl-button mdl-js-button" v-for="(app, k) in apps" :key="app.name" @click="runManyModels(app)">
+            <li class="mdl-menu__item" v-for="(app, k) in apps" :key="app.name" @click="runManyModels(app)">
               <i class="material-icons" v-if="!app.config.icon">extension</i>
               <img v-else-if="app.config.icon.startsWith('http')" class="material-icons app-icons" :src="app.config.icon" />
               <i class="material-icons" v-else>{{app.config.icon}}</i>
               {{app.name}}
             </li>
-            <li class="mdl-menu__item mdl-button mdl-js-button" @click="$refs.file_select.click();">
-       
+            <li class="mdl-menu__item" @click="$refs.file_select.click();">
                 <i class="material-icons">add</i> Load Local App
-        
               <input
                 style="display:none;"
                 type="file"
