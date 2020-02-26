@@ -350,6 +350,16 @@ const app = new Vue({
           for(let k in this.apps_source){
             try{
               const p = await imjoy.pm.reloadPluginRecursively({uri: this.apps_source[k]})
+              if(p.type !== 'window'){
+                if(!p.api.runOneModel && !p.api.runManyModels){
+                  console.error(`${p.name}" has neither "runOneModel" nor "runManyModels":`, p.api)
+                  alert(`"${p.name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`)
+                  continue;
+                }
+                if(!p.api.testModel){
+                  console.warn(`Please define a testModel function for "${p.name}".`)
+                }
+              }
               this.apps[k] = p
             }
             catch(e){
@@ -383,11 +393,24 @@ const app = new Vue({
       this.imjoy = imjoy;
       console.log('ImJoy loaded successfully.')
     },
-    async runAllModels(plugin){
-      await plugin.api.run(this.models)
+    async runManyModels(plugin){
+      if(plugin.type === 'window'){
+        const w = await plugin.api.run()
+        await w.runManyModels(this.models)
+      }
+      else{
+        plugin.api.runManyModels(this.models)
+      }
+      
     },
-    async runModel(plugin, model){
-      await plugin.api.run(model)
+    async runOneModel(plugin, model){
+      if(plugin.type === 'window'){
+        const w = await plugin.api.run()
+        await w.runOneModel(model)
+      }
+      else{
+        plugin.api.runOneModel(model)
+      }
     },
     fileSelected(){
       this.lastModified = null;

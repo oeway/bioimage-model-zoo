@@ -313,24 +313,40 @@ footer {
     }
 }
 
-
+.mdl-cell {
+    max-width: 600px;
+}
 
 @media screen and (max-width: 505px) {
     .site-title {
         height: 45px!important;
-        font-size: 1.5rem!important;
+        font-size: 1.4rem!important;
     }
 
     .mdl-layout-title {
         font-size: 16px !important;
     }
-
+    .mdl-card__actions {
+        font-size: 12px !important;
+    }
+    .authors{
+        font-size: 12px !important;
+    }
     h3 {
-        font-size: 24px;
+        font-size: 20px!important;
+    }
+    .mdl-button {
+        font-size: 16px!important;
+        min-width: 32px!important;
+        padding: 0 8px!important;
+    }
+
+    .mdl-grid {
+        padding: 1px!important;
     }
 
     .mdl-layout__header-row {
-        padding: 0 16px;
+        padding: 0 8px;
     }
 
     .mdl-layout-title {
@@ -399,12 +415,12 @@ footer {
 
 .plugin-iframe {
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     margin: 0px;
     padding: 0px;
     flex-grow: 1;
     border: none;
-    max-height: 1024px;
+    max-height: 100vh;
 }
 
 .plugin-iframe-container {
@@ -419,7 +435,7 @@ footer {
 }
 
 .mdl-chip__text {
-    padding-left: 10px;
+    padding: 0 10px;
 }
 
 .fullscreen-dialog {
@@ -436,7 +452,7 @@ footer {
 .whiteboard{
     width: 100%;
     height: 100vh;
-    max-height: 1000px;
+    max-height: 100vh;
 }
 
 .mdl-dialog__title {
