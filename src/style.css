@@ -203,10 +203,11 @@ ul>li {
 }
 
 .background {
+    background-size: contain;
+    background-repeat: no-repeat;
     background-color: #ffffff00;
     background-blend-mode: overlay;
     min-height: 300px;
-    background-size: cover;
     color: #fff;
     position: relative;
     overflow: hidden;
