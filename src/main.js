@@ -402,6 +402,7 @@ const app = new Vue({
         }
       }
       catch(e){
+        this.showMessage(e)
         console.error(e)
       }
       finally{
@@ -422,6 +423,7 @@ const app = new Vue({
         }
       }
       catch(e){
+        this.showMessage(e)
         console.error(e)
       }
       finally{
