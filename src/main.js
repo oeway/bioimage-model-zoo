@@ -394,22 +394,40 @@ const app = new Vue({
       console.log('ImJoy loaded successfully.')
     },
     async runManyModels(plugin){
-      if(plugin.type === 'window'){
-        const w = await plugin.api.run()
-        await w.runManyModels(this.models)
+      try{
+        this.loading = true;
+        if(plugin.type === 'window'){
+          const w = await plugin.api.run()
+          await w.runManyModels(this.models)
+        }
+        else{
+          plugin.api.runManyModels(this.models)
+        }
       }
-      else{
-        plugin.api.runManyModels(this.models)
+      catch(e){
+        console.error(e)
+      }
+      finally{
+        this.loading = false;
       }
       
     },
     async runOneModel(plugin, model){
-      if(plugin.type === 'window'){
-        const w = await plugin.api.run()
-        await w.runOneModel(model)
+      try{
+        this.loading = true;
+        if(plugin.type === 'window'){
+          const w = await plugin.api.run()
+          await w.runOneModel(model)
+        }
+        else{
+          plugin.api.runOneModel(model)
+        }
       }
-      else{
-        plugin.api.runOneModel(model)
+      catch(e){
+        console.error(e)
+      }
+      finally{
+        this.loading = false;
       }
     },
     fileSelected(){
