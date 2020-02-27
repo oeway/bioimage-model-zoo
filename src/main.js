@@ -458,6 +458,7 @@ const app = new Vue({
             const config = this.imjoy.pm.parsePluginCode(code);
             config.dependencies = config.dependencies || [];
             try {
+              this.loading = true;
               for (let i = 0; i < config.dependencies.length; i++) {
                 await this.imjoy.pm.reloadPluginRecursively(
                   {
@@ -473,6 +474,9 @@ const app = new Vue({
               console.log(`Plugin "${plugin.name}" loaded successfully.`)
             } catch (error) {
               this.showMessage(`Failed to load dependencies for ${config.name}: ${error}`);
+            }
+            finally{
+              this.loading = false;
             }
           }
         } catch (e) {
