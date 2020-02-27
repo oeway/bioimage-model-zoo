@@ -351,14 +351,8 @@ const app = new Vue({
             try{
               const p = await imjoy.pm.reloadPluginRecursively({uri: this.apps_source[k]})
               if(p.type !== 'window'){
-                if(!p.api.runOneModel && !p.api.runManyModels){
-                  console.error(`${p.name}" has neither "runOneModel" nor "runManyModels":`, p.api)
-                  alert(`"${p.name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`)
-                  continue;
-                }
-                if(!p.api.testModel){
-                  console.warn(`Please define a testModel function for "${p.name}".`)
-                }
+                if(!this.validateBioEngineApp(p.name, p.api))
+                continue
               }
               this.apps[k] = p
             }
@@ -398,6 +392,9 @@ const app = new Vue({
         this.loading = true;
         if(plugin.type === 'window'){
           const w = await plugin.api.run()
+          if(!this.validateBioEngineApp(plugin.name, w)){
+            w.runManyModels = w.run;
+          }
           await w.runManyModels(this.models)
         }
         else{
@@ -417,6 +414,7 @@ const app = new Vue({
         this.loading = true;
         if(plugin.type === 'window'){
           const w = await plugin.api.run()
+          this.validateBioEngineApp(plugin.name, w)
           await w.runOneModel(model)
         }
         else{
@@ -441,6 +439,17 @@ const app = new Vue({
         this.loadCodeFromFile(this.local_file);
       }, 1000);
       this.loadCodeFromFile(this.local_file);
+    },
+    validateBioEngineApp(name, api){
+      if(!api.runOneModel && !api.runManyModels){
+        console.error(`${name}" has neither "runOneModel" nor "runManyModels":`, api)
+        alert(`"${name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`)
+        return false
+      }
+      if(!api.testModel){
+        console.warn(`Please define a testModel function for "${name}".`)
+      }
+      return true
     },
     loadCodeFromFile(file) {
       file = file || this.local_file;
@@ -468,6 +477,9 @@ const app = new Vue({
               }
               const plugin = await this.imjoy.pm.reloadPlugin(config)
               console.log(plugin)
+              if(plugin.type !== 'window'){
+                this.validateBioEngineApp(plugin.name, plugin.api)
+              }
               this.apps[plugin.name] = plugin;
               this.showMessage(`Plugin "${plugin.name}" loaded successfully.`)
               this.$forceUpdate()
