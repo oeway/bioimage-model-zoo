@@ -154,7 +154,7 @@ ul>li {
 }
 
 .mdl-card__menu {
-    background: white;
+    background: #fdfdfdeb;
     border-radius: 2rem;
 }
 
@@ -163,7 +163,7 @@ ul>li {
 }
 
 .mdl-card__actions {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     padding: .5rem 1rem;
     color: white;
@@ -315,10 +315,14 @@ footer {
 }
 
 .mdl-cell {
+    width: 450px;
     max-width: 600px;
 }
 
 @media screen and (max-width: 505px) {
+    .mdl-cell {
+        max-width: 99.5%!important;
+    }
     .site-title {
         height: 45px!important;
         font-size: 1.4rem!important;
