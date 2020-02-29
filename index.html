@@ -35,7 +35,7 @@
             BioImage Model Zoo
           </a> -->
           <!-- Title -->
-          <span class="site-title" style="cursor: pointer;" @click="show_models=true">BioImage Model Zoo</span>
+          <span class="site-title" @click="show_models=true">BioImage Model Zoo</span>
           <!-- Add spacer, to align navigation to the right -->
           <div class="mdl-layout-spacer"></div>
           <!-- Navigation. We hide it in small screens. -->
@@ -205,13 +205,9 @@
                     
                   </div>
                 </div>
-                <div class="mdl-card__actions mdl-card--border mdl-card--bottom">
-                  <h3 class="mdl-card__title-text">
-                    <a @click="showInfo(model)" style="color: #ffffff">
-                      <i v-if="model.icon" class="material-icons">{{model.icon}}</i>
-                      <i v-else class="material-icons">extension</i>
-                      {{model.name.slice(0,30)}}
-                    </a>
+                <div class="mdl-card__actions mdl-card--border mdl-card--bottom model-info" @click="showInfo(model)">
+                  <h3 class="mdl-card__title-text" style="color: #ffffff">
+                    {{model.name.slice(0,30)}}
                   </h3>
                   <span v-if="model.description"> {{ model.description.slice(0, 100) }}</span><br>
                   <!-- <span class="mdl-chip__text">{{model.repo}}</span></div> -->

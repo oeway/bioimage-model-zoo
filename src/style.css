@@ -168,7 +168,13 @@ ul>li {
     padding: .5rem 1rem;
     color: white;
 }
+.mdl-card__actions:hover {
+    background: rgba(0, 0, 0, 0.85);
 
+}
+.mdl-card__title-text{
+    font-weight: 500;
+}
 .centerpoint {
     top: 50%;
     left: 50%;
@@ -502,4 +508,8 @@ footer {
 
 .material-icons {
     vertical-align: middle;
+}
+
+.model-info {
+    cursor: pointer;
 }
