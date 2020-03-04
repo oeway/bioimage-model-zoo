@@ -220,11 +220,9 @@ const app = new Vue({
         model.docs = '';
         this.$forceUpdate();
       }
-      
-      
     },
     share(model) {
-      prompt('Please copy and paste following URL for sharing:', 'https://bioimage.io/?model=' + model.model_uri)
+      prompt('Please copy and paste following URL for sharing:', 'https://bioimage.io?model=' + encodeURI(model.name))
     },
     showInfo(model) {
       this.selected_model = model;
