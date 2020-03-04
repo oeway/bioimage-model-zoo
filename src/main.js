@@ -357,11 +357,14 @@ const app = new Vue({
           update_ui_callback: ()=>{},
           jailed_asset_url: 'https://imjoy.io/static/jailed'
       })
-      imjoy.pm.imjoy_api.getPlugin = async function (_plugin, plugin_name) {
+      imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
         const target_plugin = imjoy.pm.plugin_names[plugin_name];
         if (target_plugin) {
           return target_plugin.api;
         } else if (imjoy.pm.internal_plugins[plugin_name]) {
+          try{
+            this.loading = true;
+            this.$forceUpdate()
             const p = await imjoy.pm.reloadPluginRecursively(
               {
                 uri: imjoy.pm.internal_plugins[plugin_name].uri,
@@ -371,14 +374,36 @@ const app = new Vue({
             );
             console.log(`${p.name} loaded.`);
             return p.api;
+          }
+          catch(e){
+            console.error(e)
+            throw e
+          }
+          finally{
+            this.loading = false;
+            this.$forceUpdate()
+          }
+            
         } else if(lazy_dependencies[plugin_name]){
-          const p = await imjoy.pm.reloadPluginRecursively(
-            {
-              uri: lazy_dependencies[plugin_name],
-            }
-          );
-          console.log(`${p.name} loaded.`);
-          return p.api;
+          try{
+            this.loading = true;
+            this.$forceUpdate()
+            const p = await imjoy.pm.reloadPluginRecursively(
+              {
+                uri: lazy_dependencies[plugin_name],
+              }
+            );
+            console.log(`${p.name} loaded.`);
+            return p.api;
+          }
+          catch(e){
+            console.error(e)
+            throw e
+          }
+          finally{
+            this.loading = false;
+            this.$forceUpdate()
+          }
         } 
         else{
           throw `plugin with type ${plugin_name} not found.`;
@@ -402,7 +427,17 @@ const app = new Vue({
               const p = await imjoy.pm.reloadPlugin(config)
               for (let i = 0; i < config.dependencies.length; i++) {
                 const d_config = await imjoy.pm.getPluginFromUrl(config.dependencies[i])
-                lazy_dependencies[d_config.name] = config.dependencies[i]
+                // TODO: use a better way to determin if it's an internal plugin type
+                if(imjoy.pm.getBadges(d_config) === '🚀'){
+                  lazy_dependencies[d_config.name] = config.dependencies[i]
+                }
+                else{
+                  await imjoy.pm.reloadPluginRecursively(
+                    {
+                      uri: config.dependencies[i]
+                    }
+                  );
+                }
               }
               if(p.type !== 'window'){
                 if(!this.validateBioEngineApp(p.name, p.api))
