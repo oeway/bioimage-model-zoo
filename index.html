@@ -237,7 +237,7 @@
         <i v-else class="material-icons">extension</i>
         {{dialog_window.name}}
         <div style="top: 0px; position: absolute; right:0px;">
-          <button type="button" class="mdl-button close" @click="closeDialog()"><i class="material-icons">clear</i></button>
+          <button type="button" class="mdl-button close-btn" @click="closeDialog()"><i class="material-icons">clear</i></button>
         </div>
       </div>
       
@@ -250,21 +250,24 @@
       <h4 class="mdl-dialog__title">
         <i v-if="selected_model.icon" class="material-icons">{{selected_model.icon}}</i>
         <i v-else class="material-icons">extension</i>
-        {{selected_model.name}}</h4>
+        {{selected_model.name}}
+        <div style="top: 0px; position: absolute; right:0px;">
+          <button type="button" class="mdl-button close-btn" @click="closeInfo()"><i class="material-icons">clear</i></button>
+        </div>
+      </h4>
+
+      
       <div class="mdl-dialog__content">
 
         <p>
-          <a class="label" :href="selected_model.url" target="_blank">source code</a>
-          <span class="label">
+          <span class="label" v-if="selected_model.version">
             v{{selected_model.version}}
           </span>
           <span v-for="label in selected_model.allLabels" class="label">
             {{label}}
           </span>
-        </p>
-        <p>
           <span class="mdl-chip">
-            <span class="mdl-chip__text">{{selected_model.repo}}:{{selected_model.name}}</span>
+            <a class="mdl-chip__text" target="_blank" :href="'https://bioimage.io?model=' + encodeURI(selected_model.name)">https://bioimage.io?model={{encodeURI(selected_model.name)}}</a>
           </span>
         </p>
         <p>
@@ -280,8 +283,8 @@
       </div>
 
       <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button" @click="closeInfo()">Close</button>
         <a class="mdl-button mdl-button--primary" :href="selected_model.download_url">Download</a>
+        <a class="mdl-button"  target="_blank" :href="selected_model.config_url">Show Config</a>
       </div>
     </dialog>
 

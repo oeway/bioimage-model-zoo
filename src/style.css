@@ -197,7 +197,11 @@ ul>li {
 .mdl-dialog__content {
     display: block;
     overflow: auto;
-    max-height: calc(100% - 180px);
+    max-height: 100vh;;
+}
+
+.close-btn{
+    color:white;
 }
 
 @media screen and (max-width: 840px) {
