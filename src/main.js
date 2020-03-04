@@ -86,9 +86,17 @@ const app = new Vue({
         if(query_repo.startsWith('http') || query_repo.startsWith('/')){
           repository_url = query_repo;
         }
-        else{
+        else if(query_repo.split('/').length === 2){
           repository_url = `https://raw.githubusercontent.com/${query_repo}/master/manifest.model.json`
         }
+        else if(query_repo.split('/').length === 3){
+          repository_url = `https://raw.githubusercontent.com/${query_repo}/manifest.model.json`
+        }
+        else{
+          alert("Unsupported repo format.")
+          throw "Unsupported repo format."
+        }
+
         repo = query_repo;
       }
       
@@ -451,8 +459,6 @@ const app = new Vue({
           }
           this.loading = false;
           this.$forceUpdate()
-
-          
       })
       .catch((e)=>{
           console.error(e)
