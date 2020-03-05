@@ -52,6 +52,14 @@
           </template>
 
           <!-- Right aligned menu below button -->
+
+          
+          <button @click="showSubscriptionForm()"
+          class="mdl-button mdl-js-button primary-color">
+          <i class="material-icons">subscriptions</i>
+          <span class="hide-small">Subscribe</span>
+          </button>
+
           <button v-show="imjoy && apps" id="demo-menu-lower-right"
           class="mdl-button mdl-js-button primary-color">
           <i class="material-icons">extension</i>
@@ -231,6 +239,21 @@
       </main>
 
     </div>
+
+    
+
+    <dialog class="mdl-dialog" ref="subscription_dialog">
+      <div class="mdl-dialog__title">
+        Subscribe to news and updates
+        <div style="top: 0px; position: absolute; right:0px;">
+          <button type="button" class="mdl-button close-btn" @click="closeSubscriptionForm()"><i class="material-icons">clear</i></button>
+        </div>
+      </div>
+      <div class="mdl-dialog__content plugin-iframe-container">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true" width="640" height="852" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+      </div>
+    </dialog>
+
     <dialog class="mdl-dialog" ref="window_dialog">
       <div class="mdl-dialog__title" v-if="dialog_window">
         <i v-if="selected_model.icon" class="material-icons">{{dialog_window.icon}}</i>

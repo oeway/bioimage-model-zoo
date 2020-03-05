@@ -161,6 +161,10 @@ const app = new Vue({
       dialogPolyfill.registerDialog(that.$refs.window_dialog);
     }
 
+    if (!that.$refs.subscription_dialog.showModal) {
+      dialogPolyfill.registerDialog(that.$refs.subscription_dialog);
+    }
+
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", ()=>{
         console.log('Loading ImJoy...')
@@ -268,6 +272,13 @@ const app = new Vue({
     },
     getModelsCount() {
       return this.filteredModels.length
+    },
+    showSubscriptionForm(){
+      if(!this.$refs.subscription_dialog.open)
+      this.$refs.subscription_dialog.showModal();
+    },
+    closeSubscriptionForm(){
+      this.$refs.subscription_dialog.close();
     },
     addWindow(w){
       this.selectWindow(w)
