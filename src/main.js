@@ -79,9 +79,9 @@ const app = new Vue({
     const that = this;
     that.models = []
     try {
-      let repo = 'bioimage-io/models'
+      let repo = 'bioimage-io/bioimage-models'
       const query_repo = getUrlParameter('repo')
-      let repository_url = `https://raw.githubusercontent.com/bioimage-io/models/master/manifest.model.json`
+      let repository_url = `https://raw.githubusercontent.com/bioimage-io/bioimage-models/master/manifest.model.json`
       if(query_repo){
         if(query_repo.startsWith('http') || query_repo.startsWith('/')){
           repository_url = query_repo;
