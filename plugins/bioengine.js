@@ -4,7 +4,7 @@ import { randId, getUrlParameter } from './utils.js'
 class BioEngine {
   constructor (app) {
     this.app = app
-    this.loadImJoy()
+    // this.loadImJoy()
   }
 
   async getDocs (model) {

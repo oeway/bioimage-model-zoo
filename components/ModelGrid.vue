@@ -1,6 +1,6 @@
 <template>
   <div class="model-grid">
-    <model-card />
+    <model-card v-for="model in models" :key="model.name" />
   </div>
 </template>
 
@@ -9,7 +9,11 @@ import ModelCard from '~/components/ModelCard.vue'
 
 export default {
   name: 'ModelGrid',
-  components: { ModelCard }
+  components: { ModelCard },
+  asyncData (context) {
+    context.app.repository.init()
+    return { models: context.app.repository.models }
+  }
 }
 </script>
 
