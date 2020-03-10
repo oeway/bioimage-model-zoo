@@ -374,7 +374,7 @@ const app = new Vue({
               this.addWindow(w)
           },
           update_ui_callback: ()=>{},
-          jailed_asset_url: 'https://imjoy.io/static/jailed'
+          jailed_asset_url: 'https://lib.imjoy.io/static/jailed'
       })
       imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
         const target_plugin = imjoy.pm.plugin_names[plugin_name];
