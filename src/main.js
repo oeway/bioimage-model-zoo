@@ -300,7 +300,8 @@ const app = new Vue({
     closeDialog(){
       this.$refs.window_dialog.close()
     },
-    loadImJoy(){
+    async loadImJoy(){
+      const imjoyCore = await loadImJoyCore({version: "0.12.6"})
       const me = this;
       const lazy_dependencies = {};
       var imjoy_api = {
@@ -373,8 +374,7 @@ const app = new Vue({
           add_window_callback: async (w)=>{
               this.addWindow(w)
           },
-          update_ui_callback: ()=>{},
-          jailed_asset_url: 'https://lib.imjoy.io/static/jailed'
+          update_ui_callback: ()=>{}
       })
       imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
         const target_plugin = imjoy.pm.plugin_names[plugin_name];
@@ -438,7 +438,7 @@ const app = new Vue({
 
           }
           this.loading = true;
-          await imjoy.pm.reloadPluginRecursively({uri: 'https://raw.githubusercontent.com/imjoy-team/jupyter-engine-manager/bioengine/docs/Jupyter-Engine-Manager.imjoy.html'})
+          await imjoy.pm.reloadPluginRecursively({uri: 'https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html'})
           // await imjoy.pm.reloadInternalPlugins()
           for(let k in this.apps_source){
             try{
