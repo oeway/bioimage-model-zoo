@@ -301,7 +301,7 @@ const app = new Vue({
       this.$refs.window_dialog.close()
     },
     async loadImJoy(){
-      const imjoyCore = await loadImJoyCore({version: "0.13.3"})
+      const imjoyCore = await loadImJoyCore({version: "0.13.9"})
       const me = this;
       const lazy_dependencies = {};
       var imjoy_api = {
