@@ -371,7 +371,9 @@ const app = new Vue({
 
       const imjoy = new imjoyCore.ImJoy({
           imjoy_api: imjoy_api,
-          show_message_callback: console.log,
+      })
+      imjoy.event_bus.on('show_message',(msg)=>{
+          this.showMessage(msg)
       })
       imjoy.event_bus.on('add_window',(w)=>{
           this.addWindow(w)
