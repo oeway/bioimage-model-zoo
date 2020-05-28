@@ -204,7 +204,7 @@ const app = new Vue({
     showMessage(message, duration){
       duration = duration || 5000;
       const data = {
-        message: message,
+        message: message.slice(0,200),
         actionHandler: function(event) {},
         actionText: 'Close',
         timeout: duration
@@ -284,6 +284,7 @@ const app = new Vue({
       this.selectWindow(w)
       this.show_models = false;
       this.selected_window = w;
+      this.$forceUpdate();
     },
     async removeWindow(w){
       w.closing = true;
@@ -301,7 +302,7 @@ const app = new Vue({
       this.$refs.window_dialog.close()
     },
     async loadImJoy(){
-      const imjoyCore = await loadImJoyCore({version: "0.13.9"})
+      const imjoyCore = await loadImJoyCore({version: "0.13.10"})
       const me = this;
       const lazy_dependencies = {};
       var imjoy_api = {
@@ -371,10 +372,9 @@ const app = new Vue({
       const imjoy = new imjoyCore.ImJoy({
           imjoy_api: imjoy_api,
           show_message_callback: console.log,
-          add_window_callback: async (w)=>{
-              this.addWindow(w)
-          },
-          update_ui_callback: ()=>{}
+      })
+      imjoy.event_bus.on('add_window',(w)=>{
+          this.addWindow(w)
       })
       imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
         const target_plugin = imjoy.pm.plugin_names[plugin_name];
