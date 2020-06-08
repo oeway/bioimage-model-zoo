@@ -94,7 +94,7 @@
           <!-- Your content goes here -->
           <div v-show="!show_models" class="mdl-grid whiteboard" id="whiteboard">
             <template v-for="w in windows">
-              <div :id="w.window_id" v-show="selected_window === w" class="plugin-iframe"></div>
+              <div :id="w.window_id" v-if="!w.dialog" v-show="selected_window === w" class="plugin-iframe"></div>
             </template>
           </div>
           <div v-if="show_models" class="mdl-grid">

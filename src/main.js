@@ -302,7 +302,7 @@ const app = new Vue({
       this.$refs.window_dialog.close()
     },
     async loadImJoy(){
-      const imjoyCore = await loadImJoyCore({version: "0.13.10"})
+      const imjoyCore = await loadImJoyCore({version: "0.13.17"})
       const me = this;
       const lazy_dependencies = {};
       var imjoy_api = {
@@ -318,6 +318,7 @@ const app = new Vue({
         },
         showDialog(_plugin, config) {
             return new Promise((resolve, reject) => {
+                config.dialog = true;
                 me.dialog_window = config;
                 me.$forceUpdate()
                 if (config.ui) {
@@ -343,7 +344,7 @@ const app = new Vue({
               } else if (config.type) {
                   if(!me.$refs.window_dialog.open)
                   me.$refs.window_dialog.showModal();
-                  config.window_container = "window-dialog-container";
+                  config.window_id = "window-dialog-container";
                   config.standalone = true;
                   if (config.type.startsWith("imjoy/")) {
                       config.render = wconfig => {
