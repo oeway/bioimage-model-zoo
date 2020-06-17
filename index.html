@@ -59,7 +59,13 @@
           <i class="material-icons">subscriptions</i>
           <span class="hide-small">Subscribe</span>
           </button>
-
+          <a @click="showSubscriptionForm()"
+          href="https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models"
+          class="mdl-button mdl-js-button primary-color">
+          <i class="material-icons">add</i>
+          <span class="hide-small">Contribute</span>
+        </a>
+          
           <button v-show="imjoy && apps" id="demo-menu-lower-right"
           class="mdl-button mdl-js-button primary-color">
           <i class="material-icons">extension</i>
@@ -100,13 +106,7 @@
           <div v-if="show_models" class="mdl-grid">
             <div class="mdl-cell--6-col mdl-cel" style="padding: 0 2rem">
               <h5> # Models: {{getModelsCount()}}
-                <a id="add-model" href="https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models" target="_blank"
-                  class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                  <i class="material-icons">add</i>
-                  <div class="mdl-tooltip" data-mdl-for="add-model">
-                    Add your model to the repository by sending us a Pull Request on Github.
-                  </div>
-                </a></h5>
+              </h5>
 
               <template id="label-selector" v-if="allLabels && allLabels.length>0">
                 <div class="labels-wrapper">
