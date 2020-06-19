@@ -79,8 +79,12 @@
     </section>
     <br />
     <span ref="search_anchor"></span>
-    <model-selector :fullLabelList="fullLabelList"></model-selector>
-    <model-list :models="models" :apps="apps" />
+    <model-selector
+      @selection-changed="updateModelList"
+      :models="models"
+      :fullLabelList="fullLabelList"
+    ></model-selector>
+    <model-list :models="selectedModels" :apps="apps" />
 
     <footer class="footer">
       <div>
@@ -152,6 +156,7 @@ export default {
   data() {
     return {
       models: null,
+      selectedModels: null,
       showMenu: false,
       fullLabelList: [],
       applications: [],
@@ -206,6 +211,9 @@ export default {
       const top = this.$refs.search_anchor.getBoundingClientRect().top;
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
+    updateModelList(models) {
+      this.selectedModels = models;
+    },
     setModels(models) {
       this.fullLabelList = [];
       for (let model of models) {
@@ -220,6 +228,7 @@ export default {
         );
       }
       this.models = models;
+      this.selectedModels = models;
     },
     showModelInfo() {
       const selected_model = getUrlParameter("model");

@@ -1,13 +1,16 @@
 <template>
   <div class="container content-wrapper">
     <section class="center ">
-      <b-field style="max-width: calc(100vw - 10px);">
+      <b-field style="max-width: calc(100vw - 10px);" @keyup.enter="search">
         <b-taginput
+          type="is-info"
+          allow-new
           style="width:500px;"
           :data="filteredTags"
           :open-on-focus="true"
           autocomplete
-          @add="updateSelectedTags"
+          @add="search"
+          @input="updateSelectedTags"
           @typing="getFilteredTags"
           v-model="selectedTags"
           ellipsis
@@ -114,6 +117,16 @@ export default {
       filteredTags: []
     };
   },
+  watch: {
+    // whenever question changes, this function will run
+    selectedTags: function(newTags) {
+      if (!this.models) return;
+      const selectedModels = this.models.filter(model =>
+        newTags.every(label => model.allLabels.includes(label))
+      );
+      this.$emit("selection-changed", selectedModels);
+    }
+  },
   mounted() {
     this.filteredTags = this.fullLabelList;
   },
@@ -144,6 +157,9 @@ export default {
     }
   },
   methods: {
+    search(newTag) {
+      console.log("======search", newTag);
+    },
     updateSelectedTags() {
       this.filteredTags = this.fullLabelList.filter(label => {
         return this.selectedTags.indexOf(label) < 0;
