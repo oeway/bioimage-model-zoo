@@ -9,7 +9,6 @@
           :data="filteredTags"
           :open-on-focus="true"
           autocomplete
-          @add="search"
           @input="updateSelectedTags"
           @typing="getFilteredTags"
           v-model="selectedTags"
@@ -121,9 +120,25 @@ export default {
     // whenever question changes, this function will run
     selectedTags: function(newTags) {
       if (!this.models) return;
-      const selectedModels = this.models.filter(model =>
-        newTags.every(label => model.allLabels.includes(label))
+      const knownTags = newTags.filter(
+        tag => this.fullLabelList.indexOf(tag) >= 0
       );
+      const unknownTags = newTags.filter(
+        tag => this.fullLabelList.indexOf(tag) < 0
+      );
+      const selectedModels = this.models.filter(model => {
+        const matched = knownTags.every(label =>
+          model.allLabels.includes(label)
+        );
+        return (
+          matched &&
+          unknownTags.every(
+            label =>
+              model.name.toLowerCase().includes(label) ||
+              model.description.toLowerCase().includes(label)
+          )
+        );
+      });
       this.$emit("selection-changed", selectedModels);
     }
   },
@@ -157,9 +172,6 @@ export default {
     }
   },
   methods: {
-    search(newTag) {
-      console.log("======search", newTag);
-    },
     updateSelectedTags() {
       this.filteredTags = this.fullLabelList.filter(label => {
         return this.selectedTags.indexOf(label) < 0;
