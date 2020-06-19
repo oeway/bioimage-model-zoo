@@ -21,7 +21,7 @@
             {{ props.option }}
           </template>
         </b-taginput>
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" position="is-bottom-left">
           <button class="button tags-button" slot="trigger">
             <span>Tags</span>
             <b-icon icon="menu-down"></b-icon>
@@ -248,7 +248,8 @@ export default {
   width: 800px;
 }
 .dropdown-panel {
-  width: 300px;
+  width: 100%;
+  max-width: 580px;
   padding: 15px;
   height: 400px;
   overflow-y: scroll;
