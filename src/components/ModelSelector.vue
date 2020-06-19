@@ -12,7 +12,7 @@
           v-model="selectedTags"
           ellipsis
           icon="magnify"
-          placeholder="Add keywords"
+          placeholder="Type a keyword and press enter"
         >
           <template slot-scope="props">
             {{ props.option }}
