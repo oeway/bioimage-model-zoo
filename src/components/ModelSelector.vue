@@ -22,7 +22,7 @@
           </template>
         </b-taginput>
         <b-dropdown aria-role="list">
-          <button class="button" style="height:36px;" slot="trigger">
+          <button class="button tags-button" slot="trigger">
             <span>Tags</span>
             <b-icon icon="menu-down"></b-icon>
           </button>
@@ -302,5 +302,11 @@ export default {
 .tag:hover {
   background: #2196f3 !important;
   color: white;
+}
+.tags-button {
+  top: 1px;
+  height: 34px;
+  left: 4px;
+  text-transform: none;
 }
 </style>
