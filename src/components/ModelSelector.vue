@@ -3,6 +3,7 @@
     <section class="center ">
       <b-field style="max-width: calc(100vw - 10px);" @keyup.enter="search">
         <b-taginput
+          :loading="loading"
           type="is-info"
           allow-new
           style="width:500px;"
@@ -67,6 +68,21 @@
 </template>
 
 <script>
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this,
+      args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
 const categories = {
   modality: ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
   content: [
@@ -113,7 +129,8 @@ export default {
   data() {
     return {
       selectedTags: [],
-      filteredTags: []
+      filteredTags: [],
+      loading: false
     };
   },
   watch: {
@@ -127,19 +144,25 @@ export default {
         tag => this.fullLabelList.indexOf(tag) < 0
       );
       const selectedModels = this.models.filter(model => {
-        const matched = knownTags.every(label =>
-          model.allLabels.includes(label)
-        );
+        const matched =
+          knownTags.length > 0 &&
+          knownTags.every(label => model.allLabels.includes(label));
         return (
-          matched &&
-          unknownTags.every(
-            label =>
-              model.name.toLowerCase().includes(label) ||
-              model.description.toLowerCase().includes(label)
-          )
+          matched ||
+          (unknownTags.length > 0 &&
+            unknownTags.every(
+              label =>
+                model.name.toLowerCase().includes(label.toLowerCase()) ||
+                model.description.toLowerCase().includes(label.toLowerCase())
+            ))
         );
       });
-      this.$emit("selection-changed", selectedModels);
+      this.loading = true;
+      debounce(() => {
+        this.$emit("selection-changed", selectedModels);
+        this.loading = false;
+        this.$forceUpdate();
+      }, 400)();
     }
   },
   mounted() {
