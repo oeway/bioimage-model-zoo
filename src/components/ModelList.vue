@@ -37,7 +37,7 @@ export default {
     apps: {
       type: Object,
       default: null
-    },
+    }
   },
   computed: {
     filteredModels: function() {
@@ -48,8 +48,7 @@ export default {
       return models.filter(model =>
         this.filters.every(label => model.allLabels.includes(label))
       );
-    },
-
+    }
   },
   data() {
     return {
@@ -67,8 +66,7 @@ export default {
       selected_window: null
     };
   },
-  mounted() {
-  },
+  mounted() {},
   beforeDestroy() {},
   methods: {
     showMessage(message, duration) {

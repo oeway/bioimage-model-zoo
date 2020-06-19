@@ -162,7 +162,7 @@ export default {
       showMenu: false,
       fullLabelList: [],
       applications: [],
-      apps: {},
+      apps: {}
     };
   },
   created: async function() {
