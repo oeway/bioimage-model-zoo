@@ -7,7 +7,7 @@
     >
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">About Bioimage.io</h1>
+          <h1 class="title">About BioImage.IO</h1>
           <h2 class="subtitle">v{{ version }}</h2>
         </div>
       </div>
