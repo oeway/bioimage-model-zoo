@@ -150,11 +150,16 @@ export default {
         return (
           matched ||
           (unknownTags.length > 0 &&
-            unknownTags.every(
-              label =>
-                model.name.toLowerCase().includes(label.toLowerCase()) ||
-                model.description.toLowerCase().includes(label.toLowerCase())
-            ))
+            unknownTags.every(label => {
+              label = label.toLowerCase();
+              return (
+                model.name.toLowerCase().includes(label) ||
+                model.description.toLowerCase().includes(label) ||
+                model.authors.every(author =>
+                  author.toLowerCase().includes(label)
+                )
+              );
+            }))
         );
       });
       this.loading = true;
