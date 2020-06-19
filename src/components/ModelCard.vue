@@ -7,7 +7,7 @@
             loading="lazy"
             :src="model.cover_image"
             :alt="model.name"
-            class="modal-button"
+            class="cover-image"
             data-target="modal-image2"
           />
         </figure>
@@ -15,6 +15,16 @@
       <div class="card-content">
         <div class="content">
           <h4 class="model-title">{{ model.name }}</h4>
+          <b-tooltip label="Download" class="download-btn" position="is-top">
+            <b-button
+              rounded
+              :href="model.download_url"
+              class="is-small action-btn"
+            >
+              <b-icon icon="download" size="is-small"> </b-icon>
+            </b-button>
+          </b-tooltip>
+
           <div class="buttons floating-buttons">
             <template v-for="app_key in model.applications">
               <b-tooltip
@@ -49,15 +59,6 @@
                 </b-button>
               </b-tooltip>
             </template>
-            <b-tooltip label="Download" position="is-top">
-              <b-button
-                rounded
-                :href="model.download_url"
-                class="is-small action-btn"
-              >
-                <b-icon icon="download" size="is-small"> </b-icon>
-              </b-button>
-            </b-tooltip>
           </div>
           <span class="authors">
             {{ model.authors ? "by " + etAl(model.authors) : "" }}
@@ -121,18 +122,21 @@ export default {
 }
 .floating-buttons {
   position: absolute;
-  left: 5px;
-  top: 5px;
+  left: 10px;
+  bottom: -15px;
 }
 .app-icons {
-  width: 26px !important;
-  max-width: 26px;
+  width: 20px !important;
+  max-width: 20px;
   padding-top: 5px;
 }
 .button.is-small {
   border-radius: 30px;
-  font-size: 1rem;
+  font-size: 0.8rem;
   background-color: #d2ebffc7;
   color: rgb(25, 25, 26);
+}
+.cover-image {
+  max-height: 200px;
 }
 </style>

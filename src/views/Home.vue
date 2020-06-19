@@ -68,18 +68,8 @@
             <li>- Contribute your models via Github</li>
             <li>- Link models to BioEngine Apps</li>
           </ul>
-          <!-- <b-field label="Find a name">
-            <b-autocomplete
-              v-model="name"
-              placeholder="e.g. Anne"
-              :keep-first="keepFirst"
-              :open-on-focus="openOnFocus"
-              :data="filteredDataObj"
-              field="user.first_name"
-              @select="option => (selected = option)"
-            >
-            </b-autocomplete>
-          </b-field> -->
+          <br />
+          <b-button @click="enter">Explore the Zoo</b-button>
         </div>
         <img
           style="position:absolute; bottom: 0px; right:0px; opacity: 0.9; width:70%;"
@@ -88,7 +78,8 @@
       </div>
     </section>
     <br />
-    <br />
+    <span ref="search_anchor"></span>
+    <model-selector :fullLabelList="fullLabelList"></model-selector>
     <model-list :models="models" :apps="apps" />
 
     <footer class="footer">
@@ -124,6 +115,7 @@
 
 <script>
 // @ is an alias to /src
+import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
 import { getUrlParameter, randId } from "../utils";
 
@@ -154,7 +146,8 @@ function normalizeModel(model) {
 export default {
   name: "Home",
   components: {
-    "model-list": ModelList
+    "model-list": ModelList,
+    "model-selector": ModelSelector
   },
   data() {
     return {
@@ -207,20 +200,14 @@ export default {
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
     }
   },
-  computed: {
-    // filteredDataObj() {
-    //   return this.fullLabelList.filter(option => {
-    //     return (
-    //       option.user.first_name
-    //         .toString()
-    //         .toLowerCase()
-    //         .indexOf(this.name.toLowerCase()) >= 0
-    //     );
-    //   });
-    // },
-  },
+  computed: {},
   methods: {
+    enter() {
+      const top = this.$refs.search_anchor.getBoundingClientRect().top;
+      window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
+    },
     setModels(models) {
+      this.fullLabelList = [];
       for (let model of models) {
         normalizeModel(model);
         model.allLabels.forEach(label => {
@@ -454,5 +441,8 @@ export default {
 .b-tooltip.is-primary:after {
   background: #2196f3 !important;
   color: white;
+}
+.card-image {
+  max-height: 200px;
 }
 </style>
