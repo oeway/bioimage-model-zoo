@@ -25,7 +25,7 @@
           </button>
 
           <div class="dropdown-panel" aria-role="listitem">
-            <div class="container">
+            <div class="container" style="max-width:100%;">
               <div
                 class="columns"
                 v-for="(tags, name) in categories.grouped"
