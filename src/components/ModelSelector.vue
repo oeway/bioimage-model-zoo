@@ -29,30 +29,34 @@
 
           <div class="dropdown-panel" aria-role="listitem">
             <div class="container" style="max-width:100%;">
+              <div class="field">
+                <b-switch v-model="matchingAll"
+                  >Match: {{ matchingAll ? " All" : "Any" }}</b-switch
+                >
+              </div>
+
               <div
-                class="columns"
+                class="column"
                 v-for="(tags, name) in categories.grouped"
                 :key="name"
               >
-                <div class="column">
-                  {{ name }}: <br />
-                  <a @click="addTagSelection(t)" v-for="t in tags" :key="t">
-                    <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
-                  </a>
-                </div>
+                {{ name }}: <br />
+                <a @click="addTagSelection(t)" v-for="t in tags" :key="t">
+                  <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
+                </a>
               </div>
-              <div class="columns">
-                <div class="column">
-                  other:
-                  <b-tag
-                    rounded
-                    @click="addTagSelection(t)"
-                    style="cursor: pointer;"
-                    v-for="t in categories.other"
-                    :key="t"
-                    >{{ t }}</b-tag
-                  >
-                </div>
+
+              <div class="column">
+                other:
+                <br />
+                <b-tag
+                  rounded
+                  @click="addTagSelection(t)"
+                  style="cursor: pointer;"
+                  v-for="t in categories.other"
+                  :key="t"
+                  >{{ t }}</b-tag
+                >
               </div>
             </div>
           </div>
@@ -130,7 +134,8 @@ export default {
     return {
       selectedTags: [],
       filteredTags: [],
-      loading: false
+      loading: false,
+      matchingAll: true
     };
   },
   watch: {
@@ -145,30 +150,43 @@ export default {
         selectedModels = this.models;
       } else {
         selectedModels = this.models.filter(model => {
-          const matched =
-            knownTags.length > 0 &&
-            knownTags.every(label => model.allLabels.includes(label));
-          return (
-            matched ||
-            (newTags.length > 0 &&
-              newTags.some(label => {
-                label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
-                return (
-                  model.name
-                    .replace(/-/g, "")
-                    .toLowerCase()
-                    .includes(label) ||
-                  model.description
-                    .replace(/-/g, "")
-                    .toLowerCase()
-                    .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
-                    .includes(label) ||
-                  model.authors.some(author =>
-                    author.toLowerCase().includes(label)
-                  )
-                );
-              }))
-          );
+          let matched;
+          if (this.matchingAll)
+            matched =
+              knownTags.length > 0 &&
+              knownTags.every(label => model.allLabels.includes(label));
+          else
+            matched =
+              knownTags.length > 0 &&
+              knownTags.some(label => model.allLabels.includes(label));
+          const matchText = label => {
+            label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
+            return (
+              model.name
+                .replace(/-/g, "")
+                .toLowerCase()
+                .includes(label) ||
+              model.description
+                .replace(/-/g, "")
+                .toLowerCase()
+                .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
+                .includes(label) ||
+              model.authors.some(author => author.toLowerCase().includes(label))
+            );
+          };
+
+          if (this.matchingAll)
+            return (
+              (knownTags.length <= 0 || matched) &&
+              newTags.length > 0 &&
+              newTags.every(matchText)
+            );
+          else
+            return (
+              (knownTags.length <= 0 || matched) &&
+              newTags.length > 0 &&
+              newTags.some(matchText)
+            );
         });
       }
       this.loading = true;
