@@ -69,7 +69,7 @@
             <li>- Link models to BioEngine Apps</li>
           </ul>
           <br />
-          <b-button @click="enter">Explore the Zoo</b-button>
+          <b-button rounded @click="enter">Explore the Zoo</b-button>
         </div>
         <img
           style="position:absolute; bottom: 0px; right:0px; opacity: 0.9; width:70%;"

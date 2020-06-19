@@ -1,7 +1,7 @@
 <template>
   <div class="container content-wrapper">
     <section class="center ">
-      <b-field>
+      <b-field style="max-width: calc(100vw - 10px);">
         <b-taginput
           style="width:500px;"
           :data="filteredTags"
