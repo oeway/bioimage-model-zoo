@@ -152,10 +152,14 @@ export default {
             matched ||
             (newTags.length > 0 &&
               newTags.some(label => {
-                label = label.toLowerCase();
+                label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
                 return (
-                  model.name.toLowerCase().includes(label) ||
+                  model.name
+                    .replace(/-/g, "")
+                    .toLowerCase()
+                    .includes(label) ||
                   model.description
+                    .replace(/-/g, "")
                     .toLowerCase()
                     .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
                     .includes(label) ||
