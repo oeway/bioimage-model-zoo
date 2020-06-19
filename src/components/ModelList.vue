@@ -9,6 +9,9 @@
         >
           <model-card :model="model" :apps="apps"></model-card>
         </div>
+        <span class="column" v-if="models && models.length === 0"
+          >The model list is empty.</span
+        >
       </div>
     </div>
   </div>
@@ -289,4 +292,8 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+.model-list {
+  min-height: 50vh;
+}
+</style>
