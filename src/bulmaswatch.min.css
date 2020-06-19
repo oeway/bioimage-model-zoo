@@ -3824,17 +3824,17 @@ a.tag:hover {
 .select select::-moz-placeholder,
 .textarea:-moz-placeholder,
 .textarea::-moz-placeholder {
-  color: inherit;
+  color: rgba(96, 96, 96, 0.7);
 }
 .input::-webkit-input-placeholder,
 .select select::-webkit-input-placeholder,
 .textarea::-webkit-input-placeholder {
-  color: inherit;
+  color: rgba(96, 96, 96, 0.7);
 }
 .input:-ms-input-placeholder,
 .select select:-ms-input-placeholder,
 .textarea:-ms-input-placeholder {
-  color: inherit;
+  color: rgba(96, 96, 96, 0.7);
 }
 .input:hover,
 .is-hovered.input,

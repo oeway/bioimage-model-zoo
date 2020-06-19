@@ -140,9 +140,6 @@ export default {
       const knownTags = newTags.filter(
         tag => this.fullLabelList.indexOf(tag) >= 0
       );
-      const unknownTags = newTags.filter(
-        tag => this.fullLabelList.indexOf(tag) < 0
-      );
       let selectedModels;
       if (newTags.length <= 0) {
         selectedModels = this.models;
@@ -153,13 +150,16 @@ export default {
             knownTags.every(label => model.allLabels.includes(label));
           return (
             matched ||
-            (unknownTags.length > 0 &&
-              unknownTags.every(label => {
+            (newTags.length > 0 &&
+              newTags.some(label => {
                 label = label.toLowerCase();
                 return (
                   model.name.toLowerCase().includes(label) ||
-                  model.description.toLowerCase().includes(label) ||
-                  model.authors.every(author =>
+                  model.description
+                    .toLowerCase()
+                    .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
+                    .includes(label) ||
+                  model.authors.some(author =>
                     author.toLowerCase().includes(label)
                   )
                 );

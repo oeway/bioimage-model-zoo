@@ -212,8 +212,8 @@ export default {
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
     updateModelList(models) {
-      if(models.length <=0){
-        this.showMessage('No model found.')
+      if (models.length <= 0) {
+        this.showMessage("No model found.");
       }
       this.selectedModels = models;
     },
