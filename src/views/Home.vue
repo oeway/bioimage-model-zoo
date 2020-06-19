@@ -126,20 +126,22 @@ import ModelList from "@/components/ModelList.vue";
 import { getUrlParameter, randId } from "../utils";
 
 function normalizeModel(model) {
-  if (model.covers && model.covers.length > 0) {
-    // resolve relative path to the cover image
-    if (!model.covers[0].startsWith("http")) {
-      model.cover_image = encodeURI(model.root_url + "/" + model.covers[0]);
-    } else {
-      model.cover_image = encodeURI(model.covers[0]);
-    }
-    if (model.cover_image.includes("(") || model.cover_image.includes(")")) {
-      console.error("cover image file name cannot contain brackets.");
-    }
-    // TODO: show all the cover images
-  } else {
-    model.cover_image = "";
+  model.cover_images = [];
+  if (model.covers && !Array.isArray(model.covers)) {
+    model.covers = [model.covers];
   }
+  for (let cover of model.covers) {
+    if (cover.includes("(") || cover.includes(")")) {
+      console.error("cover image file name cannot contain brackets.");
+      continue;
+    }
+    if (!cover.startsWith("http")) {
+      model.cover_images.push(encodeURI(model.root_url + "/" + cover));
+    } else {
+      model.cover_images.push(encodeURI(cover));
+    }
+  }
+
   model.allLabels = model.labels || [];
   if (model.license) {
     model.allLabels.push(model.license);

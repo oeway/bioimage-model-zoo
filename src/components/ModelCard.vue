@@ -2,21 +2,30 @@
   <div class="model-card">
     <div class="card is-shady">
       <div class="card-image">
-        <figure class="image is-16by9">
-          <img
-            loading="lazy"
-            :src="model.cover_image"
-            :alt="model.name"
-            class="cover-image"
-            data-target="modal-image2"
-          />
-        </figure>
+        <b-carousel
+          v-if="model.cover_images && model.cover_images.length > 0"
+          :indicator="model.cover_images.length > 1"
+          :arrow="model.cover_images.length > 1"
+        >
+          <b-carousel-item v-for="cover in model.cover_images" :key="cover">
+            <figure class="image is-16by9">
+              <img
+                loading="lazy"
+                :src="cover"
+                :alt="model.name"
+                class="cover-image"
+                data-target="modal-image2"
+              />
+            </figure>
+          </b-carousel-item>
+        </b-carousel>
       </div>
       <div class="card-content">
         <div class="content">
           <h4 class="model-title">{{ model.name }}</h4>
           <b-tooltip label="Download" class="download-btn" position="is-top">
             <b-button
+              tag="a"
               rounded
               :href="model.download_url"
               class="is-small action-btn"

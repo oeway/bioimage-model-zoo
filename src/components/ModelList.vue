@@ -9,7 +9,10 @@
         >
           <model-card :model="model" :apps="apps"></model-card>
         </div>
-        <span class="column" v-if="models && models.length === 0"
+        <span
+          style="text-align: center;"
+          class="column"
+          v-if="models && models.length === 0"
           >The model list is empty.</span
         >
       </div>
