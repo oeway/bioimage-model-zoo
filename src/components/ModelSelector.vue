@@ -143,25 +143,30 @@ export default {
       const unknownTags = newTags.filter(
         tag => this.fullLabelList.indexOf(tag) < 0
       );
-      const selectedModels = this.models.filter(model => {
-        const matched =
-          knownTags.length > 0 &&
-          knownTags.every(label => model.allLabels.includes(label));
-        return (
-          matched ||
-          (unknownTags.length > 0 &&
-            unknownTags.every(label => {
-              label = label.toLowerCase();
-              return (
-                model.name.toLowerCase().includes(label) ||
-                model.description.toLowerCase().includes(label) ||
-                model.authors.every(author =>
-                  author.toLowerCase().includes(label)
-                )
-              );
-            }))
-        );
-      });
+      let selectedModels;
+      if (newTags.length <= 0) {
+        selectedModels = this.models;
+      } else {
+        selectedModels = this.models.filter(model => {
+          const matched =
+            knownTags.length > 0 &&
+            knownTags.every(label => model.allLabels.includes(label));
+          return (
+            matched ||
+            (unknownTags.length > 0 &&
+              unknownTags.every(label => {
+                label = label.toLowerCase();
+                return (
+                  model.name.toLowerCase().includes(label) ||
+                  model.description.toLowerCase().includes(label) ||
+                  model.authors.every(author =>
+                    author.toLowerCase().includes(label)
+                  )
+                );
+              }))
+          );
+        });
+      }
       this.loading = true;
       debounce(() => {
         this.$emit("selection-changed", selectedModels);
