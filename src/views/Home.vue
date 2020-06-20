@@ -137,7 +137,7 @@
           class="dialog-header-button"
           style="background:#ff0000c4;left:1px;"
         >
-          X
+          x
         </button>
         <button
           @click="minimizeWindow()"
@@ -188,7 +188,7 @@
           class="dialog-header-button"
           style="background:#ff0000c4;left:1px;"
         >
-          X
+          x
         </button>
         <button
           @click="maximizeWindow()"
@@ -594,15 +594,18 @@ export default {
   background-color: #448aff;
   color: white;
   text-align: center;
+  line-height: 40px;
 }
 .dialog-header-button {
   cursor: pointer;
   width: 34px;
-  height: 36px;
+  height: 38px;
+  line-height: 30px;
   border: 0px;
   font-size: 2rem;
   position: absolute;
   color: white;
   top: 1px;
+  font-family: "Lucida Console", Monaco, monospace;
 }
 </style>
