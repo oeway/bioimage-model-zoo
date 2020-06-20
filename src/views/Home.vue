@@ -25,11 +25,12 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a class="navbar-item" href="/#/about">
-            <b-icon icon="info"></b-icon>
+          <a class="navbar-item" @click="showAboutDialog">
+            <b-icon icon="information-outline"></b-icon>
             <span>About</span>
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" @click="showSubscribeDialog">
+            <b-icon icon="playlist-check"></b-icon>
             <span>Subscribe</span>
           </a>
           <a
@@ -37,12 +38,11 @@
             target="_blank"
             href="https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models"
           >
-            Contribute
+            <b-icon icon="plus"></b-icon>
+            <span>Contribute</span>
           </a>
           <a class="navbar-item" href="#BioEngine">
-            <span class="icon">
-              <i class="fas fa-th-list"></i>
-            </span>
+            <b-icon icon="puzzle"></b-icon>
             <span>BioEngine Apps</span>
           </a>
         </div>
@@ -165,7 +165,7 @@
       </template>
     </modal>
     <modal
-      name="model-info-dialog"
+      name="info-dialog"
       :resizable="true"
       ref="window_modal_dialog"
       :minWidth="200"
@@ -177,14 +177,10 @@
       draggable=".drag-handle"
       :scrollable="true"
     >
-      <div
-        v-if="selectedModel"
-        @dblclick="maximizeWindow()"
-        class="drag-handle dialog-header"
-      >
-        <span> {{ selectedModel.name }}</span>
+      <div @dblclick="maximizeWindow()" class="drag-handle dialog-header">
+        <span> {{ infoDialogTitle }}</span>
         <button
-          @click="closeWindow(selectedModel)"
+          @click="closeWindow()"
           class="dialog-header-button"
           style="background:#ff0000c4;left:2px;"
         >
@@ -198,8 +194,23 @@
           {{ fullscreen ? "=" : "+" }}
         </button>
       </div>
-
-      <model-info v-if="selectedModel" :model="selectedModel"></model-info>
+      <about v-if="showDialogMode === 'about'"></about>
+      <iframe
+        v-else-if="showDialogMode === 'subscribe'"
+        style="padding-bottom: 64px;width: 100%;
+    height: 100%;"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true"
+        width="640"
+        height="852"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        >Loading…</iframe
+      >
+      <model-info
+        v-else-if="showDialogMode === 'model' && selectedModel"
+        :model="selectedModel"
+      ></model-info>
     </modal>
   </div>
 </template>
@@ -209,6 +220,7 @@
 import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
+import About from "@/views/About.vue";
 import {
   getUrlParameter,
   randId,
@@ -250,7 +262,8 @@ export default {
   components: {
     "model-list": ModelList,
     "model-selector": ModelSelector,
-    "model-info": ModelInfo
+    "model-info": ModelInfo,
+    about: About
   },
   data() {
     return {
@@ -269,7 +282,9 @@ export default {
       selectedModel: null,
       fullscreen: false,
       selected_dialog_window: null,
-      screenWidth: 1000
+      screenWidth: 1000,
+      showDialogMode: null,
+      infoDialogTitle: ""
     };
   },
   created: async function() {
@@ -339,14 +354,26 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
+    showAboutDialog() {
+      this.showDialogMode = "about";
+      this.infoDialogTitle = "About";
+      this.$modal.show("info-dialog");
+    },
+    showSubscribeDialog() {
+      this.showDialogMode = "subscribe";
+      this.infoDialogTitle = "Subscribe to News and Updates";
+      this.$modal.show("info-dialog");
+    },
     showModelInfo(mInfo) {
+      this.showDialogMode = "model";
       this.selectedModel = mInfo;
+      this.infoDialogTitle = this.selectedModel.name;
       if (this.screenWidth < 700) this.fullscreen = true;
-      this.$modal.show("model-info-dialog");
+      this.$modal.show("info-dialog");
     },
     closeWindow() {
       this.selectedModel = null;
-      this.$modal.hide("model-info-dialog");
+      this.$modal.hide("info-dialog");
     },
     minimizeWindow() {
       this.$modal.hide("odel-info-dialog");

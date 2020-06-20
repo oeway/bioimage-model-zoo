@@ -12,6 +12,10 @@
         </div>
       </div>
     </section>
+    <img
+      style="position:absolute; bottom: 0px; right:0px; width:90%;"
+      src="static/img/zoo-background.svg"
+    />
   </div>
 </template>
 <script>
