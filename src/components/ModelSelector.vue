@@ -80,6 +80,10 @@ export default {
       type: Array,
       default: null
     },
+    type: {
+      type: String,
+      default: null
+    },
     fullLabelList: {
       type: Array,
       default: null
@@ -98,7 +102,13 @@ export default {
     };
   },
   watch: {
-    // whenever question changes, this function will run
+    type: function(newType) {
+      console.log("==========>", newType);
+      const selectedModels = newType
+        ? this.models.filter(m => m.type === newType)
+        : this.models;
+      this.$emit("selection-changed", selectedModels);
+    },
     selectedTags: function(newTags) {
       if (!this.models) return;
       this.loading = true;
@@ -141,8 +151,10 @@ export default {
                 )
               );
             };
-
-            return matched || newTags.every(matchText);
+            return (
+              (!this.type || model.type === this.type) &&
+              (matched || newTags.every(matchText))
+            );
           });
         }
 

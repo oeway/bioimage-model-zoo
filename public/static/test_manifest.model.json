@@ -3,27 +3,29 @@
   "description": "The official bioimage model repository.",
   "version": "0.1.0",
   "url_root": "https://raw.githubusercontent.com/bioimage-io/models/master",
-  "applications": [
+  "items": [
     {
       "name": "Ilastik",
+      "type": "application",
       "description": "Ilastik model loader",
       "source": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Ilastik-app.imjoy.html"
     },
     {
       "name": "Fiji",
+      "type": "application",
       "description": "Fiji model loader",
       "source": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Fiji-app.imjoy.html"
     },
     {
       "name": "HPA-Classification",
+      "type": "application",
       "description": "HPA image classifier",
       "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/apps/HPA-Classification.imjoy.html"
-    }
-  ],
-  "models": [
+    },
     {
       "root_url": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2",
       "name": "U-Net DA (Domain Adaptation)",
+      "type": "model",
       "description": "U-Net trained on brain vasculature segmentation data from Ludovico Silvestri's European Laboratory for Non-linear Spectroscopy (LENS). U-Net is used as the segmentation network that takes up the inputs from source and target domain, and generate the respective segmentation results at the output. To train the network, cross entropy loss between the prediction and ground truth labels is used for the source data. For the target data, image reconstrcution constraints are enforced on the segmentation outputs. Furthermore, source domain images are translated into the target domain using an adverserial paradigm, to generate auxiliary labelled data for the target domain. The labelled data thus generated are used to establish a supervised loss in the target domain.",
       "cite": [
         {
@@ -55,6 +57,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2",
       "name": "Two Steam U-Net DA",
+      "type": "model",
       "description": "Two Steam U-Net trained on brain vasculature segmentation data from Ludovico Silvestri's European Laboratory for Non-linear Spectroscopy (LENS). Two Steam U-Net is used as the segmentation network that takes up the inputs from source and target domain, and generate the respective segmentation results at the output. Two Steam U-Net uses differet encoders to process inputs from source and target, and use a common decoder to generate the respective segmentation outputs. To train the network, cross entropy loss between the prediction and ground truth labels is used for the source data. For the target data, image reconstrcution constraints are enforced on the segmentation outputs. Furthermore, source domain images are translated into the target domain using an adverserial paradigm, to generate auxiliary labelled data for the target domain. The labelled data thus generated are used to establish a supervised loss in the target domain.",
       "cite": [
         {
@@ -86,6 +89,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/bioimage-io/fiji-bioimage-io/v0.1.4/models/n2v-sem-demo",
       "name": "N2V SEM Demo",
+      "type": "model",
       "description": "Demo model for denoising trained on a single SEM image with Noise2Void",
       "cite": {
         "text": "Buchholz, T. et al. - Content-aware image restoration for electron microscopy. \nMethods in Cell Biology, Volume 152 p.277-289, ISSN 0091-679X (2019)",
@@ -112,6 +116,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/models/HPAShuffleNetV2",
       "name": "HPA ShuffleNetV2",
+      "type": "model",
       "description": "A light-weight model for HPA image classification competition",
       "cite": null,
       "authors": [
@@ -135,6 +140,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/deepimagej/models/master/fru-net_sev_segmentation",
       "name": "Fully Residual U-Net - TEM",
+      "type": "model",
       "description": "DeepImageJ compatible fully residual U-Net trained to segment small extracellular vesicles in 2D TEM images",
       "cite": {
         "text": "G\u00f3mez-de-Mariscal, E. et al., Deep-Learning-Based Segmentation of SmallExtracellular Vesicles in Transmission Electron Microscopy Images \nScientific Reports, (2019)",
@@ -163,6 +169,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/platybrowser/platybrowser/3711f1c26e5db8c38c3faff4cccb3110560e3c67/segmentation/cells/UNet3DPlatyCellProbs.model",
       "name": "3D UNet Platynereis Cell Segmentation (Probabilities)",
+      "type": "model",
       "description": "A 3d U-Net trained to predict the cell boundaries in a EM volume of a 6 day old Platynereis.",
       "cite": [
         {
@@ -195,6 +202,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/fynnbe/pytorch-3dunet/eabf146079c5829f6c6fe0488595838e54887c06/bioimage-io/UNet3DArabidopsisOvules.model",
       "name": "3D UNet Arabidopsis Ovules",
+      "type": "model",
       "description": "A 3d U-Net trained to predict the cell boundaries in confocal stacks of Arabidopsis ovules.",
       "cite": [
         {
@@ -231,6 +239,7 @@
     {
       "root_url": "https://raw.githubusercontent.com/bioimage-io/pytorch-bioimage-io/v0.1.1/specs/models/unet2d/nuclei_broad",
       "name": "2D UNet Nuclei Broad",
+      "type": "model",
       "description": "A 2d U-Net pretrained on broad nucleus dataset.",
       "cite": [
         {

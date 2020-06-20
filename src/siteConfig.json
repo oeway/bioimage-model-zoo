@@ -21,7 +21,7 @@
   "item_lists": [
     {
       "name": "Models",
-      "match": { "source": ".model.yaml$" },
+      "type": "model",
       "tag_categories": {
         "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
         "content": [
@@ -54,8 +54,7 @@
         ]
       }
     },
-    { "name": "Applications", "match": { "source": ".imjoy.html$" } },
-    { "name": "Notebooks", "match": { "source": ".ipynb$" } },
-    { "name": "Datasets", "match": { "source": ".zarr$" } }
+    { "name": "Datasets", "type": "dataset" },
+    { "name": "Applications", "type": "application" }
   ]
 }

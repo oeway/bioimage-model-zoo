@@ -22,6 +22,11 @@
             />
           </b-carousel-item>
         </b-carousel>
+        <img
+          v-else
+          style="background-color: black;width: 100%;height:180px;"
+          class="cover-image"
+        />
       </div>
       <div class="card-content">
         <div class="content">
@@ -65,7 +70,11 @@
             </template>
           </div>
           <span class="authors">
-            {{ model.authors ? "by " + etAl(model.authors) : "" }}
+            {{
+              model.authors && model.authors.length > 0
+                ? "by " + etAl(model.authors)
+                : ""
+            }}
           </span>
           <p class="model-description" v-if="model.description">
             {{

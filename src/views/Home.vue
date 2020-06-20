@@ -91,6 +91,7 @@
     <div class="container" style="text-align:center;  padding-right: 60px;">
       <div
         class="item-lists is-link"
+        style="width:30px;"
         @click="currentList = null"
         :class="{ active: !currentList }"
       >
@@ -111,6 +112,7 @@
       :models="models"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
+      :type="currentList && currentList.type"
     ></model-selector>
     <model-list @show-model-info="showModelInfo" :models="selectedModels" />
 
@@ -133,14 +135,14 @@
     </footer>
     <modal
       name="window-modal-dialog"
-      :resizable="!dialog_window_config.fullscreen"
+      :resizable="!dialogWindowConfig.fullscreen"
       ref="window_modal_dialog"
-      :width="dialog_window_config.width"
-      :height="dialog_window_config.height"
-      :adaptive_size="dialog_window_config.adaptive_size"
+      :width="dialogWindowConfig.width"
+      :height="dialogWindowConfig.height"
+      :adaptive_size="dialogWindowConfig.adaptive_size"
       :minWidth="200"
       :minHeight="150"
-      :fullscreen="dialog_window_config.fullscreen"
+      :fullscreen="dialogWindowConfig.fullscreen"
       style="max-width: 100%; max-height:100%;"
       draggable=".drag-handle"
       :scrollable="true"
@@ -250,10 +252,13 @@ import {
 
 function normalizeModel(model) {
   model.apps = model.apps || [];
-  model.cover_images = [];
+  model.covers = model.covers || [];
+  model.authors = model.authors || [];
+  model.description = model.description || "";
   if (model.covers && !Array.isArray(model.covers)) {
     model.covers = [model.covers];
   }
+  model.cover_images = [];
   for (let cover of model.covers) {
     if (cover.includes("(") || cover.includes(")")) {
       console.error("cover image file name cannot contain brackets.");
@@ -295,7 +300,7 @@ export default {
       showMenu: false,
       applications: [],
       apps: {},
-      dialog_window_config: {
+      dialogWindowConfig: {
         width: "800px",
         height: "670px",
         draggable: true
@@ -312,7 +317,7 @@ export default {
   },
   created: async function() {
     window.document.title = this.siteConfig.site_name;
-    let models;
+    let items;
     try {
       let repo = "bioimage-io/bioimage-io-models";
 
@@ -335,18 +340,19 @@ export default {
 
       const response = await fetch(repository_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
-      models = repo_manifest.models;
-      for (let model of models) {
+      items = repo_manifest.items;
+      for (let model of items) {
         model.repo = repo;
         model.model_uri = `${repo}:${model.name}`;
         model.source_url = model.url;
         if (!model.source.startsWith("http"))
           model.source = concatAndResolveUrl(model.root_url, model.source);
       }
-      this.setModels(models);
+      this.setModels(items);
       this.$forceUpdate();
+      const applications = items.filter(m => m.type === "application");
       console.log("Loading ImJoy...");
-      this.setupImJoyCore(repo_manifest.applications).then(() => {
+      this.setupImJoyCore(applications).then(() => {
         for (let model of this.models) {
           model.apps = [];
           for (let app_key in model.applications) {
@@ -391,6 +397,11 @@ export default {
   mounted() {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
+    // select models as default
+    for (let list of siteConfig.item_lists) {
+      if (list.type === "model") this.currentList = list;
+      break;
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
@@ -686,6 +697,7 @@ export default {
   width: 34px;
   height: 36px;
   line-height: 30px;
+  padding-bottom: 7px;
   border: 0px;
   font-size: 2rem;
   position: absolute;

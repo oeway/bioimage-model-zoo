@@ -137,11 +137,7 @@ export default {
           const raw_docs = await response.text();
           model.yamlConfig = DOMPurify.sanitize(
             marked(
-              "## Model Config\n[source](" +
-                yamlUrl +
-                ")\n```yaml\n" +
-                raw_docs +
-                " \n```"
+              "## [Source](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```"
             )
           );
         } else {
