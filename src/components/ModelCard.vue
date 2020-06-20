@@ -8,16 +8,18 @@
           :arrow="model.cover_images.length > 1"
           :pause-info="false"
         >
-          <b-carousel-item v-for="cover in model.cover_images" :key="cover">
-            <figure class="image is-16by9">
-              <img
-                loading="lazy"
-                :src="cover"
-                :alt="model.name"
-                class="cover-image"
-                data-target="modal-image2"
-              />
-            </figure>
+          <b-carousel-item
+            class="carousel-image"
+            v-for="cover in model.cover_images"
+            :key="cover"
+          >
+            <img
+              loading="lazy"
+              :src="cover"
+              :alt="model.name"
+              class="cover-image"
+              data-target="modal-image2"
+            />
           </b-carousel-item>
         </b-carousel>
       </div>
@@ -138,6 +140,12 @@ export default {
   color: rgb(25, 25, 26);
 }
 .cover-image {
+  max-height: 100%;
+  object-fit: cover;
+}
+.carousel-image {
   max-height: 200px;
+  background: black;
+  text-align: center;
 }
 </style>

@@ -135,7 +135,7 @@
         <button
           @click="closeWindow(selected_dialog_window)"
           class="dialog-header-button"
-          style="background:#ff0000c4;left:1px;"
+          style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
@@ -186,7 +186,7 @@
         <button
           @click="closeWindow(selectedModel)"
           class="dialog-header-button"
-          style="background:#ff0000c4;left:1px;"
+          style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
@@ -209,7 +209,12 @@
 import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
-import { getUrlParameter, randId, concatAndResolveUrl } from "../utils";
+import {
+  getUrlParameter,
+  randId,
+  concatAndResolveUrl,
+  debounce
+} from "../utils";
 
 function normalizeModel(model) {
   model.apps = model.apps || [];
@@ -263,7 +268,8 @@ export default {
       dialogWindows: [],
       selectedModel: null,
       fullscreen: false,
-      selected_dialog_window: null
+      selected_dialog_window: null,
+      screenWidth: 1000
     };
   },
   created: async function() {
@@ -318,9 +324,24 @@ export default {
     }
   },
   computed: {},
+  mounted() {
+    window.addEventListener("resize", this.updateSize);
+    window.dispatchEvent(new Event("resize"));
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.updateSize);
+  },
   methods: {
+    updateSize() {
+      debounce(() => {
+        this.screenWidth = window.innerWidth;
+        if (this.screenWidth < 700) this.fullscreen = true;
+        this.$forceUpdate();
+      }, 250)();
+    },
     showModelInfo(mInfo) {
       this.selectedModel = mInfo;
+      if (this.screenWidth < 700) this.fullscreen = true;
       this.$modal.show("model-info-dialog");
     },
     closeWindow() {
@@ -599,13 +620,13 @@ export default {
 .dialog-header-button {
   cursor: pointer;
   width: 34px;
-  height: 38px;
+  height: 36px;
   line-height: 30px;
   border: 0px;
   font-size: 2rem;
   position: absolute;
   color: white;
-  top: 1px;
+  top: 2px;
   font-family: "Lucida Console", Monaco, monospace;
 }
 </style>
