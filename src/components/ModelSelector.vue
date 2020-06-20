@@ -264,10 +264,6 @@ export default {
 .card-content {
   padding: 1rem;
 }
-.model-title {
-  font-size: 1.2em;
-  font-weight: 400;
-}
 .authors {
   font-size: 0.9em;
   font-weight: 600;

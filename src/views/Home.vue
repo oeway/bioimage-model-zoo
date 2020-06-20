@@ -201,10 +201,7 @@
         </button>
       </div>
       <section v-if="selectedModel">
-        <div class="container" style="padding: 15px;">
-          <h1>{{ selectedModel.name }}</h1>
-          <p>{{ selectedModel.description }}</p>
-        </div>
+        <model-info :model="selectedModel"></model-info>
       </section>
     </modal>
   </div>
@@ -214,6 +211,7 @@
 // @ is an alias to /src
 import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
+import ModelInfo from "@/components/ModelInfo.vue";
 import { getUrlParameter, randId } from "../utils";
 
 function normalizeModel(model) {
@@ -246,7 +244,8 @@ export default {
   name: "Home",
   components: {
     "model-list": ModelList,
-    "model-selector": ModelSelector
+    "model-selector": ModelSelector,
+    "model-info": ModelInfo
   },
   data() {
     return {

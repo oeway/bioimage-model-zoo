@@ -74,7 +74,10 @@
             {{ model.authors ? "by " + etAl(model.authors) : "" }}
           </span>
           <p class="model-description" v-if="model.description">
-            {{ model.description.slice(0, 100) }}
+            {{
+              model.description.slice(0, 100) +
+                (model.description.length > 100 ? "..." : "")
+            }}
           </p>
         </div>
       </div>
@@ -123,6 +126,7 @@ export default {
   font-size: 1.2em;
   font-weight: 400;
   cursor: pointer;
+  color: #2196f3;
 }
 .authors {
   font-size: 0.9em;
