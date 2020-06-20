@@ -133,6 +133,7 @@
       <div
         v-if="selected_dialog_window"
         @dblclick="maximizeWindow()"
+        class="drag-handle"
         style="cursor:move; background-color: #448aff; color: white; text-align: center;"
       >
         {{ selected_dialog_window.name }}
@@ -171,6 +172,9 @@
       ref="window_modal_dialog"
       :minWidth="200"
       :minHeight="150"
+      :height="600"
+      :width="800"
+      style="max-width:100%;max-height:100%;"
       :fullscreen="fullscreen"
       draggable=".drag-handle"
       :scrollable="true"
@@ -178,6 +182,7 @@
       <div
         v-if="selectedModel"
         @dblclick="maximizeWindow()"
+        class="drag-handle"
         style="cursor:move; background-color: #448aff; color: white; text-align: center;"
       >
         {{ selectedModel.name }}
@@ -200,9 +205,8 @@
           {{ fullscreen ? "=" : "+" }}
         </button>
       </div>
-      <section v-if="selectedModel">
-        <model-info :model="selectedModel"></model-info>
-      </section>
+
+      <model-info v-if="selectedModel" :model="selectedModel"></model-info>
     </modal>
   </div>
 </template>
@@ -572,5 +576,9 @@ export default {
 }
 .card-image {
   max-height: 200px;
+}
+.vm--modal {
+  max-height: 100%;
+  max-width: 100%;
 }
 </style>

@@ -27,8 +27,6 @@
 <script>
 import { version } from "../../package.json";
 import Vue from "vue";
-import { randId } from "../utils";
-
 import ModelCard from "./ModelCard";
 
 Vue.component("label-selector", {
@@ -93,44 +91,11 @@ export default {
 
       this.$buefy.snackbar.open(data);
     },
-    async getDocs(model) {
-      if (model.docs) return;
-      model.docs = "@loading...";
-      this.$forceUpdate();
-      try {
-        const response = await fetch(
-          model.root_url + "/" + model.documentation + "?" + randId()
-        );
-        if (response.status == 200) {
-          const raw_docs = await response.text();
-          if (raw_docs && window.marked && window.DOMPurify) {
-            model.docs = window.DOMPurify.sanitize(window.marked(raw_docs));
-          } else {
-            model.docs = null;
-          }
-        } else {
-          model.docs = null;
-        }
-
-        this.$forceUpdate();
-      } catch (e) {
-        model.docs = "";
-        this.$forceUpdate();
-      }
-    },
     share(model) {
       prompt(
         "Please copy and paste following URL for sharing:",
         "https://bioimage.io?model=" + encodeURI(model.name)
       );
-    },
-    showInfo(model) {
-      this.selected_model = model;
-      this.$refs.model_info_dialog.showModal();
-      this.getDocs(model);
-    },
-    closeInfo() {
-      this.$refs.model_info_dialog.close();
     },
     addRemoveToFilters(label) {
       if (this.filters.indexOf(label) === -1) {
