@@ -1,7 +1,7 @@
 <template>
   <div class="model-card">
     <div class="card is-shady">
-      <div class="card-image" @click="showModelInfo">
+      <div class="card-image">
         <b-carousel
           v-if="model.cover_images && model.cover_images.length > 0"
           :indicator="model.cover_images.length > 1"
