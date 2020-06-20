@@ -48,7 +48,7 @@
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
           </a>
-          <a class="navbar-item" href="#BioEngine">
+          <a class="navbar-item" @click="showBioEngineApps">
             <b-icon icon="puzzle"></b-icon>
             <span>BioEngine Apps</span>
           </a>
@@ -399,8 +399,10 @@ export default {
     window.dispatchEvent(new Event("resize"));
     // select models as default
     for (let list of siteConfig.item_lists) {
-      if (list.type === "model") this.currentList = list;
-      break;
+      if (list.type === "model") {
+        this.currentList = list;
+        break;
+      }
     }
   },
   beforeDestroy() {
@@ -413,6 +415,15 @@ export default {
         if (this.screenWidth < 700) this.fullscreen = true;
         this.$forceUpdate();
       }, 250)();
+    },
+    showBioEngineApps() {
+      for (let list of siteConfig.item_lists) {
+        if (list.type === "application") {
+          this.currentList = list;
+          break;
+        }
+      }
+      this.enter();
     },
     showAboutDialog() {
       this.showDialogMode = "about";
@@ -447,7 +458,7 @@ export default {
     },
     updateModelList(models) {
       if (models.length <= 0) {
-        this.showMessage("No model found.");
+        this.showMessage("No item found.");
       }
       this.selectedModels = models;
     },

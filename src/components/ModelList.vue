@@ -13,7 +13,7 @@
           style="text-align: center;"
           class="column"
           v-if="models && models.length === 0"
-          >The model list is empty.</span
+          >The list is empty.</span
         >
       </div>
     </div>
