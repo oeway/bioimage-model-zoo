@@ -6,7 +6,7 @@
           :loading="loading"
           type="is-info"
           allow-new
-          style="width:500px;"
+          class="searchbar"
           :data="filteredTags"
           :open-on-focus="true"
           autocomplete
@@ -294,5 +294,10 @@ export default {
   height: 34px;
   left: 4px;
   text-transform: none;
+}
+.searchbar {
+  width: 500px;
+  max-width: calc(100% - 110px);
+  margin-left: 10px;
 }
 </style>
