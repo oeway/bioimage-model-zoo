@@ -7,7 +7,11 @@
           :key="model.name"
           class="column is-4-desktop is-3-widescreen is-half-tablet"
         >
-          <model-card :model="model" :apps="apps"></model-card>
+          <model-card
+            @show-info="showModelInfo"
+            :model="model"
+            :apps="apps"
+          ></model-card>
         </div>
         <span
           style="text-align: center;"
@@ -75,6 +79,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   methods: {
+    showModelInfo(minfo) {
+      this.$emit("show-model-info", minfo);
+    },
     showMessage(message, duration) {
       duration = duration || 5000;
       const data = {

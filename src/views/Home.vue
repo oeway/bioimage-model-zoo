@@ -25,22 +25,18 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a class="navbar-item" href="#about">
-            <span class="icon">
-              <i class="fas fa-info"></i>
-            </span>
+          <a class="navbar-item" href="/#/about">
+            <b-icon icon="info"></b-icon>
             <span>About</span>
           </a>
-          <a class="navbar-item" href="#Subscribe">
-            <span class="icon">
-              <i class="fas fa-bars"></i>
-            </span>
+          <a class="navbar-item">
             <span>Subscribe</span>
           </a>
-          <a class="navbar-item" href="#Contribute">
-            <span class="icon">
-              <i class="fas fa-file-alt"></i>
-            </span>
+          <a
+            class="navbar-item"
+            target="_blank"
+            href="https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models"
+          >
             Contribute
           </a>
           <a class="navbar-item" href="#BioEngine">
@@ -86,7 +82,11 @@
       :models="models"
       :fullLabelList="fullLabelList"
     ></model-selector>
-    <model-list :models="selectedModels" :apps="apps" />
+    <model-list
+      @show-model-info="showModelInfo"
+      :models="selectedModels"
+      :apps="apps"
+    />
 
     <footer class="footer">
       <div>
@@ -116,6 +116,97 @@
         </ul>
       </div>
     </footer>
+    <modal
+      name="window-modal-dialog"
+      :resizable="!dialog_window_config.fullscreen"
+      ref="window_modal_dialog"
+      :width="dialog_window_config.width"
+      :height="dialog_window_config.height"
+      :adaptive_size="dialog_window_config.adaptive_size"
+      :minWidth="200"
+      :minHeight="150"
+      :fullscreen="dialog_window_config.fullscreen"
+      style="max-width: 100%; max-height:100%;"
+      draggable=".drag-handle"
+      :scrollable="true"
+    >
+      <div
+        v-if="selected_dialog_window"
+        @dblclick="maximizeWindow()"
+        style="cursor:move; background-color: #448aff; color: white; text-align: center;"
+      >
+        {{ selected_dialog_window.name }}
+        <button
+          @click="closeWindow(selected_dialog_window)"
+          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#ff0000c4;color:white;top:1px; left:1px;"
+        >
+          X
+        </button>
+        <button
+          @click="minimizeWindow()"
+          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:25px;"
+        >
+          -
+        </button>
+        <button
+          @click="maximizeWindow()"
+          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:45px;"
+        >
+          {{ fullscreen ? "=" : "+" }}
+        </button>
+      </div>
+      <template v-for="wdialog in dialogWindows">
+        <div
+          :key="wdialog.window_id"
+          v-show="wdialog === selected_dialog_window"
+          style="height: calc(100% - 18px);"
+        >
+          <div :id="wdialog.window_id" style="width: 100%;height: 100%;"></div>
+        </div>
+      </template>
+    </modal>
+    <modal
+      name="model-info-dialog"
+      :resizable="true"
+      ref="window_modal_dialog"
+      :minWidth="200"
+      :minHeight="150"
+      :fullscreen="fullscreen"
+      draggable=".drag-handle"
+      :scrollable="true"
+    >
+      <div
+        v-if="selectedModel"
+        @dblclick="maximizeWindow()"
+        style="cursor:move; background-color: #448aff; color: white; text-align: center;"
+      >
+        {{ selectedModel.name }}
+        <button
+          @click="closeWindow(selectedModel)"
+          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#ff0000c4;color:white;top:1px; left:1px;"
+        >
+          X
+        </button>
+        <button
+          @click="minimizeWindow()"
+          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:25px;"
+        >
+          -
+        </button>
+        <button
+          @click="maximizeWindow()"
+          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:45px;"
+        >
+          {{ fullscreen ? "=" : "+" }}
+        </button>
+      </div>
+      <section v-if="selectedModel">
+        <div class="container" style="padding: 15px;">
+          <h1>{{ selectedModel.name }}</h1>
+          <p>{{ selectedModel.description }}</p>
+        </div>
+      </section>
+    </modal>
   </div>
 </template>
 
@@ -164,7 +255,16 @@ export default {
       showMenu: false,
       fullLabelList: [],
       applications: [],
-      apps: {}
+      apps: {},
+      dialog_window_config: {
+        width: "800px",
+        height: "670px",
+        draggable: true
+      },
+      dialogWindows: [],
+      selectedModel: null,
+      fullscreen: false,
+      selected_dialog_window: null
     };
   },
   created: async function() {
@@ -203,7 +303,6 @@ export default {
       this.$forceUpdate();
       console.log("Loading ImJoy...");
       this.setupImJoyCore(repo_manifest.applications);
-      this.showModelInfo();
     } catch (e) {
       console.error(e);
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
@@ -211,6 +310,20 @@ export default {
   },
   computed: {},
   methods: {
+    showModelInfo(mInfo) {
+      this.selectedModel = mInfo;
+      this.$modal.show("model-info-dialog");
+    },
+    closeWindow() {
+      this.selectedModel = null;
+      this.$modal.hide("model-info-dialog");
+    },
+    minimizeWindow() {
+      this.$modal.hide("odel-info-dialog");
+    },
+    maximizeWindow() {
+      this.fullscreen = !this.fullscreen;
+    },
     enter() {
       const top = this.$refs.search_anchor.getBoundingClientRect().top;
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
@@ -237,11 +350,11 @@ export default {
       this.models = models;
       this.selectedModels = models;
     },
-    showModelInfo() {
+    showModelFromUrl() {
       const selected_model = getUrlParameter("model");
       if (selected_model) {
         const m = this.models.filter(model => model.name === selected_model)[0];
-        if (m) this.showInfo(m);
+        if (m) this.showModelInfo(m);
       }
     },
     showMessage(message, duration) {

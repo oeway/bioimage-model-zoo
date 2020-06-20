@@ -19,6 +19,7 @@
     "register-service-worker": "^1.7.1",
     "sortablejs": "^1.10.2",
     "vue": "^2.6.11",
+    "vue-js-modal": "github:imjoy-team/vue-js-modal#2.0.0-rc.3g",
     "vue-router": "^3.2.0",
     "vue-swatches": "^2.1.0",
     "vuex": "^3.4.0"

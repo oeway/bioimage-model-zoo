@@ -142,55 +142,58 @@ export default {
     // whenever question changes, this function will run
     selectedTags: function(newTags) {
       if (!this.models) return;
-      const knownTags = newTags.filter(
-        tag => this.fullLabelList.indexOf(tag) >= 0
-      );
-      let selectedModels;
-      if (newTags.length <= 0) {
-        selectedModels = this.models;
-      } else {
-        selectedModels = this.models.filter(model => {
-          let matched;
-          if (this.matchingAll)
-            matched =
-              knownTags.length > 0 &&
-              knownTags.every(label => model.allLabels.includes(label));
-          else
-            matched =
-              knownTags.length > 0 &&
-              knownTags.some(label => model.allLabels.includes(label));
-          const matchText = label => {
-            label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
-            return (
-              model.name
-                .replace(/-/g, "")
-                .toLowerCase()
-                .includes(label) ||
-              model.description
-                .replace(/-/g, "")
-                .toLowerCase()
-                .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
-                .includes(label) ||
-              model.authors.some(author => author.toLowerCase().includes(label))
-            );
-          };
-
-          if (this.matchingAll)
-            return (
-              (knownTags.length <= 0 || matched) &&
-              newTags.length > 0 &&
-              newTags.every(matchText)
-            );
-          else
-            return (
-              (knownTags.length <= 0 || matched) &&
-              newTags.length > 0 &&
-              newTags.some(matchText)
-            );
-        });
-      }
       this.loading = true;
       debounce(() => {
+        const knownTags = newTags.filter(
+          tag => this.fullLabelList.indexOf(tag) >= 0
+        );
+        let selectedModels;
+        if (newTags.length <= 0) {
+          selectedModels = this.models;
+        } else {
+          selectedModels = this.models.filter(model => {
+            let matched;
+            if (this.matchingAll)
+              matched =
+                knownTags.length > 0 &&
+                knownTags.every(label => model.allLabels.includes(label));
+            else
+              matched =
+                knownTags.length > 0 &&
+                knownTags.some(label => model.allLabels.includes(label));
+            const matchText = label => {
+              label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
+              return (
+                model.name
+                  .replace(/-/g, "")
+                  .toLowerCase()
+                  .includes(label) ||
+                model.description
+                  .replace(/-/g, "")
+                  .toLowerCase()
+                  .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
+                  .includes(label) ||
+                model.authors.some(author =>
+                  author.toLowerCase().includes(label)
+                )
+              );
+            };
+
+            if (this.matchingAll)
+              return (
+                (knownTags.length <= 0 || matched) &&
+                newTags.length > 0 &&
+                newTags.every(matchText)
+              );
+            else
+              return (
+                (knownTags.length <= 0 || matched) &&
+                newTags.length > 0 &&
+                newTags.some(matchText)
+              );
+          });
+        }
+
         this.$emit("selection-changed", selectedModels);
         this.loading = false;
         this.$forceUpdate();

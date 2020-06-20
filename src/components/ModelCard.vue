@@ -1,11 +1,12 @@
 <template>
   <div class="model-card">
     <div class="card is-shady">
-      <div class="card-image">
+      <div class="card-image" @click="showModelInfo">
         <b-carousel
           v-if="model.cover_images && model.cover_images.length > 0"
           :indicator="model.cover_images.length > 1"
           :arrow="model.cover_images.length > 1"
+          :pause-info="false"
         >
           <b-carousel-item v-for="cover in model.cover_images" :key="cover">
             <figure class="image is-16by9">
@@ -22,7 +23,7 @@
       </div>
       <div class="card-content">
         <div class="content">
-          <h4 class="model-title">{{ model.name }}</h4>
+          <h4 class="model-title" @click="showModelInfo">{{ model.name }}</h4>
           <b-tooltip label="Download" class="download-btn" position="is-top">
             <b-button
               tag="a"
@@ -104,6 +105,9 @@ export default {
       } else {
         return authors.slice(0, 3).join(", ") + " et al.";
       }
+    },
+    showModelInfo() {
+      this.$emit("show-info", this.model);
     }
   }
 };
@@ -118,6 +122,7 @@ export default {
 .model-title {
   font-size: 1.2em;
   font-weight: 400;
+  cursor: pointer;
 }
 .authors {
   font-size: 0.9em;
