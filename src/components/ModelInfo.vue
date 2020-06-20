@@ -126,10 +126,10 @@ export default {
       this.$forceUpdate();
       try {
         let yamlUrl;
-        if (!model.config_url.startsWith("http"))
-          yamlUrl = concatAndResolveUrl(model.root_url, model.config_url);
+        if (!model.source.startsWith("http"))
+          yamlUrl = concatAndResolveUrl(model.root_url, model.source);
         else {
-          yamlUrl = model.config_url;
+          yamlUrl = model.source;
         }
         if (yamlUrl.includes("github")) yamlUrl = yamlUrl + "?" + randId();
         const response = await fetch(yamlUrl);

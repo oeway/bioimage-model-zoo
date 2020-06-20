@@ -110,7 +110,7 @@
       @selection-changed="updateModelList"
       :models="models"
       :fullLabelList="fullLabelList"
-      :tagCategories="currentList && currentList.tag_categories"
+      :tagCategories="tagCategories"
     ></model-selector>
     <model-list @show-model-info="showModelInfo" :models="selectedModels" />
 
@@ -273,7 +273,9 @@ function normalizeModel(model) {
     model.allLabels.push(model.license);
   }
   if (model.tags) {
-    model.allLabels = model.allLabels.concat(model.tags);
+    model.allLabels = model.allLabels.concat(
+      model.tags.map(tag => tag.toLowerCase())
+    );
   }
 }
 
@@ -291,7 +293,6 @@ export default {
       models: null,
       selectedModels: null,
       showMenu: false,
-      fullLabelList: [],
       applications: [],
       apps: {},
       dialog_window_config: {
@@ -316,7 +317,7 @@ export default {
       let repo = "bioimage-io/bioimage-io-models";
 
       const query_repo = getUrlParameter("repo");
-      let repository_url = `https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/manifest.model.json`;
+      let repository_url = this.siteConfig.repository_url;
       if (query_repo) {
         if (query_repo.startsWith("http") || query_repo.startsWith("/")) {
           repository_url = query_repo;
@@ -339,11 +340,8 @@ export default {
         model.repo = repo;
         model.model_uri = `${repo}:${model.name}`;
         model.source_url = model.url;
-        if (!model.config_url.startsWith("http"))
-          model.config_url = concatAndResolveUrl(
-            model.root_url,
-            model.config_url
-          );
+        if (!model.source.startsWith("http"))
+          model.source = concatAndResolveUrl(model.root_url, model.source);
       }
       this.setModels(models);
       this.$forceUpdate();
@@ -361,7 +359,35 @@ export default {
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
     }
   },
-  computed: {},
+  computed: {
+    fullLabelList: function() {
+      const fullLabelList = [];
+      if (this.models)
+        for (let model of this.models) {
+          normalizeModel(model);
+          model.allLabels.forEach(label => {
+            if (fullLabelList.indexOf(label) === -1) {
+              fullLabelList.push(label.toLowerCase());
+            }
+          });
+        }
+      fullLabelList.sort((a, b) =>
+        a.toLowerCase() < b.toLowerCase() ? -1 : 1
+      );
+      return fullLabelList;
+    },
+    tagCategories: function() {
+      if (this.currentList) {
+        return this.currentList && this.currentList.tag_categories;
+      } else {
+        let combined = {};
+        for (let list of siteConfig.item_lists) {
+          combined = Object.assign(combined, list.tag_categories);
+        }
+        return combined;
+      }
+    }
+  },
   mounted() {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
@@ -415,18 +441,6 @@ export default {
       this.selectedModels = models;
     },
     setModels(models) {
-      this.fullLabelList = [];
-      for (let model of models) {
-        normalizeModel(model);
-        model.allLabels.forEach(label => {
-          if (this.fullLabelList.indexOf(label) === -1) {
-            this.fullLabelList.push(label);
-          }
-        });
-        this.fullLabelList.sort((a, b) =>
-          a.toLowerCase() < b.toLowerCase() ? -1 : 1
-        );
-      }
       this.models = models;
       this.selectedModels = models;
     },
@@ -579,9 +593,9 @@ export default {
               "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
           });
           // await imjoy.pm.reloadInternalPlugins()
-          for (let k in appSources) {
+          for (let ap of appSources) {
             try {
-              const config = await imjoy.pm.getPluginFromUrl(appSources[k]);
+              const config = await imjoy.pm.getPluginFromUrl(ap.source);
               const p = await imjoy.pm.reloadPlugin(config);
               for (let i = 0; i < config.dependencies.length; i++) {
                 const d_config = await imjoy.pm.getPluginFromUrl(
@@ -599,7 +613,7 @@ export default {
               if (p.type !== "window") {
                 if (!this.validateBioEngineApp(p.name, p.api)) continue;
               }
-              this.apps[k] = p;
+              this.apps[ap.name] = p;
             } catch (e) {
               console.error(e);
             }
@@ -680,7 +694,7 @@ export default {
   font-family: "Lucida Console", Monaco, monospace;
 }
 .item-lists {
-  width: 80px;
+  width: 100px;
   display: inline-block;
   margin: 10px;
   text-align: center;

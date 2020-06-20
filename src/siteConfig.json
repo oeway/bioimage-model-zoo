@@ -2,7 +2,7 @@
   "site_name": "BioImage.IO",
   "site_icon": "🦒",
   "background_image": "static/img/zoo-background.svg",
-  "repository_url": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/manifest.model.json",
+  "repository_url": "static/test_manifest.model.json",
   "explore_button_text": "🚀 Explore the Zoo",
   "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
   "contribute_url": "https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models",
@@ -21,7 +21,7 @@
   "item_lists": [
     {
       "name": "Models",
-      "match": { "config_url": ".model.yaml$" },
+      "match": { "source": ".model.yaml$" },
       "tag_categories": {
         "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
         "content": [
@@ -54,7 +54,8 @@
         ]
       }
     },
-    { "name": "Datasets", "match": { "config_url": ".zarr$" } },
-    { "name": "Apps", "match": { "config_url": ".imjoy.html$" } }
+    { "name": "Applications", "match": { "source": ".imjoy.html$" } },
+    { "name": "Notebooks", "match": { "source": ".ipynb$" } },
+    { "name": "Datasets", "match": { "source": ".zarr$" } }
   ]
 }

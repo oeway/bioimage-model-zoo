@@ -26,7 +26,12 @@
       <div class="card-content">
         <div class="content">
           <h4 class="model-title" @click="showModelInfo">{{ model.name }}</h4>
-          <b-tooltip label="Download" class="download-btn" position="is-top">
+          <b-tooltip
+            v-if="model.download_url"
+            label="Download"
+            class="download-btn"
+            position="is-top"
+          >
             <b-button
               tag="a"
               rounded

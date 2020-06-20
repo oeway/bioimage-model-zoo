@@ -50,15 +50,13 @@
                 <span v-if="Object.keys(categories.grouped).length > 0"
                   >other: <br
                 /></span>
-
-                <b-tag
-                  rounded
+                <a
                   @click="addTagSelection(t)"
-                  style="cursor: pointer;"
                   v-for="t in categories.other"
                   :key="t"
-                  >{{ t }}</b-tag
                 >
+                  <b-tag rounded style="cursor: pointer;">{{ t }}</b-tag>
+                </a>
               </div>
             </div>
           </div>
@@ -106,7 +104,7 @@ export default {
       this.loading = true;
       debounce(() => {
         const knownTags = newTags.filter(
-          tag => this.fullLabelList.indexOf(tag) >= 0
+          tag => this.fullLabelList.indexOf(tag.toLowerCase()) >= 0
         );
         let selectedModels;
         if (newTags.length <= 0) {
@@ -117,11 +115,15 @@ export default {
             if (this.matchingAll)
               matched =
                 knownTags.length > 0 &&
-                knownTags.every(label => model.allLabels.includes(label));
+                knownTags.every(label =>
+                  model.allLabels.includes(label.toLowerCase())
+                );
             else
               matched =
                 knownTags.length > 0 &&
-                knownTags.some(label => model.allLabels.includes(label));
+                knownTags.some(label =>
+                  model.allLabels.includes(label.toLowerCase())
+                );
             const matchText = label => {
               label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
               return (
@@ -140,18 +142,7 @@ export default {
               );
             };
 
-            if (this.matchingAll)
-              return (
-                (knownTags.length <= 0 || matched) &&
-                newTags.length > 0 &&
-                newTags.every(matchText)
-              );
-            else
-              return (
-                (knownTags.length <= 0 || matched) &&
-                newTags.length > 0 &&
-                newTags.some(matchText)
-              );
+            return matched || newTags.every(matchText);
           });
         }
 
