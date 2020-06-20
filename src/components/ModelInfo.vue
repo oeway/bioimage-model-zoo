@@ -1,6 +1,24 @@
 <template>
   <div class="model-info markdown-body">
-    <model-card :model="model"></model-card>
+    <b-carousel
+      style="max-width: 1024px;"
+      v-if="model.cover_images && model.cover_images.length > 0"
+      :indicator="model.cover_images.length > 1"
+      :arrow="model.cover_images.length > 1"
+      :pause-info="false"
+    >
+      <b-carousel-item v-for="cover in model.cover_images" :key="cover">
+        <figure class="image is-16by9">
+          <img
+            loading="lazy"
+            :src="cover"
+            :alt="model.name"
+            class="cover-image"
+            data-target="modal-image2"
+          />
+        </figure>
+      </b-carousel-item>
+    </b-carousel>
     <div v-if="model.docs" v-html="model.docs"></div>
     <div v-else>
       <p>This model has no documentation!</p>
@@ -16,7 +34,6 @@ import marked from "marked";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js";
 import { randId, concatAndResolveUrl, replaceAllRelByAbs } from "../utils";
-import ModelCard from "./ModelCard";
 
 export default {
   name: "ModelInfo",
@@ -26,7 +43,6 @@ export default {
       default: null
     }
   },
-  components: { "model-card": ModelCard },
   created() {
     //open link in a new tab
     const renderer = new marked.Renderer();
@@ -151,5 +167,8 @@ export default {
   .model-info {
     padding: 5px;
   }
+}
+.card-image {
+  max-height: 500px;
 }
 </style>
