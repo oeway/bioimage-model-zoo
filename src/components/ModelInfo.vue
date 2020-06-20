@@ -6,6 +6,7 @@
       <br />
       This model has no documentation!
     </h4>
+    <div v-if="model.yamlConfig" v-html="model.yamlConfig"></div>
   </div>
 </template>
 
@@ -49,6 +50,7 @@ export default {
   },
   mounted() {
     this.getDocs(this.model);
+    this.getYamlConfig(this.model);
   },
   methods: {
     async getDocs(model) {
@@ -59,6 +61,9 @@ export default {
         let docsUrl;
         if (!model.documentation.startsWith("http"))
           docsUrl = model.root_url + "/" + model.documentation;
+        else {
+          docsUrl = model.documentation;
+        }
         if (docsUrl.includes("github")) docsUrl = docsUrl + "?" + randId();
 
         const response = await fetch(docsUrl);
@@ -74,7 +79,36 @@ export default {
         }
         this.$forceUpdate();
       } catch (e) {
-        model.docs = "";
+        model.docs = null;
+        this.$forceUpdate();
+      }
+    },
+    async getYamlConfig(model) {
+      debugger;
+      if (model.yamlConfig) return;
+      model.yamlConfig = "@loading...";
+      this.$forceUpdate();
+      try {
+        let yamlUrl;
+        if (!model.config_url.startsWith("http"))
+          yamlUrl = model.root_url + "/" + model.config_url;
+        else {
+          yamlUrl = model.config_url;
+        }
+        if (yamlUrl.includes("github")) yamlUrl = yamlUrl + "?" + randId();
+
+        const response = await fetch(yamlUrl);
+        if (response.status == 200) {
+          const raw_docs = await response.text();
+          model.yamlConfig = DOMPurify.sanitize(
+            marked("## Model Config\n```yaml\n" + raw_docs + " \n```")
+          );
+        } else {
+          model.yamlConfig = null;
+        }
+        this.$forceUpdate();
+      } catch (e) {
+        model.yamlConfig = null;
         this.$forceUpdate();
       }
     }
