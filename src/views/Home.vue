@@ -82,11 +82,7 @@
       :models="models"
       :fullLabelList="fullLabelList"
     ></model-selector>
-    <model-list
-      @show-model-info="showModelInfo"
-      :models="selectedModels"
-      :apps="apps"
-    />
+    <model-list @show-model-info="showModelInfo" :models="selectedModels" />
 
     <footer class="footer">
       <div>
@@ -133,25 +129,27 @@
       <div
         v-if="selected_dialog_window"
         @dblclick="maximizeWindow()"
-        class="drag-handle"
-        style="cursor:move; background-color: #448aff; color: white; text-align: center;"
+        class="drag-handle dialog-header"
       >
-        {{ selected_dialog_window.name }}
+        <span> {{ selected_dialog_window.name }}</span>
         <button
           @click="closeWindow(selected_dialog_window)"
-          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#ff0000c4;color:white;top:1px; left:1px;"
+          class="dialog-header-button"
+          style="background:#ff0000c4;left:1px;"
         >
           X
         </button>
         <button
           @click="minimizeWindow()"
-          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:25px;"
+          class="dialog-header-button"
+          style="background:#00cdff61;left:40px;"
         >
           -
         </button>
         <button
           @click="maximizeWindow()"
-          style="height: 16px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:45px;"
+          class="dialog-header-button"
+          style="background:#00cdff61;left:80px;"
         >
           {{ fullscreen ? "=" : "+" }}
         </button>
@@ -182,25 +180,20 @@
       <div
         v-if="selectedModel"
         @dblclick="maximizeWindow()"
-        class="drag-handle"
-        style="cursor:move; background-color: #448aff; color: white; text-align: center;"
+        class="drag-handle dialog-header"
       >
-        {{ selectedModel.name }}
+        <span> {{ selectedModel.name }}</span>
         <button
           @click="closeWindow(selectedModel)"
-          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#ff0000c4;color:white;top:1px; left:1px;"
+          class="dialog-header-button"
+          style="background:#ff0000c4;left:1px;"
         >
           X
         </button>
         <button
-          @click="minimizeWindow()"
-          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:25px;"
-        >
-          -
-        </button>
-        <button
           @click="maximizeWindow()"
-          style="height: 22px;border:0px;font-size:1rem;position:absolute;background:#00cdff61;color:white;top:1px; left:45px;"
+          class="dialog-header-button"
+          style="background:#00cdff61;left:40px;"
         >
           {{ fullscreen ? "=" : "+" }}
         </button>
@@ -216,9 +209,10 @@
 import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
-import { getUrlParameter, randId } from "../utils";
+import { getUrlParameter, randId, concatAndResolveUrl } from "../utils";
 
 function normalizeModel(model) {
+  model.apps = model.apps || [];
   model.cover_images = [];
   if (model.covers && !Array.isArray(model.covers)) {
     model.covers = [model.covers];
@@ -229,7 +223,9 @@ function normalizeModel(model) {
       continue;
     }
     if (!cover.startsWith("http")) {
-      model.cover_images.push(encodeURI(model.root_url + "/" + cover));
+      model.cover_images.push(
+        encodeURI(concatAndResolveUrl(model.root_url, cover))
+      );
     } else {
       model.cover_images.push(encodeURI(cover));
     }
@@ -300,12 +296,22 @@ export default {
         model.model_uri = `${repo}:${model.name}`;
         model.source_url = model.url;
         if (!model.config_url.startsWith("http"))
-          model.config_url = model.root_url + "/" + model.config_url;
+          model.config_url = concatAndResolveUrl(
+            model.root_url,
+            model.config_url
+          );
       }
       this.setModels(models);
       this.$forceUpdate();
       console.log("Loading ImJoy...");
-      this.setupImJoyCore(repo_manifest.applications);
+      this.setupImJoyCore(repo_manifest.applications).then(() => {
+        for (let model of this.models) {
+          model.apps = [];
+          for (let app_key in model.applications) {
+            if (this.apps[app_key]) model.apps.push(this.apps[app_key]);
+          }
+        }
+      });
     } catch (e) {
       console.error(e);
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
@@ -580,5 +586,23 @@ export default {
 .vm--modal {
   max-height: 100%;
   max-width: 100%;
+}
+.dialog-header {
+  height: 40px;
+  font-size: 1.4rem;
+  cursor: move;
+  background-color: #448aff;
+  color: white;
+  text-align: center;
+}
+.dialog-header-button {
+  cursor: pointer;
+  width: 34px;
+  height: 36px;
+  border: 0px;
+  font-size: 2rem;
+  position: absolute;
+  color: white;
+  top: 1px;
 }
 </style>

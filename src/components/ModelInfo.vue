@@ -1,11 +1,10 @@
 <template>
   <div class="model-info markdown-body">
+    <model-card :model="model"></model-card>
     <div v-if="model.docs" v-html="model.docs"></div>
-    <h4 v-else>
-      {{ model && model.description }}
-      <br />
-      This model has no documentation!
-    </h4>
+    <div v-else>
+      <p>This model has no documentation!</p>
+    </div>
     <div v-if="model.yamlConfig" v-html="model.yamlConfig"></div>
   </div>
 </template>
@@ -16,7 +15,8 @@ import "../../node_modules/highlight.js/styles/github.css";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js";
-import { randId } from "../utils";
+import { randId, concatAndResolveUrl, replaceAllRelByAbs } from "../utils";
+import ModelCard from "./ModelCard";
 
 export default {
   name: "ModelInfo",
@@ -26,12 +26,17 @@ export default {
       default: null
     }
   },
+  components: { "model-card": ModelCard },
   created() {
     //open link in a new tab
     const renderer = new marked.Renderer();
     renderer.link = function(href, title, text) {
       var link = marked.Renderer.prototype.link.call(this, href, title, text);
       return link.replace("<a", "<a target='_blank' ");
+    };
+    renderer.image = function(href, title, text) {
+      var link = marked.Renderer.prototype.image.call(this, href, title, text);
+      return link.replace("/./", "/");
     };
     marked.setOptions({
       renderer: renderer,
@@ -54,25 +59,42 @@ export default {
   },
   methods: {
     async getDocs(model) {
-      if (model.docs) return;
       model.docs = "@loading...";
       this.$forceUpdate();
       try {
         let docsUrl;
         if (!model.documentation.startsWith("http"))
-          docsUrl = model.root_url + "/" + model.documentation;
+          docsUrl = concatAndResolveUrl(model.root_url, model.documentation);
         else {
           docsUrl = model.documentation;
         }
         if (docsUrl.includes("github")) docsUrl = docsUrl + "?" + randId();
-
         const response = await fetch(docsUrl);
         if (response.status == 200) {
           const raw_docs = await response.text();
-          if (model.documentation.endsWith(".md")) {
-            model.docs = DOMPurify.sanitize(marked(raw_docs));
+          let baseUrl;
+          if (!this.model.documentation.startsWith("http")) {
+            const temp = (
+              this.model.root_url +
+              "/" +
+              this.model.documentation
+            ).split("/");
+            baseUrl = temp.slice(0, temp.length - 1).join("/");
           } else {
-            model.docs = DOMPurify.sanitize(raw_docs);
+            const temp = this.model.documentation.split("/");
+            baseUrl = temp.slice(0, temp.length - 1).join("/");
+          }
+          if (model.documentation.endsWith(".md")) {
+            marked.setOptions({
+              baseUrl
+            });
+            model.docs = DOMPurify.sanitize(
+              replaceAllRelByAbs(marked(raw_docs), baseUrl)
+            );
+          } else {
+            model.docs = DOMPurify.sanitize(
+              replaceAllRelByAbs(raw_docs, baseUrl)
+            );
           }
         } else {
           model.docs = null;
@@ -84,24 +106,27 @@ export default {
       }
     },
     async getYamlConfig(model) {
-      debugger;
-      if (model.yamlConfig) return;
       model.yamlConfig = "@loading...";
       this.$forceUpdate();
       try {
         let yamlUrl;
         if (!model.config_url.startsWith("http"))
-          yamlUrl = model.root_url + "/" + model.config_url;
+          yamlUrl = concatAndResolveUrl(model.root_url, model.config_url);
         else {
           yamlUrl = model.config_url;
         }
         if (yamlUrl.includes("github")) yamlUrl = yamlUrl + "?" + randId();
-
         const response = await fetch(yamlUrl);
         if (response.status == 200) {
           const raw_docs = await response.text();
           model.yamlConfig = DOMPurify.sanitize(
-            marked("## Model Config\n```yaml\n" + raw_docs + " \n```")
+            marked(
+              "## Model Config\n[source](" +
+                yamlUrl +
+                ")\n```yaml\n" +
+                raw_docs +
+                " \n```"
+            )
           );
         } else {
           model.yamlConfig = null;

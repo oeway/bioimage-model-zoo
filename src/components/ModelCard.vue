@@ -36,35 +36,22 @@
           </b-tooltip>
 
           <div class="buttons floating-buttons">
-            <template v-for="app_key in model.applications">
-              <b-tooltip
-                :key="app_key"
-                v-if="apps[app_key]"
-                :label="apps[app_key].name"
-                position="is-top"
-              >
+            <template v-for="app in model.apps">
+              <b-tooltip :key="app.name" :label="app.name" position="is-top">
                 <b-button
                   rounded
-                  @click="runOneModel(apps[app_key], model)"
+                  @click="runOneModel(app, model)"
                   class="is-small action-btn"
                 >
-                  <b-icon
-                    v-if="!apps[app_key].config.icon"
-                    icon="puzzle"
-                    size="is-small"
-                  >
+                  <b-icon v-if="!app.config.icon" icon="puzzle" size="is-small">
                   </b-icon>
 
                   <img
-                    v-else-if="apps[app_key].config.icon.startsWith('http')"
+                    v-else-if="app.config.icon.startsWith('http')"
                     class="app-icons"
-                    :src="apps[app_key].config.icon"
+                    :src="app.config.icon"
                   />
-                  <b-icon
-                    v-else
-                    :icon="apps[app_key].config.icon"
-                    size="is-small"
-                  >
+                  <b-icon v-else :icon="app.config.icon" size="is-small">
                   </b-icon>
                 </b-button>
               </b-tooltip>
@@ -90,10 +77,6 @@ export default {
   name: "ModelCard",
   props: {
     model: {
-      type: Object,
-      default: null
-    },
-    apps: {
       type: Object,
       default: null
     }
