@@ -1,0 +1,60 @@
+{
+  "site_name": "BioImage.IO",
+  "site_icon": "🦒",
+  "background_image": "static/img/zoo-background.svg",
+  "repository_url": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/manifest.model.json",
+  "explore_button_text": "🚀 Explore the Zoo",
+  "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
+  "contribute_url": "https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models",
+  "footer_github": {
+    "url": "https://github.com/bioimage-io/bioimage-io-models",
+    "label": "Model Repository"
+  },
+  "splash_title": "Bioimage Model Zoo",
+  "splash_subtitle": "Advanced AI models in one-click",
+  "splash_feature_list": [
+    "Integrate with Fiji, Ilastik, ImJoy",
+    "Try model instantly with BioEngine",
+    "Contribute your models via Github",
+    "Link models to BioEngine Apps"
+  ],
+  "item_lists": [
+    {
+      "name": "Models",
+      "match": { "config_url": ".model.yaml$" },
+      "tag_categories": {
+        "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
+        "content": [
+          "extracellular vesicles",
+          "platynereis",
+          "arabidopsis",
+          "platynereis",
+          "vasculature",
+          "plant tissue",
+          "cell membrane",
+          "brain"
+        ],
+        "framework": ["Tensorflow", "PyTorch", "Tensorflow.js"],
+        "software": ["Ilastik", "ImageJ", "Fiji", "ImJoy", "DeepImageJ", "n2v"],
+        "network": [
+          "UNet",
+          "UNet2D",
+          "UNet3D",
+          "DenseNet",
+          "ResNet",
+          "Inception",
+          "Shufflenet"
+        ],
+        "task": [
+          "segmentation",
+          "nucleus-segmentation",
+          "classification",
+          "denoising",
+          "in-silico-labeling"
+        ]
+      }
+    },
+    { "name": "Datasets", "match": { "config_url": ".zarr$" } },
+    { "name": "Apps", "match": { "config_url": ".imjoy.html$" } }
+  ]
+}

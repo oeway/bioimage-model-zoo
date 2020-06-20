@@ -47,8 +47,10 @@
               </div>
 
               <div class="column">
-                other:
-                <br />
+                <span v-if="Object.keys(categories.grouped).length > 0"
+                  >other: <br
+                /></span>
+
                 <b-tag
                   rounded
                   @click="addTagSelection(t)"
@@ -73,37 +75,6 @@
 
 <script>
 import { debounce } from "../utils";
-const categories = {
-  modality: ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
-  content: [
-    "extracellular vesicles",
-    "platynereis",
-    "arabidopsis",
-    "platynereis",
-    "vasculature",
-    "plant tissue",
-    "cell membrane",
-    "brain"
-  ],
-  framework: ["Tensorflow", "PyTorch", "Tensorflow.js"],
-  software: ["Ilastik", "ImageJ", "Fiji", "ImJoy", "DeepImageJ", "n2v"],
-  network: [
-    "UNet",
-    "UNet2D",
-    "UNet3D",
-    "DenseNet",
-    "ResNet",
-    "Inception",
-    "Shufflenet"
-  ],
-  task: [
-    "segmentation",
-    "nucleus-segmentation",
-    "classification",
-    "denoising",
-    "in-silico-labeling"
-  ]
-};
 export default {
   name: "ModelSelector",
   props: {
@@ -113,6 +84,10 @@ export default {
     },
     fullLabelList: {
       type: Array,
+      default: null
+    },
+    tagCategories: {
+      type: Object,
       default: null
     }
   },
@@ -191,14 +166,17 @@ export default {
   },
   computed: {
     categories() {
+      if (!this.tagCategories) {
+        return { grouped: {}, other: this.fullLabelList };
+      }
       const cate = {};
       const other = [];
       const lowerSelected = this.selectedTags.map(a => a.toLowerCase());
       for (let t of this.fullLabelList) {
         if (lowerSelected.indexOf(t.toLowerCase()) >= 0) continue;
         let found = false;
-        for (let c of Object.keys(categories)) {
-          for (let k of categories[c]) {
+        for (let c of Object.keys(this.tagCategories)) {
+          for (let k of this.tagCategories[c]) {
             if (k.toLowerCase() === t.toLowerCase()) {
               if (!cate[c]) cate[c] = [];
               cate[c].push(k);

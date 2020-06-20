@@ -3,9 +3,11 @@
     <!-- Navigation bar -->
     <nav class="navbar is-link is-fixed-top">
       <div class="navbar-brand">
-        <span style="font-size:3em;margin-left:10px;"> 🦒</span>
-        <span style="font-size:2.5em;padding-top:10px;padding-left:4px;">
-          BioImage.IO</span
+        <span style="font-size:3em;margin-left:10px;">
+          {{ siteConfig.site_icon }}</span
+        >
+        <span style="font-size:2.4em;padding-top:10px;padding-left:4px;">
+          {{ siteConfig.site_name }}</span
         >
         <div
           class="navbar-burger burger"
@@ -29,14 +31,19 @@
             <b-icon icon="information-outline"></b-icon>
             <span>About</span>
           </a>
-          <a class="navbar-item" @click="showSubscribeDialog">
+          <a
+            class="navbar-item"
+            v-if="siteConfig.subscribe_url"
+            @click="showSubscribeDialog"
+          >
             <b-icon icon="playlist-check"></b-icon>
             <span>Subscribe</span>
           </a>
           <a
             class="navbar-item"
             target="_blank"
-            href="https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models"
+            v-if="siteConfig.contribute_url"
+            :href="siteConfig.contribute_url"
           >
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
@@ -53,63 +60,75 @@
       <div class="hero-body">
         <div class="container">
           <h1 class="title is-1">
-            Bioimage Model Zoo
+            {{ siteConfig.splash_title }}
           </h1>
           <h2 class="subtitle is-3">
-            Advanced AI models in one-click
+            {{ siteConfig.splash_subtitle }}
           </h2>
-          <ul style="font-size: 1.5em;">
-            <li>- Integrate with Fiji, Ilastik, ImJoy</li>
-            <li>- Try model instantly with BioEngine</li>
-            <li>- Contribute your models via Github</li>
-            <li>- Link models to BioEngine Apps</li>
+          <ul style="font-size: 1.5em;" v-if="siteConfig.splash_feature_list">
+            <li
+              v-for="feature in siteConfig.splash_feature_list"
+              :key="feature"
+            >
+              - {{ feature }}
+            </li>
           </ul>
           <br />
-          <b-button rounded style="text-transform:none;" @click="enter"
-            >🚀Explore the Zoo</b-button
+          <b-button rounded style="text-transform:none;" @click="enter">
+            <span style="font-size: 1.3rem;">{{
+              siteConfig.explore_button_text
+            }}</span></b-button
           >
         </div>
         <img
           style="position:absolute; bottom: 0px; right:0px; opacity: 0.9; width:70%;"
-          src="static/img/zoo-background.svg"
+          :src="siteConfig.background_image"
         />
       </div>
     </section>
     <br />
     <span ref="search_anchor"></span>
+    <div class="container" style="text-align:center;  padding-right: 60px;">
+      <div
+        class="item-lists is-link"
+        @click="currentList = null"
+        :class="{ active: !currentList }"
+      >
+        All
+      </div>
+      <div
+        class="item-lists is-link"
+        @click="currentList = list"
+        :class="{ active: currentList === list }"
+        v-for="list in siteConfig.item_lists"
+        :key="list.name"
+      >
+        {{ list.name }}
+      </div>
+    </div>
     <model-selector
       @selection-changed="updateModelList"
       :models="models"
       :fullLabelList="fullLabelList"
+      :tagCategories="currentList && currentList.tag_categories"
     ></model-selector>
     <model-list @show-model-info="showModelInfo" :models="selectedModels" />
 
     <footer class="footer">
-      <div>
-        <ul>
-          <li>
-            <a
-              href="https://github.com/bioimage-io/bioimage-io-models"
-              target="_blank"
-            >
-              <img
-                src="/static/img/github.svg"
-                style="width: 20px; height:20px;margin-right:3px;"
-              />Model Repository</a
-            >
-          </li>
-          <li>
-            <a
-              href="https://gitter.im/bioimage-io/community?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge"
-              rel="nofollow"
-              ><img
-                src="https://camo.githubusercontent.com/9c76187a0ae04eb172156d1e614a1f6a128d05a4/68747470733a2f2f6261646765732e6769747465722e696d2f62696f696d6167652d696f2f636f6d6d756e6974792e737667"
-                alt="Gitter"
-                data-canonical-src="https://badges.gitter.im/bioimage-io/community.svg"
-                style="max-width:100%;"
-            /></a>
-          </li>
-        </ul>
+      <div class="columns is-multiline">
+        <div
+          v-if="siteConfig.footer_github"
+          class="column is-4-desktop is-3-widescreen is-half-tablet"
+        >
+          <a :href="siteConfig.footer_github.url" target="_blank">
+            <img
+              src="/static/img/github.svg"
+              style="width: 36px; height:36px;margin-right:3px; margin-bottom:-8px;"
+            /><span style="font-size:1.3rem;">{{
+              siteConfig.footer_github.label
+            }}</span></a
+          >
+        </div>
       </div>
     </footer>
     <modal
@@ -199,7 +218,7 @@
         v-else-if="showDialogMode === 'subscribe'"
         style="padding-bottom: 64px;width: 100%;
     height: 100%;"
-        src="https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true"
+        :src="siteConfig.subscribe_url"
         width="640"
         height="852"
         frameborder="0"
@@ -221,6 +240,7 @@ import ModelSelector from "@/components/ModelSelector.vue";
 import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
 import About from "@/views/About.vue";
+import siteConfig from "../siteConfig";
 import {
   getUrlParameter,
   randId,
@@ -267,6 +287,7 @@ export default {
   },
   data() {
     return {
+      siteConfig: siteConfig,
       models: null,
       selectedModels: null,
       showMenu: false,
@@ -284,10 +305,12 @@ export default {
       selected_dialog_window: null,
       screenWidth: 1000,
       showDialogMode: null,
-      infoDialogTitle: ""
+      infoDialogTitle: "",
+      currentList: null
     };
   },
   created: async function() {
+    window.document.title = this.siteConfig.site_name;
     let models;
     try {
       let repo = "bioimage-io/bioimage-io-models";
@@ -655,5 +678,21 @@ export default {
   color: white;
   top: 2px;
   font-family: "Lucida Console", Monaco, monospace;
+}
+.item-lists {
+  width: 80px;
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #006fcb;
+}
+.item-lists:hover {
+  font-weight: 600;
+}
+
+.item-lists.active {
+  font-weight: 600;
 }
 </style>
