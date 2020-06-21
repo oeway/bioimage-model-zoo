@@ -100,6 +100,7 @@ export default {
   },
   watch: {
     type: function(newType) {
+      if (!this.models) return;
       const selectedModels = newType
         ? this.models.filter(m => m.type === newType)
         : this.models;

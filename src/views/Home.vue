@@ -447,12 +447,14 @@ export default {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
     // select models as default
-    for (let list of siteConfig.item_lists) {
-      if (list.type === "model") {
-        this.currentList = list;
-        break;
+    setTimeout(() => {
+      for (let list of siteConfig.item_lists) {
+        if (list.type === "model") {
+          this.currentList = list;
+          break;
+        }
       }
-    }
+    }, 100);
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
