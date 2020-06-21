@@ -65,9 +65,6 @@
       </b-field>
       <b-field> </b-field>
     </section>
-    <br />
-
-    <section style="width:600px;"></section>
   </div>
 </template>
 

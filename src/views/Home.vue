@@ -48,9 +48,9 @@
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
           </a>
-          <a class="navbar-item" @click="showBioEngineApps">
+          <a class="navbar-item" @click="showApps">
             <b-icon icon="puzzle"></b-icon>
-            <span>BioEngine Apps</span>
+            <span>Applications</span>
           </a>
         </div>
       </div>
@@ -114,6 +114,19 @@
       :tagCategories="tagCategories"
       :type="currentList && currentList.type"
     ></model-selector>
+    <div
+      v-if="currentList && currentList.type === 'application'"
+      style="text-align:center;"
+    >
+      <a @click="$refs.file_select.click()">Load application from file</a>
+      <input
+        type="file"
+        style="display:none;"
+        @change="fileSelected"
+        ref="file_select"
+      />
+    </div>
+    <br />
     <model-list @show-model-info="showModelInfo" :models="selectedModels" />
 
     <footer class="footer">
@@ -155,21 +168,21 @@
         <span class="noselect"> {{ selected_dialog_window.name }}</span>
         <button
           @click="closeWindow(selected_dialog_window)"
-          class="dialog-header-button"
+          class="noselect dialog-control-button"
           style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
         <button
           @click="minimizeWindow()"
-          class="dialog-header-button"
+          class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
         >
           -
         </button>
         <button
           @click="maximizeWindow()"
-          class="dialog-header-button"
+          class="noselect dialog-control-button"
           style="background:#00cdff61;left:80px;"
         >
           {{ fullscreen ? "=" : "+" }}
@@ -202,14 +215,14 @@
         <span class="noselect"> {{ infoDialogTitle }}</span>
         <button
           @click="closeWindow()"
-          class="dialog-header-button"
+          class="noselect dialog-control-button"
           style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
         <button
           @click="maximizeWindow()"
-          class="dialog-header-button"
+          class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
         >
           {{ fullscreen ? "=" : "+" }}
@@ -243,6 +256,7 @@ import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
 import About from "@/views/About.vue";
 import siteConfig from "../siteConfig";
+import { setupImJoyCore, loadPlugins, loadCodeFromFile } from "../imjoyAPI";
 import {
   getUrlParameter,
   randId,
@@ -350,9 +364,35 @@ export default {
       }
       this.setModels(items);
       this.$forceUpdate();
-      const applications = items.filter(m => m.type === "application");
+
       console.log("Loading ImJoy...");
-      this.setupImJoyCore(applications).then(() => {
+      const workspace = getUrlParameter("workspace") || getUrlParameter("w");
+      setupImJoyCore(
+        workspace,
+        this.showMessage,
+        this.showWindowDialog,
+        this.closeWindowDialog,
+        this.updateStatus
+      ).then(imjoy => {
+        this.imjoy = imjoy;
+        imjoy.event_bus.on("show_message", msg => {
+          this.showMessage(msg);
+        });
+        imjoy.event_bus.on("add_window", w => {
+          this.addWindow(w);
+        });
+        imjoy.event_bus.on("plugin_loaded", () => {});
+
+        imjoy.event_bus.on("imjoy_ready", () => {});
+
+        imjoy.event_bus.on("close_window", () => {});
+        const applications = items.filter(m => m.type === "application");
+        this.showMessage("Loading applications...");
+        loadPlugins(imjoy, applications).then(apps => {
+          this.showMessage(
+            `Successfully loaded ${Object.keys(apps).length} applications.`
+          );
+        });
         for (let model of this.models) {
           model.apps = [];
           for (let app_key in model.applications) {
@@ -409,6 +449,24 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    addWindow(w) {
+      this.selectWindow(w);
+      this.show_models = false;
+      this.selected_window = w;
+      this.$forceUpdate();
+    },
+    async removeWindow(w) {
+      w.closing = true;
+      await w.close();
+      this.show_models = true;
+      this.selected_window = null;
+      this.$forceUpdate();
+    },
+    selectWindow(w) {
+      if (w.closing) return;
+      this.selected_window = w;
+      this.show_models = false;
+    },
     updateSize() {
       debounce(() => {
         this.screenWidth = window.innerWidth;
@@ -416,7 +474,7 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
-    showBioEngineApps() {
+    showApps() {
       for (let list of siteConfig.item_lists) {
         if (list.type === "application") {
           this.currentList = list;
@@ -441,6 +499,10 @@ export default {
       this.infoDialogTitle = this.selectedModel.name;
       if (this.screenWidth < 700) this.fullscreen = true;
       this.$modal.show("info-dialog");
+    },
+    updateStatus(status) {
+      if (status.loading === true) this.showMessage("Loading...");
+      if (status.loading === false) this.showMessage("Loading done.");
     },
     closeWindow() {
       this.selectedModel = null;
@@ -481,186 +543,30 @@ export default {
         actionText: "Close",
         duration: duration
       };
-
       this.$buefy.snackbar.open(data);
     },
-    async setupImJoyCore(appSources) {
-      const imjoyCore = await window.loadImJoyCore({ version: "0.13.10" });
-      const me = this;
-      const lazy_dependencies = {};
-      var imjoy_api = {
-        showStatus(plugin, info) {
-          me.showMessage(info);
-        },
-        showMessage(plugin, info, duration) {
-          me.showMessage(info, duration);
-        },
-        showProgress(plugin, progress) {
-          if (progress < 1) progress = progress * 100;
-          me.$refs.progressbar.setProgress(progress);
-        },
-        showDialog(_plugin, config) {
-          return new Promise((resolve, reject) => {
-            me.dialog_window = config;
-            me.$forceUpdate();
-            if (config.ui) {
-              if (!me.$refs.window_dialog.open)
-                me.$refs.window_dialog.showModal();
-              const joy_config = {
-                container: document.getElementById("window-dialog-container"),
-                init: config.ui || "", //"{id:'localizationWorkflow', type:'ops'} " + // a list of ops
-                data: config.data, // || Joy.loadFromURL(),
-                modules: config.modules || ["instructions", "math"],
-                onexecute: config.onexecute,
-                onupdate: config.onupdate
-              };
-              try {
-                new imjoyCore.Joy(joy_config);
-              } catch (e) {
-                console.error("error occured when loading the workflow", e);
-                joy_config.data = "";
-                new imjoyCore.Joy(joy_config);
-                throw e;
-              }
-            } else if (config.type) {
-              if (!me.$refs.window_dialog.open)
-                me.$refs.window_dialog.showModal();
-              config.window_container = "window-dialog-container";
-              config.standalone = true;
-              if (config.type.startsWith("imjoy/")) {
-                config.render = () => {};
-              }
-              setTimeout(() => {
-                imjoy.pm
-                  .createWindow(null, config)
-                  .then(api => {
-                    const _close = api.close;
-                    api.close = async () => {
-                      await _close();
-                      me.closeDialog();
-                    };
-                    resolve(api);
-                  })
-                  .catch(reject);
-              }, 0);
-            } else {
-              alert("Unsupported dialog type.");
-            }
-          });
-        }
-      };
+    showWindowDialog() {},
+    closeWindowDialog() {},
+    fileSelected() {
+      if (!this.$refs.file_select.files) return;
+      const local_file = this.$refs.file_select.files[0];
+      this.showMessage("Loading App...");
+      loadCodeFromFile(this.imjoy, local_file);
+    },
 
-      const imjoy = new imjoyCore.ImJoy({
-        imjoy_api: imjoy_api
-      });
-      imjoy.event_bus.on("show_message", msg => {
-        this.showMessage(msg);
-      });
-      imjoy.event_bus.on("add_window", w => {
-        this.addWindow(w);
-      });
-      imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
-        const target_plugin = imjoy.pm.plugin_names[plugin_name];
-        if (target_plugin) {
-          return target_plugin.api;
-        } else if (imjoy.pm.internal_plugins[plugin_name]) {
-          try {
-            this.loading = true;
-            this.$forceUpdate();
-            const p = await imjoy.pm.reloadPluginRecursively(
-              {
-                uri: imjoy.pm.internal_plugins[plugin_name].uri
-              },
-              null,
-              "eval is evil"
-            );
-            console.log(`${p.name} loaded.`);
-            return p.api;
-          } catch (e) {
-            console.error(e);
-            throw e;
-          } finally {
-            this.loading = false;
-            this.$forceUpdate();
-          }
-        } else if (lazy_dependencies[plugin_name]) {
-          try {
-            this.loading = true;
-            this.$forceUpdate();
-            const p = await imjoy.pm.reloadPluginRecursively({
-              uri: lazy_dependencies[plugin_name]
-            });
-            console.log(`${p.name} loaded.`);
-            return p.api;
-          } catch (e) {
-            console.error(e);
-            throw e;
-          } finally {
-            this.loading = false;
-            this.$forceUpdate();
-          }
-        } else {
-          throw `plugin with type ${plugin_name} not found.`;
-        }
-      };
-      const workspace = getUrlParameter("workspace") || getUrlParameter("w");
-      imjoy
-        .start({ workspace: workspace })
-        .then(async () => {
-          this.windows = imjoy.wm.windows;
-          console.log("ImJoy started: ", imjoy);
-          this.loading = true;
-          await imjoy.pm.reloadPluginRecursively({
-            uri:
-              "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
-          });
-          // await imjoy.pm.reloadInternalPlugins()
-          for (let ap of appSources) {
-            try {
-              const config = await imjoy.pm.getPluginFromUrl(ap.source);
-              const p = await imjoy.pm.reloadPlugin(config);
-              for (let i = 0; i < config.dependencies.length; i++) {
-                const d_config = await imjoy.pm.getPluginFromUrl(
-                  config.dependencies[i]
-                );
-                // TODO: use a better way to determin if it's an internal plugin type
-                if (imjoy.pm.getBadges(d_config) === "🚀") {
-                  lazy_dependencies[d_config.name] = config.dependencies[i];
-                } else {
-                  await imjoy.pm.reloadPluginRecursively({
-                    uri: config.dependencies[i]
-                  });
-                }
-              }
-              if (p.type !== "window") {
-                if (!this.validateBioEngineApp(p.name, p.api)) continue;
-              }
-              this.apps[ap.name] = p;
-            } catch (e) {
-              console.error(e);
-            }
-          }
-          this.loading = false;
-          this.$forceUpdate();
-        })
-        .catch(e => {
-          console.error(e);
-          alert("Error: " + e);
-        });
-
-      imjoy.event_bus.on("plugin_loaded", () => {});
-
-      imjoy.event_bus.on("imjoy_ready", () => {});
-
-      imjoy.event_bus.on("close_window", w => {
-        if (w.window_container !== "window-dialog-container") {
-          this.show_models = true;
-          this.$forceUpdate();
-        }
-      });
-      this.imjoy = imjoy;
-      console.log("ImJoy loaded successfully.");
-      return imjoy;
+    share(model) {
+      prompt(
+        "Please copy and paste following URL for sharing:",
+        "https://bioimage.io?model=" + encodeURI(model.name)
+      );
+    },
+    getLabelCount(label) {
+      return this.filteredModels.filter(models =>
+        models.allLabels.includes(label)
+      ).length;
+    },
+    getModelsCount() {
+      return this.filteredModels.length;
     }
   }
 };
@@ -703,7 +609,7 @@ export default {
   text-align: center;
   line-height: 40px;
 }
-.dialog-header-button {
+.dialog-control-button {
   cursor: pointer;
   width: 34px;
   height: 36px;
@@ -716,7 +622,7 @@ export default {
   top: 2px;
   font-family: "Lucida Console", Monaco, monospace;
 }
-.dialog-header-button:focus {
+.dialog-control-button:focus {
   outline: none;
 }
 
