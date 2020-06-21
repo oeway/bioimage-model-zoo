@@ -7,7 +7,11 @@
           :key="model.name"
           class="column is-4-desktop is-3-widescreen is-half-tablet"
         >
-          <model-card @show-info="showModelInfo" :model="model"></model-card>
+          <model-card
+            @show-info="showModelInfo"
+            :apps="model.apps"
+            :model="model"
+          ></model-card>
         </div>
         <span
           style="text-align: center;"

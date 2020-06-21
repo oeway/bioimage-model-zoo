@@ -420,8 +420,12 @@ export default {
   computed: {
     fullLabelList: function() {
       const fullLabelList = [];
-      if (this.allItems)
-        for (let model of this.allItems) {
+      if (this.allItems) {
+        const tp = this.currentList && this.currentList.type;
+        const models = tp
+          ? this.allItems.filter(m => m.type === tp)
+          : this.allItems;
+        for (let model of models) {
           normalizeModel(model);
           model.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
@@ -429,6 +433,7 @@ export default {
             }
           });
         }
+      }
       fullLabelList.sort((a, b) =>
         a.toLowerCase() < b.toLowerCase() ? -1 : 1
       );

@@ -114,10 +114,13 @@ export default {
           tag => this.fullLabelList.indexOf(tag.toLowerCase()) >= 0
         );
         let selectedModels;
+        const models = this.type
+          ? this.models.filter(m => m.type === this.type)
+          : this.models;
         if (newTags.length <= 0) {
-          selectedModels = this.models;
+          selectedModels = models;
         } else {
-          selectedModels = this.models.filter(model => {
+          selectedModels = models.filter(model => {
             let matched;
             if (this.matchingAll)
               matched =

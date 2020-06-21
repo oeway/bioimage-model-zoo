@@ -48,7 +48,7 @@
           </b-tooltip>
 
           <div class="buttons floating-buttons">
-            <template v-for="app in model.apps">
+            <template v-for="app in apps">
               <b-tooltip :key="app.name" :label="app.name" position="is-top">
                 <b-button
                   rounded
@@ -95,6 +95,10 @@ export default {
     model: {
       type: Object,
       default: null
+    },
+    apps: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
