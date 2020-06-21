@@ -209,6 +209,7 @@ export default {
   position: absolute;
   left: 10px;
   bottom: -15px;
+  background-color: white;
 }
 .app-icon {
   width: 22px !important;
@@ -217,8 +218,8 @@ export default {
 .button.is-small {
   border-radius: 30px;
   font-size: 0.8rem;
-  background-color: #2196f3;
-  color: white;
+  background-color: white;
+  color: #2196f3;
 }
 .cover-image {
   max-height: 100%;
@@ -242,7 +243,7 @@ export default {
 }
 
 .floating-corner-btn {
-  top: 10px;
+  bottom: 10px;
   position: absolute;
   opacity: 0;
   transition: 0.3s ease;

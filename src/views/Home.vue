@@ -402,13 +402,15 @@ export default {
             `Successfully loaded ${Object.keys(apps).length} applications.`
           );
           this.allApps = apps;
-
-          for (let item of this.resourceItems) {
+          for (let item of resourceItems) {
             item.apps = [];
-            for (let app_key in item.applications) {
-              if (this.allApps[app_key]) item.apps.push(this.allApps[app_key]);
+            if (item.applications) {
+              for (let app_key of item.applications) {
+                if (this.allApps[app_key])
+                  item.apps.push(this.allApps[app_key]);
+              }
+              this.$forceUpdate();
             }
-            this.$forceUpdate();
           }
         });
       });

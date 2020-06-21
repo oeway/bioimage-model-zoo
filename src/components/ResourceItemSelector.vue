@@ -241,11 +241,6 @@ export default {
 .action-btn {
   width: 33px;
 }
-.floating-buttons {
-  position: absolute;
-  left: 5px;
-  top: 5px;
-}
 .button.is-small {
   border-radius: 30px;
   font-size: 1rem;
