@@ -80,10 +80,7 @@
             }}</span></b-button
           >
         </div>
-        <img
-          style="position:absolute; bottom: 0px; right:0px; opacity: 0.9; width:70%;"
-          :src="siteConfig.background_image"
-        />
+        <img class="background-img" :src="siteConfig.background_image" />
       </div>
     </section>
     <br />
@@ -672,5 +669,17 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.background-img {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  opacity: 0.9;
+  width: 60%;
+  transition: 0.9s ease;
+}
+.hero:hover .background-img {
+  width: 65%;
+  transition: 0.4s ease;
 }
 </style>

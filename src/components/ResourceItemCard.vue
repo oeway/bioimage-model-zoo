@@ -33,15 +33,14 @@
       <div class="card-content">
         <div class="content">
           <h4 class="resource-item-title" @click="showResourceItemInfo">
-            <img v-if="icon.type === 'img'" class="app-icon" :src="icon.src" />
+            <img v-if="icon.type === 'img'" class="item-icon" :src="icon.src" />
             <img
               v-else-if="icon.type === 'animal'"
-              class="app-icon"
-              style="filter: drop-shadow(blue 1px 1px 3px);"
+              class="item-icon"
               :src="'/static/anonymousAnimals/' + icon.src + '.png'"
             />
             <b-icon v-else :icon="icon.src" size="is-small" />
-            {{ resourceItem.name }}
+            <span>{{ resourceItem.name }}</span>
           </h4>
           <b-tooltip
             v-if="resourceItem.download_url"
@@ -164,7 +163,9 @@ export default {
   height: 360px;
 }
 .card-content {
-  padding: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 4px;
 }
 .resource-item-title {
   font-size: 1.2em;
@@ -188,13 +189,13 @@ export default {
   bottom: -15px;
 }
 .app-icon {
-  width: 20px !important;
-  max-width: 20px;
+  width: 22px !important;
+  max-width: 22px;
 }
 .button.is-small {
   border-radius: 30px;
   font-size: 0.8rem;
-  background-color: #d2ebffc7;
+  background-color: #2196f3;
   color: rgb(25, 25, 26);
 }
 .cover-image {
@@ -205,5 +206,28 @@ export default {
   max-height: 200px;
   background: black;
   text-align: center;
+}
+.item-icon {
+  display: inline-block;
+  margin-top: auto;
+  margin-bottom: auto;
+  border-radius: 50%;
+  border: 3px solid #00000000;
+  background: #167cf0b8;
+  margin-right: 4px;
+  width: 32px;
+  max-width: 100px;
+}
+
+.download-btn {
+  top: 10px;
+  right: 5px;
+  position: absolute;
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.card:hover .download-btn {
+  opacity: 1;
 }
 </style>
