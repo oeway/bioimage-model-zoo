@@ -186,6 +186,28 @@
         >
           {{ dialogWindowConfig.fullscreen ? "=" : "+" }}
         </button>
+
+        <b-dropdown
+          aria-role="list"
+          style="position:absolute;right:1px;"
+          position="is-bottom-left"
+        >
+          <button
+            class="button"
+            style="background: rgba(0, 205, 255, 0.38);color:white;width:34px;"
+            slot="trigger"
+          >
+            <b-icon icon="dots-horizontal"></b-icon>
+          </button>
+
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="w in dialogWindows"
+            @click="selectWindow(w)"
+            :key="w.id"
+            >{{ w.name }}</b-dropdown-item
+          >
+        </b-dropdown>
       </div>
       <template v-for="wdialog in dialogWindows">
         <div
@@ -518,6 +540,9 @@ export default {
   },
   methods: {
     addWindow(w) {
+      if (this.selectedDialogWindow) {
+        this.selectedWindowsStack.push(this.selectedDialogWindow);
+      }
       this.selectWindow(w);
       this.dialogWindows.push(w);
       this.$modal.show("window-modal-dialog");
@@ -525,9 +550,6 @@ export default {
     },
     selectWindow(w) {
       if (w.closing) return;
-      if (this.selectedDialogWindow) {
-        this.selectedWindowsStack.push(this.selectedDialogWindow);
-      }
       this.selectedDialogWindow = w;
     },
     updateSize() {
