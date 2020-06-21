@@ -266,40 +266,24 @@ export function loadCodeFromFile(imjoy, file) {
   });
 }
 
-export async function runManyModels(plugin) {
-  try {
-    this.loading = true;
-    if (plugin.type === "window") {
-      const w = await plugin.api.run();
-      if (!validateBioEngineApp(plugin.name, w)) {
-        w.runManyModels = w.run;
-      }
-      await w.runManyModels(this.models);
-    } else {
-      plugin.api.runManyModels(this.models);
+export async function runManyModels(plugin, models) {
+  if (plugin.type === "window") {
+    const w = await plugin.api.run();
+    if (!validateBioEngineApp(plugin.name, w)) {
+      w.runManyModels = w.run;
     }
-  } catch (e) {
-    this.showMessage(e);
-    console.error(e);
-  } finally {
-    this.loading = false;
+    await w.runManyModels(models);
+  } else {
+    plugin.api.runManyModels(models);
   }
 }
 
 export async function runOneModel(plugin, model) {
-  try {
-    this.loading = true;
-    if (plugin.type === "window") {
-      const w = await plugin.api.run();
-      validateBioEngineApp(plugin.name, w);
-      await w.runOneModel(model);
-    } else {
-      plugin.api.runOneModel(model);
-    }
-  } catch (e) {
-    this.showMessage(e);
-    console.error(e);
-  } finally {
-    this.loading = false;
+  if (plugin.type === "window") {
+    const w = await plugin.api.run();
+    validateBioEngineApp(plugin.name, w);
+    await w.runOneModel(model);
+  } else {
+    plugin.api.runOneModel(model);
   }
 }
