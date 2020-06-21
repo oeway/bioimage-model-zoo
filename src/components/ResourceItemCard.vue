@@ -207,13 +207,13 @@ export default {
 }
 .floating-buttons {
   position: absolute;
+  top: 5px;
   left: 10px;
-  bottom: -15px;
-  background-color: white;
 }
 .app-icon {
   width: 22px !important;
   max-width: 22px;
+  margin-top: 3px;
 }
 .button.is-small {
   border-radius: 30px;
