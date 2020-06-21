@@ -149,7 +149,6 @@
     <modal
       name="window-modal-dialog"
       :resizable="!dialogWindowConfig.fullscreen"
-      ref="window_modal_dialog"
       :width="dialogWindowConfig.width"
       :height="dialogWindowConfig.height"
       :adaptive_size="dialogWindowConfig.adaptive_size"
@@ -161,37 +160,37 @@
       :scrollable="true"
     >
       <div
-        v-if="selected_dialog_window"
-        @dblclick="maximizeWindow()"
+        v-if="selectedDialogWindow"
+        @dblclick="maximizeDialogWindow()"
         class="drag-handle dialog-header"
       >
-        <span class="noselect"> {{ selected_dialog_window.name }}</span>
+        <span class="noselect"> {{ selectedDialogWindow.name }}</span>
         <button
-          @click="closeWindow(selected_dialog_window)"
+          @click="closeDialogWindow(selectedDialogWindow)"
           class="noselect dialog-control-button"
           style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
         <button
-          @click="minimizeWindow()"
+          @click="minimizeDialogWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
         >
           -
         </button>
         <button
-          @click="maximizeWindow()"
+          @click="maximizeDialogWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:80px;"
         >
-          {{ fullscreen ? "=" : "+" }}
+          {{ dialogWindowConfig.fullscreen ? "=" : "+" }}
         </button>
       </div>
       <template v-for="wdialog in dialogWindows">
         <div
           :key="wdialog.window_id"
-          v-show="wdialog === selected_dialog_window"
+          v-show="wdialog === selectedDialogWindow"
           style="height: calc(100% - 18px);"
         >
           <div :id="wdialog.window_id" style="width: 100%;height: 100%;"></div>
@@ -201,36 +200,35 @@
     <modal
       name="info-dialog"
       :resizable="true"
-      ref="window_modal_dialog"
       :minWidth="200"
       :minHeight="150"
       :height="600"
       :width="800"
       style="max-width:100%;max-height:100%;"
-      :fullscreen="fullscreen"
+      :fullscreen="infoDialogFullscreen"
       draggable=".drag-handle"
       :scrollable="true"
     >
-      <div @dblclick="maximizeWindow()" class="drag-handle dialog-header">
+      <div @dblclick="maximizeInfoWindow()" class="drag-handle dialog-header">
         <span class="noselect"> {{ infoDialogTitle }}</span>
         <button
-          @click="closeWindow()"
+          @click="closeInfoWindow()"
           class="noselect dialog-control-button"
           style="background:#ff0000c4;left:2px;"
         >
           x
         </button>
         <button
-          @click="maximizeWindow()"
+          @click="maximizeInfoWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
         >
-          {{ fullscreen ? "=" : "+" }}
+          {{ infoDialogFullscreen ? "=" : "+" }}
         </button>
       </div>
-      <about v-if="showDialogMode === 'about'"></about>
+      <about v-if="showInfoDialogMode === 'about'"></about>
       <iframe
-        v-else-if="showDialogMode === 'subscribe'"
+        v-else-if="showInfoDialogMode === 'subscribe'"
         style="padding-bottom: 64px;width: 100%;
     height: 100%;"
         :src="siteConfig.subscribe_url"
@@ -242,7 +240,7 @@
         >Loading…</iframe
       >
       <resource-item-info
-        v-else-if="showDialogMode === 'model' && selectedResourceItem"
+        v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
         :resourceItem="selectedResourceItem"
       ></resource-item-info>
     </modal>
@@ -260,7 +258,8 @@ import {
   setupBioEngine,
   loadPlugins,
   loadCodeFromFile,
-  setupBioEngineAPI
+  setupBioEngineAPI,
+  runOneModel
 } from "../bioEngine";
 import {
   getUrlParameter,
@@ -343,14 +342,16 @@ export default {
       dialogWindowConfig: {
         width: "800px",
         height: "670px",
-        draggable: true
+        draggable: true,
+        fullscreen: false
       },
       dialogWindows: [],
+      selectedWindowsStack: [],
+      selectedDialogWindow: null,
       selectedResourceItem: null,
-      fullscreen: false,
-      selected_dialog_window: null,
+      infoDialogFullscreen: false,
       screenWidth: 1000,
-      showDialogMode: null,
+      showInfoDialogMode: null,
       infoDialogTitle: "",
       currentList: null
     };
@@ -413,7 +414,9 @@ export default {
 
         imjoy.event_bus.on("imjoy_ready", () => {});
 
-        imjoy.event_bus.on("close_window", () => {});
+        imjoy.event_bus.on("close_window", w => {
+          this.closeDialogWindow(w);
+        });
         const applications = resourceItems.filter(
           m => m.type === "application"
         );
@@ -434,7 +437,7 @@ export default {
                     name: app.name,
                     icon: app.config.icon,
                     run() {
-                      app.api.runOneModel(item);
+                      runOneModel(app, item);
                     }
                   });
                 }
@@ -505,20 +508,16 @@ export default {
   methods: {
     addWindow(w) {
       this.selectWindow(w);
-
-      this.selected_window = w;
-      this.$forceUpdate();
-    },
-    async removeWindow(w) {
-      w.closing = true;
-      await w.close();
-
-      this.selected_window = null;
+      this.dialogWindows.push(w);
+      this.$modal.show("window-modal-dialog");
       this.$forceUpdate();
     },
     selectWindow(w) {
       if (w.closing) return;
-      this.selected_window = w;
+      if (this.selectedDialogWindow) {
+        this.selectedWindowsStack.push(this.selectedDialogWindow);
+      }
+      this.selectedDialogWindow = w;
     },
     updateSize() {
       debounce(() => {
@@ -537,17 +536,17 @@ export default {
       this.enter();
     },
     showAboutDialog() {
-      this.showDialogMode = "about";
+      this.showInfoDialogMode = "about";
       this.infoDialogTitle = "About";
       this.$modal.show("info-dialog");
     },
     showSubscribeDialog() {
-      this.showDialogMode = "subscribe";
+      this.showInfoDialogMode = "subscribe";
       this.infoDialogTitle = "Subscribe to News and Updates";
       this.$modal.show("info-dialog");
     },
     showResourceItemInfo(mInfo) {
-      this.showDialogMode = "model";
+      this.showInfoDialogMode = "model";
       this.selectedResourceItem = mInfo;
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.fullscreen = true;
@@ -557,15 +556,28 @@ export default {
       if (status.loading === true) this.showMessage("Loading...");
       if (status.loading === false) this.showMessage("Loading done.");
     },
-    closeWindow() {
+    closeInfoWindow() {
       this.selectedResourceItem = null;
       this.$modal.hide("info-dialog");
     },
-    minimizeWindow() {
-      this.$modal.hide("odel-info-dialog");
-    },
-    maximizeWindow() {
+    maximizeInfoWindow() {
       this.fullscreen = !this.fullscreen;
+    },
+    closeDialogWindow(w) {
+      if (this.selectedDialogWindow.id !== w.id) {
+        console.warn("ignore close window: " + w.id);
+        return;
+      }
+      const idx = this.dialogWindows.indexOf(w);
+      if (idx >= 0) this.dialogWindows.splice(idx, 1);
+      this.selectedDialogWindow = this.selectedWindowsStack.pop();
+      if (!this.selectedDialogWindow) this.$modal.hide("window-modal-dialog");
+    },
+    minimizeDialogWindow() {
+      this.$modal.hide("window-modal-dialog");
+    },
+    maximizeDialogWindow() {
+      this.dialogWindowConfig.fullscreen = !this.dialogWindowConfig.fullscreen;
     },
     enter() {
       const top = this.$refs.search_anchor.getBoundingClientRect().top;
