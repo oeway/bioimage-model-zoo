@@ -339,7 +339,6 @@ export default {
   },
   created: async function() {
     window.document.title = this.siteConfig.site_name;
-    let items;
     try {
       let repo = "bioimage-io/bioimage-io-models";
 
@@ -362,15 +361,19 @@ export default {
 
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
-      items = repo_manifest.items;
-      for (let item of items) {
+      const resourceItems = repo_manifest.resources;
+      for (let item of resourceItems) {
         item.repo = repo;
         item.model_uri = `${repo}:${item.name}`;
         item.source_url = item.url;
         if (!item.source.startsWith("http"))
           item.source = concatAndResolveUrl(item.root_url, item.source);
       }
-      this.setModels(items);
+      this.resourceItems = resourceItems;
+      const tp = this.currentList && this.currentList.type;
+      this.selectedItems = tp
+        ? resourceItems.filter(m => m.type === tp)
+        : resourceItems;
       this.$forceUpdate();
 
       console.log("Loading ImJoy...");
@@ -394,7 +397,9 @@ export default {
         imjoy.event_bus.on("imjoy_ready", () => {});
 
         imjoy.event_bus.on("close_window", () => {});
-        const applications = items.filter(m => m.type === "application");
+        const applications = resourceItems.filter(
+          m => m.type === "application"
+        );
         this.showMessage("Loading applications...");
         loadPlugins(imjoy, applications).then(apps => {
           this.showMessage(
@@ -457,8 +462,8 @@ export default {
   mounted() {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
-    // select models as default
 
+    // select models as default
     for (let list of siteConfig.item_lists) {
       if (list.type === "model") {
         this.currentList = list;
@@ -544,16 +549,11 @@ export default {
       }
       this.selectedItems = models;
     },
-    setModels(models) {
-      this.resourceItems = models;
-      const tp = this.currentList && this.currentList.type;
-      this.selectedItems = tp ? models.filter(m => m.type === tp) : models;
-    },
     showModelFromUrl() {
-      const selected_model = getUrlParameter("model");
-      if (selected_model) {
+      const selected_item = getUrlParameter("name");
+      if (selected_item) {
         const m = this.resourceItems.filter(
-          item => item.name === selected_model
+          item => item.name === selected_item
         )[0];
         if (m) this.showResourceItemInfo(m);
       }

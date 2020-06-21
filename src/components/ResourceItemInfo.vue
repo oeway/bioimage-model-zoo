@@ -80,7 +80,10 @@ export default {
       try {
         let docsUrl;
         if (!resourceItem.documentation.startsWith("http"))
-          docsUrl = concatAndResolveUrl(resourceItem.root_url, resourceItem.documentation);
+          docsUrl = concatAndResolveUrl(
+            resourceItem.root_url,
+            resourceItem.documentation
+          );
         else {
           docsUrl = resourceItem.documentation;
         }
@@ -127,7 +130,10 @@ export default {
       try {
         let yamlUrl;
         if (!resourceItem.source.startsWith("http"))
-          yamlUrl = concatAndResolveUrl(resourceItem.root_url, resourceItem.source);
+          yamlUrl = concatAndResolveUrl(
+            resourceItem.root_url,
+            resourceItem.source
+          );
         else {
           yamlUrl = resourceItem.source;
         }

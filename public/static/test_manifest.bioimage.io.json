@@ -1,9 +1,9 @@
 {
-  "name": "BioImage Model Repository",
-  "description": "The official bioimage model repository.",
+  "name": "BioImage.IO Repository",
+  "description": "The official BioImage.IO repository.",
   "version": "0.1.0",
   "url_root": "https://raw.githubusercontent.com/bioimage-io/models/master",
-  "items": [
+  "resources": [
     {
       "name": "Ilastik",
       "type": "application",
