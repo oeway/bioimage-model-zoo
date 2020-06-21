@@ -53,6 +53,7 @@
                   rounded
                   :tag="app.url ? 'a' : 'button'"
                   :href="app.url"
+                  target="_blank"
                   @click="!app.url && app.run && app.run()"
                   class="is-small action-btn"
                 >
