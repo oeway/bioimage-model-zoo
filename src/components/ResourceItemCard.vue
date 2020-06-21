@@ -1,22 +1,24 @@
 <template>
-  <div class="model-card">
+  <div class="resource-item-card">
     <div class="card is-shady">
       <div class="card-image">
         <b-carousel
-          v-if="model.cover_images && model.cover_images.length > 0"
-          :indicator="model.cover_images.length > 1"
-          :arrow="model.cover_images.length > 1"
+          v-if="
+            resourceItem.cover_images && resourceItem.cover_images.length > 0
+          "
+          :indicator="resourceItem.cover_images.length > 1"
+          :arrow="resourceItem.cover_images.length > 1"
           :pause-info="false"
         >
           <b-carousel-item
             class="carousel-image"
-            v-for="cover in model.cover_images"
+            v-for="cover in resourceItem.cover_images"
             :key="cover"
           >
             <img
               loading="lazy"
               :src="cover"
-              :alt="model.name"
+              :alt="resourceItem.name"
               class="cover-image"
               data-target="modal-image2"
             />
@@ -30,9 +32,11 @@
       </div>
       <div class="card-content">
         <div class="content">
-          <h4 class="model-title" @click="showModelInfo">{{ model.name }}</h4>
+          <h4 class="resource-item-title" @click="showResourceItemInfo">
+            {{ resourceItem.name }}
+          </h4>
           <b-tooltip
-            v-if="model.download_url"
+            v-if="resourceItem.download_url"
             label="Download"
             class="download-btn"
             position="is-top"
@@ -40,7 +44,7 @@
             <b-button
               tag="a"
               rounded
-              :href="model.download_url"
+              :href="resourceItem.download_url"
               class="is-small action-btn"
             >
               <b-icon icon="download" size="is-small"> </b-icon>
@@ -52,7 +56,7 @@
               <b-tooltip :key="app.name" :label="app.name" position="is-top">
                 <b-button
                   rounded
-                  @click="runOneModel(app, model)"
+                  @click="runOneModel(app, resourceItem)"
                   class="is-small action-btn"
                 >
                   <b-icon v-if="!app.config.icon" icon="puzzle" size="is-small">
@@ -71,15 +75,15 @@
           </div>
           <span class="authors">
             {{
-              model.authors && model.authors.length > 0
-                ? "by " + etAl(model.authors)
+              resourceItem.authors && resourceItem.authors.length > 0
+                ? "by " + etAl(resourceItem.authors)
                 : ""
             }}
           </span>
-          <p class="model-description" v-if="model.description">
+          <p class="resource-item-description" v-if="resourceItem.description">
             {{
-              model.description.slice(0, 100) +
-                (model.description.length > 100 ? "..." : "")
+              resourceItem.description.slice(0, 100) +
+                (resourceItem.description.length > 100 ? "..." : "")
             }}
           </p>
         </div>
@@ -92,7 +96,7 @@
 export default {
   name: "ModelCard",
   props: {
-    model: {
+    resourceItem: {
       type: Object,
       default: null
     },
@@ -112,8 +116,8 @@ export default {
         return authors.slice(0, 3).join(", ") + " et al.";
       }
     },
-    showModelInfo() {
-      this.$emit("show-info", this.model);
+    showResourceItemInfo() {
+      this.$emit("show-info", this.resourceItem);
     }
   }
 };
@@ -125,7 +129,7 @@ export default {
 .card-content {
   padding: 1rem;
 }
-.model-title {
+.resource-item-title {
   font-size: 1.2em;
   font-weight: 400;
   cursor: pointer;
@@ -135,7 +139,7 @@ export default {
   font-size: 0.9em;
   font-weight: 600;
 }
-.model-description {
+.resource-item-description {
   font-size: 0.9em;
 }
 .action-btn {

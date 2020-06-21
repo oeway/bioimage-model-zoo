@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
-import ModelList from "@/components/ModelList.vue";
+import ResourceItemList from "@/components/ResourceItemList.vue";
 import { store } from "../../src/store";
 
-describe("ModelList.vue", () => {
+describe("ResourceItemList.vue", () => {
   it("renders props.msg when passed", () => {
-    const wrapper = shallowMount(ModelList, {
+    const wrapper = shallowMount(ResourceItemList, {
       propsData: { $store: store }
     });
     expect(wrapper.text()).to.include("Layers");

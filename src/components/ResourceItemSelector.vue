@@ -71,9 +71,9 @@
 <script>
 import { debounce } from "../utils";
 export default {
-  name: "ModelSelector",
+  name: "ResourceItemSelector",
   props: {
-    models: {
+    allItems: {
       type: Array,
       default: null
     },
@@ -100,65 +100,65 @@ export default {
   },
   watch: {
     type: function(newType) {
-      if (!this.models) return;
-      const selectedModels = newType
-        ? this.models.filter(m => m.type === newType)
-        : this.models;
-      this.$emit("selection-changed", selectedModels);
+      if (!this.allItems) return;
+      const selectedItems = newType
+        ? this.allItems.filter(m => m.type === newType)
+        : this.allItems;
+      this.$emit("selection-changed", selectedItems);
     },
     selectedTags: function(newTags) {
-      if (!this.models) return;
+      if (!this.allItems) return;
       this.loading = true;
       debounce(() => {
         const knownTags = newTags.filter(
           tag => this.fullLabelList.indexOf(tag.toLowerCase()) >= 0
         );
-        let selectedModels;
-        const models = this.type
-          ? this.models.filter(m => m.type === this.type)
-          : this.models;
+        let selectedItems;
+        const items = this.type
+          ? this.allItems.filter(m => m.type === this.type)
+          : this.allItems;
         if (newTags.length <= 0) {
-          selectedModels = models;
+          selectedItems = items;
         } else {
-          selectedModels = models.filter(model => {
+          selectedItems = items.filter(item => {
             let matched;
             if (this.matchingAll)
               matched =
                 knownTags.length > 0 &&
                 knownTags.every(label =>
-                  model.allLabels.includes(label.toLowerCase())
+                  item.allLabels.includes(label.toLowerCase())
                 );
             else
               matched =
                 knownTags.length > 0 &&
                 knownTags.some(label =>
-                  model.allLabels.includes(label.toLowerCase())
+                  item.allLabels.includes(label.toLowerCase())
                 );
             const matchText = label => {
               label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
               return (
-                model.name
+                item.name
                   .replace(/-/g, "")
                   .toLowerCase()
                   .includes(label) ||
-                model.description
+                item.description
                   .replace(/-/g, "")
                   .toLowerCase()
                   .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
                   .includes(label) ||
-                model.authors.some(author =>
+                item.authors.some(author =>
                   author.toLowerCase().includes(label)
                 )
               );
             };
             return (
-              (!this.type || model.type === this.type) &&
+              (!this.type || item.type === this.type) &&
               (matched || newTags.every(matchText))
             );
           });
         }
 
-        this.$emit("selection-changed", selectedModels);
+        this.$emit("selection-changed", selectedItems);
         this.loading = false;
         this.$forceUpdate();
       }, 400)();

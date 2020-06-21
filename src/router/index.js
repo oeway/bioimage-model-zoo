@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import ModelList from "../components/ModelList.vue";
+import ResourceItemList from "../components/ResourceItemList.vue";
 
 Vue.use(VueRouter);
 
@@ -14,7 +14,7 @@ const routes = [
   {
     path: "/app",
     name: "App",
-    component: ModelList
+    component: ResourceItemList
   },
   {
     path: "/about",

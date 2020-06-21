@@ -107,13 +107,13 @@
         {{ list.name }}
       </div>
     </div>
-    <model-selector
-      @selection-changed="updateModelList"
-      :models="allItems"
+    <resource-item-selector
+      @selection-changed="updateResourceItemList"
+      :allItems="resourceItems"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
       :type="currentList && currentList.type"
-    ></model-selector>
+    ></resource-item-selector>
     <div
       v-if="currentList && currentList.type === 'application'"
       style="text-align:center;"
@@ -127,7 +127,10 @@
       />
     </div>
     <br />
-    <model-list @show-model-info="showModelInfo" :models="selectedItems" />
+    <resource-item-list
+      @show-resource-item-info="showResourceItemInfo"
+      :allItems="selectedItems"
+    />
 
     <footer class="footer">
       <div class="columns is-multiline">
@@ -241,19 +244,19 @@
         marginwidth="0"
         >Loading…</iframe
       >
-      <model-info
-        v-else-if="showDialogMode === 'model' && selectedModel"
-        :model="selectedModel"
-      ></model-info>
+      <resource-item-info
+        v-else-if="showDialogMode === 'model' && selectedResourceItem"
+        :resourceItem="selectedResourceItem"
+      ></resource-item-info>
     </modal>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import ModelSelector from "@/components/ModelSelector.vue";
-import ModelList from "@/components/ModelList.vue";
-import ModelInfo from "@/components/ModelInfo.vue";
+import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
+import ResourceItemList from "@/components/ResourceItemList.vue";
+import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import About from "@/views/About.vue";
 import siteConfig from "../siteConfig";
 import {
@@ -269,36 +272,36 @@ import {
   debounce
 } from "../utils";
 
-function normalizeModel(model) {
-  model.apps = model.apps || [];
-  model.covers = model.covers || [];
-  model.authors = model.authors || [];
-  model.description = model.description || "";
-  if (model.covers && !Array.isArray(model.covers)) {
-    model.covers = [model.covers];
+function normalizeItem(item) {
+  item.apps = item.apps || [];
+  item.covers = item.covers || [];
+  item.authors = item.authors || [];
+  item.description = item.description || "";
+  if (item.covers && !Array.isArray(item.covers)) {
+    item.covers = [item.covers];
   }
-  model.cover_images = [];
-  for (let cover of model.covers) {
+  item.cover_images = [];
+  for (let cover of item.covers) {
     if (cover.includes("(") || cover.includes(")")) {
       console.error("cover image file name cannot contain brackets.");
       continue;
     }
     if (!cover.startsWith("http")) {
-      model.cover_images.push(
-        encodeURI(concatAndResolveUrl(model.root_url, cover))
+      item.cover_images.push(
+        encodeURI(concatAndResolveUrl(item.root_url, cover))
       );
     } else {
-      model.cover_images.push(encodeURI(cover));
+      item.cover_images.push(encodeURI(cover));
     }
   }
 
-  model.allLabels = model.labels || [];
-  if (model.license) {
-    model.allLabels.push(model.license);
+  item.allLabels = item.labels || [];
+  if (item.license) {
+    item.allLabels.push(item.license);
   }
-  if (model.tags) {
-    model.allLabels = model.allLabels.concat(
-      model.tags.map(tag => tag.toLowerCase())
+  if (item.tags) {
+    item.allLabels = item.allLabels.concat(
+      item.tags.map(tag => tag.toLowerCase())
     );
   }
 }
@@ -306,15 +309,15 @@ function normalizeModel(model) {
 export default {
   name: "Home",
   components: {
-    "model-list": ModelList,
-    "model-selector": ModelSelector,
-    "model-info": ModelInfo,
+    "resource-item-list": ResourceItemList,
+    "resource-item-selector": ResourceItemSelector,
+    "resource-item-info": ResourceItemInfo,
     about: About
   },
   data() {
     return {
       siteConfig: siteConfig,
-      allItems: null,
+      resourceItems: null,
       selectedItems: null,
       showMenu: false,
       applications: [],
@@ -325,7 +328,7 @@ export default {
         draggable: true
       },
       dialogWindows: [],
-      selectedModel: null,
+      selectedResourceItem: null,
       fullscreen: false,
       selected_dialog_window: null,
       screenWidth: 1000,
@@ -360,12 +363,12 @@ export default {
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
       items = repo_manifest.items;
-      for (let model of items) {
-        model.repo = repo;
-        model.model_uri = `${repo}:${model.name}`;
-        model.source_url = model.url;
-        if (!model.source.startsWith("http"))
-          model.source = concatAndResolveUrl(model.root_url, model.source);
+      for (let item of items) {
+        item.repo = repo;
+        item.model_uri = `${repo}:${item.name}`;
+        item.source_url = item.url;
+        if (!item.source.startsWith("http"))
+          item.source = concatAndResolveUrl(item.root_url, item.source);
       }
       this.setModels(items);
       this.$forceUpdate();
@@ -399,10 +402,10 @@ export default {
           );
           this.allApps = apps;
 
-          for (let model of this.allItems) {
-            model.apps = [];
-            for (let app_key in model.applications) {
-              if (this.allApps[app_key]) model.apps.push(this.allApps[app_key]);
+          for (let item of this.resourceItems) {
+            item.apps = [];
+            for (let app_key in item.applications) {
+              if (this.allApps[app_key]) item.apps.push(this.allApps[app_key]);
             }
             this.$forceUpdate();
           }
@@ -420,14 +423,14 @@ export default {
   computed: {
     fullLabelList: function() {
       const fullLabelList = [];
-      if (this.allItems) {
+      if (this.resourceItems) {
         const tp = this.currentList && this.currentList.type;
-        const models = tp
-          ? this.allItems.filter(m => m.type === tp)
-          : this.allItems;
-        for (let model of models) {
-          normalizeModel(model);
-          model.allLabels.forEach(label => {
+        const items = tp
+          ? this.resourceItems.filter(m => m.type === tp)
+          : this.resourceItems;
+        for (let item of items) {
+          normalizeItem(item);
+          item.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
               fullLabelList.push(label.toLowerCase());
             }
@@ -469,21 +472,20 @@ export default {
   methods: {
     addWindow(w) {
       this.selectWindow(w);
-      this.show_models = false;
+
       this.selected_window = w;
       this.$forceUpdate();
     },
     async removeWindow(w) {
       w.closing = true;
       await w.close();
-      this.show_models = true;
+
       this.selected_window = null;
       this.$forceUpdate();
     },
     selectWindow(w) {
       if (w.closing) return;
       this.selected_window = w;
-      this.show_models = false;
     },
     updateSize() {
       debounce(() => {
@@ -511,10 +513,10 @@ export default {
       this.infoDialogTitle = "Subscribe to News and Updates";
       this.$modal.show("info-dialog");
     },
-    showModelInfo(mInfo) {
+    showResourceItemInfo(mInfo) {
       this.showDialogMode = "model";
-      this.selectedModel = mInfo;
-      this.infoDialogTitle = this.selectedModel.name;
+      this.selectedResourceItem = mInfo;
+      this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.fullscreen = true;
       this.$modal.show("info-dialog");
     },
@@ -523,7 +525,7 @@ export default {
       if (status.loading === false) this.showMessage("Loading done.");
     },
     closeWindow() {
-      this.selectedModel = null;
+      this.selectedResourceItem = null;
       this.$modal.hide("info-dialog");
     },
     minimizeWindow() {
@@ -536,24 +538,24 @@ export default {
       const top = this.$refs.search_anchor.getBoundingClientRect().top;
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
-    updateModelList(models) {
+    updateResourceItemList(models) {
       if (models.length <= 0) {
         this.showMessage("No item found.");
       }
       this.selectedItems = models;
     },
     setModels(models) {
-      this.allItems = models;
+      this.resourceItems = models;
       const tp = this.currentList && this.currentList.type;
       this.selectedItems = tp ? models.filter(m => m.type === tp) : models;
     },
     showModelFromUrl() {
       const selected_model = getUrlParameter("model");
       if (selected_model) {
-        const m = this.allItems.filter(
-          model => model.name === selected_model
+        const m = this.resourceItems.filter(
+          item => item.name === selected_model
         )[0];
-        if (m) this.showModelInfo(m);
+        if (m) this.showResourceItemInfo(m);
       }
     },
     showMessage(message, duration) {
@@ -575,10 +577,10 @@ export default {
       loadCodeFromFile(this.imjoy, local_file);
     },
 
-    share(model) {
+    share(item) {
       prompt(
         "Please copy and paste following URL for sharing:",
-        "https://bioimage.io?model=" + encodeURI(model.name)
+        "https://bioimage.io?name=" + encodeURI(item.name)
       );
     },
     getLabelCount(label) {
@@ -604,7 +606,7 @@ export default {
   background: #a8d8ff !important;
 }
 
-.model-card:hover {
+.resource-item-card:hover {
   transition: all 0.4s;
   -webkit-transition: all 0.4s;
   box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
