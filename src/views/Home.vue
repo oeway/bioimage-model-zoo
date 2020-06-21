@@ -109,7 +109,7 @@
     </div>
     <model-selector
       @selection-changed="updateModelList"
-      :models="models"
+      :models="allItems"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
       :type="currentList && currentList.type"
@@ -346,9 +346,9 @@ export default {
         if (query_repo.startsWith("http") || query_repo.startsWith("/")) {
           manifest_url = query_repo;
         } else if (query_repo.split("/").length === 2) {
-          manifest_url = `https://raw.githubusercontent.com/${query_repo}/master/manifest.model.json`;
+          manifest_url = `https://raw.githubusercontent.com/${query_repo}/master/manifest.bioimage.io.json`;
         } else if (query_repo.split("/").length === 3) {
-          manifest_url = `https://raw.githubusercontent.com/${query_repo}/manifest.model.json`;
+          manifest_url = `https://raw.githubusercontent.com/${query_repo}/manifest.bioimage.io.json`;
         } else {
           alert("Unsupported repo format.");
           throw "Unsupported repo format.";
