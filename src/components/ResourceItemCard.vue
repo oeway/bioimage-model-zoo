@@ -41,60 +41,29 @@
             <b-icon v-else :icon="icon.src" size="is-small" />
             <span>{{ resourceItem.name }}</span>
           </h4>
-
-          <b-tooltip
-            v-if="resourceItem.git_repo"
-            label="Git Repository"
-            class="floating-corner-btn"
-            style="right: 40px;"
-            position="is-top"
-          >
-            <b-button
-              tag="a"
-              rounded
-              :href="resourceItem.git_repo"
-              target="_blank"
-              class="is-small action-btn"
-            >
-              <b-icon icon="github-circle" size="is-small"> </b-icon>
-            </b-button>
-          </b-tooltip>
-          <b-tooltip
-            v-if="resourceItem.download_url"
-            label="Download"
-            class="floating-corner-btn"
-            style="right: 5px;"
-            position="is-top"
-          >
-            <b-button
-              tag="a"
-              rounded
-              :href="resourceItem.download_url"
-              target="_blank"
-              class="is-small action-btn"
-            >
-              <b-icon icon="download" size="is-small"> </b-icon>
-            </b-button>
-          </b-tooltip>
-
           <div class="buttons floating-buttons">
             <template v-for="app in resourceItem.apps">
-              <b-tooltip :key="app.name" :label="app.name" position="is-top">
+              <b-tooltip
+                :class="{ 'hover-show': app.show_on_hover }"
+                :key="app.name"
+                :label="app.name"
+                position="is-top"
+              >
                 <b-button
                   rounded
-                  @click="runOneModel(app, resourceItem)"
+                  :tag="app.url ? 'a' : 'button'"
+                  :href="app.url"
+                  @click="!app.url && app.run && app.run()"
                   class="is-small action-btn"
                 >
-                  <b-icon v-if="!app.config.icon" icon="puzzle" size="is-small">
+                  <b-icon v-if="!app.icon" icon="puzzle" size="is-small">
                   </b-icon>
-
                   <img
-                    v-else-if="app.config.icon.startsWith('http')"
+                    v-else-if="app.icon.startsWith('http')"
                     class="app-icon"
-                    :src="app.config.icon"
+                    :src="app.icon"
                   />
-                  <b-icon v-else :icon="app.config.icon" size="is-small">
-                  </b-icon>
+                  <b-icon v-else :icon="app.icon" size="is-small"> </b-icon>
                 </b-button>
               </b-tooltip>
             </template>
@@ -238,14 +207,13 @@ export default {
   max-width: 100px;
 }
 
-.floating-corner-btn {
-  bottom: 10px;
-  position: absolute;
+.hover-show {
   opacity: 0;
   transition: 0.3s ease;
 }
 
-.card:hover .floating-corner-btn {
+.card:hover .hover-show {
   opacity: 1;
+  transition: 0.3s ease;
 }
 </style>

@@ -307,6 +307,21 @@ function normalizeItem(item) {
   item.allLabels = Array.from(
     new Set(item.allLabels.map(label => label.toLowerCase()))
   );
+  item.apps = [];
+  if (item.download_url)
+    item.apps.unshift({
+      name: "Download",
+      icon: "download",
+      url: item.download_url,
+      show_on_hover: true
+    });
+  if (item.git_repo)
+    item.apps.unshift({
+      name: "Git Repository",
+      icon: "github-circle",
+      url: item.git_repo,
+      show_on_hover: true
+    });
 }
 
 export default {
@@ -367,8 +382,7 @@ export default {
       const resourceItems = repo_manifest.resources;
       for (let item of resourceItems) {
         item.repo = repo;
-        item.model_uri = `${repo}:${item.name}`;
-        item.source_url = item.url;
+        normalizeItem(item);
         if (!item.source.startsWith("http"))
           item.source = concatAndResolveUrl(item.root_url, item.source);
       }
@@ -410,10 +424,20 @@ export default {
           );
           this.allApps = apps;
           for (let item of resourceItems) {
-            const apps = [];
+            // make a shallow copy or create an empty array
+            const apps = (item.apps && item.apps.slice()) || [];
             if (item.applications) {
               for (let app_key of item.applications) {
-                if (this.allApps[app_key]) apps.push(this.allApps[app_key]);
+                if (this.allApps[app_key]) {
+                  const app = this.allApps[app_key];
+                  apps.unshift({
+                    name: app.name,
+                    icon: app.config.icon,
+                    run() {
+                      app.api.runOneModel(item);
+                    }
+                  });
+                }
               }
             }
             // This is to make sure the app icons get updated
@@ -439,7 +463,6 @@ export default {
           ? this.resourceItems.filter(m => m.type === tp)
           : this.resourceItems;
         for (let item of items) {
-          normalizeItem(item);
           item.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
               fullLabelList.push(label.toLowerCase());
