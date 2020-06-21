@@ -9,7 +9,6 @@
         >
           <resource-item-card
             @show-info="showResourceItemInfo"
-            :apps="item.apps"
             :resourceItem="item"
           ></resource-item-card>
         </div>

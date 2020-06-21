@@ -78,7 +78,7 @@
           </b-tooltip>
 
           <div class="buttons floating-buttons">
-            <template v-for="app in apps">
+            <template v-for="app in resourceItem.apps">
               <b-tooltip :key="app.name" :label="app.name" position="is-top">
                 <b-button
                   rounded
@@ -127,10 +127,6 @@ export default {
     resourceItem: {
       type: Object,
       default: null
-    },
-    apps: {
-      type: Array,
-      default: () => []
     }
   },
   computed: {

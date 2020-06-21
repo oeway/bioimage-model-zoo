@@ -250,7 +250,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
+import Vue from "vue";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
@@ -295,11 +295,18 @@ function normalizeItem(item) {
   if (item.license) {
     item.allLabels.push(item.license);
   }
+  if (item.applications) {
+    item.allLabels = item.allLabels.concat(item.applications);
+  }
   if (item.tags) {
     item.allLabels = item.allLabels.concat(
       item.tags.map(tag => tag.toLowerCase())
     );
   }
+  // make it lower case and remove duplicates
+  item.allLabels = Array.from(
+    new Set(item.allLabels.map(label => label.toLowerCase()))
+  );
 }
 
 export default {
@@ -403,14 +410,14 @@ export default {
           );
           this.allApps = apps;
           for (let item of resourceItems) {
-            item.apps = [];
+            const apps = [];
             if (item.applications) {
               for (let app_key of item.applications) {
-                if (this.allApps[app_key])
-                  item.apps.push(this.allApps[app_key]);
+                if (this.allApps[app_key]) apps.push(this.allApps[app_key]);
               }
-              this.$forceUpdate();
             }
+            // This is to make sure the app icons get updated
+            Vue.set(item, "apps", apps);
           }
         });
       });
@@ -443,7 +450,7 @@ export default {
       fullLabelList.sort((a, b) =>
         a.toLowerCase() < b.toLowerCase() ? -1 : 1
       );
-      return fullLabelList;
+      return Array.from(new Set(fullLabelList));
     },
     tagCategories: function() {
       if (this.currentList) {
@@ -562,7 +569,8 @@ export default {
         message: message.slice(0, 200),
         onAction: function() {},
         actionText: "Close",
-        duration: duration
+        duration: duration,
+        queue: false
       };
       this.$buefy.snackbar.open(data);
     },
