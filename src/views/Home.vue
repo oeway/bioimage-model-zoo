@@ -270,7 +270,6 @@ import {
 } from "../utils";
 
 function normalizeItem(item) {
-  item.apps = item.apps || [];
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";

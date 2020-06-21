@@ -19,10 +19,27 @@
         </figure>
       </b-carousel-item>
     </b-carousel>
+    <span class="authors">
+      {{
+        resourceItem.authors && resourceItem.authors.length > 0
+          ? "Authors: " + resourceItem.authors.join(",")
+          : ""
+      }}
+    </span>
+    <br />
+    <span v-for="t in resourceItem.tags" :key="t">
+      <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
+    </span>
+    <br />
+    <p v-if="resourceItem.description">{{ resourceItem.description }}</p>
     <div v-if="resourceItem.docs" v-html="resourceItem.docs"></div>
-    <div v-else>
-      <p>This resourceItem has no documentation!</p>
-    </div>
+    <br />
+    <h2 v-if="formatedCitation">How to cite</h2>
+    <ul v-if="formatedCitation" class="citation">
+      <li v-for="c in formatedCitation" :key="c.text">
+        {{ c.text }} <a :href="c.url" target="_blank">{{ c.url_text }}</a>
+      </li>
+    </ul>
     <div v-if="resourceItem.yamlConfig" v-html="resourceItem.yamlConfig"></div>
   </div>
 </template>
@@ -72,6 +89,31 @@ export default {
   mounted() {
     this.getDocs(this.resourceItem);
     this.getYamlConfig(this.resourceItem);
+  },
+  computed: {
+    formatedCitation: function() {
+      let cites = this.resourceItem.cite;
+      if (!cites) return null;
+      if (this.resourceItem.cite && !Array.isArray(this.resourceItem.cite)) {
+        cites = [this.resourceItem.cite];
+      }
+      const citations = [];
+      for (let c of cites) {
+        let url = c.url;
+        let url_text = "link";
+        if (c.doi) {
+          if (c.doi.startsWith("http")) url = c.doi;
+          else url = "https://doi.org/" + c.doi;
+          url_text = "doi";
+        }
+        citations.push({
+          text: c.text,
+          url,
+          url_text
+        });
+      }
+      return citations;
+    }
   },
   methods: {
     async getDocs(resourceItem) {
@@ -172,5 +214,8 @@ export default {
 }
 .card-image {
   max-height: 500px;
+}
+.citation {
+  list-style-type: circle;
 }
 </style>
