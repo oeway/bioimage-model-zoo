@@ -322,14 +322,14 @@ export default {
       let repo = "bioimage-io/bioimage-io-models";
 
       const query_repo = getUrlParameter("repo");
-      let repository_url = this.siteConfig.repository_url;
+      let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {
         if (query_repo.startsWith("http") || query_repo.startsWith("/")) {
-          repository_url = query_repo;
+          manifest_url = query_repo;
         } else if (query_repo.split("/").length === 2) {
-          repository_url = `https://raw.githubusercontent.com/${query_repo}/master/manifest.model.json`;
+          manifest_url = `https://raw.githubusercontent.com/${query_repo}/master/manifest.model.json`;
         } else if (query_repo.split("/").length === 3) {
-          repository_url = `https://raw.githubusercontent.com/${query_repo}/manifest.model.json`;
+          manifest_url = `https://raw.githubusercontent.com/${query_repo}/manifest.model.json`;
         } else {
           alert("Unsupported repo format.");
           throw "Unsupported repo format.";
@@ -338,7 +338,7 @@ export default {
         repo = query_repo;
       }
 
-      const response = await fetch(repository_url + "?" + randId());
+      const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
       items = repo_manifest.items;
       for (let model of items) {
