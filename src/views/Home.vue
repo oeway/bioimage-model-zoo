@@ -256,7 +256,12 @@ import ModelList from "@/components/ModelList.vue";
 import ModelInfo from "@/components/ModelInfo.vue";
 import About from "@/views/About.vue";
 import siteConfig from "../siteConfig";
-import { setupImJoyCore, loadPlugins, loadCodeFromFile } from "../imjoyAPI";
+import {
+  setupBioEngine,
+  loadPlugins,
+  loadCodeFromFile,
+  setupBioEngineAPI
+} from "../bioEngine";
 import {
   getUrlParameter,
   randId,
@@ -367,7 +372,7 @@ export default {
 
       console.log("Loading ImJoy...");
       const workspace = getUrlParameter("workspace") || getUrlParameter("w");
-      setupImJoyCore(
+      setupBioEngine(
         workspace,
         this.showMessage,
         this.showWindowDialog,
@@ -400,6 +405,10 @@ export default {
           }
         }
       });
+      // inside an iframe
+      if (window.self !== window.top) {
+        setupBioEngineAPI();
+      }
     } catch (e) {
       console.error(e);
       alert(`Failed to fetch manifest file from the repo: ${e}.`);

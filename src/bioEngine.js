@@ -1,6 +1,5 @@
 import { reshape } from "mathjs";
 import { validateBioEngineApp } from "./utils";
-const itkVtkViewer = window.itkVtkViewer;
 
 const dtypeToTypedArray = {
   int8: "Int8Array",
@@ -18,6 +17,7 @@ const ArrayBufferView = Object.getPrototypeOf(
   Object.getPrototypeOf(new Uint8Array())
 ).constructor;
 
+// eslint-disable-next-line no-unused-vars
 function toArray(data) {
   if (
     typeof data === "number" ||
@@ -51,70 +51,31 @@ function toArray(data) {
   }
 }
 
-export async function setupImJoyAPI({ addLayer, setUI }) {
+export async function setupBioEngineAPI() {
   const imjoyRPC = await window.imjoyLoader.loadImJoyRPC({
     api_version: "0.2.3"
   });
 
   const api = await imjoyRPC.setupRPC({
-    name: "Bioimage.io",
+    name: "BioImage.IO",
     version: "0.1.0",
-    description:
-      "Bioimage.io--a web application for visualizing and annotating multi-dimensional images",
+    description: "BioImage.IO -- AI models for bioimage analysis.",
     type: "rpc-window"
-  });
-
-  api.registerCodec({
-    name: "itkimage",
-    decoder: itkVtkViewer.utils.convertToItkImage
   });
   const service_api = {
     setup() {
-      api.log("Bioimage.io loaded successfully.");
+      api.log("BioImage.IO loaded successfully.");
     },
-    async run(ctx) {
-      if (ctx.data && ctx.data.layers) {
-        const layer_apis = [];
-        for (let config of ctx.data.layers) {
-          const layer = await addLayer(config);
-          layer_apis.push(layer.getLayerAPI());
-        }
-        return layer_apis;
-      }
-    },
-    add_layer: addLayer,
-    async view_image(image_array, config) {
-      config = config || {};
-      config.type = config.type || "2d-image";
-      config.name = config.name || config.type;
-      config.data = image_array;
-      const layer = await addLayer(config);
-      return layer.getLayerAPI();
-    },
-    async add_shapes(shape_array, config) {
-      config = config || {};
-      config.type = "vector";
-      config.data = toArray(shape_array);
-      const layer = await addLayer(config);
-      return layer.getLayerAPI();
-    },
-    async add_points(point_array, config) {
-      config = config || {};
-      config.type = "vector";
-      config.data = toArray(point_array);
-      config.shape_type = "MultiPoint";
-      const layer = await addLayer(config);
-      return layer.getLayerAPI();
-    },
-    async set_ui(config) {
-      await setUI(config);
+    async run() {},
+    getSelection() {
+      return [];
     }
   };
 
   api.export(service_api);
 }
 
-export async function setupImJoyCore(
+export async function setupBioEngine(
   workspace,
   showMessage,
   showDialog,
