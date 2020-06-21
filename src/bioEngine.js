@@ -1,5 +1,4 @@
 import { reshape } from "mathjs";
-import { validateBioEngineApp } from "./utils";
 
 const dtypeToTypedArray = {
   int8: "Int8Array",
@@ -191,6 +190,23 @@ export async function setupBioEngine(
   return imjoy;
 }
 
+export function validateBioEngineApp(name, api) {
+  if (!api.runOneModel && !api.runManyModels) {
+    console.error(
+      `${name}" has neither "runOneModel" nor "runManyModels":`,
+      api
+    );
+    alert(
+      `"${name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`
+    );
+    return false;
+  }
+  if (!api.testModel) {
+    console.warn(`Please define a testModel function for "${name}".`);
+  }
+  return true;
+}
+
 export async function loadPlugins(imjoy, appSources) {
   console.log("ImJoy started: ", imjoy);
   await imjoy.pm.reloadPluginRecursively({
@@ -270,19 +286,25 @@ export async function runManyModels(plugin, models) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
     if (!validateBioEngineApp(plugin.name, w)) {
-      w.runManyModels = w.run;
+      await w.run({ data: models });
+    } else {
+      await w.runManyModels(models);
     }
-    await w.runManyModels(models);
   } else {
-    plugin.api.runManyModels(models);
+    if (validateBioEngineApp(plugin.name, plugin))
+      await plugin.api.runManyModels(models);
+    else await plugin.api.run({ data: models });
   }
 }
 
 export async function runOneModel(plugin, model) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
-    validateBioEngineApp(plugin.name, w);
-    await w.runOneModel(model);
+    if (validateBioEngineApp(plugin.name, w)) {
+      await w.runOneModel(model);
+    } else {
+      throw "Invalid BioEngine App.";
+    }
   } else {
     plugin.api.runOneModel(model);
   }

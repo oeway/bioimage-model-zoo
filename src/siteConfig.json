@@ -54,7 +54,7 @@
         ]
       }
     },
-    { "name": "Datasets", "type": "dataset" },
-    { "name": "Applications", "type": "application" }
+    { "name": "Applications", "type": "application" },
+    { "name": "Datasets", "type": "dataset" }
   ]
 }

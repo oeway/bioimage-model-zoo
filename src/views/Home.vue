@@ -259,7 +259,8 @@ import {
   loadPlugins,
   loadCodeFromFile,
   setupBioEngineAPI,
-  runOneModel
+  runOneModel,
+  runManyModels
 } from "../bioEngine";
 import {
   getUrlParameter,
@@ -429,7 +430,17 @@ export default {
           for (let item of resourceItems) {
             // make a shallow copy or create an empty array
             const apps = (item.apps && item.apps.slice()) || [];
-            if (item.applications) {
+            if (item.type === "application") {
+              const app = this.allApps[item.name];
+              apps.unshift({
+                name: "Run",
+                icon: "play",
+                show_on_hover: true,
+                run() {
+                  runManyModels(app, item);
+                }
+              });
+            } else if (item.applications) {
               for (let app_key of item.applications) {
                 if (this.allApps[app_key]) {
                   const app = this.allApps[app_key];
