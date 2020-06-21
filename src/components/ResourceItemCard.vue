@@ -33,6 +33,14 @@
       <div class="card-content">
         <div class="content">
           <h4 class="resource-item-title" @click="showResourceItemInfo">
+            <img v-if="icon.type === 'img'" class="app-icon" :src="icon.src" />
+            <img
+              v-else-if="icon.type === 'animal'"
+              class="app-icon"
+              style="filter: drop-shadow(blue 1px 1px 3px);"
+              :src="'/static/anonymousAnimals/' + icon.src + '.png'"
+            />
+            <b-icon v-else :icon="icon.src" size="is-small" />
             {{ resourceItem.name }}
           </h4>
           <b-tooltip
@@ -64,7 +72,7 @@
 
                   <img
                     v-else-if="app.config.icon.startsWith('http')"
-                    class="app-icons"
+                    class="app-icon"
                     :src="app.config.icon"
                   />
                   <b-icon v-else :icon="app.config.icon" size="is-small">
@@ -93,6 +101,8 @@
 </template>
 
 <script>
+import { anonymousAnimals } from "../utils";
+
 export default {
   name: "ModelCard",
   props: {
@@ -103,6 +113,33 @@ export default {
     apps: {
       type: Array,
       default: () => []
+    }
+  },
+  computed: {
+    icon: function() {
+      if (this.resourceItem.icon) {
+        if (this.resourceItem.icon.startsWith("http")) {
+          return { type: "img", src: this.resourceItem.icon };
+        }
+        if (anonymousAnimals.indexOf(this.resourceItem.icon) >= 0) {
+          return {
+            type: "animal",
+            src: this.resourceItem.icon
+          };
+        } else {
+          return { type: "material", src: this.resourceItem.icon };
+        }
+      } else {
+        let sum = 0;
+        for (let i = 0; i < this.resourceItem.name.length; i++) {
+          sum = sum + this.resourceItem.name.charCodeAt(i);
+        }
+        const selectedIcon = anonymousAnimals[sum % anonymousAnimals.length];
+        return {
+          type: "animal",
+          src: selectedIcon
+        };
+      }
     }
   },
   methods: {
@@ -150,10 +187,9 @@ export default {
   left: 10px;
   bottom: -15px;
 }
-.app-icons {
+.app-icon {
   width: 20px !important;
   max-width: 20px;
-  padding-top: 5px;
 }
 .button.is-small {
   border-radius: 30px;

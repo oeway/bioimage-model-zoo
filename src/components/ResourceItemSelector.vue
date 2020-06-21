@@ -246,11 +246,6 @@ export default {
   left: 5px;
   top: 5px;
 }
-.app-icons {
-  width: 26px !important;
-  max-width: 26px;
-  padding-top: 5px;
-}
 .button.is-small {
   border-radius: 30px;
   font-size: 1rem;

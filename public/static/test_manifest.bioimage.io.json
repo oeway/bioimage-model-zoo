@@ -8,6 +8,7 @@
       "name": "Ilastik",
       "type": "application",
       "description": "Ilastik model loader",
+      "tags": ["segmentation"],
       "source": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Ilastik-app.imjoy.html"
     },
     {
