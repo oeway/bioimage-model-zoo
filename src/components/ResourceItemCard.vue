@@ -218,7 +218,7 @@ export default {
 .button.is-small {
   border-radius: 30px;
   font-size: 0.8rem;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.85);
   color: #2196f3;
 }
 .cover-image {
