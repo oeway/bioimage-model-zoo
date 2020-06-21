@@ -85,10 +85,10 @@
     </section>
     <br />
     <span ref="search_anchor"></span>
-    <div class="container" style="text-align:center;  padding-right: 60px;">
+    <div class="container" style="text-align:center;">
       <div
         class="item-lists is-link"
-        style="width:30px;"
+        style="width:30px; margin-left: -16px;"
         @click="currentList = null"
         :class="{ active: !currentList }"
       >
@@ -545,6 +545,7 @@ export default {
       }
       this.selectWindow(w);
       this.dialogWindows.push(w);
+      if (this.screenWidth < 700) this.dialogWindowConfig.fullscreen = true;
       this.$modal.show("window-modal-dialog");
       this.$forceUpdate();
     },
@@ -555,7 +556,7 @@ export default {
     updateSize() {
       debounce(() => {
         this.screenWidth = window.innerWidth;
-        if (this.screenWidth < 700) this.fullscreen = true;
+        if (this.screenWidth < 700) this.infoDialogFullscreen = true;
         this.$forceUpdate();
       }, 250)();
     },
@@ -571,18 +572,20 @@ export default {
     showAboutDialog() {
       this.showInfoDialogMode = "about";
       this.infoDialogTitle = "About";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
     showSubscribeDialog() {
       this.showInfoDialogMode = "subscribe";
       this.infoDialogTitle = "Subscribe to News and Updates";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
     showResourceItemInfo(mInfo) {
       this.showInfoDialogMode = "model";
       this.selectedResourceItem = mInfo;
       this.infoDialogTitle = this.selectedResourceItem.name;
-      if (this.screenWidth < 700) this.fullscreen = true;
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
     updateStatus(status) {
@@ -594,7 +597,7 @@ export default {
       this.$modal.hide("info-dialog");
     },
     maximizeInfoWindow() {
-      this.fullscreen = !this.fullscreen;
+      this.infoDialogFullscreen = !this.infoDialogFullscreen;
     },
     closeDialogWindow(w) {
       if (this.selectedDialogWindow.id !== w.id) {
@@ -724,12 +727,12 @@ export default {
 }
 
 .item-lists {
-  width: 100px;
+  width: 110px;
   display: inline-block;
   margin: 10px;
   text-align: center;
   cursor: pointer;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #006fcb;
 }
 .item-lists:hover {
