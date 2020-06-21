@@ -127,7 +127,7 @@
       />
     </div>
     <br />
-    <model-list @show-model-info="showModelInfo" :models="selectedModels" />
+    <model-list @show-model-info="showModelInfo" :models="selectedItems" />
 
     <footer class="footer">
       <div class="columns is-multiline">
@@ -314,11 +314,11 @@ export default {
   data() {
     return {
       siteConfig: siteConfig,
-      models: null,
-      selectedModels: null,
+      allItems: null,
+      selectedItems: null,
       showMenu: false,
       applications: [],
-      apps: {},
+      allApps: {},
       dialogWindowConfig: {
         width: "800px",
         height: "670px",
@@ -397,13 +397,16 @@ export default {
           this.showMessage(
             `Successfully loaded ${Object.keys(apps).length} applications.`
           );
-        });
-        for (let model of this.models) {
-          model.apps = [];
-          for (let app_key in model.applications) {
-            if (this.apps[app_key]) model.apps.push(this.apps[app_key]);
+          this.allApps = apps;
+
+          for (let model of this.allItems) {
+            model.apps = [];
+            for (let app_key in model.applications) {
+              if (this.allApps[app_key]) model.apps.push(this.allApps[app_key]);
+            }
+            this.$forceUpdate();
           }
-        }
+        });
       });
       // inside an iframe
       if (window.self !== window.top) {
@@ -417,8 +420,8 @@ export default {
   computed: {
     fullLabelList: function() {
       const fullLabelList = [];
-      if (this.models)
-        for (let model of this.models) {
+      if (this.allItems)
+        for (let model of this.allItems) {
           normalizeModel(model);
           model.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
@@ -447,14 +450,13 @@ export default {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
     // select models as default
-    setTimeout(() => {
-      for (let list of siteConfig.item_lists) {
-        if (list.type === "model") {
-          this.currentList = list;
-          break;
-        }
+
+    for (let list of siteConfig.item_lists) {
+      if (list.type === "model") {
+        this.currentList = list;
+        break;
       }
-    }, 100);
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
@@ -533,16 +535,19 @@ export default {
       if (models.length <= 0) {
         this.showMessage("No item found.");
       }
-      this.selectedModels = models;
+      this.selectedItems = models;
     },
     setModels(models) {
-      this.models = models;
-      this.selectedModels = models;
+      this.allItems = models;
+      const tp = this.currentList && this.currentList.type;
+      this.selectedItems = tp ? models.filter(m => m.type === tp) : models;
     },
     showModelFromUrl() {
       const selected_model = getUrlParameter("model");
       if (selected_model) {
-        const m = this.models.filter(model => model.name === selected_model)[0];
+        const m = this.allItems.filter(
+          model => model.name === selected_model
+        )[0];
         if (m) this.showModelInfo(m);
       }
     },
