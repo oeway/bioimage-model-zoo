@@ -20,7 +20,6 @@
               :src="cover"
               :alt="resourceItem.name"
               class="cover-image"
-              data-target="modal-image2"
             />
           </b-carousel-item>
         </b-carousel>
@@ -42,16 +41,36 @@
             <b-icon v-else :icon="icon.src" size="is-small" />
             <span>{{ resourceItem.name }}</span>
           </h4>
+
+          <b-tooltip
+            v-if="resourceItem.git_repo"
+            label="Git Repository"
+            class="floating-corner-btn"
+            style="right: 40px;"
+            position="is-top"
+          >
+            <b-button
+              tag="a"
+              rounded
+              :href="resourceItem.git_repo"
+              target="_blank"
+              class="is-small action-btn"
+            >
+              <b-icon icon="github-circle" size="is-small"> </b-icon>
+            </b-button>
+          </b-tooltip>
           <b-tooltip
             v-if="resourceItem.download_url"
             label="Download"
-            class="download-btn"
+            class="floating-corner-btn"
+            style="right: 5px;"
             position="is-top"
           >
             <b-button
               tag="a"
               rounded
               :href="resourceItem.download_url"
+              target="_blank"
               class="is-small action-btn"
             >
               <b-icon icon="download" size="is-small"> </b-icon>
@@ -183,6 +202,9 @@ export default {
 .action-btn {
   width: 33px;
 }
+.action-btn .icon {
+  font-size: 1.4rem;
+}
 .floating-buttons {
   position: absolute;
   left: 10px;
@@ -196,7 +218,7 @@ export default {
   border-radius: 30px;
   font-size: 0.8rem;
   background-color: #2196f3;
-  color: rgb(25, 25, 26);
+  color: white;
 }
 .cover-image {
   max-height: 100%;
@@ -219,15 +241,14 @@ export default {
   max-width: 100px;
 }
 
-.download-btn {
+.floating-corner-btn {
   top: 10px;
-  right: 5px;
   position: absolute;
   opacity: 0;
   transition: 0.3s ease;
 }
 
-.card:hover .download-btn {
+.card:hover .floating-corner-btn {
   opacity: 1;
 }
 </style>

@@ -9,7 +9,9 @@
       "type": "application",
       "description": "Ilastik model loader",
       "tags": ["segmentation"],
-      "source": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Ilastik-app.imjoy.html"
+      "source": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Ilastik-app.imjoy.html",
+      "download_url": "https://raw.githubusercontent.com/bioimage-io/models/master/src/Ilastik-app.imjoy.html",
+      "git_repo": "https://github.com/bioimage-io/models"
     },
     {
       "name": "Fiji",
