@@ -152,7 +152,7 @@
         @dblclick="maximizeWindow()"
         class="drag-handle dialog-header"
       >
-        <span> {{ selected_dialog_window.name }}</span>
+        <span class="noselect"> {{ selected_dialog_window.name }}</span>
         <button
           @click="closeWindow(selected_dialog_window)"
           class="dialog-header-button"
@@ -199,7 +199,7 @@
       :scrollable="true"
     >
       <div @dblclick="maximizeWindow()" class="drag-handle dialog-header">
-        <span> {{ infoDialogTitle }}</span>
+        <span class="noselect"> {{ infoDialogTitle }}</span>
         <button
           @click="closeWindow()"
           class="dialog-header-button"
@@ -698,7 +698,7 @@ export default {
   height: 40px;
   font-size: 1.4rem;
   cursor: move;
-  background-color: #448aff;
+  background-color: #2196f3;
   color: white;
   text-align: center;
   line-height: 40px;
@@ -716,6 +716,10 @@ export default {
   top: 2px;
   font-family: "Lucida Console", Monaco, monospace;
 }
+.dialog-header-button:focus {
+  outline: none;
+}
+
 .item-lists {
   width: 100px;
   display: inline-block;
@@ -731,5 +735,13 @@ export default {
 
 .item-lists.active {
   font-weight: 600;
+}
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 </style>
