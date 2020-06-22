@@ -32,10 +32,16 @@
       <div class="card-content">
         <div class="content">
           <h4 class="resource-item-title" @click="showResourceItemInfo">
-            <img v-if="icon.type === 'img'" class="item-icon" :src="icon.src" />
+            <img
+              v-if="icon.type === 'img'"
+              style="background: white;"
+              class="item-icon"
+              :src="icon.src"
+            />
             <img
               v-else-if="icon.type === 'animal'"
               class="item-icon"
+              style="border-radius: 50%;background: #167cf0b8;"
               :src="'/static/anonymousAnimals/' + icon.src + '.png'"
             />
             <b-icon v-else :icon="icon.src" size="is-small" />
@@ -218,9 +224,7 @@ export default {
   display: inline-block;
   margin-top: auto;
   margin-bottom: auto;
-  border-radius: 50%;
   border: 3px solid #00000000;
-  background: #167cf0b8;
   margin-right: 4px;
   width: 32px;
   max-width: 100px;

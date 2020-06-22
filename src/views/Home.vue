@@ -313,15 +313,11 @@ function normalizeItem(item) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
   if (item.tags) {
-    try {
-      item.allLabels = item.allLabels.concat(
-        item.tags
-          .filter(tag => typeof tag === "string")
-          .map(tag => tag.toLowerCase())
-      );
-    } catch (e) {
-      debugger;
-    }
+    item.allLabels = item.allLabels.concat(
+      item.tags
+        .filter(tag => typeof tag === "string")
+        .map(tag => tag.toLowerCase())
+    );
   }
   // make it lower case and remove duplicates
   item.allLabels = Array.from(
@@ -462,7 +458,6 @@ export default {
               });
             } else if (item.applications) {
               for (let app_key of item.applications) {
-                debugger;
                 if (this.allApps[app_key]) {
                   const app = this.allApps[app_key];
                   apps.unshift({
