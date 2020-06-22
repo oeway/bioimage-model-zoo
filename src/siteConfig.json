@@ -29,6 +29,52 @@
     "Contribute your models via Github",
     "Link models to datasets and applications"
   ],
+  "tables": {
+    "weights": [
+      {
+        "field": "id",
+        "label": "ID"
+      },
+      {
+        "field": "name",
+        "label": "Name"
+      },
+      {
+        "field": "description",
+        "label": "Description"
+      },
+      {
+        "field": "timestamp",
+        "label": "Timestamp"
+      },
+      {
+        "field": "source",
+        "label": "Source"
+      }
+    ],
+    "files": [
+      {
+        "field": "id",
+        "label": "ID"
+      },
+      {
+        "field": "name",
+        "label": "Name"
+      },
+      {
+        "field": "description",
+        "label": "Description"
+      },
+      {
+        "field": "timestamp",
+        "label": "Timestamp"
+      },
+      {
+        "field": "source",
+        "label": "Download"
+      }
+    ]
+  },
   "item_lists": [
     {
       "name": "Models",
@@ -65,7 +111,13 @@
         ]
       }
     },
-    { "name": "Applications", "type": "application" },
-    { "name": "Datasets", "type": "dataset" }
+    {
+      "name": "Applications",
+      "type": "application"
+    },
+    {
+      "name": "Datasets",
+      "type": "dataset"
+    }
   ]
 }
