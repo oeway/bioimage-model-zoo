@@ -5,11 +5,13 @@
   "url_root": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master",
   "resources": [
     {
-      "id": "Ilastik",
+      "id": "Ilastik Model Preview",
       "type": "application",
       "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Ilastik-app.imjoy.html",
       "icon": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Ilastik-icon.png",
       "name": "Ilastik Model Preview",
+      "version": "0.1.0",
+      "api_version": "0.1.7",
       "description": "Ilastik Model Preview for BioImage.io",
       "requirements": [
         "https://static.imjoy.io/spectre.css/spectre.min.css",
@@ -26,11 +28,13 @@
       "authors": []
     },
     {
-      "id": "Fiji",
+      "id": "Fiji Model Preview",
       "type": "application",
       "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Fiji-app.imjoy.html",
       "icon": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Fiji-icon.png",
       "name": "Fiji Model Preview",
+      "version": "0.1.0",
+      "api_version": "0.1.7",
       "description": "Fiji Model Preview for BioImage.io",
       "requirements": [
         "https://static.imjoy.io/spectre.css/spectre.min.css",
@@ -49,6 +53,8 @@
       "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/apps/HPA-Classification.imjoy.html",
       "icon": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/apps/hpa-logo.gif",
       "name": "HPA-Classification",
+      "version": "0.2.1",
+      "api_version": "0.1.7",
       "description": "ShuffleNetV2 for HPA.",
       "requirements": [
         "https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js",
@@ -62,7 +68,7 @@
       ],
       "env": null,
       "tags": [],
-      "covers": "https://oeway.github.io/ImJoy-Plugins/hpa-classification/hpa-classification-cover.gif",
+      "covers": "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif",
       "authors": []
     },
     {
@@ -82,6 +88,7 @@
       "files": [
         "https://gist.githubusercontent.com/oeway/ebedc17c9ab1f6aa5eee181679d85b5f/raw/vitessce-image-viewer-imjoy-demo.ipynb"
       ],
+      "id": "vitessce-image-viewer",
       "source": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw/vitessce-image-viewer.notebook.yaml"
     },
     {
@@ -107,12 +114,14 @@
         "brain",
         "vasculature"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2/UNetDA.model.yaml",
       "covers": [
         "documentation/covers/UNetCover.png"
       ],
+      "id": "UNetDA",
       "applications": [
-        "Ilastik"
+        "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/subeeshvasu/hbp-DL-seg-codes/releases/download/0.1.2/UNetDA.model.zip"
     },
@@ -139,12 +148,14 @@
         "brain",
         "vasculature"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2/2sUNetDA.model.yaml",
       "covers": [
         "documentation/covers/2sUNetCover.png"
       ],
+      "id": "2sUNetDA",
       "applications": [
-        "Ilastik"
+        "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/subeeshvasu/hbp-DL-seg-codes/releases/download/0.1.2/2sUNetDA.model.zip"
     },
@@ -169,9 +180,11 @@
         "unet2d",
         "n2v"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/fiji-bioimage-io/v0.1.4/models/n2v-sem-demo/n2v-sem-demo.model.yaml",
+      "id": "N2VSEMDemo",
       "applications": [
-        "Fiji"
+        "Fiji Model Preview"
       ],
       "download_url": "https://github.com/bioimage-io/fiji-bioimage-io/releases/download/v0.1.4/n2v-sem-demo.zip"
     },
@@ -191,10 +204,12 @@
         "tensorflow.js",
         "classification"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/models/HPAShuffleNetV2/HPAShuffleNetV2.yaml",
       "covers": [
         "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif"
       ],
+      "id": "HPA-Classification",
       "applications": [
         "HPA-Classification"
       ]
@@ -217,14 +232,22 @@
         "frunet_sev.jpg"
       ],
       "tags": [
-        "deepimagej",
-        "extracellular vesicles",
-        "segmentation",
-        "TEM"
+        [
+          "deepimagej",
+          "extracellular vesicles",
+          "segmentation",
+          "TEM"
+        ]
       ],
+      "format_version": null,
       "source": "https://raw.githubusercontent.com/deepimagej/models/master/fru-net_sev_segmentation/FRUNet2DsEVSegmentation.model.yaml",
+      "model": {
+        "source": "./saved_model.pb",
+        "sha256": "9ccb79070f30813e7447342e3ab7f4107a314a1414c1541c79134ef950ac4a7f"
+      },
+      "id": "FRUNet2DsEVSegmentation",
       "applications": [
-        "Fiji"
+        "Fiji Model Preview"
       ],
       "download_url": "https://github.com/deepimagej/models/releases/download/0.1/fru-net_sev_segmentation.zip"
     },
@@ -244,6 +267,7 @@
       "files": [
         "https://gist.githubusercontent.com/manzt/d16dbac0ea3adc3c7b9b61f54fa1f78d/raw/95854058512862accb0182d4a02f86a55ad19139/"
       ],
+      "id": "dummy_zarr",
       "source": "https://gist.githubusercontent.com/oeway/3dcbd79cd29da42be13a7e3bc0f9ca12/raw/dummy_zarr.dataset.yaml"
     },
     {
@@ -269,13 +293,15 @@
         "segmentation",
         "EM"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/platybrowser/platybrowser/3711f1c26e5db8c38c3faff4cccb3110560e3c67/segmentation/cells/UNet3DPlatyCellProbs.model/UNet3DPlatyCellProbs.model.yaml",
       "covers": [
         "ilastik_raw.png",
         "ilastik_pred.png"
       ],
+      "id": "UNet3DPlatyCellProbs",
       "applications": [
-        "Ilastik"
+        "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/platybrowser/platybrowser/releases/download/1.0.0/UNet3DPlatyCellProbs.model.zip"
     },
@@ -303,6 +329,7 @@
         "segmentation",
         "plant tissue"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/fynnbe/pytorch-3dunet/eabf146079c5829f6c6fe0488595838e54887c06/bioimage-io/UNet3DArabidopsisOvules.model/UNet3DArabidopsisOvules.model.yaml",
       "covers": [
         "ilastik_4.png",
@@ -311,8 +338,9 @@
         "ilastik_7.png",
         "ilastik_8.png"
       ],
+      "id": "UNet3DArabidopsisOvules",
       "applications": [
-        "Ilastik"
+        "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/wolny/pytorch-3dunet/releases/download/1.2.6/UNet3DArabidopsisOvules.model.zip"
     },
@@ -337,12 +365,14 @@
         "pytorch",
         "nucleus-segmentation"
       ],
+      "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/pytorch-bioimage-io/v0.1.1/specs/models/unet2d/nuclei_broad/UNet2DNucleiBroad.model.yaml",
       "covers": [
         "cover0.png"
       ],
+      "id": "UNet2DNucleiBroad",
       "applications": [
-        "Ilastik"
+        "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/bioimage-io/pytorch-bioimage-io/releases/download/v0.1.1/UNet2DNucleiBroad.model.zip"
     }

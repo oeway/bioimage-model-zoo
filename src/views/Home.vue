@@ -313,9 +313,15 @@ function normalizeItem(item) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
   if (item.tags) {
-    item.allLabels = item.allLabels.concat(
-      item.tags.map(tag => tag.toLowerCase())
-    );
+    try {
+      item.allLabels = item.allLabels.concat(
+        item.tags
+          .filter(tag => typeof tag === "string")
+          .map(tag => tag.toLowerCase())
+      );
+    } catch (e) {
+      debugger;
+    }
   }
   // make it lower case and remove duplicates
   item.allLabels = Array.from(
@@ -435,14 +441,15 @@ export default {
           m => m.type === "application"
         );
         this.showMessage("Loading applications...");
-        loadPlugins(imjoy, applications).then(apps => {
+        loadPlugins(imjoy, applications).then(allApps => {
           this.showMessage(
-            `Successfully loaded ${Object.keys(apps).length} applications.`
+            `Successfully loaded ${Object.keys(allApps).length} applications.`
           );
-          this.allApps = apps;
+          this.allApps = allApps;
           for (let item of resourceItems) {
             // make a shallow copy or create an empty array
             const apps = (item.apps && item.apps.slice()) || [];
+            console.log("=======all apps", allApps);
             if (item.type === "application") {
               const app = this.allApps[item.name];
               apps.unshift({
@@ -455,6 +462,7 @@ export default {
               });
             } else if (item.applications) {
               for (let app_key of item.applications) {
+                debugger;
                 if (this.allApps[app_key]) {
                   const app = this.allApps[app_key];
                   apps.unshift({
