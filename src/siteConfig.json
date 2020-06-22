@@ -37,7 +37,8 @@
       },
       {
         "field": "name",
-        "label": "Name"
+        "label": "Name",
+        "sortable": true
       },
       {
         "field": "description",
@@ -45,11 +46,15 @@
       },
       {
         "field": "timestamp",
-        "label": "Timestamp"
+        "label": "Timestamp",
+        "class": "tag is-success",
+        "sortable": true
       },
       {
         "field": "source",
-        "label": "Source"
+        "label": "Source",
+        "type": "url",
+        "text": "download"
       }
     ],
     "files": [

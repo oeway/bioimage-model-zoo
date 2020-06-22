@@ -66,9 +66,32 @@
       <b-table
         v-if="resourceItem[name]"
         :data="convert2Array(resourceItem[name])"
-        :columns="cols"
         :key="name"
-      ></b-table>
+      >
+        <template slot-scope="props">
+          <b-table-column
+            v-for="col in cols"
+            :key="col.field"
+            :field="col.field"
+            :label="col.label"
+            :width="col.width || 40"
+            :sortable="col.sortable"
+            numeric
+          >
+            <a
+              v-if="col.type === 'url'"
+              :class="col.class"
+              :href="props.row[col.field]"
+              target="_blank"
+            >
+              {{ col.text }}
+            </a>
+            <span :class="col.class" v-else>
+              {{ props.row[col.field] }}
+            </span>
+          </b-table-column>
+        </template>
+      </b-table>
     </template>
     <div class="markdown-body">
       <div v-if="resourceItem.docs" v-html="resourceItem.docs"></div>
