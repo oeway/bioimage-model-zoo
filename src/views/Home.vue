@@ -740,6 +740,9 @@ export default {
   opacity: 0.9;
   width: 60%;
   transition: 0.9s ease;
+  max-height: 50%;
+  max-width: 100%;
+  object-fit: contain;
 }
 .hero:hover .background-img {
   width: 65%;
