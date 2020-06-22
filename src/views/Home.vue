@@ -372,7 +372,6 @@ export default {
     };
   },
   created: async function() {
-    window.document.title = this.siteConfig.site_name;
     try {
       let repo = "bioimage-io/bioimage-io-models";
 

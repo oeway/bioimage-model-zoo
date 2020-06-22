@@ -1,3 +1,6 @@
+const siteConfig = require('./src/siteConfig.json');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+siteConfig['BASE_URL'] = process.env.BASE_URL
 module.exports = {
   publicPath: '/',
   pwa: {
@@ -6,7 +9,12 @@ module.exports = {
           skipWaiting: true
       }
   },
-  configureWebpack: () => {
-
+  configureWebpack: {
+    plugins: [
+      new HtmlWebpackPlugin({
+        templateParameters: siteConfig,
+        template : './public/index.ejs'
+    })
+    ]
   }
 }
