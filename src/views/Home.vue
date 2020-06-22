@@ -859,4 +859,9 @@ export default {
     font-size: 1.1rem !important;
   }
 }
+
+html,
+body {
+  overflow-x: hidden;
+}
 </style>
