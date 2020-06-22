@@ -445,7 +445,6 @@ export default {
           for (let item of resourceItems) {
             // make a shallow copy or create an empty array
             const apps = (item.apps && item.apps.slice()) || [];
-            console.log("=======all apps", allApps);
             if (item.type === "application") {
               const app = this.allApps[item.name];
               apps.unshift({
