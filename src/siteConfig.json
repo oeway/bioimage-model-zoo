@@ -20,6 +20,7 @@
     "url": "https://github.com/bioimage-io/bioimage-io-models",
     "label": "Model Repository"
   },
+  "model_repo": "bioimage-io/bioimage-io-models",
   "splash_title": "Bioimage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
   "splash_feature_list": [

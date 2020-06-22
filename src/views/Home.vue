@@ -375,8 +375,7 @@ export default {
   },
   created: async function() {
     try {
-      let repo = "bioimage-io/bioimage-io-models";
-
+      let repo = siteConfig.model_repo;
       const query_repo = getUrlParameter("repo");
       let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {
