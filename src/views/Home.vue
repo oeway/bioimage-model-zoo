@@ -340,6 +340,13 @@ function normalizeItem(self, item) {
     new Set(item.allLabels.map(label => label.toLowerCase()))
   );
   item.apps = [];
+  if (item.source)
+    item.apps.unshift({
+      name: "Source",
+      icon: "code-tags",
+      show_on_hover: true,
+      url: item.source
+    });
   if (item.download_url)
     item.apps.unshift({
       name: "Download",
@@ -624,6 +631,7 @@ export default {
       this.$modal.show("info-dialog");
     },
     showResourceItemInfo(mInfo, focus) {
+      debugger;
       this.showInfoDialogMode = "model";
       mInfo._focus = focus;
       this.selectedResourceItem = mInfo;

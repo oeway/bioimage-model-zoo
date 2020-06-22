@@ -122,6 +122,7 @@
         </li>
       </ul>
       <div
+        id="source"
         v-if="resourceItem.yamlConfig"
         v-html="resourceItem.yamlConfig"
       ></div>
@@ -179,13 +180,16 @@ export default {
     });
   },
   mounted() {
-    this.getDocs(this.resourceItem).then(() => {
+    const focus = () => {
       if (this.resourceItem._focus) {
         const el = document.getElementById(this.resourceItem._focus);
-        if (el) el.scrollIntoView();
+        if (el) {
+          el.parentNode.scrollTop = el.offsetTop - 40;
+        }
       }
-    });
-    this.getYamlConfig(this.resourceItem);
+    };
+    this.getDocs(this.resourceItem).then(focus);
+    this.getYamlConfig(this.resourceItem).then(focus);
   },
   computed: {
     formatedCitation: function() {
