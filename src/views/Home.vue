@@ -338,6 +338,47 @@ function normalizeItem(item) {
       url: item.git_repo,
       show_on_hover: true
     });
+  item.badges = [];
+  if (item.weights) {
+    item.badges.unshift({
+      body: "weights",
+      body_type: "is-dark",
+      ext: Object.keys(item.weights).length,
+      ext_type: "is-primary",
+      run() {
+        console.log(item.weights);
+      }
+    });
+  }
+  if (item.files) {
+    item.badges.unshift({
+      body: "files",
+      ext: Object.keys(item.files).length,
+      ext_type: "is-primary",
+      run() {
+        console.log(item.files);
+      }
+    });
+  }
+  if (item.license) {
+    item.badges.unshift({
+      body: "license",
+      ext: item.license,
+      ext_type: "is-info"
+    });
+  }
+  if (item.type === "model" && item.co2) {
+    item.badges.unshift({
+      body: "CO2",
+      ext: item.co2,
+      ext_type: "is-success",
+      run() {
+        alert(
+          `SAVE THE EARTH: The carbon footprint for training this model is around ${item.co2} lbs, reusing existing models can help save the earth from climate change.`
+        );
+      }
+    });
+  }
 }
 
 export default {

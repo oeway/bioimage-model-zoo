@@ -69,7 +69,8 @@
       "env": null,
       "tags": [],
       "covers": "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif",
-      "authors": []
+      "authors": [],
+      "license": "MIT"
     },
     {
       "root_url": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw",
@@ -105,6 +106,7 @@
       "authors": [
         "Vasu Subeesh"
       ],
+      "co2": "1.8",
       "documentation": "documentation/TransferLearningBasedSegmentationWorkflow.md",
       "tags": [
         "unet2d",
@@ -129,6 +131,11 @@
       "root_url": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2",
       "type": "model",
       "name": "Two Steam U-Net DA",
+      "weights": {
+        "default": {"source": "https://bioimage.io", "description":"default weights"},
+        "best": {"source": "https://bioimage.io", "description":"best weights"}
+      },
+      "co2": "2.3",
       "description": "Two Steam U-Net trained on brain vasculature segmentation data from Ludovico Silvestri's European Laboratory for Non-linear Spectroscopy (LENS). Two Steam U-Net is used as the segmentation network that takes up the inputs from source and target domain, and generate the respective segmentation results at the output. Two Steam U-Net uses differet encoders to process inputs from source and target, and use a common decoder to generate the respective segmentation outputs. To train the network, cross entropy loss between the prediction and ground truth labels is used for the source data. For the target data, image reconstrcution constraints are enforced on the segmentation outputs. Furthermore, source domain images are translated into the target domain using an adverserial paradigm, to generate auxiliary labelled data for the target domain. The labelled data thus generated are used to establish a supervised loss in the target domain.",
       "cite": [
         {
@@ -171,6 +178,7 @@
       "authors": [
         "Deborah Schmidt"
       ],
+      "co2": "0.82",
       "documentation": "README.md",
       "covers": [
         "thumbnail.png"

@@ -25,7 +25,7 @@
         </b-carousel>
         <img
           v-else
-          style="background-color: black;width: 100%;height:180px;"
+          style="background-color: black;width: 100%;height:160px;"
           class="cover-image"
         />
       </div>
@@ -34,7 +34,7 @@
           <h4 class="resource-item-title" @click="showResourceItemInfo">
             <img
               v-if="icon.type === 'img'"
-              style="background: white;"
+              style="border-radius: 4px; background: #ffffffd0;"
               class="item-icon"
               :src="icon.src"
             />
@@ -89,6 +89,26 @@
                 (resourceItem.description.length > 100 ? "..." : "")
             }}
           </p>
+          <div class="badges" v-if="resourceItem.badges">
+            <a
+              class="badge"
+              v-for="badge in resourceItem.badges"
+              :key="badge.body"
+              :href="badge.url"
+              @click="!badge.url && badge.run && badge.run()"
+            >
+              <b-taglist attached rounded>
+                <b-tag :type="badge.body_type || 'is-dark'">{{
+                  badge.body
+                }}</b-tag>
+                <b-tag
+                  :type="badge.ext_type || 'is-success'"
+                  v-if="badge.ext"
+                  >{{ badge.ext }}</b-tag
+                >
+              </b-taglist>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -170,12 +190,16 @@ export default {
 .card {
   height: 360px;
 }
+.card-image {
+  height: 160px;
+}
 .card-content {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 4px;
 }
 .resource-item-title {
+  margin-top: 6px;
   font-size: 1.2em;
   font-weight: 400;
   cursor: pointer;
@@ -212,15 +236,18 @@ export default {
   color: #2196f3;
 }
 .cover-image {
-  max-height: 100%;
-  object-fit: cover;
+  height: 160px;
+  max-height: 180px;
+  object-fit: contain;
 }
 .carousel-image {
-  max-height: 200px;
+  max-height: 180px;
   background: black;
   text-align: center;
 }
 .item-icon {
+  position: absolute;
+  top: 125px;
   display: inline-block;
   margin-top: auto;
   margin-bottom: auto;
@@ -238,5 +265,14 @@ export default {
 .card:hover .hover-show {
   opacity: 1;
   transition: 0.3s ease;
+}
+.badges {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+}
+a.badge {
+  display: inline-block;
+  padding: 1px;
 }
 </style>

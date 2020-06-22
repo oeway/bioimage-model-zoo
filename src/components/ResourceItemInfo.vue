@@ -32,6 +32,8 @@
     </span>
     <br />
     <p v-if="resourceItem.description">{{ resourceItem.description }}</p>
+    <div v-if="resourceItem.weights"></div>
+    <div v-if="resourceItem.files"></div>
     <div v-if="resourceItem.docs" v-html="resourceItem.docs"></div>
     <br />
     <h2 v-if="formatedCitation">How to cite</h2>
@@ -217,5 +219,8 @@ export default {
 }
 .citation {
   list-style-type: circle;
+}
+.cover-image {
+  object-fit: contain;
 }
 </style>
