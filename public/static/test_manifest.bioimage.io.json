@@ -132,8 +132,18 @@
       "type": "model",
       "name": "Two Steam U-Net DA",
       "weights": {
-        "default": {"source": "https://bioimage.io", "description":"default weights"},
-        "best": {"source": "https://bioimage.io", "description":"best weights"}
+        "default": {
+          "source": "https://bioimage.io",
+          "name": "Default Weights",
+          "timestamp": "2022-03-20 12:01:13",
+          "description": "default weights"
+        },
+        "best": {
+          "source": "https://bioimage.io",
+          "name": "Best Weights",
+          "timestamp": "2022-05-12 09:10:30",
+          "description": "best weights"
+        }
       },
       "co2": "2.3",
       "description": "Two Steam U-Net trained on brain vasculature segmentation data from Ludovico Silvestri's European Laboratory for Non-linear Spectroscopy (LENS). Two Steam U-Net is used as the segmentation network that takes up the inputs from source and target domain, and generate the respective segmentation results at the output. Two Steam U-Net uses differet encoders to process inputs from source and target, and use a common decoder to generate the respective segmentation outputs. To train the network, cross entropy loss between the prediction and ground truth labels is used for the source data. For the target data, image reconstrcution constraints are enforced on the segmentation outputs. Furthermore, source domain images are translated into the target domain using an adverserial paradigm, to generate auxiliary labelled data for the target domain. The labelled data thus generated are used to establish a supervised loss in the target domain.",
