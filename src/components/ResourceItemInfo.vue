@@ -14,7 +14,7 @@
     </b-taglist>
 
     <b-carousel
-      style="max-width: 1024px;"
+      style="max-width: 1024px; margin-top: -10px;"
       v-if="resourceItem.cover_images && resourceItem.cover_images.length > 0"
       :indicator="resourceItem.cover_images.length > 1"
       :arrow="resourceItem.cover_images.length > 1"
@@ -282,6 +282,10 @@ export default {
 .badge {
   display: inline-block;
   padding: 1px;
-  margin-bottom: 2px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+}
+.tags:not(:last-child) {
+  margin-bottom: -10px;
 }
 </style>
