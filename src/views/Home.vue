@@ -762,7 +762,9 @@ export default {
 }
 .dialog-control-button {
   cursor: pointer;
-  width: 34px;
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
   height: 36px;
   line-height: 30px;
   padding-bottom: 7px;
