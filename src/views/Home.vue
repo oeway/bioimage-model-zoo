@@ -154,9 +154,12 @@
       <div
         v-if="selectedDialogWindow"
         @dblclick="maximizeDialogWindow()"
-        class="drag-handle dialog-header"
+        :class="{ 'drag-handle': !isTouchDevice }"
+        class=" dialog-header"
       >
-        <span class="noselect"> {{ selectedDialogWindow.name }}</span>
+        <span class="noselect dialog-title">
+          {{ selectedDialogWindow.name }}</span
+        >
         <button
           @click="closeDialogWindow(selectedDialogWindow)"
           class="noselect dialog-control-button"
@@ -223,8 +226,12 @@
       draggable=".drag-handle"
       :scrollable="true"
     >
-      <div @dblclick="maximizeInfoWindow()" class="drag-handle dialog-header">
-        <span class="noselect"> {{ infoDialogTitle }}</span>
+      <div
+        @dblclick="maximizeInfoWindow()"
+        :class="{ 'drag-handle': !isTouchDevice }"
+        class="dialog-header"
+      >
+        <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
         <button
           @click="closeInfoWindow()"
           class="noselect dialog-control-button"
@@ -282,6 +289,15 @@ import {
   concatAndResolveUrl,
   debounce
 } from "../utils";
+
+const isTouchDevice = (function() {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
 
 function normalizeItem(self, item) {
   item.covers = item.covers || [];
@@ -392,6 +408,7 @@ export default {
   },
   data() {
     return {
+      isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
       resourceItems: null,
       selectedItems: null,
@@ -806,7 +823,13 @@ export default {
   font-size: 3em;
   margin-left: 10px;
 }
+.dialog-title {
+  font-size: 1.4rem;
+}
 @media screen and (max-width: 768px) {
+  .dialog-title {
+    font-size: 1.1rem;
+  }
   .site-title {
     font-size: 2em !important;
   }
