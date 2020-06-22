@@ -54,10 +54,11 @@
       >
     </p>
 
-    <template v-for="(cols, name) in siteConfig.tables">
+    <template v-for="(table, name) in siteConfig.tables">
       <h2
         style="font-size:1.5rem;font-weight: 600;margin-top: 24px;
     margin-bottom: 16px; text-transform:capitalize;"
+        :id="name"
         v-if="resourceItem[name]"
         :key="name + '_title'"
       >
@@ -66,11 +67,13 @@
       <b-table
         v-if="resourceItem[name]"
         :data="convert2Array(resourceItem[name])"
-        :key="name"
+        :key="name + '_table'"
+        :detailed="table.detailed"
+        :show-detail-icon="table.detailed"
       >
         <template slot-scope="props">
           <b-table-column
-            v-for="col in cols"
+            v-for="col in table.columns"
             :key="col.field"
             :field="col.field"
             :label="col.label"
@@ -91,15 +94,31 @@
             </span>
           </b-table-column>
         </template>
+        <template slot="detail" slot-scope="props">
+          <article class="media">
+            <figure class="media-left" v-if="table.detailed">
+              <p class="image is-64x64">
+                <img :src="table.detailed_image" />
+              </p>
+            </figure>
+            <div class="media-content" v-if="table.detailed_body">
+              <div class="content">
+                <p>
+                  {{ props.row[table.detailed_body] }}
+                </p>
+              </div>
+            </div>
+          </article>
+        </template>
       </b-table>
     </template>
     <div class="markdown-body">
       <div v-if="resourceItem.docs" v-html="resourceItem.docs"></div>
       <br />
-      <h2 v-if="formatedCitation">How to cite</h2>
+      <h2 v-if="formatedCitation" id="citation">How to cite</h2>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
-          {{ c.text }} <a :href="c.url" target="_blank">{{ c.url_text }}</a>
+          {{ c.text }} <a :href="c.url" target="_blank">[{{ c.url_text }}]</a>
         </li>
       </ul>
       <div
@@ -160,7 +179,12 @@ export default {
     });
   },
   mounted() {
-    this.getDocs(this.resourceItem);
+    this.getDocs(this.resourceItem).then(() => {
+      if (this.resourceItem._focus) {
+        const el = document.getElementById(this.resourceItem._focus);
+        if (el) el.scrollIntoView();
+      }
+    });
     this.getYamlConfig(this.resourceItem);
   },
   computed: {

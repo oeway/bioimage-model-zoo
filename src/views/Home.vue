@@ -283,7 +283,7 @@ import {
   debounce
 } from "../utils";
 
-function normalizeItem(item) {
+function normalizeItem(self, item) {
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";
@@ -347,6 +347,7 @@ function normalizeItem(item) {
       ext_type: "is-primary",
       run() {
         console.log(item.weights);
+        self.showResourceItemInfo(item, "weights");
       }
     });
   }
@@ -439,7 +440,7 @@ export default {
       const resourceItems = repo_manifest.resources;
       for (let item of resourceItems) {
         item.repo = repo;
-        normalizeItem(item);
+        normalizeItem(this, item);
         if (!item.source.startsWith("http"))
           item.source = concatAndResolveUrl(item.root_url, item.source);
       }
@@ -605,8 +606,9 @@ export default {
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
-    showResourceItemInfo(mInfo) {
+    showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";
+      mInfo._focus = focus;
       this.selectedResourceItem = mInfo;
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;

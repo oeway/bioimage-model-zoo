@@ -30,55 +30,56 @@
     "Link models to datasets and applications"
   ],
   "tables": {
-    "weights": [
-      {
-        "field": "id",
-        "label": "ID"
-      },
-      {
-        "field": "name",
-        "label": "Name",
-        "sortable": true
-      },
-      {
-        "field": "description",
-        "label": "Description"
-      },
-      {
-        "field": "timestamp",
-        "label": "Timestamp",
-        "class": "tag is-success",
-        "sortable": true
-      },
-      {
-        "field": "source",
-        "label": "Source",
-        "type": "url",
-        "text": "download"
-      }
-    ],
-    "files": [
-      {
-        "field": "id",
-        "label": "ID"
-      },
-      {
-        "field": "name",
-        "label": "Name"
-      },
-      {
-        "field": "description",
-        "label": "Description"
-      },
-      {
-        "field": "timestamp",
-        "label": "Timestamp"
-      },
-      {
-        "field": "source",
-        "label": "Download"
-      }
-    ]
+    "weights": {
+      "columns": [
+        {
+          "field": "name",
+          "label": "Name",
+          "sortable": true
+        },
+        {
+          "field": "timestamp",
+          "label": "Timestamp",
+          "class": "tag is-success",
+          "sortable": true
+        },
+        {
+          "field": "source",
+          "label": "Source",
+          "type": "url",
+          "text": "download",
+          "class": "button is-small"
+        }
+      ],
+      "detailed": true,
+      "detailed_image": null,
+      "detailed_body": "description"
+    },
+    "files": {
+      "columns": [
+        {
+          "field": "name",
+          "label": "Name",
+          "sortable": true
+        },
+        {
+          "field": "timestamp",
+          "label": "Timestamp",
+          "class": "tag is-success",
+          "sortable": true
+        },
+        {
+          "field": "source",
+          "label": "Source",
+          "type": "url",
+          "text": "download",
+          "class": "button is-small"
+        }
+      ],
+      "detailed": true,
+      "detailed_image": null,
+      "detailed_body": "description"
+    }
   },
   "item_lists": [
     {
