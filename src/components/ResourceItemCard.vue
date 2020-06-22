@@ -44,7 +44,7 @@
           <div class="buttons floating-buttons">
             <template v-for="app in resourceItem.apps">
               <b-tooltip
-                :class="{ 'hover-show': app.show_on_hover }"
+                :class="{ 'hover-show': app.show_on_hover && !isTouchDevice }"
                 :key="app.name"
                 :label="app.name"
                 position="is-top"
@@ -62,6 +62,7 @@
                   <img
                     v-else-if="app.icon.startsWith('http')"
                     class="app-icon"
+                    :style="{ 'margin-top': isSafari ? '-1px' : '3px' }"
                     :src="app.icon"
                   />
                   <b-icon v-else :icon="app.icon" size="is-small"> </b-icon>
@@ -90,6 +91,15 @@
 
 <script>
 import { anonymousAnimals } from "../utils";
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isTouchDevice = (function() {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
 
 export default {
   name: "ModelCard",
@@ -98,6 +108,12 @@ export default {
       type: Object,
       default: null
     }
+  },
+  data() {
+    return {
+      isSafari: isSafari,
+      isTouchDevice: isTouchDevice
+    };
   },
   computed: {
     icon: function() {
@@ -127,7 +143,7 @@ export default {
     }
   },
   methods: {
-    etAl: authors => {
+    etAl(authors) {
       authors = authors.map(author => {
         return author.split(";")[0];
       });
@@ -176,11 +192,12 @@ export default {
   top: 5px;
   left: 10px;
 }
+
 .app-icon {
   width: 22px !important;
   max-width: 22px;
-  margin-top: 3px;
 }
+
 .button.is-small {
   border-radius: 30px;
   font-size: 0.8rem;

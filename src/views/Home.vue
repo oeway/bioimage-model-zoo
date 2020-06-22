@@ -3,12 +3,8 @@
     <!-- Navigation bar -->
     <nav class="navbar is-link is-fixed-top">
       <div class="navbar-brand">
-        <span style="font-size:3em;margin-left:10px;">
-          {{ siteConfig.site_icon }}</span
-        >
-        <span style="font-size:2.4em;padding-top:10px;padding-left:4px;">
-          {{ siteConfig.site_name }}</span
-        >
+        <span class="site-icon"> {{ siteConfig.site_icon }}</span>
+        <span class="site-title"> {{ siteConfig.site_name }}</span>
         <div
           class="navbar-burger burger"
           :class="{ 'is-active': showMenu }"
@@ -27,10 +23,6 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a class="navbar-item" @click="showAboutDialog">
-            <b-icon icon="information-outline"></b-icon>
-            <span>About</span>
-          </a>
           <a
             class="navbar-item"
             v-if="siteConfig.subscribe_url"
@@ -48,9 +40,9 @@
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
           </a>
-          <a class="navbar-item" @click="showApps">
-            <b-icon icon="puzzle"></b-icon>
-            <span>Applications</span>
+          <a class="navbar-item" @click="showAboutDialog">
+            <b-icon icon="information-outline"></b-icon>
+            <span>About</span>
           </a>
         </div>
       </div>
@@ -65,7 +57,7 @@
           <h2 class="subtitle is-3">
             {{ siteConfig.splash_subtitle }}
           </h2>
-          <ul style="font-size: 1.5em;" v-if="siteConfig.splash_feature_list">
+          <ul class="feature-list" v-if="siteConfig.splash_feature_list">
             <li
               v-for="feature in siteConfig.splash_feature_list"
               :key="feature"
@@ -75,7 +67,7 @@
           </ul>
           <br />
           <b-button rounded style="text-transform:none;" @click="enter">
-            <span style="font-size: 1.3rem;">{{
+            <span class="explore-btn">{{
               siteConfig.explore_button_text
             }}</span></b-button
           >
@@ -560,15 +552,6 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
-    showApps() {
-      for (let list of siteConfig.item_lists) {
-        if (list.type === "application") {
-          this.currentList = list;
-          break;
-        }
-      }
-      this.enter();
-    },
     showAboutDialog() {
       this.showInfoDialogMode = "about";
       this.infoDialogTitle = "About";
@@ -761,5 +744,40 @@ export default {
 .hero:hover .background-img {
   width: 65%;
   transition: 0.4s ease;
+}
+.feature-list {
+  font-size: 1.5em;
+}
+.explore-btn {
+  font-size: 1.3rem;
+}
+.site-title {
+  font-size: 2.4em;
+  padding-top: 10px;
+  padding-left: 4px;
+}
+.site-icon {
+  font-size: 3em;
+  margin-left: 10px;
+}
+@media screen and (max-width: 768px) {
+  .site-title {
+    font-size: 2em !important;
+  }
+  .site-icon {
+    font-size: 2.3em;
+  }
+  .title {
+    font-size: 2rem !important;
+  }
+  .subtitle {
+    font-size: 1.6rem !important;
+  }
+  .feature-list {
+    font-size: 1em !important;
+  }
+  .explore-btn {
+    font-size: 1.1rem !important;
+  }
 }
 </style>
