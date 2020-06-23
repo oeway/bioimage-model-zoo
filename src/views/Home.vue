@@ -798,7 +798,7 @@ export default {
   margin: 10px;
   text-align: center;
   cursor: pointer;
-  font-size: 1.3em;
+  font-size: 1.1em;
   color: #006fcb;
 }
 .item-lists:hover {
