@@ -122,6 +122,10 @@ export default {
     showDisplayMode: {
       type: Boolean,
       default: false
+    },
+    searchTags: {
+      type: Array,
+      default: null
     }
   },
   data() {
@@ -143,7 +147,51 @@ export default {
       this.$emit("selection-changed", selectedItems);
     },
     selectedTags: function(newTags) {
+      this.applySearch(newTags);
+    },
+    allItems: function() {
+      this.applySearch(this.selectedTags);
+    },
+    searchTags: function(newTags) {
+      this.selectedTags = newTags;
+    }
+  },
+  mounted() {
+    this.filteredTags = this.fullLabelList;
+  },
+  computed: {
+    categories() {
+      if (!this.tagCategories) {
+        return { grouped: {}, other: this.fullLabelList };
+      }
+      const cate = {};
+      const other = [];
+      const lowerSelected = this.selectedTags.map(a => a.toLowerCase());
+      for (let t of this.fullLabelList) {
+        if (lowerSelected.indexOf(t.toLowerCase()) >= 0) continue;
+        let found = false;
+        for (let c of Object.keys(this.tagCategories)) {
+          for (let k of this.tagCategories[c]) {
+            if (k.toLowerCase() === t.toLowerCase()) {
+              if (!cate[c]) cate[c] = [];
+              cate[c].push(k);
+              found = true;
+              break;
+            }
+          }
+        }
+        if (!found) {
+          other.push(t);
+        }
+      }
+
+      return { grouped: cate, other: other };
+    }
+  },
+  methods: {
+    applySearch(newTags) {
       if (!this.allItems) return;
+      this.$emit("tags-updated", newTags);
       this.loading = true;
       debounce(() => {
         const knownTags = newTags.filter(
@@ -205,41 +253,7 @@ export default {
         this.loading = false;
         this.$forceUpdate();
       }, 400)();
-    }
-  },
-  mounted() {
-    this.filteredTags = this.fullLabelList;
-  },
-  computed: {
-    categories() {
-      if (!this.tagCategories) {
-        return { grouped: {}, other: this.fullLabelList };
-      }
-      const cate = {};
-      const other = [];
-      const lowerSelected = this.selectedTags.map(a => a.toLowerCase());
-      for (let t of this.fullLabelList) {
-        if (lowerSelected.indexOf(t.toLowerCase()) >= 0) continue;
-        let found = false;
-        for (let c of Object.keys(this.tagCategories)) {
-          for (let k of this.tagCategories[c]) {
-            if (k.toLowerCase() === t.toLowerCase()) {
-              if (!cate[c]) cate[c] = [];
-              cate[c].push(k);
-              found = true;
-              break;
-            }
-          }
-        }
-        if (!found) {
-          other.push(t);
-        }
-      }
-
-      return { grouped: cate, other: other };
-    }
-  },
-  methods: {
+    },
     switchDisplayMode(mode) {
       if (this.displayMode !== mode) {
         this.displayMode = mode;

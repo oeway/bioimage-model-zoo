@@ -51,7 +51,7 @@
       <a
         v-if="resourceItem.description.length > maxDescriptionLetters"
         @click="maxDescriptionLetters = resourceItem.description.length"
-        >...show all</a
+        >...show all.</a
       >
     </p>
 

@@ -62,7 +62,7 @@
               >
                 <b-button
                   rounded
-                  :tag="app.url ? 'a' : 'button'"
+                  tag="a"
                   :href="app.url"
                   target="_blank"
                   @click="!app.url && app.run && app.run()"
@@ -73,7 +73,6 @@
                   <img
                     v-else-if="app.icon.startsWith('http')"
                     class="app-icon"
-                    :style="{ 'margin-top': isSafari ? '-1px' : '3px' }"
                     :src="app.icon"
                   />
                   <b-icon v-else :icon="app.icon" size="is-small"> </b-icon>
@@ -122,7 +121,6 @@
 
 <script>
 import { anonymousAnimals } from "../utils";
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const isTouchDevice = (function() {
   try {
     document.createEvent("TouchEvent");
@@ -142,7 +140,6 @@ export default {
   },
   data() {
     return {
-      isSafari: isSafari,
       isTouchDevice: isTouchDevice
     };
   },
@@ -233,6 +230,7 @@ export default {
 .app-icon {
   width: 22px !important;
   max-width: 22px;
+  margin-top: 3px;
 }
 
 .button.is-small {

@@ -81,14 +81,20 @@
       <div
         class="item-lists is-link"
         style="width:30px; margin-left: -16px;"
-        @click="currentList = null"
+        @click="
+          currentList = null;
+          updateQueryTags();
+        "
         :class="{ active: !currentList }"
       >
         All
       </div>
       <div
         class="item-lists is-link"
-        @click="currentList = list"
+        @click="
+          currentList = list;
+          updateQueryTags();
+        "
         :class="{ active: currentList === list }"
         v-for="list in siteConfig.item_lists"
         :key="list.name"
@@ -104,6 +110,8 @@
       :type="currentList && currentList.type"
       :showDisplayMode="screenWidth > 700"
       @display-mode-change="displayModeChanged"
+      :searchTags="searchTags"
+      @tags-updated="updateQueryTags"
     ></resource-item-selector>
     <div
       v-if="currentList && currentList.type === 'application'"
@@ -290,12 +298,7 @@ import {
   runOneModel,
   runManyModels
 } from "../bioEngine";
-import {
-  getUrlParameter,
-  randId,
-  concatAndResolveUrl,
-  debounce
-} from "../utils";
+import { randId, concatAndResolveUrl, debounce } from "../utils";
 
 // set default values for table_view
 siteConfig.table_view = siteConfig.table_view || {
@@ -352,6 +355,16 @@ function normalizeItem(self, item) {
     new Set(item.allLabels.map(label => label.toLowerCase()))
   );
   item.apps = [];
+  item.apps.unshift({
+    name: "Share",
+    icon: "share-variant",
+    show_on_hover: true,
+    run() {
+      const url =
+        window.location.origin + window.location.pathname + "#/?id=" + item.id;
+      alert("Please copy and paste the following URL: " + url);
+    }
+  });
   if (item.source)
     item.apps.unshift({
       name: "Source",
@@ -373,6 +386,7 @@ function normalizeItem(self, item) {
       url: item.git_repo,
       show_on_hover: true
     });
+
   item.badges = [];
   if (item.weights) {
     item.badges.unshift({
@@ -426,6 +440,7 @@ export default {
   },
   data() {
     return {
+      searchTags: null,
       isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
       resourceItems: null,
@@ -448,13 +463,14 @@ export default {
       showInfoDialogMode: null,
       infoDialogTitle: "",
       currentList: null,
-      displayMode: "card"
+      displayMode: "card",
+      currentTags: []
     };
   },
   created: async function() {
     try {
       let repo = siteConfig.model_repo;
-      const query_repo = getUrlParameter("repo");
+      const query_repo = this.$route.query.repo;
       let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {
         if (query_repo.startsWith("http") || query_repo.startsWith("/")) {
@@ -485,10 +501,11 @@ export default {
       this.selectedItems = tp
         ? resourceItems.filter(m => m.type === tp)
         : resourceItems;
-      this.$forceUpdate();
 
+      this.updateViewByUrlQuery();
+      this.$forceUpdate();
       console.log("Loading ImJoy...");
-      const workspace = getUrlParameter("workspace") || getUrlParameter("w");
+      const workspace = this.$route.query.workspace || this.$route.query.w;
       setupBioEngine(
         workspace,
         this.showMessage,
@@ -608,6 +625,21 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    updateQueryTags(newTags) {
+      if (newTags) {
+        if (newTags.length > 0) {
+          this.currentTags = newTags;
+        } else {
+          this.currentTags = null;
+        }
+      }
+
+      const query = {};
+      if (this.currentTags) {
+        query.tags = this.currentTags;
+      }
+      this.$router.push({ query: query }).catch(() => {});
+    },
     displayModeChanged(mode) {
       this.displayMode = mode;
     },
@@ -651,6 +683,8 @@ export default {
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
+      if (mInfo.id)
+        this.$router.push({ query: { id: mInfo.id } }).catch(() => {});
     },
     updateStatus(status) {
       if (status.loading === true) this.showMessage("Loading...");
@@ -689,13 +723,21 @@ export default {
       }
       this.selectedItems = models;
     },
-    showModelFromUrl() {
-      const selected_item = getUrlParameter("name");
-      if (selected_item) {
+    updateViewByUrlQuery() {
+      if (this.$route.query.id) {
         const m = this.resourceItems.filter(
-          item => item.name === selected_item
+          item => item.id === this.$route.query.id
         )[0];
         if (m) this.showResourceItemInfo(m);
+      }
+      if (this.$route.query.tags) {
+        this.searchTags = this.$route.query.tags.split(",");
+      }
+
+      if (this.$route.query.type) {
+        this.currentList = this.siteConfig.item_lists.filter(
+          item => item.type === this.$route.query.type
+        )[0];
       }
     },
     showMessage(message, duration) {
