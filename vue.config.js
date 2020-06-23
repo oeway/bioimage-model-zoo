@@ -1,4 +1,4 @@
-const siteConfig = require('./src/siteConfig.json');
+const siteConfig = require('./site.config.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 siteConfig['BASE_URL'] = process.env.BASE_URL
 module.exports = {
