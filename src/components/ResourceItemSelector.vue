@@ -172,22 +172,26 @@ export default {
                 );
             const matchText = label => {
               label = label.replace(/-/g, "").toLowerCase(); // remove dash for U-Net vs UNet
+
               return (
                 item.name
                   .replace(/-/g, "")
                   .toLowerCase()
                   .includes(label) ||
-                item.description
-                  .replace(/-/g, "")
-                  .toLowerCase()
-                  .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
-                  .includes(label) ||
-                item.authors.some(author =>
-                  author.toLowerCase().includes(label)
-                ) ||
-                item.applications.some(author =>
-                  author.toLowerCase().includes(label)
-                )
+                (item.description &&
+                  item.description
+                    .replace(/-/g, "")
+                    .toLowerCase()
+                    .split(/[ .:;?!~,`"&|()<>{}[\]\r\n/\\]+/)
+                    .includes(label)) ||
+                (item.authors &&
+                  item.authors.some(author =>
+                    author.toLowerCase().includes(label)
+                  )) ||
+                (item.applications &&
+                  item.applications.some(author =>
+                    author.toLowerCase().includes(label)
+                  ))
               );
             };
             return (

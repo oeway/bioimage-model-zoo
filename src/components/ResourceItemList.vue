@@ -122,6 +122,7 @@
 import Vue from "vue";
 import ResourceItemCard from "./ResourceItemCard";
 import siteConfig from "../../site.config.json";
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 Vue.component("label-selector", {
   props: ["all-labels"],
@@ -154,6 +155,7 @@ export default {
   },
   data() {
     return {
+      isSafari: isSafari,
       siteConfig: siteConfig
     };
   },
