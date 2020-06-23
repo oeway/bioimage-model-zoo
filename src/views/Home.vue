@@ -172,6 +172,7 @@
           x
         </button>
         <button
+          v-if="screenWidth > 700"
           @click="minimizeDialogWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
@@ -179,6 +180,7 @@
           -
         </button>
         <button
+          v-if="screenWidth > 700"
           @click="maximizeDialogWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:80px;"
@@ -244,6 +246,7 @@
           x
         </button>
         <button
+          v-if="screenWidth > 700"
           @click="maximizeInfoWindow()"
           class="noselect dialog-control-button"
           style="background:#00cdff61;left:40px;"
