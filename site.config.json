@@ -127,6 +127,10 @@
       "type": "application"
     },
     {
+      "name": "Notebooks",
+      "type": "notebook"
+    },
+    {
       "name": "Datasets",
       "type": "dataset"
     }

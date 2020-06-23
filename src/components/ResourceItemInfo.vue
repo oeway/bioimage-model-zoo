@@ -218,7 +218,7 @@ export default {
   },
   methods: {
     convert2Array(obj) {
-      if (obj instanceof Object) {
+      if (obj instanceof Object && obj.constructor === Object) {
         const values = [];
         for (let k of Object.keys(obj)) {
           if (obj[k] instanceof Object) {
@@ -239,7 +239,9 @@ export default {
             values.push(obj[k]);
           } else {
             const temp = obj[k].split("/");
-            const name = temp[temp.length - 1] || "undefined";
+            // sometimes the url is ended with '/'
+            const name =
+              temp[temp.length - 1] || temp[temp.length - 2] || "undefined";
             values.push({ source: obj[k], name: name });
           }
         }
