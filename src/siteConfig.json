@@ -29,6 +29,9 @@
     "Contribute your models via Github",
     "Link models to datasets and applications"
   ],
+  "table_view": {
+    "columns": ["name", "authors", "badges", "apps"]
+  },
   "tables": {
     "weights": {
       "columns": [

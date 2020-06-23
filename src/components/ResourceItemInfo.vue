@@ -79,7 +79,6 @@
             :label="col.label"
             :width="col.width || 40"
             :sortable="col.sortable"
-            numeric
           >
             <a
               v-if="col.type === 'url'"

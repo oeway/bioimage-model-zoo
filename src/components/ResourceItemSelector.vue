@@ -61,6 +61,32 @@
             </div>
           </div>
         </b-dropdown>
+        <b-field class="display-mode-btn" v-if="showDisplayMode">
+          <p class="control">
+            <b-tooltip label="Display mode: list" position="is-top">
+              <button
+                class="button"
+                :class="{ 'is-primary': displayMode === 'list' }"
+                @click="switchDisplayMode('list')"
+                style="top:1px;height:34px;"
+              >
+                <b-icon icon="format-list-bulleted"></b-icon>
+              </button>
+            </b-tooltip>
+          </p>
+          <p class="control">
+            <b-tooltip label="Display mode: card" position="is-top">
+              <button
+                class="button"
+                :class="{ 'is-primary': displayMode === 'card' }"
+                @click="switchDisplayMode('card')"
+                style="top:1px;height:34px;"
+              >
+                <b-icon icon="view-grid"></b-icon>
+              </button>
+            </b-tooltip>
+          </p>
+        </b-field>
         <!-- <button style="height:36px;" class="button is-primary">Search</button> -->
       </b-field>
       <b-field> </b-field>
@@ -88,6 +114,10 @@ export default {
     tagCategories: {
       type: Object,
       default: null
+    },
+    showDisplayMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -95,7 +125,8 @@ export default {
       selectedTags: [],
       filteredTags: [],
       loading: false,
-      matchingAll: true
+      matchingAll: true,
+      displayMode: "card"
     };
   },
   watch: {
@@ -197,6 +228,12 @@ export default {
     }
   },
   methods: {
+    switchDisplayMode(mode) {
+      if (this.displayMode !== mode) {
+        this.displayMode = mode;
+        this.$emit("display-mode-change", mode);
+      }
+    },
     updateSelectedTags() {
       this.filteredTags = this.fullLabelList.filter(label => {
         return this.selectedTags.indexOf(label) < 0;
@@ -270,5 +307,10 @@ export default {
   width: 500px;
   max-width: calc(100% - 110px);
   margin-left: 10px;
+}
+.display-mode-btn {
+  top: 1px;
+  margin-left: 7px;
+  height: 34px;
 }
 </style>

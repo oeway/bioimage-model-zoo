@@ -102,6 +102,8 @@
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
       :type="currentList && currentList.type"
+      :showDisplayMode="screenWidth > 700"
+      @display-mode-change="displayModeChanged"
     ></resource-item-selector>
     <div
       v-if="currentList && currentList.type === 'application'"
@@ -119,7 +121,9 @@
     <resource-item-list
       @show-resource-item-info="showResourceItemInfo"
       :allItems="selectedItems"
+      :displayMode="screenWidth > 700 ? displayMode : 'card'"
     />
+    <br />
 
     <footer class="footer">
       <div class="columns is-multiline">
@@ -290,6 +294,11 @@ import {
   debounce
 } from "../utils";
 
+// set default values for table_view
+siteConfig.table_view = siteConfig.table_view || {
+  columns: ["name", "authors", "badges", "apps"]
+};
+
 const isTouchDevice = (function() {
   try {
     document.createEvent("TouchEvent");
@@ -436,7 +445,8 @@ export default {
       screenWidth: 1000,
       showInfoDialogMode: null,
       infoDialogTitle: "",
-      currentList: null
+      currentList: null,
+      displayMode: "card"
     };
   },
   created: async function() {
@@ -515,7 +525,6 @@ export default {
               apps.unshift({
                 name: "Run",
                 icon: "play",
-                show_on_hover: true,
                 run() {
                   runManyModels(app, item);
                 }
@@ -597,6 +606,9 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    displayModeChanged(mode) {
+      this.displayMode = mode;
+    },
     addWindow(w) {
       if (this.selectedDialogWindow) {
         this.selectedWindowsStack.push(this.selectedDialogWindow);
