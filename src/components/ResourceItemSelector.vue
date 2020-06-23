@@ -179,6 +179,9 @@ export default {
                   .includes(label) ||
                 item.authors.some(author =>
                   author.toLowerCase().includes(label)
+                ) ||
+                item.applications.some(author =>
+                  author.toLowerCase().includes(label)
                 )
               );
             };

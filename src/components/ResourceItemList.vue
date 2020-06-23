@@ -84,12 +84,7 @@
             sortable
           >
             <template v-for="app in props.row.apps">
-              <b-tooltip
-                :class="{ 'hover-show': app.show_on_hover && !isTouchDevice }"
-                :key="app.name"
-                :label="app.name"
-                position="is-top"
-              >
+              <b-tooltip :key="app.name" :label="app.name" position="is-top">
                 <b-button
                   rounded
                   :tag="app.url ? 'a' : 'button'"
