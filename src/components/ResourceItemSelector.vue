@@ -33,6 +33,10 @@
                 <b-switch v-model="matchingAll"
                   >Match: {{ matchingAll ? " All" : "Any" }}</b-switch
                 >
+                <b-switch v-model="freeTextMode"
+                  >Free Text:
+                  {{ freeTextMode ? " Enabled" : "Disabled" }}</b-switch
+                >
               </div>
 
               <div
@@ -126,6 +130,7 @@ export default {
       filteredTags: [],
       loading: false,
       matchingAll: true,
+      freeTextMode: true,
       displayMode: "card"
     };
   },
@@ -187,7 +192,7 @@ export default {
             };
             return (
               (!this.type || item.type === this.type) &&
-              (matched || newTags.every(matchText))
+              (matched || (this.freeTextMode && newTags.every(matchText)))
             );
           });
         }
