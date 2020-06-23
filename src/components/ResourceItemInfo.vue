@@ -35,15 +35,16 @@
     <span class="authors">
       {{
         resourceItem.authors && resourceItem.authors.length > 0
-          ? "Authors: " + resourceItem.authors.join(",")
+          ? "Author(s): " + resourceItem.authors.join(",")
           : ""
       }}
     </span>
     <br />
-    <span v-for="t in resourceItem.tags" :key="t">
-      <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
+    <span style="margin-top:3px;display: block;">
+      <span v-for="t in resourceItem.tags" :key="t">
+        <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
+      </span>
     </span>
-
     <br />
     <p v-if="resourceItem.description">
       {{ resourceItem.description.slice(0, maxDescriptionLetters) }}
@@ -217,12 +218,36 @@ export default {
   },
   methods: {
     convert2Array(obj) {
-      const values = [];
-      for (let k of Object.keys(obj)) {
-        obj[k]["id"] = k;
-        values.push(obj[k]);
+      if (obj instanceof Object) {
+        const values = [];
+        for (let k of Object.keys(obj)) {
+          if (obj[k] instanceof Object) {
+            obj[k]["id"] = k;
+            values.push(obj[k]);
+          } else {
+            const temp = obj[k].split("/");
+            const name = temp[temp.length - 1] || "undefined";
+            values.push({ source: obj[k], name: name });
+          }
+        }
+        return values;
+      } else if (Array.isArray(obj)) {
+        const values = [];
+        for (let k = 0; k < obj.length; k++) {
+          if (obj[k] instanceof Object) {
+            obj[k]["id"] = k;
+            values.push(obj[k]);
+          } else {
+            const temp = obj[k].split("/");
+            const name = temp[temp.length - 1] || "undefined";
+            values.push({ source: obj[k], name: name });
+          }
+        }
+        return values;
+      } else {
+        console.warn("Failed to convert: ", obj);
+        return [];
       }
-      return values;
     },
     async getDocs(resourceItem) {
       resourceItem.docs = "@loading...";

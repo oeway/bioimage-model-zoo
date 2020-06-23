@@ -643,7 +643,6 @@ export default {
       this.$modal.show("info-dialog");
     },
     showResourceItemInfo(mInfo, focus) {
-      debugger;
       this.showInfoDialogMode = "model";
       mInfo._focus = focus;
       this.selectedResourceItem = mInfo;

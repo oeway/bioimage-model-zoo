@@ -30,6 +30,7 @@
             v-if="siteConfig.table_view.columns.includes('name')"
             label="Name"
             width="20"
+            field="name"
             sortable
           >
             <a @click="showResourceItemInfo(props.row)">
@@ -41,6 +42,7 @@
             label="Author(s)"
             width="20"
             sortable
+            field="authors"
           >
             <span>
               {{ props.row.authors.join(", ") }}
@@ -50,6 +52,8 @@
             v-if="siteConfig.table_view.columns.includes('badges')"
             label="Badges"
             width="50"
+            field="badges"
+            sortable
           >
             <div class="badges" v-if="props.row.badges">
               <a
@@ -76,6 +80,7 @@
             v-if="siteConfig.table_view.columns.includes('apps')"
             label="Apps"
             width="30"
+            field="apps"
             sortable
           >
             <template v-for="app in props.row.apps">

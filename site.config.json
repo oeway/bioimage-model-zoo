@@ -38,6 +38,7 @@
         {
           "field": "name",
           "label": "Name",
+          "width": 80,
           "sortable": true
         },
         {
@@ -63,6 +64,7 @@
         {
           "field": "name",
           "label": "Name",
+          "width": 80,
           "sortable": true
         },
         {
