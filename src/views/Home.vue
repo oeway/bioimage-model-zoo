@@ -714,9 +714,10 @@ export default {
       this.dialogWindowConfig.fullscreen = !this.dialogWindowConfig.fullscreen;
     },
     enter() {
-      const top = this.$refs.search_anchor.getBoundingClientRect().top;
-      if (top > window.innerHeight - 100)
-        window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
+      const top =
+        window.pageYOffset +
+        this.$refs.search_anchor.getBoundingClientRect().top;
+      window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
     updateResourceItemList(models) {
       if (models.length <= 0) {
