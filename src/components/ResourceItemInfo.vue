@@ -132,7 +132,7 @@
 <script>
 import "../../node_modules/github-markdown-css/github-markdown.css";
 import "../../node_modules/highlight.js/styles/github.css";
-import siteConfig from "../siteConfig";
+import siteConfig from "../../siteConfig";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js";

@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import siteConfig from "../siteConfig";
+import siteConfig from "../../siteConfig";
 import { version } from "../../package.json";
 export default {
   name: "About",

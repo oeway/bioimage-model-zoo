@@ -278,7 +278,7 @@ import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import About from "@/views/About.vue";
-import siteConfig from "../siteConfig";
+import siteConfig from "../../siteConfig";
 import {
   setupBioEngine,
   loadPlugins,

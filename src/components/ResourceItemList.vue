@@ -121,7 +121,7 @@
 <script>
 import Vue from "vue";
 import ResourceItemCard from "./ResourceItemCard";
-import siteConfig from "../siteConfig";
+import siteConfig from "../../siteConfig";
 
 Vue.component("label-selector", {
   props: ["all-labels"],
