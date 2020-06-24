@@ -14,7 +14,7 @@
     </b-taglist>
 
     <b-carousel
-      style="max-width: 1024px; margin-top: -10px;"
+      style="max-width: 1024px;"
       v-if="resourceItem.cover_images && resourceItem.cover_images.length > 0"
       :indicator="resourceItem.cover_images.length > 1"
       :arrow="resourceItem.cover_images.length > 1"
