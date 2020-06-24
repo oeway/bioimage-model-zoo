@@ -634,11 +634,22 @@ export default {
         }
       }
 
-      const query = {};
-      if (this.currentTags) {
-        query.tags = this.currentTags;
+      const query = Object.assign({}, this.$route.query);
+      if (this.currentList) {
+        if (this.currentList.type === "model") delete query.type;
+        else {
+          query.type = this.currentList.type;
+        }
+      } else {
+        query.type = "all";
       }
-      this.$router.push({ query: query }).catch(() => {});
+
+      if (this.currentTags) {
+        query.tags = this.currentTags.slice(0);
+      } else {
+        delete query.tags;
+      }
+      this.$router.replace({ query: query }).catch(() => {});
     },
     displayModeChanged(mode) {
       this.displayMode = mode;
@@ -683,8 +694,11 @@ export default {
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
-      if (mInfo.id)
-        this.$router.push({ query: { id: mInfo.id } }).catch(() => {});
+      if (mInfo.id) {
+        const query = Object.assign({}, this.$route.query);
+        query.id = mInfo.id;
+        this.$router.replace({ query: query }).catch(() => {});
+      }
     },
     updateStatus(status) {
       if (status.loading === true) this.showMessage("Loading...");
@@ -692,7 +706,11 @@ export default {
     },
     closeInfoWindow() {
       this.selectedResourceItem = null;
+
       this.$modal.hide("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      delete query.id;
+      this.$router.replace({ query: query }).catch(() => {});
     },
     maximizeInfoWindow() {
       this.infoDialogFullscreen = !this.infoDialogFullscreen;
@@ -735,9 +753,11 @@ export default {
       }
 
       if (this.$route.query.type) {
-        this.currentList = this.siteConfig.item_lists.filter(
-          item => item.type === this.$route.query.type
-        )[0];
+        if (this.$route.query.type === "all") this.currentList = null;
+        else
+          this.currentList = this.siteConfig.item_lists.filter(
+            item => item.type === this.$route.query.type
+          )[0];
       }
     },
     showMessage(message, duration) {
