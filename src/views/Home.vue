@@ -139,6 +139,7 @@
           v-for="item in siteConfig.footer"
           :key="item.label"
           class="column is-one-quarter"
+          style="text-align: center"
         >
           <b-tooltip :label="item.tooltip" position="is-top"
             ><a :href="item.url" target="_blank">
@@ -147,8 +148,8 @@
           </b-tooltip>
         </div>
       </div>
-      <div style="text-align: center" v-if="siteConfig.footer_note">
-        <p>{{ siteConfig.footer_note }}</p>
+      <div style="text-align: center" v-if="siteConfig.footnote">
+        <p>{{ siteConfig.footnote }}</p>
       </div>
     </footer>
     <modal
