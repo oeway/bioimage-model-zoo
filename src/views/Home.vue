@@ -134,27 +134,12 @@
     <br />
 
     <footer class="footer">
-      <div class="columns is-multiline">
-        <div
-          v-if="siteConfig.footer_github"
-          class="column is-4-desktop is-3-widescreen is-half-tablet"
-        >
-          <a :href="siteConfig.footer_github.url" target="_blank">
-            <img
-              src="/static/img/github.svg"
-              style="width: 36px; height:36px;margin-right:3px; margin-bottom:-8px;"
-            /><span style="font-size:1.3rem;">{{
-              siteConfig.footer_github.label
-            }}</span></a
-          >
-        </div>
-      </div>
       <div
         class="columns is-moible is-centered"
         v-if="siteConfig.footer_covid19ai"
       >
         <div
-          v-for="item in siteConfig.footer_covid19ai"
+          v-for="item in siteConfig.footer"
           :key="item.label"
           class="column is-one-quarter"
         >
@@ -165,8 +150,8 @@
           </b-tooltip>
         </div>
       </div>
-      <div style="text-align: center" v-if="siteConfig.footer_covid19ai_note">
-        <p>{{ siteConfig.footer_covid19ai_note }}</p>
+      <div style="text-align: center" v-if="siteConfig.footer_note">
+        <p>{{ siteConfig.footer_note }}</p>
       </div>
     </footer>
     <modal

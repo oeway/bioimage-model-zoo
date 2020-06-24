@@ -16,10 +16,13 @@
   "explore_button_text": "🚀 Explore the Zoo",
   "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
   "contribute_url": "https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models",
-  "footer_github": {
-    "url": "https://github.com/bioimage-io/bioimage-io-models",
-    "label": "Model Repository"
-  },
+  "footer": [
+    { "label": "Github Model Repository",
+      "tooltip": "Bioimage Model Repository",
+      "logo": "/static/img/github.svg", 
+      "url": "https://github.com/bioimage-io/bioimage-io-models"
+    }
+  ],
   "model_repo": "bioimage-io/bioimage-io-models",
   "splash_title": "Bioimage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
