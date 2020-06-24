@@ -360,9 +360,13 @@ function normalizeItem(self, item) {
     icon: "share-variant",
     show_on_hover: true,
     run() {
-      const url =
-        window.location.origin + window.location.pathname + "#/?id=" + item.id;
-      alert("Please copy and paste the following URL: " + url);
+      const query = Object.assign({}, self.$route.query);
+      query.id = item.id;
+      self.$router.replace({ query: query }).catch(() => {});
+
+      alert(
+        "Please copy and paste the URL in the browser address bar for sharing."
+      );
     }
   });
   if (item.source)
@@ -634,11 +638,28 @@ export default {
         }
       }
 
-      const query = {};
-      if (this.currentTags) {
-        query.tags = this.currentTags;
+      const query = Object.assign({}, this.$route.query);
+      if (this.currentList) {
+        // remove the default type in the query if that's the only query
+        if (
+          this.currentList.type === "model" &&
+          query.type &&
+          Object.keys(query).length <= 1
+        )
+          delete query.type;
+        else {
+          query.type = this.currentList.type;
+        }
+      } else {
+        query.type = "all";
       }
-      this.$router.push({ query: query }).catch(() => {});
+
+      if (this.currentTags) {
+        query.tags = this.currentTags.join(",");
+      } else {
+        delete query.tags;
+      }
+      this.$router.replace({ query: query }).catch(() => {});
     },
     displayModeChanged(mode) {
       this.displayMode = mode;
@@ -683,8 +704,11 @@ export default {
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
-      if (mInfo.id)
-        this.$router.push({ query: { id: mInfo.id } }).catch(() => {});
+      if (mInfo.id) {
+        const query = Object.assign({}, this.$route.query);
+        query.id = mInfo.id;
+        this.$router.replace({ query: query }).catch(() => {});
+      }
     },
     updateStatus(status) {
       if (status.loading === true) this.showMessage("Loading...");
@@ -692,7 +716,11 @@ export default {
     },
     closeInfoWindow() {
       this.selectedResourceItem = null;
+
       this.$modal.hide("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      delete query.id;
+      this.$router.replace({ query: query }).catch(() => {});
     },
     maximizeInfoWindow() {
       this.infoDialogFullscreen = !this.infoDialogFullscreen;
@@ -737,14 +765,19 @@ export default {
         }
       }
       if (this.$route.query.tags) {
-        this.searchTags = this.$route.query.tags.split(",");
+        if (typeof this.$route.query.tags === "string")
+          this.searchTags = this.$route.query.tags.split(",");
+        else this.searchTags = this.$route.query.tags;
         hasQuery = true;
       }
 
       if (this.$route.query.type) {
-        this.currentList = this.siteConfig.item_lists.filter(
-          item => item.type === this.$route.query.type
-        )[0];
+        if (this.$route.query.type === "all") this.currentList = null;
+        else
+          this.currentList = this.siteConfig.item_lists.filter(
+            item => item.type === this.$route.query.type
+          )[0];
+
         hasQuery = true;
       }
       if (hasQuery) {
