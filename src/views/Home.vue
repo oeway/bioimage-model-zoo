@@ -645,7 +645,7 @@ export default {
       }
 
       if (this.currentTags) {
-        query.tags = this.currentTags.slice(0);
+        query.tags = this.currentTags.join(",");
       } else {
         delete query.tags;
       }
@@ -755,7 +755,9 @@ export default {
         }
       }
       if (this.$route.query.tags) {
-        this.searchTags = this.$route.query.tags.split(",");
+        if (typeof this.$route.query.tags === "string")
+          this.searchTags = this.$route.query.tags.split(",");
+        else this.searchTags = this.$route.query.tags;
         hasQuery = true;
       }
 
