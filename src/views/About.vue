@@ -8,7 +8,7 @@
         </div>
       </div>
     </section>
-    <img class="background-img" :src="siteConfig.background_image" />
+    <img class="background-img background" :src="siteConfig.background_image" />
     <br />
     <footer class="footer">
       <div class="columns is-moible is-centered" v-if="siteConfig.footer">
