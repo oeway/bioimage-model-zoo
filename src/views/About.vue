@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about background">
     <section class="hero">
       <div class="hero-body">
         <div class="container">
@@ -60,5 +60,8 @@ export default {
   max-height: 50%;
   max-width: 100%;
   object-fit: contain;
+}
+.background {
+  background-color: #fafafa;
 }
 </style>
