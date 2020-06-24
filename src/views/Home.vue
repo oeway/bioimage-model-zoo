@@ -149,22 +149,25 @@
           >
         </div>
       </div>
-      <div class="columns is-moible is-centered" v-if="siteConfig.footer_covid19ai">
       <div
-        v-for="item in siteConfig.footer_covid19ai"
-        :key="item.label"
-        class="column is-one-quarter"
+        class="columns is-moible is-centered"
+        v-if="siteConfig.footer_covid19ai"
       >
-        <b-tooltip :label="item.tooltip" position="is-top"
-          ><a :href="item.url" target="_blank">
-            <img :src="item.logo" style="height: 55px;" />
-          </a>
-        </b-tooltip>
+        <div
+          v-for="item in siteConfig.footer_covid19ai"
+          :key="item.label"
+          class="column is-one-quarter"
+        >
+          <b-tooltip :label="item.tooltip" position="is-top"
+            ><a :href="item.url" target="_blank">
+              <img :src="item.logo" style="height: 55px;" />
+            </a>
+          </b-tooltip>
+        </div>
       </div>
-    </div>
-    <div style="text-align: center" v-if="siteConfig.footer_covid19ai_note">
-      <p>{{siteConfig.footer_covid19ai_note}}</p>
-    </div>
+      <div style="text-align: center" v-if="siteConfig.footer_covid19ai_note">
+        <p>{{ siteConfig.footer_covid19ai_note }}</p>
+      </div>
     </footer>
     <modal
       name="window-modal-dialog"
