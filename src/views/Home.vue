@@ -732,7 +732,9 @@ export default {
       this.dialogWindowConfig.fullscreen = !this.dialogWindowConfig.fullscreen;
     },
     enter() {
-      const top = this.$refs.search_anchor.getBoundingClientRect().top;
+      const top =
+        window.pageYOffset +
+        this.$refs.search_anchor.getBoundingClientRect().top;
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
     updateResourceItemList(models) {
@@ -742,14 +744,19 @@ export default {
       this.selectedItems = models;
     },
     updateViewByUrlQuery() {
+      let hasQuery = false;
       if (this.$route.query.id) {
         const m = this.resourceItems.filter(
           item => item.id === this.$route.query.id
         )[0];
-        if (m) this.showResourceItemInfo(m);
+        if (m) {
+          this.showResourceItemInfo(m);
+          hasQuery = true;
+        }
       }
       if (this.$route.query.tags) {
         this.searchTags = this.$route.query.tags.split(",");
+        hasQuery = true;
       }
 
       if (this.$route.query.type) {
@@ -758,6 +765,11 @@ export default {
           this.currentList = this.siteConfig.item_lists.filter(
             item => item.type === this.$route.query.type
           )[0];
+
+        hasQuery = true;
+      }
+      if (hasQuery) {
+        this.enter();
       }
     },
     showMessage(message, duration) {
