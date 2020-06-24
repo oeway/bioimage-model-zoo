@@ -134,7 +134,7 @@
     <br />
 
     <footer class="footer">
-      <div class="columns is-moible is-centered" v-if="siteConfig.footer">
+      <div class="columns is-mobile is-centered" v-if="siteConfig.footer">
         <div
           v-for="item in siteConfig.footer"
           :key="item.label"
