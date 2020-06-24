@@ -360,9 +360,13 @@ function normalizeItem(self, item) {
     icon: "share-variant",
     show_on_hover: true,
     run() {
-      const url =
-        window.location.origin + window.location.pathname + "#/?id=" + item.id;
-      alert("Please copy and paste the following URL: " + url);
+      const query = Object.assign({}, self.$route.query);
+      query.id = item.id;
+      self.$router.replace({ query: query }).catch(() => {});
+
+      alert(
+        "Please copy and paste the URL in the browser address bar for sharing."
+      );
     }
   });
   if (item.source)
