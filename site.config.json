@@ -19,7 +19,7 @@
   "footer": [
     { "label": "Github Model Repository",
       "tooltip": "Bioimage Model Repository",
-      "logo": "/static/img/github.svg", 
+      "logo": "/static/img/github.png", 
       "url": "https://github.com/bioimage-io/bioimage-io-models"
     }
   ],

@@ -143,7 +143,10 @@
         >
           <b-tooltip :label="item.tooltip" position="is-top"
             ><a :href="item.url" target="_blank">
-              <img :src="item.logo" style="height: 55px;" />
+              <figure>
+                <img :src="item.logo" style="max-height: 55px;" />
+                <figcaption>{{item.label}}</figcaption>
+              </figure>
             </a>
           </b-tooltip>
         </div>
