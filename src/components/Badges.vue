@@ -40,7 +40,7 @@ a.badge {
 /* TODO: fix the badge position */
 .badge-img {
   position: relative;
-  transform: translateY(30%);
+  transform: translateY(6px);
 }
 
 .badge {
@@ -55,5 +55,14 @@ a.badge {
 }
 .badges {
   display: inline-block;
+}
+.tag:not(body) {
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 0.7rem;
+  font-weight: 520;
+  height: 20px;
+  border-radius: 3px;
+  font-family: "DejaVu Sans", Verdana, Geneva, sans-serif;
 }
 </style>
