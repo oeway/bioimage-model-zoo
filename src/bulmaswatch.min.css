@@ -2783,6 +2783,11 @@ fieldset[disabled] .button {
     max-width: 1344px;
   }
 }
+@media screen and (max-width: 500px) {
+  figcaption {
+    display: none;
+  }
+}
 .content li + li {
   margin-top: 0.25em;
 }
