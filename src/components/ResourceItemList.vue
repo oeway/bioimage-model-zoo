@@ -59,13 +59,14 @@
               <a
                 class="badge"
                 v-for="badge in props.row.badges"
-                :key="badge.body"
+                :key="badge.label"
                 :href="badge.url"
+                target="_blank"
                 @click="!badge.url && badge.run && badge.run()"
               >
-                <b-taglist attached rounded>
-                  <b-tag :type="badge.body_type || 'is-dark'">{{
-                    badge.body
+                <b-taglist v-if="!badge.icon" attached rounded>
+                  <b-tag :type="badge.label_type || 'is-dark'">{{
+                    badge.label
                   }}</b-tag>
                   <b-tag
                     :type="badge.ext_type || 'is-success'"
@@ -73,6 +74,7 @@
                     >{{ badge.ext }}</b-tag
                   >
                 </b-taglist>
+                <img v-else :alt="badge.label" :src="badge.icon" />
               </a>
             </div>
           </b-table-column>

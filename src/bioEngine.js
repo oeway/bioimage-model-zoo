@@ -81,7 +81,7 @@ export async function setupBioEngine(
   closeDialog,
   updateStatus
 ) {
-  const imjoyCore = await window.loadImJoyCore({ version: "0.13.10" });
+  const imjoyCore = await window.loadImJoyCore({ version: "0.13.19" });
 
   var imjoy_api = {
     showStatus(plugin, info) {
@@ -192,17 +192,7 @@ export async function setupBioEngine(
 
 export function validateBioEngineApp(name, api) {
   if (!api.runOneModel && !api.runManyModels) {
-    console.error(
-      `${name}" has neither "runOneModel" nor "runManyModels":`,
-      api
-    );
-    alert(
-      `"${name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`
-    );
     return false;
-  }
-  if (!api.testModel) {
-    console.warn(`Please define a testModel function for "${name}".`);
   }
   return true;
 }
@@ -219,22 +209,20 @@ export async function loadPlugins(imjoy, appSources) {
     try {
       const config = await imjoy.pm.getPluginFromUrl(ap.source);
       const p = await imjoy.pm.reloadPlugin(config);
-      for (let i = 0; i < config.dependencies.length; i++) {
-        const d_config = await imjoy.pm.getPluginFromUrl(
-          config.dependencies[i]
-        );
-        // TODO: use a better way to determin if it's an internal plugin type
-        if (imjoy.pm.getBadges(d_config) === "🚀") {
-          imjoy.lazy_dependencies[d_config.name] = config.dependencies[i];
-        } else {
-          await imjoy.pm.reloadPluginRecursively({
-            uri: config.dependencies[i]
-          });
+      if (config.dependencies)
+        for (let i = 0; i < config.dependencies.length; i++) {
+          const d_config = await imjoy.pm.getPluginFromUrl(
+            config.dependencies[i]
+          );
+          // TODO: use a better way to determin if it's an internal plugin type
+          if (imjoy.pm.getBadges(d_config) === "🚀") {
+            imjoy.lazy_dependencies[d_config.name] = config.dependencies[i];
+          } else {
+            await imjoy.pm.reloadPluginRecursively({
+              uri: config.dependencies[i]
+            });
+          }
         }
-      }
-      if (p.type !== "window") {
-        if (!validateBioEngineApp(p.name, p.api)) continue;
-      }
       apps[ap.name] = p;
     } catch (e) {
       console.error(e);

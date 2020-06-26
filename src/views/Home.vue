@@ -393,11 +393,11 @@ function normalizeItem(self, item) {
       show_on_hover: true
     });
 
-  item.badges = [];
+  item.badges = item.badges || [];
   if (item.weights) {
     item.badges.unshift({
-      body: "weights",
-      body_type: "is-dark",
+      label: "weights",
+      label_type: "is-dark",
       ext: Object.keys(item.weights).length,
       ext_type: "is-primary",
       run() {
@@ -407,7 +407,7 @@ function normalizeItem(self, item) {
   }
   if (item.files) {
     item.badges.unshift({
-      body: "files",
+      label: "files",
       ext: Object.keys(item.files).length,
       ext_type: "is-primary",
       run() {
