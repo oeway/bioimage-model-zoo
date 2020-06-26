@@ -12,7 +12,7 @@
   "og_image": "https://bioimage.io/static/img/bioimage-banner.png",
   "og_description": "Advanced AI models in one-click",
   "background_image": "static/img/zoo-background.svg",
-  "manifest_url": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/manifest.bioimage.io.json",
+  "manifest_url": "https://bioimage-io.github.io/bioimage-io-models/manifest.bioimage.io.json",
   "explore_button_text": "🚀 Explore the Zoo",
   "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
   "contribute_url": "https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models",
