@@ -417,14 +417,14 @@ function normalizeItem(self, item) {
   }
   if (item.license) {
     item.badges.unshift({
-      body: "license",
+      label: "license",
       ext: item.license,
       ext_type: "is-info"
     });
   }
   if (item.type === "model" && item.co2) {
     item.badges.unshift({
-      body: "CO2",
+      label: "CO2",
       ext: item.co2,
       ext_type: "is-success",
       run() {

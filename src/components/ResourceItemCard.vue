@@ -113,7 +113,13 @@
                   >{{ badge.ext }}</b-tag
                 >
               </b-taglist>
-              <img v-else :alt="badge.label" :src="badge.icon" />
+
+              <img
+                v-else
+                class="badge-img"
+                :alt="badge.label"
+                :src="badge.icon"
+              />
             </a>
           </div>
         </div>
@@ -281,5 +287,11 @@ export default {
 a.badge {
   display: inline-block;
   padding: 1px;
+}
+
+/* TODO: fix the badge position */
+.badge-img {
+  position: relative;
+  transform: translateY(30%);
 }
 </style>
