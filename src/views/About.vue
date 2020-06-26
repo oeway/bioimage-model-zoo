@@ -65,12 +65,4 @@ export default {
   max-width: 100%;
   object-fit: contain;
 }
-.hide-on-small-screen {
-  display: block;
-}
-@media screen and (max-width: 768px) {
-  .hide-on-small-screen {
-    display: none;
-  }
-}
 </style>
