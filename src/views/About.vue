@@ -22,7 +22,9 @@
           ><a :href="item.url" target="_blank">
             <figure>
               <img :src="item.logo" style="max-height: 55px;" />
-              <figcaption>{{ item.label }}</figcaption>
+              <figcaption class="hide-on-small-screen">
+                {{ item.label }}
+              </figcaption>
             </figure>
           </a>
         </b-tooltip>
@@ -62,5 +64,13 @@ export default {
   max-height: 50%;
   max-width: 100%;
   object-fit: contain;
+}
+.hide-on-small-screen {
+  display: block;
+}
+@media screen and (max-width: 768px) {
+  .hide-on-small-screen {
+    display: none;
+  }
 }
 </style>
