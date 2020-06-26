@@ -1,5 +1,5 @@
 <template>
-  <div v-if="apps">
+  <div v-if="apps" class="app-icons">
     <template v-for="app in apps">
       <b-tooltip
         :class="{ 'hover-show': app.show_on_hover && !isTouchDevice }"
@@ -54,10 +54,13 @@ export default {
 };
 </script>
 <style scoped>
+.app-icons {
+  margin-top: 5px;
+}
 .app-icon {
-  width: 22px !important;
-  max-width: 22px;
-  margin-top: 3px;
+  width: 20px !important;
+  max-width: 20px;
+  transform: translateY(2px);
 }
 .action-btn {
   width: 33px;

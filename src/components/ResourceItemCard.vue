@@ -168,8 +168,8 @@ export default {
 
 .floating-buttons {
   position: absolute;
-  top: 5px;
-  left: 10px;
+  top: 0px;
+  left: 5px;
 }
 
 .cover-image {
