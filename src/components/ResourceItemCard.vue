@@ -53,7 +53,10 @@
             <span>{{ resourceItem.name }}</span>
           </h4>
           <div class="buttons floating-buttons">
-            <app-icons :apps="resourceItem.apps"></app-icons>
+            <app-icons
+              :apps="resourceItem.apps"
+              :enableHover="!isTouchDevice"
+            ></app-icons>
           </div>
           <span class="authors">
             {{
@@ -80,6 +83,15 @@ import Badges from "./Badges";
 import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
 
+const isTouchDevice = (function() {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+
 export default {
   name: "ModelCard",
   props: {
@@ -88,7 +100,11 @@ export default {
       default: null
     }
   },
-
+  data() {
+    return {
+      isTouchDevice: isTouchDevice
+    };
+  },
   components: {
     badges: Badges,
     "app-icons": AppIcons

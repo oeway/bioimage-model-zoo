@@ -1,7 +1,9 @@
 <template>
   <div class="resource-item-info">
-    <badges :badges="resourceItem.badges"></badges>
-    <app-icons :apps="resourceItem.apps"></app-icons>
+    <section style="margin-bottom:10px;">
+      <badges :badges="resourceItem.badges"></badges>
+      <app-icons :apps="resourceItem.apps"></app-icons>
+    </section>
     <b-carousel
       style="max-width: 1024px;"
       v-if="resourceItem.cover_images && resourceItem.cover_images.length > 0"

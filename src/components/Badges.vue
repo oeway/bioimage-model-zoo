@@ -1,5 +1,5 @@
 <template>
-  <div v-if="badges">
+  <div class="badges" v-if="badges">
     <a
       class="badge"
       v-for="badge in badges"
@@ -52,5 +52,8 @@ a.badge {
 
 .tags:not(:last-child) {
   margin-bottom: -10px;
+}
+.badges {
+  display: inline-block;
 }
 </style>

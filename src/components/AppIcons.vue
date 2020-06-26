@@ -2,10 +2,10 @@
   <div v-if="apps" class="app-icons">
     <template v-for="app in apps">
       <b-tooltip
-        :class="{ 'hover-show': app.show_on_hover && !isTouchDevice }"
+        :class="{ 'hover-show': app.show_on_hover && enableHover }"
         :key="app.name"
         :label="app.name"
-        position="is-top"
+        position="is-bottom"
       >
         <b-button
           rounded
@@ -30,32 +30,25 @@
 </template>
 
 <script>
-const isTouchDevice = (function() {
-  try {
-    document.createEvent("TouchEvent");
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
 export default {
   name: "AppIcons",
   props: {
     apps: {
       type: Array,
       default: null
+    },
+    enableHover: {
+      type: Boolean,
+      default: false
     }
-  },
-  data() {
-    return {
-      isTouchDevice: isTouchDevice
-    };
   }
 };
 </script>
 <style scoped>
 .app-icons {
   margin-top: 5px;
+  margin-left: 5px;
+  display: inline-block;
 }
 .app-icon {
   width: 20px !important;
