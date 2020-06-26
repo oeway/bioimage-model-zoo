@@ -161,7 +161,7 @@
       :minWidth="200"
       :minHeight="150"
       :fullscreen="dialogWindowConfig.fullscreen"
-      style="max-width: 100%; max-height:100%;"
+      style="max-width: 100%; max-height:100%;z-index: 9999;"
       draggable=".drag-handle"
       :scrollable="true"
     >
@@ -169,7 +169,7 @@
         v-if="selectedDialogWindow"
         @dblclick="maximizeDialogWindow()"
         :class="{ 'drag-handle': !isTouchDevice }"
-        class=" dialog-header"
+        class="dialog-header"
       >
         <span class="noselect dialog-title">
           {{ selectedDialogWindow.name }}</span
