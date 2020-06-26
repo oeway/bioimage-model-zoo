@@ -961,6 +961,16 @@ export default {
   }
 }
 
+.hover-show {
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.card:hover .hover-show {
+  opacity: 1;
+  transition: 0.3s ease;
+}
+
 html,
 body {
   overflow-x: hidden;

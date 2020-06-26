@@ -85,28 +85,7 @@
             field="apps"
             sortable
           >
-            <template v-for="app in props.row.apps">
-              <b-tooltip :key="app.name" :label="app.name" position="is-top">
-                <b-button
-                  rounded
-                  :tag="app.url ? 'a' : 'button'"
-                  :href="app.url"
-                  target="_blank"
-                  @click="!app.url && app.run && app.run()"
-                  class="is-small action-btn"
-                >
-                  <b-icon v-if="!app.icon" icon="puzzle" size="is-small">
-                  </b-icon>
-                  <img
-                    v-else-if="app.icon.startsWith('http')"
-                    class="app-icon"
-                    :style="{ 'margin-top': isSafari ? '-1px' : '3px' }"
-                    :src="app.icon"
-                  />
-                  <b-icon v-else :icon="app.icon" size="is-small"> </b-icon>
-                </b-button>
-              </b-tooltip>
-            </template>
+            <app-icons :apps="props.row.apps"></app-icons>
           </b-table-column>
         </template>
         <template slot="detail" slot-scope="props">
@@ -122,6 +101,7 @@
 
 <script>
 import Vue from "vue";
+import AppIcons from "./AppIcons";
 import ResourceItemCard from "./ResourceItemCard";
 import siteConfig from "../../site.config.json";
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -133,7 +113,10 @@ Vue.component("label-selector", {
 
 export default {
   name: "ResourceItemList",
-  components: { "resource-item-card": ResourceItemCard },
+  components: {
+    "resource-item-card": ResourceItemCard,
+    "app-icons": AppIcons
+  },
   props: {
     allItems: {
       type: Array,

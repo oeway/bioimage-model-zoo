@@ -1,17 +1,6 @@
 <template>
   <div class="resource-item-info">
-    <b-taglist
-      class="badge"
-      attached
-      rounded
-      v-for="badge in resourceItem.badges"
-      :key="badge.body"
-    >
-      <b-tag :type="badge.body_type || 'is-dark'">{{ badge.body }}</b-tag>
-      <b-tag :type="badge.ext_type || 'is-success'" v-if="badge.ext">{{
-        badge.ext
-      }}</b-tag>
-    </b-taglist>
+    <badges :badges="resourceItem.badges"></badges>
 
     <b-carousel
       style="max-width: 1024px;"
@@ -133,6 +122,7 @@
 <script>
 import "../../node_modules/github-markdown-css/github-markdown.css";
 import "../../node_modules/highlight.js/styles/github.css";
+import Badges from "./Badges";
 import siteConfig from "../../site.config.json";
 import marked from "marked";
 import DOMPurify from "dompurify";
@@ -146,6 +136,9 @@ export default {
       type: Object,
       default: null
     }
+  },
+  components: {
+    badges: Badges
   },
   data() {
     return {

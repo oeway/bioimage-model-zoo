@@ -53,33 +53,7 @@
             <span>{{ resourceItem.name }}</span>
           </h4>
           <div class="buttons floating-buttons">
-            <template v-for="app in resourceItem.apps">
-              <b-tooltip
-                :class="{ 'hover-show': app.show_on_hover && !isTouchDevice }"
-                :key="app.name"
-                :label="app.name"
-                position="is-top"
-              >
-                <b-button
-                  rounded
-                  tag="a"
-                  :href="app.url"
-                  target="_blank"
-                  @click="!app.url && app.run && app.run()"
-                  class="is-small action-btn"
-                >
-                  <b-icon v-if="!app.icon" icon="puzzle" size="is-small">
-                  </b-icon>
-                  <img
-                    v-else-if="app.icon.startsWith('http')"
-                    class="app-icon"
-                    :src="app.icon"
-                    :alt="app.name"
-                  />
-                  <b-icon v-else :icon="app.icon" size="is-small"> </b-icon>
-                </b-button>
-              </b-tooltip>
-            </template>
+            <app-icons :apps="resourceItem.apps"></app-icons>
           </div>
           <span class="authors">
             {{
@@ -94,34 +68,7 @@
                 (resourceItem.description.length > 100 ? "..." : "")
             }}
           </p>
-          <div class="badges" v-if="resourceItem.badges">
-            <a
-              class="badge"
-              v-for="badge in resourceItem.badges"
-              :key="badge.label"
-              :href="badge.url"
-              target="_blank"
-              @click="!badge.url && badge.run && badge.run()"
-            >
-              <b-taglist v-if="!badge.icon" attached rounded>
-                <b-tag :type="badge.label_type || 'is-dark'">{{
-                  badge.label
-                }}</b-tag>
-                <b-tag
-                  :type="badge.ext_type || 'is-success'"
-                  v-if="badge.ext"
-                  >{{ badge.ext }}</b-tag
-                >
-              </b-taglist>
-
-              <img
-                v-else
-                class="badge-img"
-                :alt="badge.label"
-                :src="badge.icon"
-              />
-            </a>
-          </div>
+          <badges class="badges" :badges="resourceItem.badges"></badges>
         </div>
       </div>
     </div>
@@ -129,15 +76,9 @@
 </template>
 
 <script>
+import Badges from "./Badges";
+import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
-const isTouchDevice = (function() {
-  try {
-    document.createEvent("TouchEvent");
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
 
 export default {
   name: "ModelCard",
@@ -147,10 +88,10 @@ export default {
       default: null
     }
   },
-  data() {
-    return {
-      isTouchDevice: isTouchDevice
-    };
+
+  components: {
+    badges: Badges,
+    "app-icons": AppIcons
   },
   computed: {
     icon: function() {
@@ -224,30 +165,13 @@ export default {
 .resource-item-description {
   font-size: 0.9em;
 }
-.action-btn {
-  width: 33px;
-}
-.action-btn .icon {
-  font-size: 1.4rem;
-}
+
 .floating-buttons {
   position: absolute;
   top: 5px;
   left: 10px;
 }
 
-.app-icon {
-  width: 22px !important;
-  max-width: 22px;
-  margin-top: 3px;
-}
-
-.button.is-small {
-  border-radius: 30px;
-  font-size: 0.8rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  color: #2196f3;
-}
 .cover-image {
   height: 160px;
   max-height: 180px;
@@ -270,28 +194,9 @@ export default {
   max-width: 100px;
 }
 
-.hover-show {
-  opacity: 0;
-  transition: 0.3s ease;
-}
-
-.card:hover .hover-show {
-  opacity: 1;
-  transition: 0.3s ease;
-}
 .badges {
   position: absolute;
   left: 5px;
   bottom: 5px;
-}
-a.badge {
-  display: inline-block;
-  padding: 1px;
-}
-
-/* TODO: fix the badge position */
-.badge-img {
-  position: relative;
-  transform: translateY(30%);
 }
 </style>
