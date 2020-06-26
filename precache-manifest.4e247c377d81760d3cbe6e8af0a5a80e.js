@@ -4,8 +4,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "fdc5e8d1f06d76d53e00",
-    "url": "/css/app.b400dfbf.css"
+    "revision": "1e4819585fd1306f15b7",
+    "url": "/css/app.a727ed2b.css"
   },
   {
     "revision": "bdf21440013c370bc8ef",
@@ -16,12 +16,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "7a733e8a32296ea84ec8a9b8a06b4307",
+    "revision": "f355bd0eba4d8b065ce7d9310d4fc198",
     "url": "/index.html"
   },
   {
-    "revision": "fdc5e8d1f06d76d53e00",
-    "url": "/js/app.c171f549.js"
+    "revision": "1e4819585fd1306f15b7",
+    "url": "/js/app.05ee7197.js"
   },
   {
     "revision": "bdf21440013c370bc8ef",
@@ -318,6 +318,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "5a844215a57d9607f1087c9d7d364880",
     "url": "/static/anonymousAnimals/Wombat.png"
+  },
+  {
+    "revision": "e1dd5654c3c8bcca4df6f56705b14a3c",
+    "url": "/static/img/github.png"
   },
   {
     "revision": "f0d21da3f74ffbbcc644dafd7b957e57",
