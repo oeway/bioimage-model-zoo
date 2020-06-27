@@ -104,6 +104,31 @@
       </div>
     </section>
     <br />
+    <div class="container" style="text-align:center;">
+      <b-carousel-list
+        v-model="selectedPartnerIndex"
+        :data="partnerList"
+        :arrow="true"
+        :arrow-hover="true"
+        :items-to-list="3"
+        :repeat="true"
+        :has-drag="true"
+        :has-grayscale="false"
+        :has-opacity="false"
+      >
+        <template slot="item" slot-scope="props">
+          <figure class="image">
+            <a @click="switchPartner(props.list)"
+              ><img
+                style="max-height: 100px; width: auto;"
+                :src="props.list.logo"
+            /></a>
+          </figure>
+        </template>
+      </b-carousel-list>
+    </div>
+
+    <br />
     <span ref="search_anchor"></span>
     <div
       class="container"
@@ -509,7 +534,8 @@ export default {
       currentList: null,
       displayMode: "card",
       currentTags: [],
-      selectedPartner: null
+      selectedPartner: null,
+      selectedPartnerIndex: 0
     };
   },
   created: async function() {
@@ -622,6 +648,48 @@ export default {
     }
   },
   computed: {
+    partnerList: function() {
+      return Object.values(this.siteConfig.partners);
+      // const lst = [];
+      // for (let p of Object.values(this.siteConfig.partners)) {
+      //   lst.push({ title: p.name, image: p.logo });
+      // }
+      // return lst;
+      // return [
+      //   {
+      //     title: "Slide 1",
+      //     image: "https://picsum.photos/id/0/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 2",
+      //     image: "https://picsum.photos/id/1/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 3",
+      //     image: "https://picsum.photos/id/2/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 4",
+      //     image: "https://picsum.photos/id/3/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 5",
+      //     image: "https://picsum.photos/id/4/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 6",
+      //     image: "https://picsum.photos/id/5/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 7",
+      //     image: "https://picsum.photos/id/6/1230/500"
+      //   },
+      //   {
+      //     title: "Slide 8",
+      //     image: "https://picsum.photos/id/7/1230/500"
+      //   }
+      // ];
+    },
     resourceCategories: function() {
       if (this.selectedPartner)
         return this.siteConfig.resource_categories.filter(list =>
@@ -677,6 +745,9 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    switchPartner(partner) {
+      this.selectedPartner = partner;
+    },
     updateQueryTags(newTags) {
       if (newTags) {
         if (newTags.length > 0) {

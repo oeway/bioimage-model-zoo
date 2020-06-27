@@ -107,8 +107,8 @@
     "fiji": {
       "name": "Fiji",
       "tags": ["fiji"],
-      "logo": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-logo-black.svg",
-      "icon": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-icon.svg",
+      "logo": "https://fiji.sc/site/logo.png",
+      "icon": "https://fiji.sc/site/logo.png",
       "splash_title": "Fiji",
       "splash_subtitle": "Fiji is just ImageJ",
       "splash_feature_list": [
