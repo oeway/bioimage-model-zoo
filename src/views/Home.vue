@@ -648,11 +648,7 @@ export default {
       const query = Object.assign({}, this.$route.query);
       if (this.currentList) {
         // remove the default type in the query if that's the only query
-        if (
-          this.currentList.type === "model" &&
-          query.type &&
-          Object.keys(query).length <= 1
-        )
+        if (this.currentList.type === "model" && Object.keys(query).length <= 1)
           delete query.type;
         else {
           query.type = this.currentList.type;
