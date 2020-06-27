@@ -1,5 +1,8 @@
 <template>
-  <div class="about">
+  <div
+    class="about"
+    :style="{ 'background-image': 'url(' + siteConfig.background_image + ')' }"
+  >
     <section class="hero">
       <div class="hero-body">
         <div class="container">
@@ -8,9 +11,7 @@
         </div>
       </div>
     </section>
-    <img class="background-img" :src="siteConfig.background_image" />
     <br />
-
     <div class="columns is-mobile is-centered" v-if="siteConfig.footer">
       <div
         v-for="item in siteConfig.footer"
@@ -30,6 +31,7 @@
         </b-tooltip>
       </div>
     </div>
+
     <div style="text-align: center" v-if="siteConfig.footnote">
       <p>{{ siteConfig.footnote }}</p>
     </div>
@@ -49,6 +51,11 @@ export default {
 };
 </script>
 <style scoped>
+.about {
+  height: calc(100% - 40px);
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
 .hero {
   max-width: 100%;
   width: 600px;

@@ -50,6 +50,7 @@
     <!-- Header -->
     <section class="hero is-link is-fullheight is-fullheight-with-navbar">
       <div class="hero-body">
+        <img class="background-img" :src="siteConfig.background_image" />
         <div class="container">
           <h1 class="title is-1">
             {{ siteConfig.splash_title }}
@@ -72,7 +73,6 @@
             }}</span></b-button
           >
         </div>
-        <img class="background-img" :src="siteConfig.background_image" />
       </div>
     </section>
     <br />
@@ -96,7 +96,7 @@
           updateQueryTags();
         "
         :class="{ active: currentList === list }"
-        v-for="list in siteConfig.item_lists"
+        v-for="list in siteConfig.resource_categories"
         :key="list.name"
       >
         {{ list.name }}
@@ -613,7 +613,7 @@ export default {
         return this.currentList && this.currentList.tag_categories;
       } else {
         let combined = {};
-        for (let list of siteConfig.item_lists) {
+        for (let list of siteConfig.resource_categories) {
           combined = Object.assign(combined, list.tag_categories);
         }
         return combined;
@@ -625,7 +625,7 @@ export default {
     window.dispatchEvent(new Event("resize"));
 
     // select models as default
-    for (let list of siteConfig.item_lists) {
+    for (let list of siteConfig.resource_categories) {
       if (list.type === "model") {
         this.currentList = list;
         break;
@@ -781,7 +781,7 @@ export default {
       if (this.$route.query.type) {
         if (this.$route.query.type === "all") this.currentList = null;
         else
-          this.currentList = this.siteConfig.item_lists.filter(
+          this.currentList = this.siteConfig.resource_categories.filter(
             item => item.type === this.$route.query.type
           )[0];
 
