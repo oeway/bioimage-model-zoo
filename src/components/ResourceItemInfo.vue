@@ -112,11 +112,25 @@
           {{ c.text }} <a :href="c.url" target="_blank">[{{ c.url_text }}]</a>
         </li>
       </ul>
-      <div
-        id="source"
+
+      <b-collapse
         v-if="resourceItem.yamlConfig"
-        v-html="resourceItem.yamlConfig"
-      ></div>
+        :open.sync="showSource"
+        aria-id="show-source"
+      >
+        <div
+          slot="trigger"
+          class="panel-heading"
+          role="button"
+          aria-controls="contentIdForA11y2"
+        >
+          <strong>+ Source</strong>
+        </div>
+
+        <div class="panel-block">
+          <div id="source" v-html="resourceItem.yamlConfig"></div>
+        </div>
+      </b-collapse>
     </div>
   </div>
 </template>
@@ -147,7 +161,8 @@ export default {
   data() {
     return {
       siteConfig: siteConfig,
-      maxDescriptionLetters: 100
+      maxDescriptionLetters: 100,
+      showSource: false
     };
   },
   created() {
@@ -317,7 +332,7 @@ export default {
           const raw_docs = await response.text();
           resourceItem.yamlConfig = DOMPurify.sanitize(
             marked(
-              "## [Source](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```"
+              "[Source link](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```"
             )
           );
         } else {
@@ -335,7 +350,7 @@ export default {
 <style scoped>
 .resource-item-info {
   padding: 20px;
-  height: 100%;
+  height: calc(100% - 50px);
   overflow: auto;
 }
 
