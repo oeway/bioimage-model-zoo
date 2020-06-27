@@ -141,10 +141,8 @@ export default {
   watch: {
     type: function(newType) {
       if (!this.allItems) return;
-      const selectedItems = newType
-        ? this.allItems.filter(m => m.type === newType)
-        : this.allItems;
-      this.$emit("selection-changed", selectedItems);
+      this.type = newType;
+      this.applySearch(this.selectedTags);
     },
     selectedTags: function(newTags) {
       this.applySearch(newTags);
@@ -153,7 +151,8 @@ export default {
       this.applySearch(this.selectedTags);
     },
     searchTags: function(newTags) {
-      this.selectedTags = newTags;
+      newTags = newTags.filter(tag => tag && tag.trim() != "");
+      this.selectedTags = Array.from(new Set(newTags));
     }
   },
   mounted() {

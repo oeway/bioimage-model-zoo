@@ -89,7 +89,36 @@
       "detailed_body": "description"
     }
   },
-  "item_lists": [
+  "footnote": "BioImage.io -- a collabrative effort to bring AI models to the bioimaging community.",
+  "partners": {
+    "imjoy": {
+      "name": "ImJoy",
+      "tags": ["imjoy"],
+      "logo": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-logo-black.svg",
+      "icon": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-icon.svg",
+      "splash_title": "ImJoy",
+      "splash_subtitle": "Deep Learning Made Easy!",
+      "splash_feature_list": [
+      ],
+      "explore_button_text": "Start Explore",
+      "background_image": "static/img/zoo-background.svg",
+      "resource_types": ["model", "notebook", "application"]
+    },
+    "fiji": {
+      "name": "Fiji",
+      "tags": ["fiji"],
+      "logo": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-logo-black.svg",
+      "icon": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-icon.svg",
+      "splash_title": "Fiji",
+      "splash_subtitle": "Fiji is just ImageJ",
+      "splash_feature_list": [
+      ],
+      "explore_button_text": "Start Explore",
+      "background_image": "static/img/zoo-background.svg",
+      "resource_types": ["model"]
+    }
+  },
+  "resource_categories": [
     {
       "name": "Models",
       "type": "model",

@@ -4,7 +4,10 @@
     <nav class="navbar is-link is-fixed-top">
       <div class="navbar-brand">
         <span class="site-icon"> {{ siteConfig.site_icon }}</span>
-        <span class="site-title"> {{ siteConfig.site_name }}</span>
+        <span class="site-title"> {{ siteConfig.site_name }} </span>
+        <span v-if="selectedPartner" class="site-title"
+          >| {{ selectedPartner.name }}</span
+        >
         <div
           class="navbar-burger burger"
           :class="{ 'is-active': showMenu }"
@@ -49,7 +52,32 @@
     </nav>
     <!-- Header -->
     <section class="hero is-link is-fullheight is-fullheight-with-navbar">
-      <div class="hero-body">
+      <div v-if="selectedPartner" class="hero-body">
+        <img class="background-img" :src="selectedPartner.background_image" />
+        <div class="container">
+          <h1 class="title is-1">
+            {{ selectedPartner.splash_title }}
+          </h1>
+          <h2 class="subtitle is-3">
+            {{ selectedPartner.splash_subtitle }}
+          </h2>
+          <ul class="feature-list" v-if="selectedPartner.splash_feature_list">
+            <li
+              v-for="feature in selectedPartner.splash_feature_list"
+              :key="feature"
+            >
+              - {{ feature }}
+            </li>
+          </ul>
+          <br />
+          <b-button rounded style="text-transform:none;" @click="enter">
+            <span class="explore-btn">{{
+              selectedPartner.explore_button_text
+            }}</span></b-button
+          >
+        </div>
+      </div>
+      <div v-else class="hero-body">
         <img class="background-img" :src="siteConfig.background_image" />
         <div class="container">
           <h1 class="title is-1">
@@ -77,7 +105,11 @@
     </section>
     <br />
     <span ref="search_anchor"></span>
-    <div class="container" style="text-align:center;">
+    <div
+      class="container"
+      v-if="resourceCategories.length > 1"
+      style="text-align:center;"
+    >
       <div
         class="item-lists is-link"
         style="width:30px; margin-left: -16px;"
@@ -96,7 +128,7 @@
           updateQueryTags();
         "
         :class="{ active: currentList === list }"
-        v-for="list in siteConfig.resource_categories"
+        v-for="list in resourceCategories"
         :key="list.name"
       >
         {{ list.name }}
@@ -451,6 +483,7 @@ export default {
   },
   data() {
     return {
+      initialized: false,
       searchTags: null,
       isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
@@ -475,7 +508,8 @@ export default {
       infoDialogTitle: "",
       currentList: null,
       displayMode: "card",
-      currentTags: []
+      currentTags: [],
+      selectedPartner: null
     };
   },
   created: async function() {
@@ -588,6 +622,13 @@ export default {
     }
   },
   computed: {
+    resourceCategories: function() {
+      if (this.selectedPartner)
+        return this.siteConfig.resource_categories.filter(list =>
+          this.selectedPartner.resource_types.includes(list.type)
+        );
+      else return this.siteConfig.resource_categories;
+    },
     fullLabelList: function() {
       const fullLabelList = [];
       if (this.resourceItems) {
@@ -613,7 +654,7 @@ export default {
         return this.currentList && this.currentList.tag_categories;
       } else {
         let combined = {};
-        for (let list of siteConfig.resource_categories) {
+        for (let list of this.resourceCategories) {
           combined = Object.assign(combined, list.tag_categories);
         }
         return combined;
@@ -625,7 +666,7 @@ export default {
     window.dispatchEvent(new Event("resize"));
 
     // select models as default
-    for (let list of siteConfig.resource_categories) {
+    for (let list of this.resourceCategories) {
       if (list.type === "model") {
         this.currentList = list;
         break;
@@ -642,6 +683,11 @@ export default {
           this.currentTags = newTags;
         } else {
           this.currentTags = null;
+          if (this.initialized) {
+            this.selectedPartner = null;
+          } else {
+            this.initialized = true;
+          }
         }
       }
 
@@ -661,6 +707,10 @@ export default {
         query.tags = this.currentTags.join(",");
       } else {
         delete query.tags;
+      }
+
+      if (!this.selectedPartner) {
+        delete query.partner;
       }
       this.$router.replace({ query: query }).catch(() => {});
     },
@@ -777,11 +827,28 @@ export default {
       if (this.$route.query.type) {
         if (this.$route.query.type === "all") this.currentList = null;
         else
-          this.currentList = this.siteConfig.resource_categories.filter(
+          this.currentList = this.resourceCategories.filter(
             item => item.type === this.$route.query.type
           )[0];
 
         hasQuery = true;
+      }
+
+      if (this.$route.query.partner) {
+        if (
+          this.siteConfig.partners &&
+          this.siteConfig.partners[this.$route.query.partner]
+        ) {
+          this.selectedPartner = this.siteConfig.partners[
+            this.$route.query.partner
+          ];
+          if (!this.searchTags) {
+            this.searchTags = this.selectedPartner.tags;
+          } else {
+            this.searchTags = this.searchTags.concat(this.selectedPartner.tags);
+          }
+          hasQuery = false;
+        }
       }
       if (hasQuery) {
         this.enter();
