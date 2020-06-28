@@ -1152,6 +1152,7 @@ export default {
 .markdown-container {
   padding: 20px;
   overflow: auto;
+  overscroll-behavior: contain;
   height: calc(100% - 40px);
 }
 

@@ -269,6 +269,7 @@ export default {
   padding: 20px;
   height: calc(100% - 50px);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 @media screen and (max-width: 768px) {
