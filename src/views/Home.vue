@@ -64,6 +64,7 @@
         />
         <img class="background-img" v-else :src="siteConfig.background_image" />
         <partners
+          v-if="siteConfig.partners"
           style="position: absolute;bottom: 0px;"
           :partners="siteConfig.partners"
           @switchPartner="switchPartner"
