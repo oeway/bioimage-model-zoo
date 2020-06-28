@@ -87,11 +87,7 @@
             </li>
           </ul>
           <br />
-          <b-button
-            rounded
-            style="text-transform:none;background-color: #b3f1ff;"
-            @click="enter"
-          >
+          <b-button rounded style="text-transform:none;" @click="enter">
             <span class="explore-btn">{{
               selectedPartner.explore_button_text
             }}</span></b-button
