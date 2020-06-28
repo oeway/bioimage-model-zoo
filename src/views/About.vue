@@ -11,6 +11,16 @@
         </div>
       </div>
     </section>
+
+    <br />
+    <section style="text-align: center;">
+      <b-button @click="$emit('contribute')" v-if="siteConfig.contribute_url"
+        >Contribute Models</b-button
+      >
+      <b-button @click="$emit('join')" v-if="siteConfig.join_partners_url"
+        >Join Community Partners</b-button
+      >
+    </section>
     <br />
     <div class="columns is-mobile is-centered" v-if="siteConfig.footer">
       <div

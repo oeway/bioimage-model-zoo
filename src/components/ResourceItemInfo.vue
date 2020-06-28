@@ -104,7 +104,11 @@
       </b-table>
     </template>
     <div class="markdown-body">
-      <div v-if="resourceItem.docs" v-html="resourceItem.docs"></div>
+      <markdown
+        v-if="resourceItem.docs"
+        :baseUrl="resourceItem.baseUrl"
+        :content="resourceItem.docs"
+      ></markdown>
       <br />
       <h2 v-if="formatedCitation" id="citation">How to cite</h2>
       <ul v-if="formatedCitation" class="citation">
@@ -128,7 +132,7 @@
         </div>
 
         <div class="panel-block">
-          <div id="source" v-html="resourceItem.yamlConfig"></div>
+          <markdown :content="resourceItem.yamlConfig"></markdown>
         </div>
       </b-collapse>
     </div>
@@ -136,15 +140,11 @@
 </template>
 
 <script>
-import "../../node_modules/github-markdown-css/github-markdown.css";
-import "../../node_modules/highlight.js/styles/github.css";
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
 import siteConfig from "../../site.config.json";
-import marked from "marked";
-import DOMPurify from "dompurify";
-import hljs from "highlight.js";
-import { randId, concatAndResolveUrl, replaceAllRelByAbs } from "../utils";
+import Markdown from "./Markdown";
+import { randId, concatAndResolveUrl } from "../utils";
 
 export default {
   name: "ResourceItemInfo",
@@ -155,6 +155,7 @@ export default {
     }
   },
   components: {
+    markdown: Markdown,
     badges: Badges,
     "app-icons": AppIcons
   },
@@ -165,32 +166,7 @@ export default {
       showSource: false
     };
   },
-  created() {
-    //open link in a new tab
-    const renderer = new marked.Renderer();
-    renderer.link = function(href, title, text) {
-      var link = marked.Renderer.prototype.link.call(this, href, title, text);
-      return link.replace("<a", "<a target='_blank' ");
-    };
-    renderer.image = function(href, title, text) {
-      var link = marked.Renderer.prototype.image.call(this, href, title, text);
-      return link.replace("/./", "/");
-    };
-    marked.setOptions({
-      renderer: renderer,
-      highlight: function(code) {
-        return hljs.highlightAuto(code).value;
-      }
-    });
-    DOMPurify.addHook("afterSanitizeAttributes", function(node) {
-      // set all elements owning target to target=_blank
-      if ("target" in node) {
-        node.setAttribute("target", "_blank");
-        // prevent https://www.owasp.org/index.php/Reverse_Tabnabbing
-        node.setAttribute("rel", "noopener noreferrer");
-      }
-    });
-  },
+
   mounted() {
     const focus = () => {
       if (this.resourceItem._focus) {
@@ -293,16 +269,8 @@ export default {
             baseUrl = temp.slice(0, temp.length - 1).join("/");
           }
           if (resourceItem.documentation.endsWith(".md")) {
-            marked.setOptions({
-              baseUrl
-            });
-            resourceItem.docs = DOMPurify.sanitize(
-              replaceAllRelByAbs(marked(raw_docs), baseUrl)
-            );
-          } else {
-            resourceItem.docs = DOMPurify.sanitize(
-              replaceAllRelByAbs(raw_docs, baseUrl)
-            );
+            resourceItem.baseUrl = baseUrl;
+            resourceItem.docs = raw_docs;
           }
         } else {
           resourceItem.docs = null;
@@ -330,11 +298,8 @@ export default {
         const response = await fetch(yamlUrl);
         if (response.status == 200) {
           const raw_docs = await response.text();
-          resourceItem.yamlConfig = DOMPurify.sanitize(
-            marked(
-              "[Source link](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```"
-            )
-          );
+          resourceItem.yamlConfig =
+            "[Source link](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```";
         } else {
           resourceItem.yamlConfig = null;
         }

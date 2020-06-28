@@ -42,7 +42,7 @@
             class="navbar-item"
             target="_blank"
             v-if="siteConfig.contribute_url"
-            :href="siteConfig.contribute_url"
+            @click="showContributeDialog"
           >
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
@@ -64,10 +64,11 @@
         />
         <img class="background-img" v-else :src="siteConfig.background_image" />
         <partners
-          v-if="siteConfig.partners"
+          v-if="siteConfig.partners && siteConfig.join_partners_url"
           style="position: absolute;bottom: 0px;"
           :partners="siteConfig.partners"
           @switchPartner="switchPartner"
+          @join="joinPartners"
         ></partners>
 
         <div class="container" v-if="selectedPartner">
@@ -86,7 +87,11 @@
             </li>
           </ul>
           <br />
-          <b-button rounded style="text-transform:none;" @click="enter">
+          <b-button
+            rounded
+            style="text-transform:none;background-color: #b3f1ff;"
+            @click="enter"
+          >
             <span class="explore-btn">{{
               selectedPartner.explore_button_text
             }}</span></b-button
@@ -319,7 +324,18 @@
           {{ infoDialogFullscreen ? "=" : "+" }}
         </button>
       </div>
-      <about v-if="showInfoDialogMode === 'about'"></about>
+      <about
+        v-if="showInfoDialogMode === 'about'"
+        @contribute="showContributeDialog"
+        @join="joinPartners"
+      ></about>
+      <div
+        class="container"
+        style="padding: 20px;"
+        v-else-if="showInfoDialogMode === 'markdown'"
+      >
+        <markdown :url="infoMarkdownUrl"></markdown>
+      </div>
       <iframe
         v-else-if="showInfoDialogMode === 'subscribe'"
         style="padding-bottom: 64px;width: 100%;
@@ -347,6 +363,7 @@ import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import Partners from "@/components/Partners.vue";
 import About from "@/views/About.vue";
+import Markdown from "@/components/Markdown.vue";
 import siteConfig from "../../site.config.json";
 import {
   setupBioEngine,
@@ -498,6 +515,7 @@ export default {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
+    markdown: Markdown,
     partners: Partners,
     about: About
   },
@@ -527,6 +545,7 @@ export default {
       screenWidth: 1000,
       showInfoDialogMode: null,
       infoDialogTitle: "",
+      infoMarkdownUrl: null,
       currentList: null,
       displayMode: "card",
       currentTags: [],
@@ -715,6 +734,13 @@ export default {
       query.tags = partner.tags;
       this.$router.replace({ query: query });
     },
+    joinPartners() {
+      this.infoDialogTitle = "Join BioImage.IO as a community partner";
+      this.infoMarkdownUrl = this.siteConfig.join_partners_url;
+      this.showInfoDialogMode = "markdown";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+    },
     updateQueryTags(newTags) {
       if (newTags) {
         if (newTags.length > 0) {
@@ -785,6 +811,13 @@ export default {
     showSubscribeDialog() {
       this.showInfoDialogMode = "subscribe";
       this.infoDialogTitle = "Subscribe to News and Updates";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+    },
+    showContributeDialog() {
+      this.infoDialogTitle = "Contribute to BioImage.IO";
+      this.infoMarkdownUrl = this.siteConfig.contribute_url;
+      this.showInfoDialogMode = "markdown";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },

@@ -15,7 +15,8 @@
   "manifest_url": "https://bioimage-io.github.io/bioimage-io-models/manifest.bioimage.io.json",
   "explore_button_text": "🚀 Explore the Zoo",
   "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
-  "contribute_url": "https://github.com/bioimage-io/bioimage-io-models#how-to-contribute-new-models",
+  "contribute_url": "https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/contribute.m",
+  "join_partners_url": "https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/join-partners.md",
   "footer": [
     { "label": "Github Model Repository",
       "tooltip": "Bioimage Model Repository",
