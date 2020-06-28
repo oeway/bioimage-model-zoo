@@ -92,4 +92,7 @@ export default {
     display: none;
   }
 }
+.carousel-list.has-shadow {
+  box-shadow: unset !important;
+}
 </style>
