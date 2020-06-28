@@ -77,6 +77,7 @@ export async function setupBioEngineAPI() {
 export async function setupBioEngine(
   workspace,
   showMessage,
+  showProgress,
   showDialog,
   closeDialog,
   updateStatus
@@ -92,7 +93,7 @@ export async function setupBioEngine(
     },
     showProgress(plugin, progress) {
       if (progress < 1) progress = progress * 100;
-      console.log(progress);
+      showProgress(progress);
     },
     showDialog(_plugin, config) {
       return new Promise((resolve, reject) => {

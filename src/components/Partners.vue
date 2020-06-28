@@ -51,9 +51,10 @@ export default {
 .partners > h2 {
   margin-top: 10px;
   font-size: 1.7rem;
+  color: #407ae6;
 }
 .partners {
-  background-color: #313131d9;
+  background-color: #fdfdfdfd;
   text-align: center;
   width: 100vw;
   max-width: 100vw;
@@ -65,9 +66,10 @@ export default {
   margin-left: 0px;
 }
 .partner-logo {
-  height: 100px;
+  height: 80px;
   max-height: 100px;
   width: auto;
+  margin-bottom: 10px;
 }
 
 @media screen and (max-width: 500px) {

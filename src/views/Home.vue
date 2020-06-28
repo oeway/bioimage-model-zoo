@@ -118,7 +118,9 @@
       </div>
     </section>
     <br />
-
+    <section style="margin-top: -30px;opacity: 0.6;">
+      <b-progress :value="progress"></b-progress>
+    </section>
     <br />
     <span ref="search_anchor"></span>
     <div
@@ -502,6 +504,7 @@ export default {
   data() {
     return {
       initialized: false,
+      progress: 100,
       searchTags: null,
       isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
@@ -572,6 +575,7 @@ export default {
       setupBioEngine(
         workspace,
         this.showMessage,
+        this.showProgress,
         this.showWindowDialog,
         this.closeWindowDialog,
         this.updateStatus
@@ -890,6 +894,10 @@ export default {
         this.enter();
       }
     },
+    showProgress(p) {
+      this.progress = p;
+      this.$forceUpdate();
+    },
     showMessage(message, duration) {
       duration = duration || 5000;
       const data = {
@@ -1010,10 +1018,10 @@ export default {
 }
 .background-img {
   position: absolute;
-  bottom: 184px;
+  bottom: 172px;
   right: 0px;
   opacity: 0.8;
-  width: 60%;
+  width: 55%;
   transition: 0.9s ease;
   max-height: 30%;
   max-width: 100%;
