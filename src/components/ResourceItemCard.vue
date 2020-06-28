@@ -155,9 +155,11 @@ export default {
 };
 </script>
 <style scoped>
+.resource-item-card {
+  max-width: 500px;
+}
 .card {
   height: 360px;
-  max-width: 500px;
 }
 .card-image {
   height: 160px;
