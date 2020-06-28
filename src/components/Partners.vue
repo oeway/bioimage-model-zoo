@@ -6,9 +6,9 @@
       v-model="selectedPartnerIndex"
       :data="partners"
       :arrow="true"
-      :arrow-hover="true"
-      :items-to-list="3"
-      :repeat="true"
+      :arrow-hover="false"
+      :items-to-list="1"
+      :repeat="false"
       :has-drag="true"
       :has-grayscale="false"
       :has-opacity="false"
@@ -79,7 +79,7 @@ export default {
   }
 }
 
-@media screen and (max-height: 500px) {
+@media screen and (max-height: 600px) {
   .partners {
     height: 100px;
   }

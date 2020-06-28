@@ -1044,6 +1044,13 @@ export default {
 .hide-on-small-screen {
   display: block;
 }
+
+@media screen and (max-width: 500px) {
+  .feature-list {
+    font-size: 1em;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .dialog-title {
     font-size: 1.1rem;
