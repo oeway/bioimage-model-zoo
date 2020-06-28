@@ -326,7 +326,7 @@
         @join="showJoinDialog"
       ></about>
       <div
-        class="container markdown-container"
+        class="markdown-container"
         v-else-if="showInfoDialogMode === 'markdown'"
       >
         <markdown :url="infoMarkdownUrl"></markdown>
