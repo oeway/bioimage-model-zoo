@@ -9,7 +9,7 @@
         <span class="site-title" @click="goHome()" style="cursor: pointer;">
           {{ siteConfig.site_name }}
         </span>
-        <span v-if="selectedPartner" class="site-title"
+        <span v-if="selectedPartner" class="site-title hide-on-small-screen"
           >| {{ selectedPartner.name }}</span
         >
         <div
@@ -1041,10 +1041,6 @@ export default {
 .dialog-title {
   font-size: 1.4rem;
 }
-.hide-on-small-screen {
-  display: block;
-}
-
 @media screen and (max-width: 500px) {
   .feature-list {
     font-size: 1em;
@@ -1058,6 +1054,7 @@ export default {
   .site-title {
     font-size: 2em !important;
   }
+
   .site-icon {
     font-size: 2.3em;
   }
