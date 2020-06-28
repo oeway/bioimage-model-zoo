@@ -68,7 +68,7 @@
           style="position: absolute;bottom: 0px;"
           :partners="siteConfig.partners"
           @switchPartner="switchPartner"
-          @join="joinPartners"
+          @join="showJoinDialog"
         ></partners>
 
         <div class="container" v-if="selectedPartner">
@@ -327,7 +327,7 @@
       <about
         v-if="showInfoDialogMode === 'about'"
         @contribute="showContributeDialog"
-        @join="joinPartners"
+        @join="showJoinDialog"
       ></about>
       <div
         class="container"
@@ -724,7 +724,7 @@ export default {
       const query = Object.assign({}, this.$route.query);
       delete query.partner;
       delete query.tags;
-      this.$router.replace({ query: query }).catch(() => {});
+      this.$router.push({ query: query }).catch(() => {});
     },
     switchPartner(partner) {
       this.selectedPartner = partner;
@@ -734,7 +734,7 @@ export default {
       query.tags = partner.tags;
       this.$router.replace({ query: query });
     },
-    joinPartners() {
+    showJoinDialog() {
       this.infoDialogTitle = "Join BioImage.IO as a community partner";
       this.infoMarkdownUrl = this.siteConfig.join_partners_url;
       this.showInfoDialogMode = "markdown";
@@ -807,12 +807,18 @@ export default {
       this.infoDialogTitle = "About";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      query.show = "about";
+      this.$router.replace({ query: query }).catch(() => {});
     },
     showSubscribeDialog() {
       this.showInfoDialogMode = "subscribe";
       this.infoDialogTitle = "Subscribe to News and Updates";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      query.show = "subscribe";
+      this.$router.replace({ query: query }).catch(() => {});
     },
     showContributeDialog() {
       this.infoDialogTitle = "Contribute to BioImage.IO";
@@ -820,6 +826,9 @@ export default {
       this.showInfoDialogMode = "markdown";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      query.show = "contribute";
+      this.$router.replace({ query: query }).catch(() => {});
     },
     showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";
@@ -844,6 +853,7 @@ export default {
       this.$modal.hide("info-dialog");
       const query = Object.assign({}, this.$route.query);
       delete query.id;
+      delete query.show;
       this.$router.replace({ query: query }).catch(() => {});
     },
     maximizeInfoWindow() {
@@ -879,6 +889,15 @@ export default {
     },
     updateViewByUrlQuery() {
       let hasQuery = false;
+      if (this.$route.query.show) {
+        if (this.$route.query.show === "about") {
+          this.showAboutDialog();
+        } else if (this.$route.query.show === "contribute") {
+          this.showContributeDialog();
+        } else if (this.$route.query.show === "join") {
+          this.showJoinDialog();
+        }
+      }
       if (this.$route.query.id) {
         const m = this.resourceItems.filter(
           item => item.id === this.$route.query.id
