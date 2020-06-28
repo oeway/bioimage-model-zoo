@@ -1,6 +1,6 @@
-# Contributing to BioImage.IO
+# Contribute to BioImage.IO
 
-You are welcome to submit your models, datasest, applicaitons and Jupyter notebooks to BioImage.IO.
+You are welcome to submit your **models**, **datasest**, **applicaitons** and Jupyter **notebooks** to BioImage.IO.
 
 ## How to contribute new models?
 

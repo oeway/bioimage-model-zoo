@@ -326,8 +326,7 @@
         @join="showJoinDialog"
       ></about>
       <div
-        class="container"
-        style="padding: 20px;"
+        class="container markdown-container"
         v-else-if="showInfoDialogMode === 'markdown'"
       >
         <markdown :url="infoMarkdownUrl"></markdown>
@@ -1139,6 +1138,12 @@ export default {
 .card:hover .hover-show {
   opacity: 1;
   transition: 0.3s ease;
+}
+
+.markdown-container {
+  padding: 20px;
+  overflow: auto;
+  height: calc(100% - 40px);
 }
 
 html,
