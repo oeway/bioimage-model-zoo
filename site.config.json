@@ -101,7 +101,7 @@
       "splash_subtitle": "A user-friendly plugin to run deep learning models in ImageJ",
       "splash_feature_list": [
       ],
-      "explore_button_text": "Start Explore",
+      "explore_button_text": "Start Exploring",
       "background_image": "static/img/zoo-background.svg",
       "resource_types": ["model", "notebook"]
     },
@@ -115,7 +115,7 @@
       "splash_subtitle": "Fiji is just ImageJ",
       "splash_feature_list": [
       ],
-      "explore_button_text": "Start Explore",
+      "explore_button_text": "Start Exploring",
       "background_image": "static/img/zoo-background.svg",
       "resource_types": ["model", "notebook"]
     },
@@ -129,7 +129,7 @@
       "splash_subtitle": "Interactive learning and segmentation toolkit",
       "splash_feature_list": [
       ],
-      "explore_button_text": "Start Explore",
+      "explore_button_text": "Start Exploring",
       "background_image": "static/img/zoo-background.svg",
       "resource_types": ["model", "application"]
     },{
@@ -142,7 +142,7 @@
       "splash_subtitle": "Deep Learning Made Easy!",
       "splash_feature_list": [
       ],
-      "explore_button_text": "Start Explore",
+      "explore_button_text": "Start Exploring",
       "background_image": "static/img/zoo-background.svg",
       "resource_types": ["model", "notebook", "application"]
     }
