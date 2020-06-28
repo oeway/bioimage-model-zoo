@@ -156,7 +156,7 @@ export default {
 
 <style lang="css" scoped>
 .resource-item-list {
-  min-height: 50vh;
+  min-height: 60vh;
 }
 .badges {
   left: 5px;

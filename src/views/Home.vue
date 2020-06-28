@@ -3,8 +3,12 @@
     <!-- Navigation bar -->
     <nav class="navbar is-link is-fixed-top">
       <div class="navbar-brand">
-        <span class="site-icon"> {{ siteConfig.site_icon }}</span>
-        <span class="site-title"> {{ siteConfig.site_name }} </span>
+        <span class="site-icon" @click="goHome()" style="cursor: pointer;">
+          {{ siteConfig.site_icon }}</span
+        >
+        <span class="site-title" @click="goHome()" style="cursor: pointer;">
+          {{ siteConfig.site_name }}
+        </span>
         <span v-if="selectedPartner" class="site-title"
           >| {{ selectedPartner.name }}</span
         >
@@ -52,9 +56,20 @@
     </nav>
     <!-- Header -->
     <section class="hero is-link is-fullheight is-fullheight-with-navbar">
-      <div v-if="selectedPartner" class="hero-body">
-        <img class="background-img" :src="selectedPartner.background_image" />
-        <div class="container">
+      <div class="hero-body">
+        <img
+          class="background-img"
+          v-if="selectedPartner"
+          :src="selectedPartner.background_image"
+        />
+        <img class="background-img" v-else :src="siteConfig.background_image" />
+        <partners
+          style="position: absolute;bottom: 0px;"
+          :partners="siteConfig.partners"
+          @switchPartner="switchPartner"
+        ></partners>
+
+        <div class="container" v-if="selectedPartner">
           <h1 class="title is-1">
             {{ selectedPartner.splash_title }}
           </h1>
@@ -76,10 +91,8 @@
             }}</span></b-button
           >
         </div>
-      </div>
-      <div v-else class="hero-body">
-        <img class="background-img" :src="siteConfig.background_image" />
-        <div class="container">
+
+        <div class="container" v-else>
           <h1 class="title is-1">
             {{ siteConfig.splash_title }}
           </h1>
@@ -104,29 +117,6 @@
       </div>
     </section>
     <br />
-    <div class="container" style="text-align:center;">
-      <b-carousel-list
-        v-model="selectedPartnerIndex"
-        :data="partnerList"
-        :arrow="true"
-        :arrow-hover="true"
-        :items-to-list="3"
-        :repeat="true"
-        :has-drag="true"
-        :has-grayscale="false"
-        :has-opacity="false"
-      >
-        <template slot="item" slot-scope="props">
-          <figure class="image">
-            <a @click="switchPartner(props.list)"
-              ><img
-                style="max-height: 100px; width: auto;"
-                :src="props.list.logo"
-            /></a>
-          </figure>
-        </template>
-      </b-carousel-list>
-    </div>
 
     <br />
     <span ref="search_anchor"></span>
@@ -352,6 +342,7 @@ import Vue from "vue";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
+import Partners from "@/components/Partners.vue";
 import About from "@/views/About.vue";
 import siteConfig from "../../site.config.json";
 import {
@@ -504,6 +495,7 @@ export default {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
+    partners: Partners,
     about: About
   },
   data() {
@@ -534,8 +526,7 @@ export default {
       currentList: null,
       displayMode: "card",
       currentTags: [],
-      selectedPartner: null,
-      selectedPartnerIndex: 0
+      selectedPartner: null
     };
   },
   created: async function() {
@@ -648,48 +639,6 @@ export default {
     }
   },
   computed: {
-    partnerList: function() {
-      return Object.values(this.siteConfig.partners);
-      // const lst = [];
-      // for (let p of Object.values(this.siteConfig.partners)) {
-      //   lst.push({ title: p.name, image: p.logo });
-      // }
-      // return lst;
-      // return [
-      //   {
-      //     title: "Slide 1",
-      //     image: "https://picsum.photos/id/0/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 2",
-      //     image: "https://picsum.photos/id/1/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 3",
-      //     image: "https://picsum.photos/id/2/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 4",
-      //     image: "https://picsum.photos/id/3/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 5",
-      //     image: "https://picsum.photos/id/4/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 6",
-      //     image: "https://picsum.photos/id/5/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 7",
-      //     image: "https://picsum.photos/id/6/1230/500"
-      //   },
-      //   {
-      //     title: "Slide 8",
-      //     image: "https://picsum.photos/id/7/1230/500"
-      //   }
-      // ];
-    },
     resourceCategories: function() {
       if (this.selectedPartner)
         return this.siteConfig.resource_categories.filter(list =>
@@ -745,8 +694,21 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    goHome() {
+      this.selectedPartner = null;
+      this.searchTags = [];
+      const query = Object.assign({}, this.$route.query);
+      delete query.partner;
+      delete query.tags;
+      this.$router.replace({ query: query }).catch(() => {});
+    },
     switchPartner(partner) {
       this.selectedPartner = partner;
+      this.searchTags = this.selectedPartner.tags;
+      const query = Object.assign({}, this.$route.query);
+      query.partner = partner.id;
+      query.tags = partner.tags;
+      this.$router.replace({ query: query });
     },
     updateQueryTags(newTags) {
       if (newTags) {
@@ -906,19 +868,21 @@ export default {
       }
 
       if (this.$route.query.partner) {
-        if (
-          this.siteConfig.partners &&
-          this.siteConfig.partners[this.$route.query.partner]
-        ) {
-          this.selectedPartner = this.siteConfig.partners[
-            this.$route.query.partner
-          ];
-          if (!this.searchTags) {
-            this.searchTags = this.selectedPartner.tags;
-          } else {
-            this.searchTags = this.searchTags.concat(this.selectedPartner.tags);
+        if (this.siteConfig.partners) {
+          this.selectedPartner = this.siteConfig.partners.filter(
+            p => p.id === this.$route.query.partner
+          )[0];
+          if (this.selectedPartner) {
+            if (!this.searchTags) {
+              this.searchTags = this.selectedPartner.tags;
+            } else {
+              this.searchTags = this.searchTags.concat(
+                this.selectedPartner.tags
+              );
+            }
+
+            hasQuery = false;
           }
-          hasQuery = false;
         }
       }
       if (hasQuery) {
@@ -1045,17 +1009,17 @@ export default {
 }
 .background-img {
   position: absolute;
-  bottom: 0px;
+  bottom: 184px;
   right: 0px;
-  opacity: 0.9;
+  opacity: 0.8;
   width: 60%;
   transition: 0.9s ease;
-  max-height: 50%;
+  max-height: 30%;
   max-width: 100%;
   object-fit: contain;
 }
 .hero:hover .background-img {
-  width: 65%;
+  width: 45%;
   transition: 0.4s ease;
 }
 .feature-list {
