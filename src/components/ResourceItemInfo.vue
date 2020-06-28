@@ -116,25 +116,6 @@
           {{ c.text }} <a :href="c.url" target="_blank">[{{ c.url_text }}]</a>
         </li>
       </ul>
-
-      <b-collapse
-        v-if="resourceItem.yamlConfig"
-        :open.sync="showSource"
-        aria-id="show-source"
-      >
-        <div
-          slot="trigger"
-          class="panel-heading"
-          role="button"
-          aria-controls="contentIdForA11y2"
-        >
-          <strong>+ Source</strong>
-        </div>
-
-        <div class="panel-block">
-          <markdown :content="resourceItem.yamlConfig"></markdown>
-        </div>
-      </b-collapse>
     </div>
   </div>
 </template>
@@ -177,7 +158,6 @@ export default {
       }
     };
     this.getDocs(this.resourceItem).then(focus);
-    this.getYamlConfig(this.resourceItem).then(focus);
   },
   computed: {
     formatedCitation: function() {
@@ -278,34 +258,6 @@ export default {
         this.$forceUpdate();
       } catch (e) {
         resourceItem.docs = null;
-        this.$forceUpdate();
-      }
-    },
-    async getYamlConfig(resourceItem) {
-      resourceItem.yamlConfig = "@loading...";
-      this.$forceUpdate();
-      try {
-        let yamlUrl;
-        if (!resourceItem.source.startsWith("http"))
-          yamlUrl = concatAndResolveUrl(
-            resourceItem.root_url,
-            resourceItem.source
-          );
-        else {
-          yamlUrl = resourceItem.source;
-        }
-        if (yamlUrl.includes("github")) yamlUrl = yamlUrl + "?" + randId();
-        const response = await fetch(yamlUrl);
-        if (response.status == 200) {
-          const raw_docs = await response.text();
-          resourceItem.yamlConfig =
-            "[Source link](" + yamlUrl + ")\n```yaml\n" + raw_docs + " \n```";
-        } else {
-          resourceItem.yamlConfig = null;
-        }
-        this.$forceUpdate();
-      } catch (e) {
-        resourceItem.yamlConfig = null;
         this.$forceUpdate();
       }
     }
