@@ -1066,7 +1066,7 @@ export default {
 }
 .background-img {
   position: absolute;
-  bottom: 172px;
+  bottom: 142px;
   right: 0px;
   opacity: 0.8;
   width: 55%;
