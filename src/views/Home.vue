@@ -444,7 +444,9 @@ function normalizeItem(self, item) {
       name: "Source",
       icon: "code-tags",
       show_on_hover: true,
-      url: item.source
+      run() {
+        self.showSource(item);
+      }
     });
   if (item.download_url)
     item.apps.unshift({
@@ -824,6 +826,13 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.show = "contribute";
       this.$router.replace({ query: query }).catch(() => {});
+    },
+    showSource(item) {
+      this.infoDialogTitle = "Source: " + item.name;
+      this.infoMarkdownUrl = item.source;
+      this.showInfoDialogMode = "markdown";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
     },
     showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";

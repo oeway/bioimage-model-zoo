@@ -96,12 +96,17 @@ export default {
       this.docs = "@loading...";
       const response = await fetch(url);
       if (response.status == 200) {
-        const temp = url.split("/");
-        const baseUrl = temp.slice(0, temp.length - 1).join("/");
         const content = await response.text();
-        this.docs = DOMPurify.sanitize(
-          replaceAllRelByAbs(marked(content), baseUrl)
-        );
+        if (url.endsWith(".md")) {
+          const temp = url.split("/");
+          const baseUrl = temp.slice(0, temp.length - 1).join("/");
+
+          this.docs = DOMPurify.sanitize(
+            replaceAllRelByAbs(marked(content), baseUrl)
+          );
+        } else {
+          this.docs = DOMPurify.sanitize(marked("```\n" + content + "\n```\n"));
+        }
       } else {
         this.docs = "Oops! Failed to load from " + url;
       }
