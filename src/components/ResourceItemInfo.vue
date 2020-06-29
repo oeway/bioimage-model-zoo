@@ -45,64 +45,10 @@
         >...show all.</a
       >
     </p>
-
-    <template v-for="(table, name) in siteConfig.tables">
-      <h2
-        style="font-size:1.5rem;font-weight: 600;margin-top: 24px;
-    margin-bottom: 16px; text-transform:capitalize;"
-        :id="name"
-        v-if="resourceItem[name]"
-        :key="name + '_title'"
-      >
-        {{ name }}
-      </h2>
-      <b-table
-        v-if="resourceItem[name]"
-        :data="convert2Array(resourceItem[name])"
-        :key="name + '_table'"
-        :detailed="table.detailed"
-        :show-detail-icon="table.detailed"
-      >
-        <template slot-scope="props">
-          <b-table-column
-            v-for="col in table.columns"
-            :key="col.field"
-            :field="col.field"
-            :label="col.label"
-            :width="col.width || 40"
-            :sortable="col.sortable"
-          >
-            <a
-              v-if="col.type === 'url'"
-              :class="col.class"
-              :href="props.row[col.field]"
-              target="_blank"
-            >
-              {{ col.text }}
-            </a>
-            <span :class="col.class" v-else>
-              {{ props.row[col.field] }}
-            </span>
-          </b-table-column>
-        </template>
-        <template slot="detail" slot-scope="props">
-          <article class="media">
-            <figure class="media-left" v-if="table.detailed">
-              <p class="image is-64x64">
-                <img :src="table.detailed_image" />
-              </p>
-            </figure>
-            <div class="media-content" v-if="table.detailed_body">
-              <div class="content">
-                <p>
-                  {{ props.row[table.detailed_body] }}
-                </p>
-              </div>
-            </div>
-          </article>
-        </template>
-      </b-table>
-    </template>
+    <attachments
+      :attachments="resourceItem.attachments"
+      :focusTarget="resourceItem._focus"
+    ></attachments>
     <div class="markdown-body">
       <markdown
         v-if="resourceItem.docs"
@@ -123,6 +69,7 @@
 <script>
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
+import Attachments from "@/components/Attachments.vue";
 import siteConfig from "../../site.config.json";
 import Markdown from "./Markdown";
 import { randId, concatAndResolveUrl } from "../utils";
@@ -138,6 +85,7 @@ export default {
   components: {
     markdown: Markdown,
     badges: Badges,
+    attachments: Attachments,
     "app-icons": AppIcons
   },
   data() {
@@ -185,40 +133,6 @@ export default {
     }
   },
   methods: {
-    convert2Array(obj) {
-      if (obj instanceof Object && obj.constructor === Object) {
-        const values = [];
-        for (let k of Object.keys(obj)) {
-          if (obj[k] instanceof Object) {
-            obj[k]["id"] = k;
-            values.push(obj[k]);
-          } else {
-            const temp = obj[k].split("/");
-            const name = temp[temp.length - 1] || "undefined";
-            values.push({ source: obj[k], name: name });
-          }
-        }
-        return values;
-      } else if (Array.isArray(obj)) {
-        const values = [];
-        for (let k = 0; k < obj.length; k++) {
-          if (obj[k] instanceof Object) {
-            obj[k]["id"] = k;
-            values.push(obj[k]);
-          } else {
-            const temp = obj[k].split("/");
-            // sometimes the url is ended with '/'
-            const name =
-              temp[temp.length - 1] || temp[temp.length - 2] || "undefined";
-            values.push({ source: obj[k], name: name });
-          }
-        }
-        return values;
-      } else {
-        console.warn("Failed to convert: ", obj);
-        return [];
-      }
-    },
     async getDocs(resourceItem) {
       resourceItem.docs = "@loading...";
       this.$forceUpdate();

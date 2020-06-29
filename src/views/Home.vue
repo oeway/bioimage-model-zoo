@@ -331,6 +331,16 @@
       >
         <markdown :url="infoMarkdownUrl"></markdown>
       </div>
+      <div
+        class="markdown-container"
+        v-else-if="showInfoDialogMode === 'attachments' && selectedResourceItem"
+      >
+        <attachments
+          :attachments="selectedResourceItem.attachments"
+          :focusTarget="selectedResourceItem._focus"
+        ></attachments>
+      </div>
+
       <iframe
         v-else-if="showInfoDialogMode === 'subscribe'"
         style="padding-bottom: 64px;width: 100%;
@@ -356,6 +366,7 @@ import Vue from "vue";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
+import Attachments from "@/components/Attachments.vue";
 import Partners from "@/components/Partners.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
@@ -464,26 +475,18 @@ function normalizeItem(self, item) {
     });
 
   item.badges = item.badges || [];
-  if (item.weights) {
-    item.badges.unshift({
-      label: "weights",
-      label_type: "is-dark",
-      ext: Object.keys(item.weights).length,
-      ext_type: "is-primary",
-      run() {
-        self.showResourceItemInfo(item, "weights");
-      }
-    });
-  }
-  if (item.files) {
-    item.badges.unshift({
-      label: "files",
-      ext: Object.keys(item.files).length,
-      ext_type: "is-primary",
-      run() {
-        self.showResourceItemInfo(item, "files");
-      }
-    });
+  if (item.attachments) {
+    for (let att_name of Object.keys(item.attachments)) {
+      item.badges.unshift({
+        label: att_name,
+        label_type: "is-dark",
+        ext: Object.keys(item.attachments[att_name]).length,
+        ext_type: "is-primary",
+        run() {
+          self.showAttachmentsDialog(item, att_name);
+        }
+      });
+    }
   }
   if (item.license) {
     item.badges.unshift({
@@ -512,6 +515,7 @@ export default {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
+    attachments: Attachments,
     markdown: Markdown,
     partners: Partners,
     about: About
@@ -631,10 +635,10 @@ export default {
                   runManyModels(app, item);
                 }
               });
-            } else if (item.applications) {
-              for (let app_key of item.applications) {
-                if (this.allApps[app_key]) {
-                  const app = this.allApps[app_key];
+            } else if (item.links) {
+              for (let link_key of item.links) {
+                if (this.allApps[link_key]) {
+                  const app = this.allApps[link_key];
                   apps.unshift({
                     name: app.name,
                     icon: app.config.icon,
@@ -642,6 +646,19 @@ export default {
                       runOneModel(app, item);
                     }
                   });
+                } else {
+                  const linked = resourceItems.filter(
+                    item => item.id === link_key
+                  );
+                  for (let lit of linked) {
+                    apps.unshift({
+                      name: lit.name,
+                      icon: lit.icon,
+                      run() {
+                        this.showResourceItemInfo(lit);
+                      }
+                    });
+                  }
                 }
               }
             }
@@ -735,6 +752,16 @@ export default {
       this.infoDialogTitle = "Join BioImage.IO as a community partner";
       this.infoMarkdownUrl = this.siteConfig.join_partners_url;
       this.showInfoDialogMode = "markdown";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+    },
+    showAttachmentsDialog(item, focus) {
+      this.infoDialogTitle = focus
+        ? item.name + ": " + focus
+        : item.name + ": Attachments";
+      item._focus = focus;
+      this.selectedResourceItem = item;
+      this.showInfoDialogMode = "attachments";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },

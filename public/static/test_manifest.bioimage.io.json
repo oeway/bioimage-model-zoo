@@ -24,7 +24,8 @@
       ],
       "env": "",
       "tags": [],
-      "covers": "",
+      "covers": [],
+      "badges": [],
       "authors": []
     },
     {
@@ -44,7 +45,8 @@
       "dependencies": [],
       "env": "",
       "tags": [],
-      "covers": "",
+      "covers": [],
+      "badges": [],
       "authors": []
     },
     {
@@ -68,26 +70,70 @@
       ],
       "env": null,
       "tags": [],
-      "covers": "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif",
-      "authors": [],
-      "license": "MIT"
+      "covers": [
+        "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif"
+      ],
+      "badges": [],
+      "authors": []
+    },
+    {
+      "id": "Kaibu",
+      "type": "application",
+      "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Kaibu-app.imjoy.html",
+      "name": "Kaibu",
+      "version": "0.1.0",
+      "api_version": "0.2.3",
+      "description": "Kaibu--a web application for visualizing and annotating multi-dimensional images",
+      "tags": [],
+      "covers": [
+        "https://raw.githubusercontent.com/imjoy-team/kaibu/master/public/static/img/kaibu-screenshot-1.png"
+      ],
+      "badges": [
+        {
+          "icon": "https://imjoy.io/static/badge/launch-imjoy-badge.svg",
+          "label": "Launch ImJoy",
+          "url": "https://imjoy.io/#/app?plugin=https://kaibu.org/#/app"
+        },
+        {
+          "icon": "https://mybinder.org/badge_logo.svg",
+          "label": "Launch Binder",
+          "url": "https://mybinder.org/v2/gist/oeway/690c2e62311223ae93e644d542eb8949/master?filepath=Kaibu-jupyter-tutorial.ipynb"
+        }
+      ],
+      "authors": [
+        "ImJoy-Team"
+      ]
     },
     {
       "root_url": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw",
       "type": "notebook",
+      "attachments": {
+        "files": [
+          "https://gist.githubusercontent.com/oeway/ebedc17c9ab1f6aa5eee181679d85b5f/raw/vitessce-image-viewer-imjoy-demo.ipynb"
+        ]
+      },
       "name": "Vitessce Image Viewer",
       "description": "Use vitessce-image-viewer in Jupyter notebooks with ImJoy Jupyter Extension",
       "cite": null,
       "authors": [
         "Wei OUYANG"
       ],
+      "badges": [
+        {
+          "label": "Launch Binder",
+          "icon": "https://mybinder.org/badge_logo.svg",
+          "url": "https://mybinder.org/v2/gist/oeway/ebedc17c9ab1f6aa5eee181679d85b5f/master?filepath=vitessce-image-viewer-imjoy-demo.ipynb"
+        },
+        {
+          "label": "Powered by ImJoy",
+          "url": "https://imjoy.io",
+          "icon": "https://imjoy.io/static/badge/powered-by-imjoy-badge.svg"
+        }
+      ],
       "documentation": null,
       "tags": [
         "visualization",
         "imjoy"
-      ],
-      "files": [
-        "https://gist.githubusercontent.com/oeway/ebedc17c9ab1f6aa5eee181679d85b5f/raw/vitessce-image-viewer-imjoy-demo.ipynb"
       ],
       "id": "vitessce-image-viewer",
       "source": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw/vitessce-image-viewer.notebook.yaml"
@@ -106,7 +152,6 @@
       "authors": [
         "Vasu Subeesh"
       ],
-      "co2": "1.8",
       "documentation": "documentation/TransferLearningBasedSegmentationWorkflow.md",
       "tags": [
         "unet2d",
@@ -116,13 +161,14 @@
         "brain",
         "vasculature"
       ],
+      "license": "MIT",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2/UNetDA.model.yaml",
       "covers": [
         "documentation/covers/UNetCover.png"
       ],
       "id": "UNetDA",
-      "applications": [
+      "links": [
         "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/subeeshvasu/hbp-DL-seg-codes/releases/download/0.1.2/UNetDA.model.zip"
@@ -131,21 +177,6 @@
       "root_url": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2",
       "type": "model",
       "name": "Two Steam U-Net DA",
-      "weights": {
-        "default": {
-          "source": "https://bioimage.io",
-          "name": "Default Weights",
-          "timestamp": "2022-03-20 12:01:13",
-          "description": "default weights"
-        },
-        "best": {
-          "source": "https://bioimage.io",
-          "name": "Best Weights",
-          "timestamp": "2022-05-12 09:10:30",
-          "description": "best weights"
-        }
-      },
-      "co2": "2.3",
       "description": "Two Steam U-Net trained on brain vasculature segmentation data from Ludovico Silvestri's European Laboratory for Non-linear Spectroscopy (LENS). Two Steam U-Net is used as the segmentation network that takes up the inputs from source and target domain, and generate the respective segmentation results at the output. Two Steam U-Net uses differet encoders to process inputs from source and target, and use a common decoder to generate the respective segmentation outputs. To train the network, cross entropy loss between the prediction and ground truth labels is used for the source data. For the target data, image reconstrcution constraints are enforced on the segmentation outputs. Furthermore, source domain images are translated into the target domain using an adverserial paradigm, to generate auxiliary labelled data for the target domain. The labelled data thus generated are used to establish a supervised loss in the target domain.",
       "cite": [
         {
@@ -165,13 +196,14 @@
         "brain",
         "vasculature"
       ],
+      "license": "MIT",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2/2sUNetDA.model.yaml",
       "covers": [
         "documentation/covers/2sUNetCover.png"
       ],
       "id": "2sUNetDA",
-      "applications": [
+      "links": [
         "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/subeeshvasu/hbp-DL-seg-codes/releases/download/0.1.2/2sUNetDA.model.zip"
@@ -188,7 +220,6 @@
       "authors": [
         "Deborah Schmidt"
       ],
-      "co2": "0.82",
       "documentation": "README.md",
       "covers": [
         "thumbnail.png"
@@ -198,10 +229,11 @@
         "unet2d",
         "n2v"
       ],
+      "license": "BSD 3",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/fiji-bioimage-io/v0.1.4/models/n2v-sem-demo/n2v-sem-demo.model.yaml",
       "id": "N2VSEMDemo",
-      "applications": [
+      "links": [
         "Fiji Model Preview"
       ],
       "download_url": "https://github.com/bioimage-io/fiji-bioimage-io/releases/download/v0.1.4/n2v-sem-demo.zip"
@@ -220,21 +252,42 @@
       "tags": [
         "shufflenet",
         "tensorflow.js",
-        "classification"
+        "classification",
+        "imjoy"
       ],
+      "git_repo": "https://github.com/CellProfiling/HPA-Special-Prize",
+      "badges": [
+        {
+          "url": "https://imjoy.io",
+          "icon": "https://imjoy.io/static/badge/powered-by-imjoy-badge.svg",
+          "label": "Powered by ImJoy"
+        }
+      ],
+      "license": "Apache 2.0",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/models/HPAShuffleNetV2/HPAShuffleNetV2.yaml",
       "covers": [
         "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif"
       ],
       "id": "HPA-Classification",
-      "applications": [
+      "links": [
         "HPA-Classification"
       ]
     },
     {
       "root_url": "https://raw.githubusercontent.com/deepimagej/models/master/fru-net_sev_segmentation",
       "type": "model",
+      "attachments": {
+        "weights": [
+          {
+            "id": "v1",
+            "name": "version 1",
+            "description": "weights trained for segmenting small extracellular vesicles",
+            "source": "./variables",
+            "sha256": null
+          }
+        ]
+      },
       "name": "Fully Residual U-Net - TEM",
       "description": "DeepImageJ compatible fully residual U-Net trained to segment small extracellular vesicles in 2D TEM images",
       "cite": {
@@ -242,29 +295,31 @@
         "doi": "https://doi.org/10.1038/s41598-019-49431-3"
       },
       "authors": [
-        "G\u00f3mez-de-Mariscal",
-        "E. et al."
+        "Estibaliz G\u00f3mez-de-Mariscal",
+        "Martin Ma\u0161ka",
+        "Anna Kotrbov\u00e1",
+        "Vendula Posp\u00edchalov\u00e1",
+        "Pavel Matula and Arrate Mu\u00f1oz-Barrutia"
       ],
       "documentation": "https://cbia.fi.muni.cz/research/segmentation/fru-net.html",
       "covers": [
         "frunet_sev.jpg"
       ],
       "tags": [
-        [
-          "deepimagej",
-          "extracellular vesicles",
-          "segmentation",
-          "TEM"
-        ]
+        "deepimagej",
+        "extracellular vesicles",
+        "segmentation",
+        "TEM"
       ],
-      "format_version": null,
+      "license": "BSD 3",
+      "format_version": "0.2.0",
       "source": "https://raw.githubusercontent.com/deepimagej/models/master/fru-net_sev_segmentation/FRUNet2DsEVSegmentation.model.yaml",
       "model": {
         "source": "./saved_model.pb",
         "sha256": "9ccb79070f30813e7447342e3ab7f4107a314a1414c1541c79134ef950ac4a7f"
       },
       "id": "FRUNet2DsEVSegmentation",
-      "applications": [
+      "links": [
         "Fiji Model Preview"
       ],
       "download_url": "https://github.com/deepimagej/models/releases/download/0.1/fru-net_sev_segmentation.zip"
@@ -272,6 +327,11 @@
     {
       "root_url": "https://gist.githubusercontent.com/oeway/3dcbd79cd29da42be13a7e3bc0f9ca12/raw",
       "type": "dataset",
+      "attachments": {
+        "files": [
+          "https://gist.githubusercontent.com/manzt/d16dbac0ea3adc3c7b9b61f54fa1f78d/raw/95854058512862accb0182d4a02f86a55ad19139/"
+        ]
+      },
       "name": "Dummy Zarr",
       "description": "A dummy zarr dataset",
       "cite": null,
@@ -281,11 +341,6 @@
       "documentation": null,
       "tags": [
         "zarr"
-      ],
-      "files": [{
-          "name": "dummy zarr file",
-          "source": "https://gist.githubusercontent.com/manzt/d16dbac0ea3adc3c7b9b61f54fa1f78d/raw/95854058512862accb0182d4a02f86a55ad19139/"
-        }
       ],
       "id": "dummy_zarr",
       "source": "https://gist.githubusercontent.com/oeway/3dcbd79cd29da42be13a7e3bc0f9ca12/raw/dummy_zarr.dataset.yaml"
@@ -313,6 +368,7 @@
         "segmentation",
         "EM"
       ],
+      "license": "MIT",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/platybrowser/platybrowser/3711f1c26e5db8c38c3faff4cccb3110560e3c67/segmentation/cells/UNet3DPlatyCellProbs.model/UNet3DPlatyCellProbs.model.yaml",
       "covers": [
@@ -320,7 +376,7 @@
         "ilastik_pred.png"
       ],
       "id": "UNet3DPlatyCellProbs",
-      "applications": [
+      "links": [
         "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/platybrowser/platybrowser/releases/download/1.0.0/UNet3DPlatyCellProbs.model.zip"
@@ -349,6 +405,7 @@
         "segmentation",
         "plant tissue"
       ],
+      "license": "MIT",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/fynnbe/pytorch-3dunet/eabf146079c5829f6c6fe0488595838e54887c06/bioimage-io/UNet3DArabidopsisOvules.model/UNet3DArabidopsisOvules.model.yaml",
       "covers": [
@@ -359,7 +416,7 @@
         "ilastik_8.png"
       ],
       "id": "UNet3DArabidopsisOvules",
-      "applications": [
+      "links": [
         "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/wolny/pytorch-3dunet/releases/download/1.2.6/UNet3DArabidopsisOvules.model.zip"
@@ -385,13 +442,14 @@
         "pytorch",
         "nucleus-segmentation"
       ],
+      "license": "MIT",
       "format_version": "0.1.0",
       "source": "https://raw.githubusercontent.com/bioimage-io/pytorch-bioimage-io/v0.1.1/specs/models/unet2d/nuclei_broad/UNet2DNucleiBroad.model.yaml",
       "covers": [
         "cover0.png"
       ],
       "id": "UNet2DNucleiBroad",
-      "applications": [
+      "links": [
         "Ilastik Model Preview"
       ],
       "download_url": "https://github.com/bioimage-io/pytorch-bioimage-io/releases/download/v0.1.1/UNet2DNucleiBroad.model.zip"

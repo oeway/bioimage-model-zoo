@@ -36,59 +36,32 @@
   "table_view": {
     "columns": ["name", "authors", "badges", "apps"]
   },
-  "tables": {
-    "weights": {
-      "columns": [
-        {
-          "field": "name",
-          "label": "Name",
-          "width": 80,
-          "sortable": true
-        },
-        {
-          "field": "timestamp",
-          "label": "Timestamp",
-          "class": "tag is-success",
-          "sortable": true
-        },
-        {
-          "field": "source",
-          "label": "Source",
-          "type": "url",
-          "text": "download",
-          "class": "button is-small"
-        }
-      ],
-      "detailed": true,
-      "detailed_image": null,
-      "detailed_body": "description"
-    },
-    "files": {
-      "columns": [
-        {
-          "field": "name",
-          "label": "Name",
-          "width": 80,
-          "sortable": true
-        },
-        {
-          "field": "timestamp",
-          "label": "Timestamp",
-          "class": "tag is-success",
-          "sortable": true
-        },
-        {
-          "field": "source",
-          "label": "Source",
-          "type": "url",
-          "text": "download",
-          "class": "button is-small"
-        }
-      ],
-      "detailed": true,
-      "detailed_image": null,
-      "detailed_body": "description"
-    }
+  "attachment_table": {
+    "columns": [
+      {
+        "field": "name",
+        "label": "Name",
+        "width": 80,
+        "sortable": true
+      },
+      {
+        "field": "timestamp",
+        "label": "Timestamp",
+        "class": "tag is-success",
+        "sortable": true
+      },
+      {
+        "field": "source",
+        "label": "Source",
+        "type": "url",
+        "text": "download",
+        "class": "button is-small"
+      }
+    ],
+    "detailed": true,
+    "detailed_image": null,
+    "detailed_body": "description"
+  
   },
   "footnote": "BioImage.io -- a collabrative effort to bring AI models to the bioimaging community.",
   "partners": [

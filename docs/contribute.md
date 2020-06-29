@@ -2,6 +2,10 @@
 
 You are welcome to submit your **models**, **datasest**, **applicaitons** and Jupyter **notebooks** to BioImage.IO.
 
+To add an resource item to BioImage.IO, you need to provide a set of basic information about the resouce, including name, description, authors etc. and we will generate a resource card to display in the website.
+
+Practically, you will need to provide a `[Resource Description File](./resource-description-file.md)` stored on a public website such as Github/Gist/Gitlab, and submit the link to BioImage.IO via [Pull Requests](https://github.com/bioimage-io/bioimage-io-models/pulls).
+
 ## How to contribute new models?
 
 BioImage.io is a static website, it reads a manifest file from this Github repo (`manifest.model.json`) and render the page in the browser. Therefore, contributing models to the repository is as easy as adding links of your models to the manifest file.
@@ -13,7 +17,7 @@ Please follow the following steps:
  1. Run `python src/compile_model_manifest.py` to generate a new `manifest.model.json` with your models
  1. Commit your changes and push to your Github repo.
  1. You can preview it constructing an URL which makes BioImage.io render the page with the manifest file in your repo. The URL format is: `https://bioimage.io/#/?repo=YOUR_GITHUB_USER_NAME/YOUR_GITHUB_REPO`, for example: https://bioimage.io/#/?repo=oeway/models will point to the model manifest hosted on https://github.com/oeway/models. You can also add commit hash tag, branch name or tag after that, for example: https://bioimage.io/#/?repo=oeway/models/06a9ffac88.
- 1. If you are satisfied with the result above, you can send us a [Pull Request](https://github.com/bioimage-io/models/pulls), and we will review it before it get merged.
+ 1. If you are satisfied with the result above, you can send us a [Pull Request](https://github.com/bioimage-io/bioimage-io-models/pulls), and we will review it before it get merged.
 
  Note: once your PR get merged to the repo, the CI script will automatically compile the `manifest.bioimage.io.yaml` file, again, so please don't edit the genearted `manifest.model.json` file manually.
 
