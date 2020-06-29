@@ -4,8 +4,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "c84c267ffaa1ebe09420",
-    "url": "/css/app.691a7fab.css"
+    "revision": "5ba294807eddd32dc07e",
+    "url": "/css/app.3c2aca94.css"
   },
   {
     "revision": "461dc371cb5bc3d690a9",
@@ -16,12 +16,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "5f1bbd4c39a822cfce64e5153faf3fa5",
+    "revision": "7f99fd7277ff35e47a42b9e2b2a4f029",
     "url": "/index.html"
   },
   {
-    "revision": "c84c267ffaa1ebe09420",
-    "url": "/js/app.87457f8e.js"
+    "revision": "5ba294807eddd32dc07e",
+    "url": "/js/app.3251c625.js"
   },
   {
     "revision": "461dc371cb5bc3d690a9",
@@ -332,7 +332,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/img/zoo-background.svg"
   },
   {
-    "revision": "69163f9efae177adaca0cb3a59730d3f",
+    "revision": "fe45797e7174fd2c4e5b05f10279455c",
     "url": "/static/test_manifest.bioimage.io.json"
   }
 ]);
