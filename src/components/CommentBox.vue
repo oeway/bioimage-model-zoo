@@ -21,7 +21,9 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => this.showCommentBox(), 200);
+    if (siteConfig.enable_comment) {
+      setTimeout(() => this.showCommentBox(), 200);
+    }
   },
   methods: {
     showCommentBox() {
@@ -40,15 +42,19 @@ export default {
       utteranc.setAttribute("theme", "github-light");
       utteranc.setAttribute("crossorigin", "anonymous");
       utteranc.setAttribute("async", true);
-      utteranc.onload = function() {
-        window.document.title = title_backup;
-      };
       // Fix github oauth redirection
       // see https://github.com/utterance/utterances/issues/140#issuecomment-479190093
+      const originalUrl = window.location.href;
       const params = new URLSearchParams(window.location.search);
       for (let k of Object.keys(this.$route.query)) {
         params.set(k, this.$route.query[k]);
       }
+
+      utteranc.onload = function() {
+        window.document.title = title_backup;
+        window.history.replaceState(null, "", originalUrl);
+      };
+
       const redirectUrl = `${window.location.pathname}?${params.toString()}`;
       window.history.replaceState(null, "", redirectUrl);
       this.$el.appendChild(utteranc);

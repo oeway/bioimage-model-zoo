@@ -39,10 +39,4 @@ To test with the BioEngine, you can go to https://bioimage.io, on the menu locat
 
 ## How to submit BioEngine Apps to the website?
 
-You can submit your BioEngine App by changing the same file named `src/manifest.bioimage.io.yaml` as for contributing models.
-
-Here are the steps:
- 1. Once the BioEngine App is ready, you can then push it to your Github repo and get a `raw` URL for the file.
- 1. Define a key in the `applications` section in `src/manifest.bioimage.io.yaml`, and set the value as the `raw` URL to the BioEngine app file.
- 1. For all the models which your app can digest, you can add your app key to the `applications` field of the model.
- 1. The procedure later are the same as contributing models, you can basically: run `python src/compile_model_manifest.py` to generate a new `manifest.model.json`, commit and push to your Github repo, preview it on BioImage.io with `https://bioimage.io/#/?repo=YOUR_GITHUB_USER_NAME/YOUR_GITHUB_REPO` and optionally send us a Pull Request.
+You can submit your BioEngine Apps posting the url [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).

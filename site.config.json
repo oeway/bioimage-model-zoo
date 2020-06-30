@@ -25,6 +25,7 @@
     }
   ],
   "model_repo": "bioimage-io/bioimage-io-models",
+  "enable_comment": true,
   "splash_title": "Bioimage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
   "splash_feature_list": [
