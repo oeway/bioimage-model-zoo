@@ -83,7 +83,7 @@
               v-for="feature in selectedPartner.splash_feature_list"
               :key="feature"
             >
-              - {{ feature }}
+              {{ feature }}
             </li>
           </ul>
           <br />
@@ -106,7 +106,7 @@
               v-for="feature in siteConfig.splash_feature_list"
               :key="feature"
             >
-              - {{ feature }}
+              {{ feature }}
             </li>
           </ul>
           <br />
@@ -330,6 +330,10 @@
         v-else-if="showInfoDialogMode === 'markdown'"
       >
         <markdown :url="infoMarkdownUrl"></markdown>
+        <comment-box
+          v-if="infoDialogTitle"
+          :title="infoDialogTitle"
+        ></comment-box>
       </div>
       <div
         class="markdown-container"
@@ -368,6 +372,7 @@ import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import Attachments from "@/components/Attachments.vue";
 import Partners from "@/components/Partners.vue";
+import CommentBox from "@/components/CommentBox.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
 import siteConfig from "../../site.config.json";
@@ -515,6 +520,7 @@ export default {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
+    "comment-box": CommentBox,
     attachments: Attachments,
     markdown: Markdown,
     partners: Partners,
@@ -547,6 +553,7 @@ export default {
       showInfoDialogMode: null,
       infoDialogTitle: "",
       infoMarkdownUrl: null,
+      infoCommentBoxTitle: null,
       currentList: null,
       displayMode: "card",
       currentTags: [],
@@ -555,6 +562,15 @@ export default {
   },
   created: async function() {
     try {
+      // Fix the github oauth redirection
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.forEach((value, key) => {
+        this.$route.query[key] = value;
+      });
+      const originalUrl =
+        window.location.pathname + "#" + window.location.hash.substr(1);
+      window.history.replaceState(null, "", originalUrl);
+
       let repo = siteConfig.model_repo;
       const query_repo = this.$route.query.repo;
       let manifest_url = this.siteConfig.manifest_url;
@@ -746,10 +762,11 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.partner = partner.id;
       query.tags = partner.tags;
-      this.$router.replace({ query: query });
+      this.$router.replace({ query: query }).catch(() => {});
     },
     showJoinDialog() {
       this.infoDialogTitle = "Join BioImage.IO as a community partner";
+      this.infoCommentBoxTitle = this.infoDialogTitle;
       this.infoMarkdownUrl = this.siteConfig.join_partners_url;
       this.showInfoDialogMode = "markdown";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
@@ -846,8 +863,7 @@ export default {
     },
     showContributeDialog() {
       this.infoDialogTitle = "Contribute to BioImage.IO";
-      // set title for utteranc
-      window.document.title = this.infoDialogTitle;
+      this.infoCommentBoxTitle = this.infoDialogTitle;
       this.infoMarkdownUrl = this.siteConfig.contribute_url;
       this.showInfoDialogMode = "markdown";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
@@ -884,7 +900,8 @@ export default {
     },
     closeInfoWindow() {
       this.selectedResourceItem = null;
-
+      this.infoMarkdownUrl = null;
+      this.infoCommentBoxTitle = null;
       this.$modal.hide("info-dialog");
       const query = Object.assign({}, this.$route.query);
       delete query.id;
@@ -1119,6 +1136,7 @@ export default {
   transition: 0.4s ease;
 }
 .feature-list {
+  padding-left: 30px;
   font-size: 1.5em;
 }
 .explore-btn {

@@ -53,25 +53,35 @@
       <markdown
         v-if="resourceItem.docs"
         :baseUrl="resourceItem.baseUrl"
-        :content="resourceItem.docs"
+        :content="resourceItem.docs.slice(0, maxDocsLetters)"
       ></markdown>
+
+      <a
+        v-if="resourceItem.docs && resourceItem.docs.length > maxDocsLetters"
+        style="color: #0366d6;"
+        @click="maxDocsLetters = resourceItem.docs.length"
+        >+ click here to see the full documentation</a
+      >
+
       <br />
-      <h2 v-if="formatedCitation" id="citation">How to cite</h2>
+      <h3 v-if="formatedCitation" id="citation">How to cite</h3>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
           {{ c.text }} <a :href="c.url" target="_blank">[{{ c.url_text }}]</a>
         </li>
       </ul>
     </div>
+    <comment-box :title="resourceItem.name"></comment-box>
   </div>
 </template>
 
 <script>
-import Badges from "./Badges";
-import AppIcons from "./AppIcons";
-import Attachments from "@/components/Attachments.vue";
 import siteConfig from "../../site.config.json";
-import Markdown from "./Markdown";
+import Badges from "@/components/Badges.vue";
+import AppIcons from "@/components/AppIcons.vue";
+import Attachments from "@/components/Attachments.vue";
+import Markdown from "@/components/Markdown.vue";
+import CommentBox from "@/components/CommentBox.vue";
 import { randId, concatAndResolveUrl } from "../utils";
 
 export default {
@@ -86,12 +96,14 @@ export default {
     markdown: Markdown,
     badges: Badges,
     attachments: Attachments,
-    "app-icons": AppIcons
+    "app-icons": AppIcons,
+    "comment-box": CommentBox
   },
   data() {
     return {
       siteConfig: siteConfig,
       maxDescriptionLetters: 100,
+      maxDocsLetters: 500,
       showSource: false
     };
   },
