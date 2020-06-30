@@ -1,15 +1,6 @@
 <template>
   <div class="markdown-body">
     <div v-if="docs" v-html="docs"></div>
-    <script
-      src="https://utteranc.es/client.js"
-      repo="https://github.com/bioimage-io/bioimage-io-models"
-      issue-term="title"
-      label="comment"
-      theme="github-light"
-      crossorigin="anonymous"
-      async
-    ></script>
   </div>
 </template>
 
@@ -21,7 +12,18 @@ import DOMPurify from "dompurify";
 import hljs from "highlight.js";
 
 import { replaceAllRelByAbs } from "../utils";
-
+const cmt =
+  "<" +
+  `script
+      src="https://utteranc.es/client.js"
+      repo="https://github.com/bioimage-io/bioimage-io-models"
+      issue-term="title"
+      label="comment"
+      theme="github-light"
+      crossorigin="anonymous"
+      async
+    ` +
+  "/>";
 export default {
   name: "Markdown",
   props: {
@@ -44,6 +46,9 @@ export default {
     };
   },
   created() {
+    const comment = document.createElement("div");
+    comment.innerHTML = cmt;
+    this.$el.appendChild(comment);
     //open link in a new tab
     const renderer = new marked.Renderer();
     renderer.link = function(href, title, text) {
