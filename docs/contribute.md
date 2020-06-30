@@ -4,26 +4,19 @@ You are welcome to submit your **models**, **datasest**, **applicaitons** and Ju
 
 To add an resource item to BioImage.IO, you need to provide a set of basic information about the resouce, including name, description, authors etc. and we will generate a resource card to display in the website.
 
-Practically, you will need to provide a [`Resource Description File`](https://github.com/bioimage-io/bioimage.io/blob/master/docs/resource-description-file.md) stored on a public website such as Github/Gist/Gitlab, and submit the link to BioImage.IO via [Pull Requests](https://github.com/bioimage-io/bioimage-io-models/pulls).
 
-## How to contribute new models?
+## Submit to BioImage.IO
+In general, you will need to provide a [`Resource Description File`](https://github.com/bioimage-io/bioimage.io/blob/master/docs/resource-description-file.md)(RDF) stored on a public website such as Github/Gist/Gitlab, and post the url to [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).
 
-BioImage.io is a static website, it reads a manifest file from this Github repo (`manifest.model.json`) and render the page in the browser. Therefore, contributing models to the repository is as easy as adding links of your models to the manifest file.
+The basic RDF fields can be used to describe resource types including `dataset`, `notebook`, `application` and other potential resources.
 
-Please follow the following steps:
+Specifically for AI models, please refer to the extended model fields [here](https://github.com/bioimage-io/configuration/).
 
- 1. Fork this repo
- 1. Add your models to the `src/manifest.bioimage.io.yaml` file
- 1. Run `python src/compile_model_manifest.py` to generate a new `manifest.model.json` with your models
- 1. Commit your changes and push to your Github repo.
- 1. You can preview it constructing an URL which makes BioImage.io render the page with the manifest file in your repo. The URL format is: `https://bioimage.io/#/?repo=YOUR_GITHUB_USER_NAME/YOUR_GITHUB_REPO`, for example: https://bioimage.io/#/?repo=oeway/models will point to the model manifest hosted on https://github.com/oeway/models. You can also add commit hash tag, branch name or tag after that, for example: https://bioimage.io/#/?repo=oeway/models/06a9ffac88.
- 1. If you are satisfied with the result above, you can send us a [Pull Request](https://github.com/bioimage-io/bioimage-io-models/pulls), and we will review it before it get merged.
+For applications, while you can use RDF to describe your software, it is recommended to build BioEngine Apps such that users can directly try and use them in BioImage.IO. See the section below for more details.
 
- Note: once your PR get merged to the repo, the CI script will automatically compile the `manifest.bioimage.io.yaml` file, again, so please don't edit the genearted `manifest.model.json` file manually.
+## Building BioEngine Apps
 
-## How to build BioEngine Apps?
- 
-Each model in the BioImage model zoo can associated with a list of applications which you can run directly by the end user. We use BioEngine, a tailored version of [ImJoy](https://imjoy.io) to run these applications. Therefore, you can basically run ImJoy plugins with the BioEngine specific api. By default it loads also a [Jupyter Engine](https://github.com/imjoy-team/jupyter-engine-manager) which uses free computational resources on MyBinder.org, so you can also run small models in Python. 
+We use BioEngine, a tailored version of [ImJoy](https://imjoy.io) to run these applications. Therefore, you can basically run ImJoy plugins with the BioEngine specific api. By default it loads also a [Jupyter Engine](https://github.com/imjoy-team/jupyter-engine-manager) which uses free computational resources on MyBinder.org, so you can also run small models in Python. 
 
 Since BioEngine is designed for running model specific ImJoy plugins, it needs to define either `runOneModel()` and/or `runManyModels()` function in the plugin api. Plus, you need also a `testModel` function which will be used to run tests in a CI environment. For example, the following python plugin would treat as a qualified BioEngine App:
 
