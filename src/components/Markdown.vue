@@ -1,6 +1,15 @@
 <template>
   <div class="markdown-body">
     <div v-if="docs" v-html="docs"></div>
+    <script
+      src="https://utteranc.es/client.js"
+      repo="https://github.com/bioimage-io/bioimage-io-models"
+      issue-term="title"
+      label="comment"
+      theme="github-light"
+      crossorigin="anonymous"
+      async
+    ></script>
   </div>
 </template>
 
