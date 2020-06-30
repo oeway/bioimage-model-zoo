@@ -27,7 +27,5 @@ First, you will need to prepare a json object to hold some information for rende
   "resource_types": ["model", "notebook"]
 }
 ```
-Paste the JSON string into the comment box below (if you don't see a comment box in the bottom of this page, click [here](https://github.com/bioimage-io/bioimage.io/issues)).
-
-The admin team of BioImage.IO will discuss and decide whether we should include your project.
+Paste the JSON string into the comment box below (if you don't see a comment box in the bottom of this page, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/27)). The admin team will discuss and decide whether we should include your project.
 
