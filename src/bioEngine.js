@@ -1,4 +1,6 @@
 import { reshape } from "mathjs";
+import siteConfig from "../site.config.json";
+import { version } from "../package.json";
 
 const dtypeToTypedArray = {
   int8: "Int8Array",
@@ -56,14 +58,14 @@ export async function setupBioEngineAPI() {
   });
 
   const api = await imjoyRPC.setupRPC({
-    name: "BioImage.IO",
-    version: "0.1.0",
-    description: "BioImage.IO -- AI models for bioimage analysis.",
+    name: siteConfig.name,
+    version: version,
+    description: siteConfig.description,
     type: "rpc-window"
   });
   const service_api = {
     setup() {
-      api.log("BioImage.IO loaded successfully.");
+      api.log(`${siteConfig.name} loaded successfully.`);
     },
     async run() {},
     getSelection() {

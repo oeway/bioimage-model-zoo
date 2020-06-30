@@ -376,6 +376,7 @@ import CommentBox from "@/components/CommentBox.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
 import siteConfig from "../../site.config.json";
+
 import {
   setupBioEngine,
   loadPlugins,
@@ -765,7 +766,7 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showJoinDialog() {
-      this.infoDialogTitle = "Join BioImage.IO as a community partner";
+      this.infoDialogTitle = `Join ${this.siteConfig.site_name} as a community partner`;
       this.infoCommentBoxTitle = this.infoDialogTitle;
       this.infoMarkdownUrl = this.siteConfig.join_partners_url;
       this.showInfoDialogMode = "markdown";
@@ -862,7 +863,7 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showContributeDialog() {
-      this.infoDialogTitle = "Contribute to BioImage.IO";
+      this.infoDialogTitle = `Contribute to ${this.siteConfig.site_name}`;
       this.infoCommentBoxTitle = this.infoDialogTitle;
       this.infoMarkdownUrl = this.siteConfig.contribute_url;
       this.showInfoDialogMode = "markdown";
@@ -1020,13 +1021,6 @@ export default {
       const local_file = this.$refs.file_select.files[0];
       this.showMessage("Loading App...");
       loadCodeFromFile(this.imjoy, local_file);
-    },
-
-    share(item) {
-      prompt(
-        "Please copy and paste following URL for sharing:",
-        "https://bioimage.io?name=" + encodeURI(item.name)
-      );
     },
     getLabelCount(label) {
       return this.filteredModels.filter(models =>
