@@ -46,9 +46,6 @@ export default {
     };
   },
   created() {
-    const comment = document.createElement("div");
-    comment.innerHTML = cmt;
-    this.$el.appendChild(comment);
     //open link in a new tab
     const renderer = new marked.Renderer();
     renderer.link = function(href, title, text) {
@@ -103,6 +100,9 @@ export default {
     else if (this.url) {
       this.showDocsUrl(this.url);
     }
+    const comment = document.createElement("div");
+    comment.innerHTML = cmt;
+    this.$el.appendChild(comment);
   },
   methods: {
     async showDocsUrl(url) {
