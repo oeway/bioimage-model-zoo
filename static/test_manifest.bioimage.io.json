@@ -173,6 +173,9 @@
       "authors": [
         "ZeroCostDL4Mic Team"
       ],
+      "covers": [
+        "https://raw.githubusercontent.com/oeway/ZeroCostDL4Mic/master/Wiki_files/wiki%20unet.png"
+      ],
       "badges": [
         {
           "label": "Open in Colab",
