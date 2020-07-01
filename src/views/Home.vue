@@ -876,6 +876,7 @@ export default {
     showSource(item) {
       this.infoDialogTitle = "Source: " + item.name;
       this.infoMarkdownUrl = item.source;
+      this.infoCommentBoxTitle = item.name;
       this.showInfoDialogMode = "markdown";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
