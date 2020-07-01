@@ -8,12 +8,14 @@
       v-model="selectedPartnerIndex"
       :data="partners"
       :arrow="true"
-      :arrow-hover="false"
+      :arrow-hover="true"
       :items-to-list="1"
+      :items-to-show="items2Show"
       :repeat="false"
       :has-drag="true"
       :has-grayscale="false"
       :has-opacity="false"
+      icon-size="is-large"
     >
       <template slot="item" slot-scope="props">
         <figure class="image">
@@ -29,6 +31,7 @@
 </template>
 
 <script>
+const ICON_WIDTH = 140;
 export default {
   name: "Partners",
   props: {
@@ -39,10 +42,22 @@ export default {
   },
   data() {
     return {
-      selectedPartnerIndex: 0
+      selectedPartnerIndex: 0,
+      items2Show: window.innerWidth / ICON_WIDTH
     };
   },
+  mounted() {
+    window.addEventListener("resize", this.updateSize);
+    window.dispatchEvent(new Event("resize"));
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.updateSize);
+  },
   methods: {
+    updateSize() {
+      this.items2Show = window.innerWidth / ICON_WIDTH;
+      this.$forceUpdate();
+    },
     switchPartner(partner) {
       this.$emit("switchPartner", partner);
     }
