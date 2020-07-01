@@ -3,7 +3,58 @@
   "description": "BioImage.IO AI model repository.",
   "version": "0.2.0",
   "url_root": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master",
+  "collections": [
+    {
+      "id": "zero",
+      "name": "ZeroCostDL4Mic",
+      "version": "0.1.0",
+      "tags": [
+        "ZeroCostDL4Mic"
+      ],
+      "logo": "https://raw.githubusercontent.com/oeway/ZeroCostDL4Mic/master/Wiki_files/colab_logo.png",
+      "icon": "https://raw.githubusercontent.com/oeway/ZeroCostDL4Mic/master/Wiki_files/colab_logo.png",
+      "splash_title": "ZeroCostDL4Mic",
+      "splash_subtitle": "A Google Colab based no-cost toolbox to explore Deep-Learning in Microscopy",
+      "splash_feature_list": [],
+      "explore_button_text": "Start Exploring",
+      "background_image": "static/img/zoo-background.svg",
+      "resource_types": [
+        "model",
+        "notebook",
+        "dataset"
+      ],
+      "url_root": "https://raw.githubusercontent.com/oeway/ZeroCostDL4Mic/master"
+    }
+  ],
   "resources": [
+    {
+      "id": "Kaibu",
+      "type": "application",
+      "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Kaibu-app.imjoy.html",
+      "name": "Kaibu",
+      "version": "0.1.0",
+      "api_version": "0.2.3",
+      "description": "Kaibu--a web application for visualizing and annotating multi-dimensional images",
+      "tags": [],
+      "covers": [
+        "https://raw.githubusercontent.com/imjoy-team/kaibu/master/public/static/img/kaibu-screenshot-1.png"
+      ],
+      "badges": [
+        {
+          "icon": "https://imjoy.io/static/badge/launch-imjoy-badge.svg",
+          "label": "Launch ImJoy",
+          "url": "https://imjoy.io/#/app?plugin=https://kaibu.org/#/app"
+        },
+        {
+          "icon": "https://mybinder.org/badge_logo.svg",
+          "label": "Launch Binder",
+          "url": "https://mybinder.org/v2/gist/oeway/690c2e62311223ae93e644d542eb8949/master?filepath=Kaibu-jupyter-tutorial.ipynb"
+        }
+      ],
+      "authors": [
+        "ImJoy-Team"
+      ]
+    },
     {
       "id": "Ilastik Model Preview",
       "type": "application",
@@ -22,27 +73,6 @@
         "https://gist.githubusercontent.com/oeway/2d4b5899424a14d8e90ad908d4cec364/raw/TiktorchModelLoader.imjoy.html",
         "https://gist.githubusercontent.com/oeway/f09955746ec01a20053793aba83c3545/raw/CompareImages.imjoy.html"
       ],
-      "env": "",
-      "tags": [],
-      "covers": [],
-      "badges": [],
-      "authors": []
-    },
-    {
-      "id": "Fiji Model Preview",
-      "type": "application",
-      "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Fiji-app.imjoy.html",
-      "icon": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Fiji-icon.png",
-      "name": "Fiji Model Preview",
-      "version": "0.1.0",
-      "api_version": "0.1.7",
-      "description": "Fiji Model Preview for BioImage.io",
-      "requirements": [
-        "https://static.imjoy.io/spectre.css/spectre.min.css",
-        "https://static.imjoy.io/spectre.css/spectre-exp.min.css",
-        "https://static.imjoy.io/spectre.css/spectre-icons.min.css"
-      ],
-      "dependencies": [],
       "env": "",
       "tags": [],
       "covers": [],
@@ -77,32 +107,25 @@
       "authors": []
     },
     {
-      "id": "Kaibu",
+      "id": "Fiji Model Preview",
       "type": "application",
-      "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Kaibu-app.imjoy.html",
-      "name": "Kaibu",
+      "source": "https://raw.githubusercontent.com/bioimage-io/bioimage-io-models/master/src/Fiji-app.imjoy.html",
+      "icon": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Fiji-icon.png",
+      "name": "Fiji Model Preview",
       "version": "0.1.0",
-      "api_version": "0.2.3",
-      "description": "Kaibu--a web application for visualizing and annotating multi-dimensional images",
+      "api_version": "0.1.7",
+      "description": "Fiji Model Preview for BioImage.io",
+      "requirements": [
+        "https://static.imjoy.io/spectre.css/spectre.min.css",
+        "https://static.imjoy.io/spectre.css/spectre-exp.min.css",
+        "https://static.imjoy.io/spectre.css/spectre-icons.min.css"
+      ],
+      "dependencies": [],
+      "env": "",
       "tags": [],
-      "covers": [
-        "https://raw.githubusercontent.com/imjoy-team/kaibu/master/public/static/img/kaibu-screenshot-1.png"
-      ],
-      "badges": [
-        {
-          "icon": "https://imjoy.io/static/badge/launch-imjoy-badge.svg",
-          "label": "Launch ImJoy",
-          "url": "https://imjoy.io/#/app?plugin=https://kaibu.org/#/app"
-        },
-        {
-          "icon": "https://mybinder.org/badge_logo.svg",
-          "label": "Launch Binder",
-          "url": "https://mybinder.org/v2/gist/oeway/690c2e62311223ae93e644d542eb8949/master?filepath=Kaibu-jupyter-tutorial.ipynb"
-        }
-      ],
-      "authors": [
-        "ImJoy-Team"
-      ]
+      "covers": [],
+      "badges": [],
+      "authors": []
     },
     {
       "root_url": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw",
@@ -137,6 +160,33 @@
       ],
       "id": "vitessce-image-viewer",
       "source": "https://gist.githubusercontent.com/oeway/582856630a0aed4d4d221e54df1b3ece/raw/vitessce-image-viewer.notebook.yaml"
+    },
+    {
+      "root_url": "https://github.com/HenriquesLab/ZeroCostDL4Mic/raw/master/Colab_notebooks",
+      "type": "notebook",
+      "name": "U-net (2D)",
+      "description": "U-Net for segmentation",
+      "cite": {
+        "text": "Falk, T., Mai, D., Bensch, R. et al. U-Net: deep learning for cell counting, detection, and morphometry. Nat Methods 16, 67\u201370 (2019).",
+        "doi": "https://doi.org/10.1038/s41592-018-0261-2"
+      },
+      "authors": [
+        "ZeroCostDL4Mic Team"
+      ],
+      "badges": [
+        {
+          "label": "Open in Colab",
+          "icon": "https://colab.research.google.com/assets/colab-badge.svg",
+          "url": "https://colab.research.google.com/github/HenriquesLab/ZeroCostDL4Mic/blob/master/Colab_notebooks/U-net_2D_ZeroCostDL4Mic.ipynb"
+        }
+      ],
+      "documentation": null,
+      "tags": [
+        "UNet",
+        "segmentation",
+        "ZeroCostDL4Mic"
+      ],
+      "source": "https://github.com/HenriquesLab/ZeroCostDL4Mic/raw/master/Colab_notebooks/U-net_2D_ZeroCostDL4Mic.ipynb"
     },
     {
       "root_url": "https://raw.githubusercontent.com/subeeshvasu/hbp-DL-seg-codes/0.1.2",
@@ -265,11 +315,11 @@
       ],
       "license": "Apache 2.0",
       "format_version": "0.1.0",
-      "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/models/HPAShuffleNetV2/HPAShuffleNetV2.yaml",
+      "source": "https://raw.githubusercontent.com/bioimage-io/tfjs-bioimage-io/master/models/HPAShuffleNetV2/HPAShuffleNetV2.model.yaml",
       "covers": [
         "https://imjoy-team.github.io/imjoy-plugins/hpa-classification/hpa-classification-cover.gif"
       ],
-      "id": "HPA-Classification",
+      "id": "HPAShuffleNetV2",
       "links": [
         "HPA-Classification"
       ]

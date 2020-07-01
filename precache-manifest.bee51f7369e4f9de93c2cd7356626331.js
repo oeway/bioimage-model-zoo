@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "0496370e9712d72a36fe",
+    "revision": "e4533a6dee0cb598e549",
     "url": "/css/app.7776c767.css"
   },
   {
@@ -16,12 +16,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "54edee368850c21420990c1288f0abbc",
+    "revision": "853b9c22230f1ae40739afe0ee0c4125",
     "url": "/index.html"
   },
   {
-    "revision": "0496370e9712d72a36fe",
-    "url": "/js/app.4e0f2132.js"
+    "revision": "e4533a6dee0cb598e549",
+    "url": "/js/app.52509ec6.js"
   },
   {
     "revision": "d5b0b4f84333a1201fe8",
@@ -332,7 +332,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/img/zoo-background.svg"
   },
   {
-    "revision": "fe45797e7174fd2c4e5b05f10279455c",
+    "revision": "5e8d1860d1cb117c14b68a836f57cc47",
     "url": "/static/test_manifest.bioimage.io.json"
   }
 ]);
