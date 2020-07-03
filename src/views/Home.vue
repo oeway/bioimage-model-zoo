@@ -376,7 +376,12 @@ import CommentBox from "@/components/CommentBox.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
 import siteConfig from "../../site.config.json";
-
+const DEFAULT_ICONS = {
+  notebook: "notebook-outline",
+  dataset: "database",
+  application: "puzzle",
+  model: "hubspot"
+};
 import {
   setupBioEngine,
   loadPlugins,
@@ -458,7 +463,7 @@ function normalizeItem(self, item) {
       );
     }
   });
-  if (item.source)
+  if (item.source && item.type === "application")
     item.apps.unshift({
       name: "Source",
       icon: "code-tags",
@@ -687,7 +692,7 @@ export default {
                   for (let lit of linked) {
                     apps.unshift({
                       name: lit.name,
-                      icon: lit.icon,
+                      icon: lit.icon || DEFAULT_ICONS[lit.type],
                       run() {
                         self.showResourceItemInfo(lit);
                       }
@@ -891,12 +896,7 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showSource(item) {
-      if (
-        item.source.endsWith(".md") ||
-        item.source.endsWith(".yaml") ||
-        item.source.endsWith(".yml") ||
-        item.source.endsWith(".html")
-      ) {
+      if (item.source.endsWith(".yaml") || item.source.endsWith(".yml")) {
         this.infoDialogTitle = "Source: " + item.name;
         this.infoMarkdownUrl = item.source;
         this.infoCommentBoxTitle = item.name;

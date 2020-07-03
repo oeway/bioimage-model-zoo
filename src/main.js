@@ -7,6 +7,7 @@ import "buefy/dist/buefy.css";
 import { store } from "./store";
 import "./bulmaswatch.min.css";
 import vmodal from "vue-js-modal";
+import '@mdi/font/css/materialdesignicons.css'
 
 Vue.use(vmodal);
 
