@@ -906,6 +906,7 @@ export default {
     },
     closeInfoWindow() {
       this.selectedResourceItem = null;
+      this.showInfoDialogMode = null;
       this.infoMarkdownUrl = null;
       this.infoCommentBoxTitle = null;
       this.$modal.hide("info-dialog");
