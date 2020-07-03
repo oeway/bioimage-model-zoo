@@ -1,5 +1,11 @@
 <template>
-  <div></div>
+  <div>
+    <b-loading
+      :is-full-page="false"
+      :active.sync="loading"
+      :can-cancel="false"
+    ></b-loading>
+  </div>
 </template>
 
 <script>
@@ -22,11 +28,18 @@ export default {
   },
   mounted() {
     if (siteConfig.enable_comment) {
+      this.loading = true;
       setTimeout(() => this.showCommentBox(), 200);
     }
   },
+  data() {
+    return {
+      loading: false
+    };
+  },
   methods: {
     showCommentBox() {
+      this.loading = true;
       if (!this.title) {
         console.warn("You need to specify a title for the comment box");
         return;
@@ -50,9 +63,10 @@ export default {
         params.set(k, this.$route.query[k]);
       }
 
-      utteranc.onload = function() {
+      utteranc.onload = () => {
         window.document.title = title_backup;
         window.history.replaceState(null, "", originalUrl);
+        this.loading = false;
       };
 
       const redirectUrl = `${window.location.pathname}?${params.toString()}`;

@@ -1,5 +1,10 @@
 <template>
   <div class="markdown-body">
+    <b-loading
+      :is-full-page="false"
+      :active.sync="loading"
+      :can-cancel="false"
+    ></b-loading>
     <div v-if="docs" v-html="docs"></div>
   </div>
 </template>
@@ -31,7 +36,8 @@ export default {
   },
   data() {
     return {
-      docs: null
+      docs: null,
+      loading: true
     };
   },
   created() {
@@ -65,6 +71,7 @@ export default {
       this.docs = DOMPurify.sanitize(
         replaceAllRelByAbs(marked(newContent), this.baseUrl)
       );
+      this.loading = false;
     },
     baseUrl: function(newBaseUrl) {
       this.baseUrl = newBaseUrl;
@@ -92,6 +99,7 @@ export default {
   },
   methods: {
     async showDocsUrl(url) {
+      this.loading = true;
       this.docs = "@loading...";
       const response = await fetch(url);
       if (response.status == 200) {
@@ -103,6 +111,7 @@ export default {
           this.docs = DOMPurify.sanitize(
             replaceAllRelByAbs(marked(content), baseUrl)
           );
+          this.loading = false;
         } else {
           this.docs = DOMPurify.sanitize(marked("```\n" + content + "\n```\n"));
         }
