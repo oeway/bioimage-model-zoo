@@ -8,8 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="description"
-    content="<%= description %>">
+  <meta name="description" content="<%= description %>">
   <meta name="author" content="<%= author %>">
   <meta name="keywords" content="<%= keywords %>">
   <meta name="twitter:card" content="summary_large_image" />
@@ -18,8 +17,7 @@
   <meta name="twitter:image" content="<%= twitter_image %>" />
   <meta property="og:url" content="<%= og_url %>" />
   <meta property="og:title" content="<%= og_title %>" />
-  <meta property="og:description"
-    content="<%= og_description %>" />
+  <meta property="og:description" content="<%= og_description %>" />
   <meta property="og:image" content="<%= og_image %>" />
   <meta name="format-detection" content="telephone=no">
   <link rel="apple-touch-icon" sizes="57x57" href="<%= BASE_URL %>static/icons/apple-icon-57x57.png">
@@ -55,6 +53,18 @@
   </noscript>
   <div id="app"></div>
   <!-- built files will be auto injected -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134837258-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-134837258-2');
+  </script>
 </body>
 
 </html>
