@@ -294,9 +294,13 @@ export async function runOneModel(plugin, model) {
     if (validateBioEngineApp(plugin.name, w)) {
       await w.runOneModel(model);
     } else {
-      throw "Invalid BioEngine App.";
+      w.run({ data: model });
     }
   } else {
-    plugin.api.runOneModel(model);
+    if (plugin.api.runOneModel) {
+      plugin.api.runOneModel(model);
+    } else {
+      plugin.api.run({ data: model });
+    }
   }
 }

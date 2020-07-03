@@ -640,7 +640,6 @@ export default {
         const applications = resourceItems.filter(
           m => m.type === "application"
         );
-        this.showMessage("Loading applications...");
         loadPlugins(imjoy, applications).then(allApps => {
           this.showMessage(
             `Successfully loaded ${Object.keys(allApps).length} applications.`
@@ -880,12 +879,21 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showSource(item) {
-      this.infoDialogTitle = "Source: " + item.name;
-      this.infoMarkdownUrl = item.source;
-      this.infoCommentBoxTitle = item.name;
-      this.showInfoDialogMode = "markdown";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
+      if (
+        item.source.endsWith(".md") ||
+        item.source.endsWith(".yaml") ||
+        item.source.endsWith(".yml") ||
+        item.source.endsWith(".html")
+      ) {
+        this.infoDialogTitle = "Source: " + item.name;
+        this.infoMarkdownUrl = item.source;
+        this.infoCommentBoxTitle = item.name;
+        this.showInfoDialogMode = "markdown";
+        if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+        this.$modal.show("info-dialog");
+      } else {
+        window.open(item.source);
+      }
     },
     showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";

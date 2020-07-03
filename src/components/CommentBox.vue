@@ -68,6 +68,9 @@ export default {
         window.history.replaceState(null, "", originalUrl);
         this.loading = false;
       };
+      utteranc.onerror = () => {
+        this.loading = false;
+      };
 
       const redirectUrl = `${window.location.pathname}?${params.toString()}`;
       window.history.replaceState(null, "", redirectUrl);

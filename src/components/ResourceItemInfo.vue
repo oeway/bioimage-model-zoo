@@ -147,7 +147,6 @@ export default {
   methods: {
     async getDocs(resourceItem) {
       resourceItem.docs = "@loading...";
-      this.$forceUpdate();
       try {
         let docsUrl;
         if (!resourceItem.documentation.startsWith("http"))
@@ -158,7 +157,7 @@ export default {
         else {
           docsUrl = resourceItem.documentation;
         }
-        if (docsUrl.includes("github")) docsUrl = docsUrl + "?" + randId();
+        if (docsUrl.includes("github.")) docsUrl = docsUrl + "?" + randId();
         const response = await fetch(docsUrl);
         if (response.status == 200) {
           const raw_docs = await response.text();
@@ -177,6 +176,8 @@ export default {
           if (resourceItem.documentation.endsWith(".md")) {
             resourceItem.baseUrl = baseUrl;
             resourceItem.docs = raw_docs;
+          } else if (resourceItem.documentation) {
+            resourceItem.docs = `### [Documentation](${resourceItem.documentation})`;
           }
         } else {
           resourceItem.docs = null;

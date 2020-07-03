@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       docs: null,
-      loading: true
+      loading: false
     };
   },
   created() {
@@ -101,22 +101,30 @@ export default {
     async showDocsUrl(url) {
       this.loading = true;
       this.docs = "@loading...";
-      const response = await fetch(url);
-      if (response.status == 200) {
-        const content = await response.text();
-        if (url.endsWith(".md")) {
-          const temp = url.split("/");
-          const baseUrl = temp.slice(0, temp.length - 1).join("/");
+      try {
+        const response = await fetch(url);
+        if (response.status == 200) {
+          const content = await response.text();
+          if (url.endsWith(".md")) {
+            const temp = url.split("/");
+            const baseUrl = temp.slice(0, temp.length - 1).join("/");
 
-          this.docs = DOMPurify.sanitize(
-            replaceAllRelByAbs(marked(content), baseUrl)
-          );
-          this.loading = false;
+            this.docs = DOMPurify.sanitize(
+              replaceAllRelByAbs(marked(content), baseUrl)
+            );
+            this.loading = false;
+          } else {
+            this.docs = DOMPurify.sanitize(
+              marked("```\n" + content + "\n```\n")
+            );
+          }
         } else {
-          this.docs = DOMPurify.sanitize(marked("```\n" + content + "\n```\n"));
+          this.docs = "Oops! Failed to load from " + url;
         }
-      } else {
+      } catch (e) {
         this.docs = "Oops! Failed to load from " + url;
+      } finally {
+        this.loading = false;
       }
     }
   }
