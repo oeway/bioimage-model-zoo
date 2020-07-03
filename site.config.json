@@ -67,34 +67,6 @@
   "footnote": "BioImage.io -- a collabrative effort to bring AI models to the bioimaging community.",
   "partners": [
     {
-      "id": "deepimagej",
-      "name": "deepImageJ",
-      "tags": ["deepimagej"],
-      "logo": "https://deepimagej.github.io/deepimagej/images/deepimagej_logo.png",
-      "icon": "https://deepimagej.github.io/deepimagej/images/deepimagej_logo.png",
-      "splash_title": "deepImageJ",
-      "splash_subtitle": "A user-friendly plugin to run deep learning models in ImageJ",
-      "splash_feature_list": [
-      ],
-      "explore_button_text": "Start Exploring",
-      "background_image": "static/img/zoo-background.svg",
-      "resource_types": ["model", "notebook"]
-    },
-    {
-      "id": "fiji",
-      "name": "Fiji",
-      "tags": ["fiji"],
-      "logo": "https://fiji.sc/site/logo.png",
-      "icon": "https://fiji.sc/site/logo.png",
-      "splash_title": "Fiji",
-      "splash_subtitle": "Fiji is just ImageJ",
-      "splash_feature_list": [
-      ],
-      "explore_button_text": "Start Exploring",
-      "background_image": "static/img/zoo-background.svg",
-      "resource_types": ["model", "notebook"]
-    },
-    {
       "id": "ilastik",
       "name": "Ilastik",
       "tags": ["ilastik"],
