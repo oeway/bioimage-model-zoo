@@ -15,19 +15,19 @@ The common fields for all the resource description files are:
 | name  | required | name of the resource, a human-friendly name  |
 | description | required | short description for the resource |
 | source | required | url to the source of the resource |
-| version | required | the version number for the resource, starting from `0.1.0`  |
-| cite | optional | how to cite the resource |
+| attachments | optional | a group of attachments, list of resources grouped by keys  |
 | authors | optional | the full list of author names  |
-| icon | optional | an icon for the resource  |
-| license | optional | the license name for the resource, e.g.: `MIT`  |
+| badges | optional | a list of badges|
+| cite | optional | how to cite the resource |
 | covers | optional | a list of url to the cover images (aspect ratio width/height=2/1)  |
 | documentation | optional | url to the documentation in markdown format  |
-| tags | optional | a list of tags  |
-| git_repo | optional | url to the git repo  |
-| badges | optional | a list of badges|
-| links | optional | a list of linked resources, an id to other resources|
-| attachments | optional | a group of attachments, list of resources grouped by keys  |
 | download_url | optional | url to the zipped file if applicable |
+| git_repo | optional | url to the git repo  |
+| icon | optional | an icon for the resource  |
+| license | optional | the license name for the resource, e.g.: `MIT`  |
+| links | optional | a list of linked resources, an id to other resources|
+| tags | optional | a list of tags  |
+| version | optional | the version number for the resource, starting from `0.1.0`  |
 
 ## Describing AI models
 You need to first set the `type` filed to `model`.
