@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "8bf2a97e456b8333766e",
+    "revision": "b80e426e2295fb007cca",
     "url": "/css/app.12a80f79.css"
   },
   {
@@ -32,12 +32,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "6177ec1e6fd10960c82293188cc87ed4",
+    "revision": "add230eaf7a41590805eeb661df2c9ef",
     "url": "/index.html"
   },
   {
-    "revision": "8bf2a97e456b8333766e",
-    "url": "/js/app.21e70e70.js"
+    "revision": "b80e426e2295fb007cca",
+    "url": "/js/app.72d840b7.js"
   },
   {
     "revision": "cedeb60db94ad2d8e97a",
