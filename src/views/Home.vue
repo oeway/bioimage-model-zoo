@@ -457,10 +457,13 @@ function normalizeItem(self, item) {
       const query = Object.assign({}, self.$route.query);
       query.id = item.id;
       self.$router.replace({ query: query }).catch(() => {});
-
-      alert(
-        "Please copy and paste the URL in the browser address bar for sharing."
-      );
+      self.$buefy.dialog.alert({
+        title: "Sharing " + item.type,
+        hasIcon: true,
+        icon: "share",
+        message: `Here is the URL for sharing ${item.name}: <br> <code>${window.location.href}</code>`,
+        confirmText: "OK"
+      });
     }
   });
   if (item.source && item.type === "application")
