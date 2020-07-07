@@ -151,6 +151,13 @@ export default {
       this.applySearch(this.selectedTags);
     },
     searchTags: function(newTags) {
+      const is_same =
+        newTags &&
+        newTags.length == this.selectedTags.length &&
+        newTags.every((element, index) => {
+          return element === this.selectedTags[index];
+        });
+      if (is_same) return;
       newTags = newTags.filter(tag => tag && tag.trim() != "");
       this.selectedTags = Array.from(new Set(newTags));
     }

@@ -809,6 +809,7 @@ export default {
       this.$modal.show("info-dialog");
     },
     updateQueryTags(newTags) {
+      this.searchTags = newTags;
       if (newTags) {
         if (newTags.length > 0) {
           this.currentTags = newTags;
