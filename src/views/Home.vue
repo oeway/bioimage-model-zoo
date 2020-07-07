@@ -133,20 +133,20 @@
         class="item-lists is-link"
         style="width:30px; margin-left: -16px;"
         @click="
-          currentList = null;
+          selectedCategory = null;
           updateQueryTags();
         "
-        :class="{ active: !currentList }"
+        :class="{ active: !selectedCategory }"
       >
         All
       </div>
       <div
         class="item-lists is-link"
         @click="
-          currentList = list;
+          selectedCategory = list;
           updateQueryTags();
         "
-        :class="{ active: currentList === list }"
+        :class="{ active: selectedCategory === list }"
         v-for="list in resourceCategories"
         :key="list.name"
       >
@@ -158,14 +158,14 @@
       :allItems="resourceItems"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
-      :type="currentList && currentList.type"
+      :type="selectedCategory && selectedCategory.type"
       :showDisplayMode="screenWidth > 700"
       @display-mode-change="displayModeChanged"
       :searchTags="searchTags"
       @tags-updated="updateQueryTags"
     ></resource-item-selector>
     <div
-      v-if="currentList && currentList.type === 'application'"
+      v-if="selectedCategory && selectedCategory.type === 'application'"
       style="text-align:center;"
     >
       <a @click="$refs.file_select.click()">Load application from file</a>
@@ -565,7 +565,7 @@ export default {
       infoDialogTitle: "",
       infoMarkdownUrl: null,
       infoCommentBoxTitle: null,
-      currentList: null,
+      selectedCategory: null,
       displayMode: "card",
       currentTags: [],
       selectedPartner: null
@@ -625,7 +625,7 @@ export default {
           item.source = concatAndResolveUrl(item.root_url, item.source);
       }
       this.resourceItems = resourceItems;
-      const tp = this.currentList && this.currentList.type;
+      const tp = this.selectedCategory && this.selectedCategory.type;
       this.selectedItems = tp
         ? resourceItems.filter(m => m.type === tp)
         : resourceItems;
@@ -729,7 +729,7 @@ export default {
     fullLabelList: function() {
       const fullLabelList = [];
       if (this.resourceItems) {
-        const tp = this.currentList && this.currentList.type;
+        const tp = this.selectedCategory && this.selectedCategory.type;
         const items = tp
           ? this.resourceItems.filter(m => m.type === tp)
           : this.resourceItems;
@@ -747,8 +747,8 @@ export default {
       return Array.from(new Set(fullLabelList));
     },
     tagCategories: function() {
-      if (this.currentList) {
-        return this.currentList && this.currentList.tag_categories;
+      if (this.selectedCategory) {
+        return this.selectedCategory && this.selectedCategory.tag_categories;
       } else {
         let combined = {};
         for (let list of this.resourceCategories) {
@@ -765,7 +765,7 @@ export default {
     // select models as default
     for (let list of this.resourceCategories) {
       if (list.type === "model") {
-        this.currentList = list;
+        this.selectedCategory = list;
         break;
       }
     }
@@ -785,6 +785,15 @@ export default {
     switchPartner(partner) {
       this.selectedPartner = partner;
       this.searchTags = this.selectedPartner.tags;
+      this.selectedCategory = null; // select all
+      if (this.selectedPartner.default_type) {
+        for (let list of this.resourceCategories) {
+          if (list.type === this.selectedPartner.default_type) {
+            this.selectedCategory = list;
+            break;
+          }
+        }
+      }
       const query = Object.assign({}, this.$route.query);
       query.partner = partner.id;
       query.tags = partner.tags;
@@ -824,12 +833,15 @@ export default {
       }
 
       const query = Object.assign({}, this.$route.query);
-      if (this.currentList) {
+      if (this.selectedCategory) {
         // remove the default type in the query if that's the only query
-        if (this.currentList.type === "model" && Object.keys(query).length <= 1)
+        if (
+          this.selectedCategory.type === "model" &&
+          Object.keys(query).length <= 1
+        )
           delete query.type;
         else {
-          query.type = this.currentList.type;
+          query.type = this.selectedCategory.type;
         }
       } else {
         query.type = "all";
@@ -998,9 +1010,9 @@ export default {
       }
 
       if (this.$route.query.type) {
-        if (this.$route.query.type === "all") this.currentList = null;
+        if (this.$route.query.type === "all") this.selectedCategory = null;
         else
-          this.currentList = this.resourceCategories.filter(
+          this.selectedCategory = this.resourceCategories.filter(
             item => item.type === this.$route.query.type
           )[0];
 

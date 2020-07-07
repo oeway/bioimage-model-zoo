@@ -78,7 +78,8 @@
       ],
       "explore_button_text": "Start Exploring",
       "background_image": "static/img/zoo-background.svg",
-      "resource_types": ["model", "application"]
+      "resource_types": ["model", "application"],
+      "default_type": "model"
     },{
       "id": "imjoy",
       "name": "ImJoy",
