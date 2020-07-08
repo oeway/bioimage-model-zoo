@@ -501,7 +501,7 @@ function normalizeItem(self, item) {
       run() {
         if (self.allApps[item.name])
           runAppForAllItems(self.allApps[item.name], self.rawResourceItems);
-        else alert("This application is not runnable.");
+        else alert("This application is not ready or unavailable.");
       }
     });
   } else if (item.links) {

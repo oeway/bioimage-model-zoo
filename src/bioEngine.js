@@ -283,12 +283,12 @@ export async function runAppForAllItems(plugin, allItems) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
     await w.run({
-      config: { referer: window.location.href, mode: 'all', type: 'bioengine' },
+      config: { referer: window.location.href, mode: "all", type: "bioengine" },
       data: allItems
     });
   } else {
     await plugin.api.run({
-      config: { referer: window.location.href , mode: 'all', type: 'bioengine'},
+      config: { referer: window.location.href, mode: "all", type: "bioengine" },
       data: allItems
     });
   }
@@ -297,10 +297,13 @@ export async function runAppForAllItems(plugin, allItems) {
 export async function runAppForItem(plugin, item) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
-    w.run({ config: { referer: window.location.href, mode: 'one', type: 'bioengine' }, data: item });
+    w.run({
+      config: { referer: window.location.href, mode: "one", type: "bioengine" },
+      data: item
+    });
   } else {
     plugin.api.run({
-      config: { referer: window.location.href, mode: 'one', type: 'bioengine' },
+      config: { referer: window.location.href, mode: "one", type: "bioengine" },
       data: item
     });
   }
