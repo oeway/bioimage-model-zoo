@@ -76,39 +76,9 @@
     "detailed": true,
     "detailed_image": null,
     "detailed_body": "description"
-  
   },
   "footnote": "BioImage.io -- a collaborative effort to bring AI models to the bioimaging community.",
-  "partners": [
-    {
-      "id": "ilastik",
-      "name": "Ilastik",
-      "tags": ["ilastik"],
-      "logo": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Ilastik-icon.png",
-      "icon": "https://raw.githubusercontent.com/bioimage-io/models/master/assets/icons/Ilastik-icon.png",
-      "splash_title": "Ilastik",
-      "splash_subtitle": "Interactive learning and segmentation toolkit",
-      "splash_feature_list": [
-      ],
-      "explore_button_text": "Start Exploring",
-      "background_image": "static/img/zoo-background.svg",
-      "resource_types": ["model", "application"],
-      "default_type": "model"
-    },{
-      "id": "imjoy",
-      "name": "ImJoy",
-      "tags": ["imjoy"],
-      "logo": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-logo-black.svg",
-      "icon": "https://raw.githubusercontent.com/imjoy-team/ImJoy/master/web/public/static/img/imjoy-icon.svg",
-      "splash_title": "ImJoy",
-      "splash_subtitle": "Deep Learning Made Easy!",
-      "splash_feature_list": [
-      ],
-      "explore_button_text": "Start Exploring",
-      "background_image": "static/img/zoo-background.svg",
-      "resource_types": ["model", "notebook", "application"]
-    }
-  ],
+  "partners": [],
   "resource_categories": [
     {
       "name": "Models",
