@@ -370,7 +370,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
@@ -470,6 +469,7 @@ function normalizeItem(self, item) {
       });
     }
   });
+
   if (item.source && item.type === "application")
     item.apps.unshift({
       name: "Source",
@@ -493,6 +493,33 @@ function normalizeItem(self, item) {
       url: item.git_repo,
       show_on_hover: true
     });
+
+  if (item.type === "application") {
+    item.apps.unshift({
+      name: "Run",
+      icon: "play",
+      run() {
+        if (self.allApps[item.name])
+          runManyModels(self.allApps[item.name], item);
+        else alert("This application is not runnable.");
+      }
+    });
+  } else if (item.links) {
+    for (let link_key of item.links) {
+      const linked = self.resourceItems.filter(item => item.id === link_key);
+      for (let lit of linked) {
+        item.apps.unshift({
+          name: lit.name,
+          icon: lit.icon || DEFAULT_ICONS[lit.type],
+          run() {
+            if (self.allApps[link_key])
+              runOneModel(self.allApps[link_key], item);
+            else self.showResourceItemInfo(lit);
+          }
+        });
+      }
+    }
+  }
 
   item.badges = item.badges || [];
   item.attachments = item.attachments || {};
@@ -678,51 +705,6 @@ export default {
             `Successfully loaded ${Object.keys(allApps).length} applications.`
           );
           this.allApps = allApps;
-          for (let item of resourceItems) {
-            // make a shallow copy or create an empty array
-            const apps = (item.apps && item.apps.slice()) || [];
-            if (item.type === "application") {
-              const app = this.allApps[item.name];
-              if (app.api) {
-                apps.unshift({
-                  name: "Run",
-                  icon: "play",
-                  run() {
-                    runManyModels(app, item);
-                  }
-                });
-              }
-            } else if (item.links) {
-              for (let link_key of item.links) {
-                if (this.allApps[link_key]) {
-                  const app = this.allApps[link_key];
-                  apps.unshift({
-                    name: app.name,
-                    icon: app.config.icon,
-                    run() {
-                      runOneModel(app, item);
-                    }
-                  });
-                } else {
-                  const linked = resourceItems.filter(
-                    item => item.id === link_key
-                  );
-                  const self = this;
-                  for (let lit of linked) {
-                    apps.unshift({
-                      name: lit.name,
-                      icon: lit.icon || DEFAULT_ICONS[lit.type],
-                      run() {
-                        self.showResourceItemInfo(lit);
-                      }
-                    });
-                  }
-                }
-              }
-            }
-            // This is to make sure the app icons get updated
-            Vue.set(item, "apps", apps);
-          }
         });
       });
       // inside an iframe
@@ -1150,16 +1132,6 @@ export default {
   outline: none;
 }
 
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
-
 .item-lists {
   width: 110px;
   display: inline-block;
@@ -1224,6 +1196,11 @@ export default {
   }
 }
 
+@media screen and (max-height: 700px) {
+  .feature-list {
+    display: none;
+  }
+}
 @media screen and (max-width: 768px) {
   .dialog-title {
     font-size: 1.1rem;
@@ -1236,10 +1213,10 @@ export default {
     font-size: 2.3em;
   }
   .title {
-    font-size: 2rem !important;
+    font-size: 1.8rem !important;
   }
   .subtitle {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
   }
   .feature-list {
     font-size: 1em !important;

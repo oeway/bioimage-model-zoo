@@ -202,6 +202,8 @@ export function validateBioEngineApp(name, api) {
 
 class ProxyWindowPlugin {
   constructor(imjoy, item) {
+    this.name = item.name;
+    this.id = item.id;
     this.config = item;
     this.api = {
       setup: function() {},
