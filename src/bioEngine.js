@@ -193,13 +193,6 @@ export async function setupBioEngine(
   return imjoy;
 }
 
-export function validateBioEngineApp(name, api) {
-  if (!api.runOneModel && !api.runManyModels) {
-    return false;
-  }
-  return true;
-}
-
 class ProxyWindowPlugin {
   constructor(imjoy, item) {
     this.name = item.name;
@@ -268,10 +261,6 @@ export function loadCodeFromFile(imjoy, file) {
             });
           }
           const plugin = await imjoy.pm.reloadPlugin(config);
-          console.log(plugin);
-          if (plugin.type !== "window") {
-            validateBioEngineApp(plugin.name, plugin.api);
-          }
           resolve(plugin);
           console.log(`Plugin "${plugin.name}" loaded successfully.`);
         } catch (error) {
@@ -290,34 +279,29 @@ export function loadCodeFromFile(imjoy, file) {
   });
 }
 
-export async function runManyModels(plugin, models) {
+export async function runAppForAllItems(plugin, allItems) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
-    if (!validateBioEngineApp(plugin.name, w)) {
-      await w.run({ data: models });
-    } else {
-      await w.runManyModels(models);
-    }
+    await w.run({
+      config: { referer: window.location.href, mode: 'all', type: 'bioengine' },
+      data: allItems
+    });
   } else {
-    if (validateBioEngineApp(plugin.name, plugin))
-      await plugin.api.runManyModels(models);
-    else await plugin.api.run({ data: models });
+    await plugin.api.run({
+      config: { referer: window.location.href , mode: 'all', type: 'bioengine'},
+      data: allItems
+    });
   }
 }
 
-export async function runOneModel(plugin, model) {
+export async function runAppForItem(plugin, item) {
   if (plugin.type === "window") {
     const w = await plugin.api.run();
-    if (validateBioEngineApp(plugin.name, w)) {
-      await w.runOneModel(model);
-    } else {
-      w.run({ data: model });
-    }
+    w.run({ config: { referer: window.location.href, mode: 'one', type: 'bioengine' }, data: item });
   } else {
-    if (plugin.api.runOneModel) {
-      plugin.api.runOneModel(model);
-    } else {
-      plugin.api.run({ data: model });
-    }
+    plugin.api.run({
+      config: { referer: window.location.href, mode: 'one', type: 'bioengine' },
+      data: item
+    });
   }
 }

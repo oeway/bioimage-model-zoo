@@ -9,7 +9,7 @@ For Jupyter notebooks and other types, you will need to build a new ImJoy plugin
 
 By default it loads also a [Jupyter Engine](https://github.com/imjoy-team/jupyter-engine-manager) which uses free computational resources on MyBinder.org, so you can also run small models in Python. 
 
-Since BioEngine is designed for running model specific ImJoy plugins, it needs to define either `runOneModel()` and/or `runManyModels()` function in the plugin api. Plus, you need also a `testModel` function which will be used to run tests in a CI environment. For example, the following python plugin would treat as a qualified BioEngine App:
+For example, this is a basic ImJoy plugin in Python, that works with the BioEngine:
 
 ```python
 from imjoy import api
@@ -19,31 +19,30 @@ class ImJoyPlugin():
         pass
 
     def run(self, ctx):
-        pass
+        # when the app is triggered from a model/dataset/notebook etc.
+        # you will receive the current item via `ctx.data`
+        if ctx.config.mode == 'one':
+            model = ctx.data
+            assert model.type == 'model'
+            api.alert("Running app from model: " + model['name'])
 
-    def runOneModel(self, model_info):
-        # run the model
-        pass
-
-    def runManyModels(self, model_info_list):
-        # filter the model list and run them
-        pass
-    
-    def testModel(self):
-        # run tests for the model
-        pass
+        # when the app is triggered from the app card it self
+        # you will receive all the resource items via `ctx.data`
+        elif ctx.config.mode == 'all':
+            all_items = ctx.data
+            # filter the models based on type
+            models = filter(lambda it: it['type'] == 'model', all_items)
+            api.alert("Number of models: " + str(len(models)))
 
 api.export(ImJoyPlugin())
 ```
-
-Note, this means your plugin would contain 4~5 functions including `setup` and `run` which is required for ImJoy.
-
-You don't need to return any value after execution. In case of error, you can just throw or raise the error.
 
 You can do the debugging inside [ImJoy](https://imjoy.io), for more information, please consult https://imjoy.io/docs.
 
 To test with the BioEngine, you can go to https://bioimage.io, on the menu located in the top-right corner, you can load a local ImJoy plugin file to run it with the BioEngine. One additional feature is that the BioEngine will keep track of the local file, if you made new changes with your code editor (e.g. vim, vscode) the engine will try to reload the plugin file. 
 
+TIP: if your imjoy plugin is designed for not only work with bioimage.io but also other purposes, you can use an `if` statement to check `ctx.config.type == 'bioengine'`.
+
 ## How to submit BioEngine Apps to the website?
 
-You can submit your BioEngine Apps posting the url [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).
+If you are one of our [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md), you can add the app url to your model repository. Otherwise, please submit your BioEngine Apps to BioImage.IO by posting the url [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).

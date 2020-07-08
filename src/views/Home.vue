@@ -390,8 +390,8 @@ import {
   loadPlugins,
   loadCodeFromFile,
   setupBioEngineAPI,
-  runOneModel,
-  runManyModels
+  runAppForItem,
+  runAppForAllItems
 } from "../bioEngine";
 import { randId, concatAndResolveUrl, debounce } from "../utils";
 
@@ -500,7 +500,7 @@ function normalizeItem(self, item) {
       icon: "play",
       run() {
         if (self.allApps[item.name])
-          runManyModels(self.allApps[item.name], item);
+          runAppForAllItems(self.allApps[item.name], self.rawResourceItems);
         else alert("This application is not runnable.");
       }
     });
@@ -513,7 +513,7 @@ function normalizeItem(self, item) {
           icon: lit.icon || DEFAULT_ICONS[lit.type],
           run() {
             if (self.allApps[link_key])
-              runOneModel(self.allApps[link_key], item);
+              runAppForItem(self.allApps[link_key], item);
             else self.showResourceItemInfo(lit);
           }
         });
@@ -585,6 +585,7 @@ export default {
       isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
       resourceItems: null,
+      rawResourceItems: null,
       selectedItems: null,
       showMenu: false,
       applications: [],
@@ -658,6 +659,7 @@ export default {
       }
 
       const resourceItems = repo_manifest.resources;
+      this.rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
       this.resourceItems = resourceItems;
       for (let item of resourceItems) {
         item.repo = repo;

@@ -77,22 +77,6 @@ export const anonymousAnimals = [
   "Lemur",
   "Hedgehog"
 ];
-export function validateBioEngineApp(name, api) {
-  if (!api.runOneModel && !api.runManyModels) {
-    console.error(
-      `${name}" has neither "runOneModel" nor "runManyModels":`,
-      api
-    );
-    alert(
-      `"${name}" is not a valid BioEngine App, it should define "runOneModel" and/or "runManyModels".`
-    );
-    return false;
-  }
-  if (!api.testModel) {
-    console.warn(`Please define a testModel function for "${name}".`);
-  }
-  return true;
-}
 
 export function debounce(func, wait, immediate) {
   var timeout;
