@@ -282,7 +282,11 @@
           v-show="wdialog === selectedDialogWindow"
           style="height: calc(100% - 18px);"
         >
-          <div :id="wdialog.window_id" style="width: 100%;height: 100%;"></div>
+          <div
+            :id="wdialog.window_id"
+            class="noselect"
+            style="width: 100%;height: 100%;"
+          ></div>
         </div>
       </template>
     </modal>
@@ -679,13 +683,15 @@ export default {
             const apps = (item.apps && item.apps.slice()) || [];
             if (item.type === "application") {
               const app = this.allApps[item.name];
-              apps.unshift({
-                name: "Run",
-                icon: "play",
-                run() {
-                  runManyModels(app, item);
-                }
-              });
+              if (app.api) {
+                apps.unshift({
+                  name: "Run",
+                  icon: "play",
+                  run() {
+                    runManyModels(app, item);
+                  }
+                });
+              }
             } else if (item.links) {
               for (let link_key of item.links) {
                 if (this.allApps[link_key]) {
@@ -1142,6 +1148,16 @@ export default {
 }
 .dialog-control-button:focus {
   outline: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 
 .item-lists {
