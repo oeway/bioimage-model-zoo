@@ -46,6 +46,13 @@
         "sortable": true
       },
       {
+        "field": "description",
+        "label": "Description",
+        "width": 100,
+        "max_length": 100,
+        "sortable": true
+      },
+      {
         "field": "timestamp",
         "label": "Timestamp",
         "class": "tag is-success",
@@ -55,7 +62,14 @@
         "field": "source",
         "label": "Source",
         "type": "url",
-        "text": "download",
+        "text": "open",
+        "class": "button is-small"
+      },
+      {
+        "field": "download_url",
+        "label": "Download",
+        "type": "url",
+        "text": "Download",
         "class": "button is-small"
       }
     ],

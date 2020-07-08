@@ -491,19 +491,28 @@ function normalizeItem(self, item) {
     });
 
   item.badges = item.badges || [];
-  if (item.attachments) {
-    for (let att_name of Object.keys(item.attachments)) {
-      item.badges.unshift({
-        label: att_name,
-        label_type: "is-dark",
-        ext: Object.keys(item.attachments[att_name]).length,
-        ext_type: "is-primary",
-        run() {
-          self.showAttachmentsDialog(item, att_name);
-        }
-      });
-    }
+  item.attachments = item.attachments || {};
+
+  const linkedItems = self.resourceItems.filter(
+    m => m.links && m.links.includes(item.id)
+  );
+  for (let it of linkedItems) {
+    if (item.attachments[it.type]) item.attachments[it.type].push(it);
+    else item.attachments[it.type] = [it];
   }
+
+  for (let att_name of Object.keys(item.attachments)) {
+    item.badges.unshift({
+      label: att_name,
+      label_type: "is-dark",
+      ext: Object.keys(item.attachments[att_name]).length,
+      ext_type: "is-primary",
+      run() {
+        self.showAttachmentsDialog(item, att_name);
+      }
+    });
+  }
+
   if (item.license) {
     item.badges.unshift({
       label: "license",
@@ -618,13 +627,14 @@ export default {
       }
 
       const resourceItems = repo_manifest.resources;
+      this.resourceItems = resourceItems;
       for (let item of resourceItems) {
         item.repo = repo;
         normalizeItem(this, item);
         if (item.source && !item.source.startsWith("http"))
           item.source = concatAndResolveUrl(item.root_url, item.source);
       }
-      this.resourceItems = resourceItems;
+
       const tp = this.selectedCategory && this.selectedCategory.type;
       this.selectedItems = tp
         ? resourceItems.filter(m => m.type === tp)

@@ -19,7 +19,7 @@
       >
         <template slot-scope="props">
           <b-table-column
-            v-for="col in siteConfig.attachment_table.columns"
+            v-for="col in availableColumns"
             :key="col.field"
             :field="col.field"
             :label="col.label"
@@ -36,7 +36,13 @@
                 {{ col.text }}
               </a>
               <span :class="col.class" v-else>
-                {{ props.row[col.field] }}
+                {{
+                  props.row[col.field] &&
+                    props.row[col.field].slice(0, col.max_length) +
+                      (props.row[col.field].length > col.max_length
+                        ? "..."
+                        : "")
+                }}
               </span>
             </template>
           </b-table-column>
@@ -69,7 +75,8 @@ export default {
   },
   data() {
     return {
-      siteConfig: siteConfig
+      siteConfig: siteConfig,
+      columns: []
     };
   },
   mounted() {
@@ -83,6 +90,13 @@ export default {
       this.focus(newTarget);
     }
   },
+  computed: {
+    availableColumns: function() {
+      return siteConfig.attachment_table.columns.filter(c =>
+        this.columns.includes(c.field)
+      );
+    }
+  },
   methods: {
     focus(target) {
       if (target) {
@@ -93,16 +107,23 @@ export default {
       }
     },
     convert2Array(obj) {
+      const columns = [];
+      this.columns = columns;
       if (obj instanceof Object && obj.constructor === Object) {
         const values = [];
         for (let k of Object.keys(obj)) {
           if (obj[k] instanceof Object) {
             obj[k]["id"] = k;
             values.push(obj[k]);
+            for (let n of Object.keys(obj[k])) {
+              if (!columns.includes(n)) columns.push(n);
+            }
           } else {
             const temp = obj[k].split("/");
             const name = temp[temp.length - 1] || "undefined";
-            values.push({ source: obj[k], name: name });
+            values.push({ download_url: obj[k], name: name });
+            if (!columns.includes("download_url")) columns.push("download_url");
+            if (!columns.includes("name")) columns.push("name");
           }
         }
         return values;
@@ -112,12 +133,17 @@ export default {
           if (obj[k] instanceof Object) {
             obj[k]["id"] = k;
             values.push(obj[k]);
+            for (let n of Object.keys(obj[k])) {
+              if (!columns.includes(n)) columns.push(n);
+            }
           } else {
             const temp = obj[k].split("/");
             // sometimes the url is ended with '/'
             const name =
               temp[temp.length - 1] || temp[temp.length - 2] || "undefined";
-            values.push({ source: obj[k], name: name });
+            values.push({ download_url: obj[k], name: name });
+            if (!columns.includes("download_url")) columns.push("download_url");
+            if (!columns.includes("name")) columns.push("name");
           }
         }
         return values;
