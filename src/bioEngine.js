@@ -200,6 +200,17 @@ export function validateBioEngineApp(name, api) {
   return true;
 }
 
+class ProxyWindowPlugin {
+  constructor(imjoy, item) {
+    this.config = item;
+    this.api = {
+      setup: function() {},
+      run() {
+        imjoy.pm.createWindow(null, { src: item.source });
+      }
+    };
+  }
+}
 export async function loadPlugins(imjoy, appSources) {
   console.log("ImJoy started: ", imjoy);
   await imjoy.pm.reloadPluginRecursively({
@@ -209,26 +220,30 @@ export async function loadPlugins(imjoy, appSources) {
   const apps = {};
   // await imjoy.pm.reloadInternalPlugins()
   for (let ap of appSources) {
-    try {
-      const config = await imjoy.pm.getPluginFromUrl(ap.source);
-      const p = await imjoy.pm.reloadPlugin(config);
-      if (config.dependencies)
-        for (let i = 0; i < config.dependencies.length; i++) {
-          const d_config = await imjoy.pm.getPluginFromUrl(
-            config.dependencies[i]
-          );
-          // TODO: use a better way to determin if it's an internal plugin type
-          if (imjoy.pm.getBadges(d_config) === "🚀") {
-            imjoy.lazy_dependencies[d_config.name] = config.dependencies[i];
-          } else {
-            await imjoy.pm.reloadPluginRecursively({
-              uri: config.dependencies[i]
-            });
+    if (ap.source.endsWith(".imjoy.html")) {
+      try {
+        const config = await imjoy.pm.getPluginFromUrl(ap.source);
+        const p = await imjoy.pm.reloadPlugin(config);
+        if (config.dependencies)
+          for (let i = 0; i < config.dependencies.length; i++) {
+            const d_config = await imjoy.pm.getPluginFromUrl(
+              config.dependencies[i]
+            );
+            // TODO: use a better way to determin if it's an internal plugin type
+            if (imjoy.pm.getBadges(d_config) === "🚀") {
+              imjoy.lazy_dependencies[d_config.name] = config.dependencies[i];
+            } else {
+              await imjoy.pm.reloadPluginRecursively({
+                uri: config.dependencies[i]
+              });
+            }
           }
-        }
-      apps[ap.name] = p;
-    } catch (e) {
-      console.error(e);
+        apps[ap.name] = p;
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      if (ap.source) apps[ap.name] = new ProxyWindowPlugin(imjoy, ap);
     }
   }
   return apps;
