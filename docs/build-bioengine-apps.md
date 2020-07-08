@@ -37,6 +37,8 @@ class ImJoyPlugin():
 api.export(ImJoyPlugin())
 ```
 
+For other types of plugins (e.g. in Javascript), the same `ctx` object will be passed into the plugin.
+
 You can do the debugging inside [ImJoy](https://imjoy.io), for more information, please consult https://imjoy.io/docs.
 
 To test with the BioEngine, you can go to https://bioimage.io, on the menu located in the top-right corner, you can load a local ImJoy plugin file to run it with the BioEngine. One additional feature is that the BioEngine will keep track of the local file, if you made new changes with your code editor (e.g. vim, vscode) the engine will try to reload the plugin file. 
