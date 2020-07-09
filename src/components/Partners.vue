@@ -1,9 +1,6 @@
 <template>
   <div class="container partners">
     <h2>Community Partners</h2>
-    <button class="button is-small join-btn" @click="$emit('join')">
-      +Join
-    </button>
     <b-carousel-list
       v-model="selectedPartnerIndex"
       :data="partners"
@@ -65,11 +62,6 @@ export default {
 };
 </script>
 <style scoped>
-.join-btn {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-}
 .partners > h2 {
   margin-top: 2px;
   margin-bottom: 10px;

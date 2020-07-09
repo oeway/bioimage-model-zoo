@@ -1,5 +1,5 @@
 <template>
-  <div class="container attachments">
+  <div class="attachments">
     <template v-for="(att_val, name) in attachments">
       <h2
         style="font-size:1.5rem;font-weight: 600;margin-top: 24px;

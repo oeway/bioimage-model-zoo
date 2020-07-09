@@ -64,11 +64,10 @@
         />
         <img class="background-img" v-else :src="siteConfig.background_image" />
         <partners
-          v-if="siteConfig.partners && siteConfig.join_partners_url"
+          v-if="partners"
           style="position: absolute;bottom: 0px;"
-          :partners="siteConfig.partners"
+          :partners="partners"
           @switchPartner="switchPartner"
-          @join="showJoinDialog"
         ></partners>
 
         <div class="container" v-if="selectedPartner">
@@ -726,6 +725,15 @@ export default {
     }
   },
   computed: {
+    partners: function() {
+      return this.siteConfig.partners.concat([
+        {
+          isJoinButton: true,
+          name: "Join BioImage.IO",
+          icon: "/static/img/plus-sign.png"
+        }
+      ]);
+    },
     resourceCategories: function() {
       if (this.selectedPartner)
         return this.siteConfig.resource_categories.filter(list =>
@@ -790,6 +798,10 @@ export default {
       this.$router.push({ query: query }).catch(() => {});
     },
     switchPartner(partner) {
+      if (partner.isJoinButton) {
+        this.showJoinDialog();
+        return;
+      }
       this.selectedPartner = partner;
       this.selectedCategory = null; // select all
       if (this.selectedPartner.default_type) {
@@ -801,7 +813,7 @@ export default {
         }
       }
       this.$nextTick(() => {
-        this.searchTags = this.selectedPartner.tags;
+        this.searchTags = this.selectedPartner && this.selectedPartner.tags;
       });
       const query = Object.assign({}, this.$route.query);
       query.partner = partner.id;

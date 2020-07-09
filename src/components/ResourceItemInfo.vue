@@ -67,7 +67,8 @@
       <h3 v-if="formatedCitation" id="citation">How to cite</h3>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
-          {{ c.text }} <a :href="c.url" target="_blank">[{{ c.url_text }}]</a>
+          {{ c.text }}
+          <a v-if="c.url" :href="c.url" target="_blank">[{{ c.url_text }}]</a>
         </li>
       </ul>
     </div>

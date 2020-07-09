@@ -52,7 +52,9 @@ export default {
 }
 .app-icon {
   width: 20px !important;
-  max-width: 20px;
+  max-width: 22px;
+  max-height: 22px;
+  object-fit: contain;
   transform: translateY(2px);
 }
 .action-btn {

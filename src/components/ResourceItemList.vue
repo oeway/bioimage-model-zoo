@@ -173,11 +173,6 @@ a.badge {
   font-size: 1.4rem;
 }
 
-.app-icon {
-  width: 22px !important;
-  max-width: 22px;
-}
-
 .button.is-small {
   border-radius: 30px;
   font-size: 0.8rem;
