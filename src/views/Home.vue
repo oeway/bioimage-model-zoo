@@ -476,7 +476,7 @@ function normalizeItem(self, item) {
     }
   });
 
-  if (item.source && item.type === "application")
+  if (item.source && item.source.startsWith("http"))
     item.apps.unshift({
       name: "Source",
       icon: "code-tags",
@@ -670,8 +670,8 @@ export default {
       for (let item of resourceItems) {
         item.repo = repo;
         normalizeItem(this, item);
-        if (item.source && !item.source.startsWith("http"))
-          item.source = concatAndResolveUrl(item.root_url, item.source);
+        // if (item.source && !item.source.startsWith("http"))
+        //   item.source = concatAndResolveUrl(item.root_url, item.source);
       }
 
       const tp = this.selectedCategory && this.selectedCategory.type;
@@ -933,15 +933,27 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showSource(item) {
-      if (item.source.endsWith(".yaml") || item.source.endsWith(".yml")) {
+      if (
+        item.source.endsWith(".yaml") ||
+        item.source.endsWith(".yml") ||
+        item.source.endsWith(".imjoy.html")
+      ) {
         this.infoDialogTitle = "Source: " + item.name;
         this.infoMarkdownUrl = item.source;
         this.infoCommentBoxTitle = item.name;
         this.showInfoDialogMode = "markdown";
         if (this.screenWidth < 700) this.infoDialogFullscreen = true;
         this.$modal.show("info-dialog");
-      } else {
+      } else if (item.source.startsWith("http")) {
         window.open(item.source);
+      } else {
+        this.$buefy.dialog.alert({
+          title: "Source: " + item.name,
+          hasIcon: true,
+          icon: "code-tags",
+          message: item.source,
+          confirmText: "OK"
+        });
       }
     },
     showResourceItemInfo(mInfo, focus) {
@@ -1098,6 +1110,14 @@ export default {
 </script>
 
 <style>
+.modal-card-title {
+  font-size: 1.1rem;
+  line-height: 1;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
 .navbar-item,
 .navbar-link {
   font-size: 1.5rem;
