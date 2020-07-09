@@ -113,6 +113,7 @@
     {
       "name": "Models",
       "type": "model",
+      "description": "List AI models",
       "tag_categories": {
         "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
         "content": [
@@ -147,15 +148,18 @@
     },
     {
       "name": "Applications",
-      "type": "application"
+      "type": "application",
+      "description": "List software, web apps and utility tools"
     },
     {
       "name": "Notebooks",
-      "type": "notebook"
+      "type": "notebook",
+      "description": "List Jupyter notebooks/Colab for models, workflows"
     },
     {
       "name": "Datasets",
-      "type": "dataset"
+      "type": "dataset",
+      "description": "List datasets"
     }
   ]
 }

@@ -129,29 +129,36 @@
       v-if="resourceCategories.length > 1"
       style="text-align:center;"
     >
-      <div
-        class="item-lists is-link"
-        style="width:30px; margin-left: -16px;"
-        @click="
-          selectedCategory = null;
-          updateQueryTags();
-        "
-        :class="{ active: !selectedCategory }"
-      >
-        All
-      </div>
-      <div
-        class="item-lists is-link"
-        @click="
-          selectedCategory = list;
-          updateQueryTags();
-        "
-        :class="{ active: selectedCategory === list }"
+      <b-tooltip label="List all items" position="is-bottom">
+        <div
+          class="item-lists is-link"
+          style="width:30px; margin-left: -16px;"
+          @click="
+            selectedCategory = null;
+            updateQueryTags();
+          "
+          :class="{ active: !selectedCategory }"
+        >
+          All
+        </div>
+      </b-tooltip>
+      <b-tooltip
         v-for="list in resourceCategories"
         :key="list.name"
+        :label="list.description"
+        position="is-bottom"
       >
-        {{ list.name }}
-      </div>
+        <div
+          class="item-lists is-link"
+          @click="
+            selectedCategory = list;
+            updateQueryTags();
+          "
+          :class="{ active: selectedCategory === list }"
+        >
+          {{ list.name }}
+        </div>
+      </b-tooltip>
     </div>
     <resource-item-selector
       @selection-changed="updateResourceItemList"
