@@ -876,6 +876,15 @@ export default {
 
       if (!this.selectedPartner) {
         delete query.partner;
+      } else {
+        // if no additional tags added, then hide the query from url
+        if (
+          this.selectedPartner.tags &&
+          JSON.stringify(this.selectedPartner.tags) ==
+            JSON.stringify(this.currentTags)
+        ) {
+          delete query.tags;
+        }
       }
       this.$router.replace({ query: query }).catch(() => {});
     },
@@ -1058,13 +1067,15 @@ export default {
             p => p.id === this.$route.query.partner
           )[0];
           if (this.selectedPartner) {
-            if (!this.searchTags) {
-              this.searchTags = this.selectedPartner.tags;
-            } else {
-              this.searchTags = this.searchTags.concat(
-                this.selectedPartner.tags
-              );
-            }
+            this.$nextTick(() => {
+              if (!this.searchTags) {
+                this.searchTags = this.selectedPartner.tags;
+              } else {
+                this.searchTags = this.searchTags.concat(
+                  this.selectedPartner.tags
+                );
+              }
+            });
 
             hasQuery = false;
           }
