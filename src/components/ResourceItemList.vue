@@ -164,7 +164,7 @@ export default {
       isSafari: isSafari,
       siteConfig: siteConfig,
       currentPage: 1,
-      itemsPerPage: 10
+      itemsPerPage: 16
     };
   },
   mounted() {},
