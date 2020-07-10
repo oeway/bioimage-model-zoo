@@ -94,6 +94,7 @@
           >
             <span class="explore-btn">About</span></b-button
           >
+          &nbsp;
           <b-button rounded style="text-transform:none;" @click="enter">
             <span class="explore-btn">{{
               selectedPartner.explore_button_text
