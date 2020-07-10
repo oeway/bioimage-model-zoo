@@ -729,7 +729,7 @@ export default {
       return this.siteConfig.partners.concat([
         {
           isJoinButton: true,
-          name: "Join BioImage.IO",
+          name: "Join Community Partners",
           icon: "/static/img/plus-sign.png"
         }
       ]);
@@ -1121,6 +1121,12 @@ export default {
 </script>
 
 <style>
+.pagination-list {
+  list-style: none;
+}
+.pagination {
+  width: 80%;
+}
 .modal-card-title {
   font-size: 1.1rem;
   line-height: 1;

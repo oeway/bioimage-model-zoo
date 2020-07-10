@@ -3,9 +3,12 @@
     <div class="container content-wrapper">
       <div class="columns is-multiline" v-if="displayMode === 'card'">
         <div
-          v-for="item in allItems"
+          v-for="item in allItems.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage
+          )"
           :key="item.id"
-          class="column is-4-desktop is-3-widescreen is-half-tablet"
+          class="column is-4-desktop is-3-widescreen is-half-tablet resource-card"
         >
           <resource-item-card
             @show-info="showResourceItemInfo"
@@ -95,6 +98,21 @@
           ></resource-item-card>
         </template>
       </b-table>
+      <b-pagination
+        class="resource-pagination"
+        :total="totalItems"
+        :current.sync="currentPage"
+        :range-before="3"
+        :range-after="1"
+        :per-page="itemsPerPage"
+        icon-prev="arrow-left"
+        icon-next="arrow-right"
+        aria-next-label="Next page"
+        aria-previous-label="Previous page"
+        aria-page-label="Page"
+        aria-current-label="Current page"
+      >
+      </b-pagination>
     </div>
   </div>
 </template>
@@ -128,6 +146,9 @@ export default {
     }
   },
   computed: {
+    totalItems: function() {
+      return this.allItems ? this.allItems.length : 0;
+    },
     filteredItems: function() {
       const covered = this.allItems.filter(item => item.cover_image);
       const items = covered.concat(
@@ -141,7 +162,9 @@ export default {
   data() {
     return {
       isSafari: isSafari,
-      siteConfig: siteConfig
+      siteConfig: siteConfig,
+      currentPage: 1,
+      itemsPerPage: 10
     };
   },
   mounted() {},
@@ -155,6 +178,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.resource-pagination {
+  margin-top: 10px;
+}
 .resource-item-list {
   min-height: 60vh;
 }
@@ -178,5 +204,8 @@ a.badge {
   font-size: 0.8rem;
   background-color: rgba(255, 255, 255, 0.85);
   color: #2196f3;
+}
+.resource-card {
+  height: 400px;
 }
 </style>
