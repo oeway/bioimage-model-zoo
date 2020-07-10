@@ -86,6 +86,14 @@
             </li>
           </ul>
           <br />
+          <b-button
+            v-if="selectedPartner.about_url"
+            rounded
+            style="text-transform:none;"
+            @click="showAboutPartner(selectedPartner)"
+          >
+            <span class="explore-btn">About</span></b-button
+          >
           <b-button rounded style="text-transform:none;" @click="enter">
             <span class="explore-btn">{{
               selectedPartner.explore_button_text
@@ -940,6 +948,29 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.show = "contribute";
       this.$router.replace({ query: query }).catch(() => {});
+    },
+    showAboutPartner(partner) {
+      if (partner.about_url.startsWith("http")) {
+        if (partner.about_url.endsWith(".md")) {
+          this.infoDialogTitle = "About " + partner.name;
+          this.infoMarkdownUrl = partner.about_url;
+          this.showInfoDialogMode = "markdown";
+          if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+          this.$modal.show("info-dialog");
+        } else window.open(partner.about_url);
+      } else if (partner.description) {
+        this.$buefy.dialog.alert({
+          title: "About " + partner.name,
+          message: partner.description,
+          confirmText: "OK"
+        });
+      } else {
+        this.$buefy.dialog.alert({
+          title: "Oops, no details about " + partner.name,
+          message: "This partner is did not provide any details!",
+          confirmText: "OK"
+        });
+      }
     },
     showSource(item) {
       if (

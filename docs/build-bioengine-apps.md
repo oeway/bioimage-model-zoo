@@ -45,6 +45,14 @@ To test with the BioEngine, you can go to https://bioimage.io, on the menu locat
 
 TIP: if your imjoy plugin is designed for not only work with bioimage.io but also other purposes, you can use an `if` statement to check `ctx.config.type == 'bioengine'`.
 
+## Make a standalone web app compatible with ImJoy/BioEngine
+
+Making an ImJoy plugin is not the only way to support the BioEngine, if you have already a web application or website, you can easily load a `imjoy-rpc` js file to your website and expose api for ImJoy/BioEngine.
+
+See [here](https://github.com/imjoy-team/ImJoy-core#use-your-web-application-inside-imjoy) for more details.
+
+For example, [Kaibu](https://kaibu.org) is a standlone web app that compatible with the BioEngine. Because it [loads the imjoy-rpc library](https://github.com/imjoy-team/kaibu/blob/efd355eff95da9aa0f7eb97103585b753063c05d/public/index.html#L45) and [exposed api functions for ImJoy](https://github.com/imjoy-team/kaibu/blob/master/src/imjoyAPI.js).
+
 ## How to submit BioEngine Apps to the website?
 
 If you are one of our [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md), you can add the app url to your model repository. Otherwise, please submit your BioEngine Apps to BioImage.IO by posting the url [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).

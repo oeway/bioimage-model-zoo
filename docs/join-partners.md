@@ -12,7 +12,7 @@ It works by placing a manifest file (`manifest.bioimage.io.yaml`) under your pro
 
 ![bioimage-io-community-partners](https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/bioimage-io-community-partners.png)
 
-To prepare such a manifest file, follow the example [here](https://github.com/bioimage-io/bioimage-io-models/blob/master/src/manifest.bioimage.io.yaml).
+To prepare such a manifest file, follow the instructions in the [BioImage.IO Manifest File](https://github.com/bioimage-io/bioimage.io/blob/master/docs/manifest-format.md).
 
 Make a request in the comment box below (if you don't see a comment box in the bottom of this page, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/27)):
 1. describe your project
