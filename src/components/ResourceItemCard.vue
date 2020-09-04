@@ -46,9 +46,8 @@
             />
             <b-icon
               v-else
-              style="height:22px;"
+              class="item-icon"
               :icon="icon.src"
-              size="is-small"
             />
             <span>{{ resourceItem.name }}</span>
           </h4>

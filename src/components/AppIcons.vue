@@ -16,7 +16,7 @@
           class="is-small action-btn"
         >
           <b-icon
-            v-if="!app.icon || app.icon === 'extension'"
+            v-if="!app.icon"
             icon="puzzle"
             size="is-small"
           >
