@@ -84,6 +84,7 @@
       "name": "Models",
       "type": "model",
       "description": "List AI models",
+      "outline_color": "0 3px 1px -2px rgb(0 236 0), 0 2px 2px 0 rgb(0 236 0), 0 1px 5px 0 rgba(0,0,0,.12)",
       "tag_categories": {
         "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
         "content": [
@@ -119,16 +120,19 @@
     {
       "name": "Applications",
       "type": "application",
+      "outline_color": "0 3px 1px -2px rgb(36 0 236), 0 2px 2px 0 rgb(15 21 218), 0 1px 5px 0 rgba(0,0,0,.12)",
       "description": "List software, web apps and utility tools"
     },
     {
       "name": "Notebooks",
       "type": "notebook",
+      "outline_color": "0 3px 1px -2px rgb(236 229 0), 0 2px 2px 0 rgb(236 229 0), 0 1px 5px 0 rgba(0,0,0,.12)",
       "description": "List Jupyter notebooks/Colab for models, workflows"
     },
     {
       "name": "Datasets",
       "type": "dataset",
+      "outline_color": "0 3px 1px -2px rgb(236 0 185), 0 2px 2px 0 rgb(236 0 185), 0 1px 5px 0 rgba(0,0,0,.12)",
       "description": "List datasets"
     }
   ]

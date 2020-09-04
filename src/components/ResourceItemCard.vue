@@ -1,6 +1,6 @@
 <template>
   <div class="resource-item-card">
-    <div class="card is-shady">
+    <div class="card is-shady" :style="{ 'box-shadow': boxShadow }">
       <div class="card-image">
         <b-carousel
           v-if="
@@ -82,6 +82,12 @@
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
+import siteConfig from "../../site.config.json";
+
+const colorMap = {};
+for (let it of siteConfig.resource_categories) {
+  colorMap[it.type] = it.outline_color;
+}
 
 const isTouchDevice = (function() {
   try {
@@ -110,6 +116,12 @@ export default {
     "app-icons": AppIcons
   },
   computed: {
+    boxShadow: function() {
+      return (
+        colorMap[this.resourceItem.type] ||
+        "0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12)"
+      );
+    },
     icon: function() {
       if (this.resourceItem.icon) {
         if (this.resourceItem.icon.startsWith("http")) {
