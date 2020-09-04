@@ -44,11 +44,7 @@
               style="border-radius: 50%;background: #167cf0b8;"
               :src="'/static/anonymousAnimals/' + icon.src + '.png'"
             />
-            <b-icon
-              v-else
-              class="item-icon"
-              :icon="icon.src"
-            />
+            <b-icon v-else class="item-icon" :icon="icon.src" />
             <span>{{ resourceItem.name }}</span>
           </h4>
           <div class="buttons floating-buttons">

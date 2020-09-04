@@ -435,7 +435,7 @@ function normalizeItem(self, item) {
   if (item.covers && !Array.isArray(item.covers)) {
     item.covers = [item.covers];
   }
-  if(item.icon === 'extension') item.icon = 'puzzle';
+  if (item.icon === "extension") item.icon = "puzzle";
   item.cover_images = [];
   for (let cover of item.covers) {
     if (cover.includes("(") || cover.includes(")")) {
