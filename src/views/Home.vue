@@ -140,7 +140,7 @@
       <b-tooltip label="List all items" position="is-bottom">
         <div
           class="item-lists is-link"
-          style="width:30px; margin-left: -16px;"
+          style="width:30px; margin-left: -16px;border-bottom-color: gray;"
           @click="
             selectedCategory = null;
             updateQueryTags();
@@ -162,6 +162,7 @@
             selectedCategory = list;
             updateQueryTags();
           "
+          :style="{ 'border-bottom-color': list.outline_color }"
           :class="{ active: selectedCategory === list }"
         >
           {{ list.name }}
@@ -1232,16 +1233,20 @@ export default {
 }
 
 .item-lists {
+  padding-bottom: 2px;
   width: 110px;
   display: inline-block;
   margin: 10px;
   text-align: center;
   cursor: pointer;
-  font-size: 1.1em;
+  font-size: 1.2em;
   color: #006fcb;
+  border-bottom: 2px solid;
+  border-radius: 5px;
 }
+
 .item-lists:hover {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .item-lists.active {
@@ -1278,7 +1283,7 @@ export default {
   font-size: 1.3rem;
 }
 .site-title {
-  font-size: 2.4em;
+  font-size: 2.2em;
   padding-top: 10px;
   padding-left: 4px;
 }

@@ -112,10 +112,8 @@ export default {
   },
   computed: {
     boxShadow: function() {
-      return (
-        colorMap[this.resourceItem.type] ||
-        "0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12)"
-      );
+      const color = colorMap[this.resourceItem.type] || "rgba(0,0,0,.2)";
+      return `0 3px 1px -2px ${color}, 0 2px 2px 0 ${color}, 0 1px 5px 0 rgba(0,0,0,.12)`;
     },
     icon: function() {
       if (this.resourceItem.icon) {
