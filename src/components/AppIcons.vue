@@ -15,7 +15,12 @@
           @click="!app.url && app.run && app.run()"
           class="is-small action-btn"
         >
-          <b-icon v-if="!app.icon||app.icon==='extension'" icon="puzzle" size="is-small"> </b-icon>
+          <b-icon
+            v-if="!app.icon || app.icon === 'extension'"
+            icon="puzzle"
+            size="is-small"
+          >
+          </b-icon>
           <img
             v-else-if="app.icon.startsWith('http')"
             class="app-icon"
