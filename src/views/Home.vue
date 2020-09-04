@@ -466,6 +466,7 @@ function normalizeItem(self, item) {
         .map(tag => tag.toLowerCase())
     );
   }
+
   // make it lower case and remove duplicates
   item.allLabels = Array.from(
     new Set(item.allLabels.map(label => label.toLowerCase()))
@@ -527,7 +528,7 @@ function normalizeItem(self, item) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter(item => item.id === link_key);
       for (let lit of linked) {
-        item.apps.unshift({
+          item.apps.unshift({
           name: lit.name,
           icon: lit.icon || DEFAULT_ICONS[lit.type],
           run() {
