@@ -55,8 +55,11 @@
       </div>
     </nav>
     <!-- Header -->
-    <section class="hero is-link is-fullheight is-fullheight-with-navbar">
-      <div class="hero-body">
+    <section
+      class="hero is-link is-fullheight is-fullheight-with-navbar"
+      style="max-height: 1024px!important;height:100%;min-height:680px;"
+    >
+      <div class="hero-body" style="position: relative;">
         <img
           class="background-img"
           v-if="selectedPartner"

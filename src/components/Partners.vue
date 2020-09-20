@@ -28,7 +28,6 @@
 </template>
 
 <script>
-const ICON_WIDTH = 140;
 export default {
   name: "Partners",
   props: {
@@ -39,8 +38,9 @@ export default {
   },
   data() {
     return {
+      icon_width: 140,
       selectedPartnerIndex: 0,
-      items2Show: window.innerWidth / ICON_WIDTH
+      items2Show: window.innerWidth / 140
     };
   },
   mounted() {
@@ -52,7 +52,12 @@ export default {
   },
   methods: {
     updateSize() {
-      this.items2Show = window.innerWidth / ICON_WIDTH;
+      if (window.innerWidth < 512) {
+        this.icon_width = 80;
+      } else {
+        this.icon_width = 140;
+      }
+      this.items2Show = window.innerWidth / this.icon_width;
       this.$forceUpdate();
     },
     switchPartner(partner) {
@@ -73,7 +78,7 @@ export default {
   text-align: center;
   width: 100vw;
   max-width: 100vw;
-  position: absolute;
+  /* position: absolute; */
   bottom: 0px;
   right: 0px;
   left: 0px;
@@ -81,8 +86,8 @@ export default {
   margin-left: 0px;
 }
 .carousel-list {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 100px;
+  padding-right: 100px;
 }
 .partner-logo {
   height: 80px;
@@ -90,7 +95,12 @@ export default {
   width: auto;
   margin-bottom: 10px;
 }
-
+@media screen and (max-width: 1024px) {
+  .carousel-list {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
 @media screen and (max-width: 500px) {
   .partner-logo {
     height: 60px;
