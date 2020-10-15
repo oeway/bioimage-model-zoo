@@ -271,6 +271,7 @@ export default {
       }
     },
     updateSelectedTags() {
+      this.$emit("input-change");
       this.filteredTags = this.fullLabelList.filter(label => {
         return this.selectedTags.indexOf(label) < 0;
       });

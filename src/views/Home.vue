@@ -182,6 +182,7 @@
       @display-mode-change="displayModeChanged"
       :searchTags="searchTags"
       @tags-updated="updateQueryTags"
+      @input-change="removePartner"
     ></resource-item-selector>
     <div
       v-if="selectedCategory && selectedCategory.type === 'application'"
@@ -637,7 +638,18 @@ export default {
       selectedPartner: null
     };
   },
-  created: async function() {
+  mounted: async function() {
+    window.addEventListener("resize", this.updateSize);
+    window.dispatchEvent(new Event("resize"));
+
+    // select models as default
+    for (let list of this.resourceCategories) {
+      if (list.type === "model") {
+        this.selectedCategory = list;
+        break;
+      }
+    }
+
     try {
       // Fix the github oauth redirection
       const searchParams = new URLSearchParams(window.location.search);
@@ -795,18 +807,6 @@ export default {
       }
     }
   },
-  mounted() {
-    window.addEventListener("resize", this.updateSize);
-    window.dispatchEvent(new Event("resize"));
-
-    // select models as default
-    for (let list of this.resourceCategories) {
-      if (list.type === "model") {
-        this.selectedCategory = list;
-        break;
-      }
-    }
-  },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
   },
@@ -860,18 +860,23 @@ export default {
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
+    removePartner() {
+      if (this.selectedPartner) {
+        this.selectedPartner = null;
+        this.updateQueryTags(this.searchTags);
+      }
+    },
     updateQueryTags(newTags) {
+      if (!this.initialized) {
+        this.initialized = true;
+        return;
+      }
       this.searchTags = newTags;
       if (newTags) {
         if (newTags.length > 0) {
           this.currentTags = newTags;
         } else {
           this.currentTags = null;
-          if (this.initialized) {
-            this.selectedPartner = null;
-          } else {
-            this.initialized = true;
-          }
         }
       }
 
