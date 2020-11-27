@@ -13,7 +13,7 @@ For [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/
 
 * Step 3, post the url to the comment box below (if you don't see it, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/26)). And the admin team will check and verify the format and incooperate to BioImage.IO if the submitted file is qualified.
 
-### Only for intraoperable AI models: 
+### Only for interoperable AI models: 
 * Step 4, if you would like to provide a reproducible model, prepare a configuration specification [model.yaml](https://github.com/bioimage-io/configuration#model-specification) file that will allow the reproducibility of your model with at least one of the [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md). See the [supported formats and operability](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md). 
 
 * Step 5, in the `source`field of the RDF file, add the URL to the model.yaml field (make sure it's also hosted on a public repo).
