@@ -2,7 +2,7 @@
 
 You are welcome to submit your **models**, **datasest**, **applicaitons** and Jupyter **notebooks** to BioImage.IO.
 
-To add an resource item to BioImage.IO, you need to provide a set of basic information about the resouce, including name, description, authors etc. and we will generate a resource card to display in the website.
+To add a resource item to BioImage.IO, you need to provide a set of basic information about the resouce, including name, description, authors etc. and we will generate a resource card to display in the website.
 
 For [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md), you can add models directly to the linked repository. If you are not part of the community partners, you can follow the instructions below to submit resource items (models, datasets etc.) to BioImage.IO.
 
@@ -13,3 +13,7 @@ For [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/
 
 * Step 3, post the url to the comment box below (if you don't see it, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/26)). And the admin team will check and verify the format and incooperate to BioImage.IO if the submitted file is qualified.
 
+### Only for intraoperable AI models: 
+* Step 4, if you would like to provide a reproducible model, prepare a configuration specification [model.yaml](https://github.com/bioimage-io/configuration#model-specification) file that will allow the reproducibility of your model with at least one of the [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md). See the [supported formats and operability](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md). 
+
+* Step 5, in the `source`field of the RDF file, add the URL to the model.yaml field (make sure it's also hosted on a public repo).
