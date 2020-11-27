@@ -73,19 +73,19 @@ covers:
   - https://raw.githubusercontent.com/CellProfiling/HPA-competition-solutions/master/bestfitting/src/bestfitting-densenet-diagram.png
 ```
 
-If a model has multiple versions or associated with different weights, please use the `attachments` field, for example:
+If a model needs additional files, please use the `attachments` field. These files will be included when generating the model package. For example:
 ```yaml
 attachments:
-  models:
-    - https://zenodo.org/record/xxxxxxx/model_version_1
-    - https://zenodo.org/record/xxxxxxx/model_version_2
+  example_data:
+    - https://zenodo.org/record/xxxxxxx/example.nii.gz
+    - https://zenodo.org/record/xxxxxxx/metadata.json
 ```
 
 ```yaml
 attachments:
-  weights:
-    - https://zenodo.org/record/xxxxxxx/weight_version_1
-    - https://zenodo.org/record/xxxxxxx/weight_version_2
+  acquisition_setup:
+    - https://zenodo.org/record/xxxxxxx/spec.json
+    - https://zenodo.org/record/xxxxxxx/param.csv
 ```
 
 For more examples, see the [HPA repo](https://github.com/CellProfiling/HPA-model-zoo/blob/master/manifest.bioimage.io.yaml).
