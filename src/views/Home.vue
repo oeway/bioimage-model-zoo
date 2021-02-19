@@ -589,8 +589,8 @@ function normalizeItem(self, item) {
       }
     });
   }
-  if (item.type === "model") {
-    if (item.error && item.error.spec) {
+  if (item.error) {
+    if (item.error.spec) {
       item.badges.unshift({
         label: "spec",
         label_type: "is-dark",
