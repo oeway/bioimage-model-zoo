@@ -589,35 +589,32 @@ function normalizeItem(self, item) {
       }
     });
   }
-
-  if (item.error && item.error.spec) {
-    item.badges.unshift({
-      label: "spec",
-      label_type: "is-dark",
-      ext: 'failing',
-      ext_type: "is-danger",
-      run() {
-        alert(
-          "This model failed the specification checks, here are the errors: \n" +
-            JSON.stringify(item.error.spec, null, "  ")
-        );
-      }
-    });
+  if (item.type === "model") {
+    if (item.error && item.error.spec) {
+      item.badges.unshift({
+        label: "spec",
+        label_type: "is-dark",
+        ext: "failing",
+        ext_type: "is-danger",
+        run() {
+          alert(
+            "This model failed the specification checks, here are the errors: \n" +
+              JSON.stringify(item.error.spec, null, "  ")
+          );
+        }
+      });
+    } else {
+      item.badges.unshift({
+        label: "spec",
+        label_type: "is-dark",
+        ext: "passing",
+        ext_type: "is-success",
+        run() {
+          alert("🎉 This model passed the specification checks!");
+        }
+      });
+    }
   }
-  else{
-    item.badges.unshift({
-      label: "spec",
-      label_type: "is-dark",
-      ext: "passing",
-      ext_type: "is-success",
-      run() {
-        alert(
-          "🎉 This model passed the specification checks!"
-        );
-      }
-    });
-  }
-
 }
 
 export default {
