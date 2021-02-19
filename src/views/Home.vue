@@ -551,18 +551,20 @@ function normalizeItem(self, item) {
   item.badges = item.badges || [];
   item.attachments = item.attachments || {};
 
-  if(item.error && item.error.spec){
+  if (item.error && item.error.spec) {
     item.badges.unshift({
       label: "Error",
       label_type: "is-danger",
       ext: Object.keys(item.error.spec).length,
       ext_type: "is-dark",
       run() {
-        alert("Model Specification Errors: \n" + JSON.stringify(item.error.spec, null, '  '))
+        alert(
+          "Model Specification Errors: \n" +
+            JSON.stringify(item.error.spec, null, "  ")
+        );
       }
     });
   }
-
 
   const linkedItems = self.resourceItems.filter(
     m => m.links && m.links.includes(item.id)
