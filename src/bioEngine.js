@@ -85,7 +85,7 @@ export async function setupBioEngine(
   updateStatus
 ) {
   const imjoyCore = await window.loadImJoyCore();
-
+  console.log("ImJoy-Core version: " + imjoyCore.VERSION);
   var imjoy_api = {
     showStatus(plugin, info) {
       showMessage(info);
@@ -148,7 +148,11 @@ export async function setupBioEngine(
     imjoy_api: imjoy_api
   });
   imjoy.lazy_dependencies = {};
+  const _getPlugin = imjoy.pm.imjoy_api.getPlugin;
   imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
+    if (plugin_name.includes("\n")) {
+      return await _getPlugin(_plugin, plugin_name);
+    }
     const target_plugin = imjoy.pm.plugin_names[plugin_name];
     if (target_plugin) {
       return target_plugin.api;
