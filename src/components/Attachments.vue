@@ -103,8 +103,10 @@ export default {
         if (typeof items === "object") {
           const arr = [];
           for (let j of Object.keys(items)) {
-            items[j].name = j;
-            arr.push(items[j]);
+            // make a shallow copy
+            const item = Object.assign({}, items[j]);
+            item.name = j;
+            arr.push(item);
           }
           converted[k] = arr;
         } else {
