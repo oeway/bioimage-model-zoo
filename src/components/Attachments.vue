@@ -1,6 +1,6 @@
 <template>
   <div class="attachments">
-    <template v-for="(att_val, name) in attachments">
+    <template v-for="(att_val, name) in normalizedAttachments">
       <h2
         style="font-size:1.5rem;font-weight: 600;margin-top: 24px;
     margin-bottom: 16px; text-transform:capitalize;"
@@ -14,8 +14,8 @@
         v-if="att_val"
         :data="convert2Array(att_val)"
         :key="name + '_table'"
-        :detailed="true"
-        :show-detail-icon="true"
+        :detailed="!!att_val.type"
+        :show-detail-icon="!!att_val.type"
       >
         <template slot-scope="props">
           <b-table-column
@@ -95,6 +95,23 @@ export default {
       return siteConfig.attachment_table.columns.filter(c =>
         this.columns.includes(c.field)
       );
+    },
+    normalizedAttachments: function() {
+      const converted = {};
+      for (let k of Object.keys(this.attachments)) {
+        const items = this.attachments[k];
+        if (typeof items === "object") {
+          const arr = [];
+          for (let j of Object.keys(items)) {
+            items[j].name = j;
+            arr.push(items[j]);
+          }
+          converted[k] = arr;
+        } else {
+          converted[k] = items;
+        }
+      }
+      return converted;
     }
   },
   methods: {
