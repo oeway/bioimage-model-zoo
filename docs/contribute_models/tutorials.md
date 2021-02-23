@@ -35,11 +35,11 @@ Once the PR is accepted, a resource card to display the model in the website wil
     
     <img src="https://github.com/esgomezm/bioimage.io/blob/master/docs/assets/contribute_models/dummy_model_folder.png" align="center" width="500"/>
     
-12. Open the file `manifest.bioimage.io.yaml` and edit it, adding your model to the list of models as follows:
+12. Open the file `manifest.bioimage.io.yaml` and edit it. You need to add a unique `id` and a relative url to your model yaml as follows:
     ```yaml
     model:
      - id: 2dunet-lstm
-       source: models/2dUNet-SMLM/bioimage.config_template.yaml       
+       source: models/mymodel-dataXYZ/bioimage.config_template.yaml       
    ```
 
 7. Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
