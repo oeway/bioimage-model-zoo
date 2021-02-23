@@ -30,14 +30,18 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a
+          <a class="navbar-item" href="https://bioimage.io/docs">
+            <b-icon icon="playlist-check"></b-icon>
+            <span>Documentation</span>
+          </a>
+          <!-- <a
             class="navbar-item"
             v-if="siteConfig.subscribe_url"
             @click="showSubscribeDialog"
           >
             <b-icon icon="playlist-check"></b-icon>
             <span>Subscribe</span>
-          </a>
+          </a> -->
           <a
             class="navbar-item"
             target="_blank"
@@ -199,6 +203,7 @@
     <br />
     <resource-item-list
       @show-resource-item-info="showResourceItemInfo"
+      v-if="selectedItems"
       :allItems="selectedItems"
       :displayMode="screenWidth > 700 ? displayMode : 'card'"
     />
@@ -549,7 +554,6 @@ function normalizeItem(self, item) {
 
   item.badges = item.badges || [];
   item.attachments = item.attachments || {};
-
   const linkedItems = self.resourceItems.filter(
     m => m.links && m.links.includes(item.id)
   );
@@ -588,6 +592,32 @@ function normalizeItem(self, item) {
         );
       }
     });
+  }
+  if (item.error) {
+    if (item.error.spec) {
+      item.badges.unshift({
+        label: "spec",
+        label_type: "is-dark",
+        ext: "failing",
+        ext_type: "is-danger",
+        run() {
+          alert(
+            "This model failed the specification checks, here are the errors: \n" +
+              JSON.stringify(item.error.spec, null, "  ")
+          );
+        }
+      });
+    } else {
+      item.badges.unshift({
+        label: "spec",
+        label_type: "is-dark",
+        ext: "passing",
+        ext_type: "is-success",
+        run() {
+          alert("🎉 This model passed the specification checks!");
+        }
+      });
+    }
   }
 }
 
