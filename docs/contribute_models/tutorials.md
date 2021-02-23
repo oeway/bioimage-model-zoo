@@ -1,19 +1,3 @@
-# Model contribution requirements:
-
-- The model specification configuration [YAML version needs to be 0.3.0.](https://github.com/bioimage-io/configuration/blob/master/README.md) 
-- Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#consumers).
-- **Special case**: Notebook contribution + example model. This case will not be covered in this tutorial. 
-
-## Summary
-
-Model contribution means that you will upload a fully-documented trained model to a public repository so anyone has access to it. 
-Therefore, the trained weights together with the architecture need to be uploaded to a public repository such as Zenodo or GitHub releases. 
-Additionally, you will need to provide example images and configuration specification file that describes technically your model in a way that 
-consumer software can load and run the model. All this information is embedded in a specific file called `Resource Description File` (RDF). 
-The RDF is then published in the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) through a pull request (PR). 
-Once the PR is accepted, a resource card to display the model in the website will be generated.
-
-
 # Steps to contribute a model:
 1. Check the programming language and libraries used to train your model. For the moment only TensorFlow and PyTorch are supported.
 2. Check that the version of these libraries are compatible with the consumer software.
