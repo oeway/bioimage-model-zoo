@@ -18,7 +18,7 @@ Once the PR is accepted, a resource card to display the model in the website wil
 1. Check the programming language and libraries used to train your model. For the moment only TensorFlow and PyTorch are supported.
 2. Check that the version of these libraries are compatible with the consumer software.
 3. Export your trained model (architecture and weights) in a [supported format](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#weight-formats).
-4. Create a folder with a unique name that addresses the model name and has some reference to the data used to train it. For example `2dUNet-SMLM`. This is the only way your model can coexist with others.
+4. Create a folder with a unique name that addresses the model name and has some reference to the data used to train it. For example `mymodel-dataXYZ`. This is the only way your model can coexist with others.
 
 5. Create a [Bioimage Model Zoo configuration specification](https://github.com/bioimage-io/configuration/blob/master/README.md) YAML file.
    Each field on the file can be either mandatory or optional. You can use [our template](https://github.com/bioimage-io/bioimage-io-models/pull/55/files#diff-f6c64be5b9d764d0964654908b2ed4495fccc7624e58e9360bfdc6cef169edbe) to fill in the required information. 
@@ -27,7 +27,12 @@ Once the PR is accepted, a resource card to display the model in the website wil
 6. Call the configuration specification model YAML as `model.yaml`. 
 7. Place the `model.yaml` inside your folder. 
 9. Fork the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) to your GitHub user account.
-10. Place the folder with the `model.yaml` inside the folder called `models` in the central repository.
+10. In the forked repository, go to `Actions` (top bar) and enable them, so the continuous integration (CI) checker can also run in your repository and check that the files you uploaded are correct:
+   <img src="https://github.com/esgomezm/bioimage.io/raw/master/docs/assests/contribute_models/enable_actions.png" align="center" width="250"/>
+   
+10. Place the folder `mymodel-dataXYZ` with the `model.yaml` inside the folder called `models` in the central repository:
+    <img src="https://github.com/esgomezm/bioimage.io/raw/master/docs/assests/contribute_models/dummy_model_folder.png" align="center" width="250"/>
+    
 11. Open the file `manifest.bioimage.io.yaml` and edit it, adding your model to the list of models as follows:
     ```yaml
     model:
