@@ -19,3 +19,6 @@
   - [Explanations](/bioengine_apps/explanations)
   - [API reference](/bioengine_apps/api)
 * [Community Partners](/community_partners/README.md)
+  - [How-tos Guide](/community_partners/how-tos_guide)
+  - [BioImage.IO Manifest File](/community_partners/manifest-format.md)
+
