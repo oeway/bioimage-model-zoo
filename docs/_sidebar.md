@@ -13,6 +13,7 @@
   - [Tutorials](/consumer_software/tutorials.md)
   - [How-tos Guide](/consumer_software/how-tos_guide)
   - [Explanations](/consumer_software/explanations)
+* [Model Runner](/model_runner/README.md)
 * [BioEngine Apps](/bioengine_apps/README.md)
   - [How-tos Guide](/bioengine_apps/how-tos_guide)
   - [Explanations](/bioengine_apps/explanations)
