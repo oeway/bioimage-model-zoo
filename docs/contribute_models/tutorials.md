@@ -17,7 +17,7 @@
    
     <img src="contribute_models/enable_actions.png" align="center" width="1000"/>
 
-9. Create a folder inside `models` with a unique name. For example `mymodel-dataXYZ`(try to choose a name that refers to the model name and makes some reference to the data used to train it). Place the `model.yaml` inside your folder `mymodel-dataXYZ`:
+9. Create a folder inside `models` with a unique name. For example `mymodel-dataXYZ`(try to choose a name that refers to the model name and makes some reference to the data used to train it). Place the `model.yaml` inside your folder `mymodel-dataXYZ`. You can also place the covers for your model card inside this folder. Note that you will need to refer to them inside the yaml with a relative path, i.e. `covers: [./my_cover.jpg]`.
 	<img src="contribute_models/dummy_model_folder.png" align="center" width="700"/>
     
 10. Open the file `manifest.bioimage.io.yaml` and edit it. You need to add a unique `id`, a relative URL to your model yaml and the link to download the bioimage model (.zip) as follows:
@@ -30,8 +30,9 @@
 11. Make a pull request!!
 
 ## Considerations for Bioimage Model Zoo version 0.3.0
-The following information is also provided at the [Bioimage Model Zoo configuration specifications](https://github.com/bioimage-io/configuration/blob/master/README.md) but as it is quite important, we make you to pay special attention to it.
-* Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
-* Choose a nice cover image that will be used in the model card
-* Pre-processing and post-processing should be described. For that, you can check which [processing routines are supported](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#pre--and-postprocessing) at the moment.
+The following information is also provided at the [Bioimage Model Zoo configuration specifications](https://github.com/bioimage-io/configuration/blob/master/README.md) but it is important that you pay special attention to it.
+* Choose an input and output test images so we can check that your model runs correctly in the chosen [consumer software](https://bioimage.io/docs/#/consumer_software/model_runner)
+* Choose a representative cover image of the task performed by your model. This image will be used in the model card to guide the users through the model search.
+* Pre-processing and post-processing should be always described. For that, you can check which [processing routines are supported](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#pre--and-postprocessing) at the moment. 
+* Do not forget to include in your bioimage model (.zip) any additional file needed for the correct execution of the model.
 
