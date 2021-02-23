@@ -39,7 +39,7 @@ Once the PR is accepted, a resource card to display the model in the website wil
     ```yaml
     model:
      - id: mymodel-dataXYZ-2021
-       source: models/mymodel-dataXYZ/bioimage.config_template.yaml       
+       source: models/mymodel-dataXYZ/model.yaml       
     ```
 13. Make a pull request!!
 
