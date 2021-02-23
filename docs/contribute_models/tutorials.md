@@ -47,5 +47,5 @@ Once the PR is accepted, a resource card to display the model in the website wil
 The following information is also provided at the [Bioimage Model Zoo configuration specifications](https://github.com/bioimage-io/configuration/blob/master/README.md) but as it is quite important, we make you to pay special attention to it.
 * Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
 * Choose a nice cover image that will be used in the model card
-* Check the pre-processing and post-processing. 
+* Pre-processing and post-processing should be described. For that, you can check which [processing routines are supported](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#pre--and-postprocessing) at the moment.
 
