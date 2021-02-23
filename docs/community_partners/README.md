@@ -1,4 +1,3 @@
-
 # Join as a community partner
 
 BioImage.IO is community driven, and the models and other resources are contributed by the community members. To help us better maintain the resources, we introduced the concepts of community partner. A community partner is an organization, a company, a research group, or a software team who would like to make continuous contributions to BioImage.IO. A typical case for a community partner is a consumer software of BioImage.IO (e.g. ilastik, Fiji).
