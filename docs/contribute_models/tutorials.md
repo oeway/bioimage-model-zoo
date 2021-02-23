@@ -14,7 +14,7 @@ The RDF is then published in the [Central GitHub repository](https://github.com/
 Once the PR is accepted, a resource card to display the model in the website will be generated.
 
 
-# Step to contribute a model:
+# Steps to contribute a model:
 1. Check the programming language and libraries used to train your model. For the moment only TensorFlow and PyTorch are supported.
 2. Check that the version of these libraries are compatible with the consumer software.
 3. Export your trained model (architecture and weights) in a [supported format](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#weight-formats).
@@ -29,11 +29,11 @@ Once the PR is accepted, a resource card to display the model in the website wil
 9. Fork the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) to your GitHub user account.
 10. In the forked repository, go to `Actions` (top bar) and enable them, so the continuous integration (CI) checker can also run in your repository and check that the files you uploaded are correct:
    
-    <img src="docs/assets/contribute_models/enable_actions.png" align="center" width="700"/>
+    <img src="assets/enable_actions.png" align="center" width="700"/>
    
 11. Place the folder `mymodel-dataXYZ` with the `model.yaml` inside the folder called `models` in the central repository:
     
-    <img src="docs/assets/contribute_models/dummy_model_folder.png" align="center" width="500"/>
+    <img src="assets/dummy_model_folder.png" align="center" width="500"/>
     
 12. Open the file `manifest.bioimage.io.yaml` and edit it. You need to add a unique `id` and a relative url to your model yaml as follows:
     ```yaml
