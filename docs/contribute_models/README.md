@@ -8,7 +8,7 @@
 
 ## Summary
 
- <img src="docs/contribute_models/contribute_model.png" align="center" width="500"/>
+ <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
 
 Model contribution means that you will upload a fully-documented trained model to a public repository so anyone has access to it. Uploading your model to the Bioimage Model Zoo ensures that the model is well documented and that it can be used by biologists through user-friendly tools.
 
