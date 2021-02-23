@@ -8,9 +8,14 @@
 
 ## Summary
 
-Model contribution means that you will upload a fully-documented trained model to a public repository so anyone has access to it.
-The trained weights together with the architecture need to be uploaded to a public repository such as Zenodo or GitHub releases. 
-Additionally, you will need to provide example images and configuration specification file that describes technically your model in a way that 
-at least one of the consumer software can load and run the model. All this information is embedded in a specific file called `Resource Description File` (RDF) at the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) through a pull request (PR). 
-The uploading channel is through GitHub pull requests (PR) as they can be checked with a continuous integration (CI) workflow. Once your model has successfully pass the CI, we will verify that your model works and if so, the PR will be merged with the Bioimage Model Zoo. 
-Finally, a resource card to display the model in the website will be generated.
+ <img src="docs/contribute_models/contribute_model.png" align="center" width="500"/>
+
+Model contribution means that you will upload a fully-documented trained model to a public repository so anyone has access to it. Uploading your model to the Bioimage Model Zoo ensures that the model is well documented and that it can be used by biologists through user-friendly tools.
+
+The bioimage-model needs to be uploaded to a public repository such as Zenodo or GitHub releases as a .zip file. This file contains the trained weights together with the architecture, example inputs and outputs, and the configuration specification file that describes your model technically in such a way that 
+at least one of the consumer software can load and run the model. All this information is embedded in a specific file called `Resource Description File` (RDF) at the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models). 
+
+We use GitHub to manage the contribution of your model, so you will need to make a pull requests (PR) to the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) with the specific information. The PR is checked with a continuous integration (CI) workflow. Once your model has successfully pass the CI, we will verify that your model works and if so, the PR will be merged with the Bioimage Model Zoo. 
+At the end of the process, a resource card to display your model in the website will be generated.
+
+Ready to follow the [Tutorial](/contribute_models/tutorials.md)?
