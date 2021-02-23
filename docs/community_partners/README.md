@@ -1,23 +1,30 @@
 # Join as a community partner
 
+BioImage.IO is community driven, and the models and other resources are contributed by the community members. To help us better maintain the resources, we introduced the concepts of community partner. A community partner is an organization, a company, a research group, or a software team who would like to make continuous contributions to BioImage.IO. A typical case for a community partner is a consumer software of BioImage.IO (e.g. ilastik, Fiji).
+
+## How does it work
+Community partners can host their own Github repository for storing models and other resources that are relevant. These resources will be indexed in a manifest yaml file, which will be dynamically linked to the [central repository of BioImage.IO](https://github.com/bioimage-io/bioimage-io-models). The [continuous integration (CI) service](https://github.com/bioimage-io/bioimage-io-models/actions) configured in the central repo will then pull the resources from partners' repo and compile them into items displayed in the BioImage.IO website. Each community partner is responsible for maintaining the resources that are relevant. For example, ilastik, as a community partner, is responsible for maintaining 
+
+
+![bioimage-io-community-partners](bioimage-io-community-partners.png)
+
+
+## Benefits as a community partner
 By joining BioImage.IO as a community partner, you will be able to:
  - manage your own model repository
- - show your logo in BioImage.IO
- - associate the logo with predefined tags and content types
+ - show your logo in BioImage.IO and use predefined tags
  - customize your splash screen with a short description, highlighted features and background image
  - generate url that bring the user directly to the filtered items.
+ - Participate in decision making process of the model specification
+### Responsibilities
+The main responsibilities of a community partner are:
+ - Receiving and reviewing contributed resources from the users
+ - Maintain existing models and other resources in the, keep them up-to-date with the latest spec
+### Who should join as a community partner
+ * A team behind a software which produces or consumes models from the BioImage.IO
+ * A organization, group, company or team who contributed and will keep contributing more models to BioImage.IO
+### Who should not join as a community partner
+ * An individual who contributed models to BioImage.IO
+ * A software which is not maintained anymore
 
-## How to join as a community partner?
-It works by placing a manifest file (`manifest.bioimage.io.yaml`) under your project repository, and BioImage.IO will pull the content of your manifest to generate the items in BioImage.IO.
-
-![bioimage-io-community-partners](https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/bioimage-io-community-partners.png)
-
-To prepare such a manifest file, follow the instructions in the [BioImage.IO Manifest File](https://github.com/bioimage-io/bioimage.io/blob/master/docs/manifest-format.md).
-
-Make a request in the comment box below (if you don't see a comment box in the bottom of this page, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/27)):
-1. describe your project
-2. include the url to your project repo and the manifest file
-3. It is recommended to activate CI tests for your repo, and add one of the BioImage.IO admin team as collabrator to your repo in case we need to make changes to the manifest file.
-
-The admin team will discuss and decide whether we should include your project.
 
