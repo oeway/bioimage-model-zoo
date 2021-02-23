@@ -32,12 +32,19 @@
         <div class="navbar-end">
           <a
             class="navbar-item"
+            href="https://bioimage.io/docs"
+          >
+            <b-icon icon="playlist-check"></b-icon>
+            <span>Documentation</span>
+          </a>
+          <!-- <a
+            class="navbar-item"
             v-if="siteConfig.subscribe_url"
             @click="showSubscribeDialog"
           >
             <b-icon icon="playlist-check"></b-icon>
             <span>Subscribe</span>
-          </a>
+          </a> -->
           <a
             class="navbar-item"
             target="_blank"
