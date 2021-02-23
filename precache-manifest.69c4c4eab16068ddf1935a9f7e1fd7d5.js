@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "88e82cf04ed1cd37a284",
+    "revision": "af9fc8a0bbb8ed3050e5",
     "url": "/css/app.c7291e47.css"
   },
   {
@@ -32,12 +32,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "0ab8d34a9ee94e096a7af915ac49821f",
+    "revision": "0ce63a82c0116423785f8ecec4462fdf",
     "url": "/index.html"
   },
   {
-    "revision": "88e82cf04ed1cd37a284",
-    "url": "/js/app.2a4c313c.js"
+    "revision": "af9fc8a0bbb8ed3050e5",
+    "url": "/js/app.fb2b40ec.js"
   },
   {
     "revision": "385c60cd699bf79bc416",
@@ -334,6 +334,34 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "5a844215a57d9607f1087c9d7d364880",
     "url": "/static/anonymousAnimals/Wombat.png"
+  },
+  {
+    "revision": "0b4076a9fccce144a6469bae996ef326",
+    "url": "/static/icons/android-chrome-192x192.png"
+  },
+  {
+    "revision": "733990191480edf9c4ef9169a3f98cba",
+    "url": "/static/icons/android-chrome-512x512.png"
+  },
+  {
+    "revision": "e22f183e285d262c95efccdd7fc9f1d9",
+    "url": "/static/icons/apple-touch-icon.png"
+  },
+  {
+    "revision": "2f8e5f54e38951bb5c880712c9e788c2",
+    "url": "/static/icons/favicon-16x16.png"
+  },
+  {
+    "revision": "c3cfd64bc87fa3867c77e31082bc05d2",
+    "url": "/static/icons/favicon-32x32.png"
+  },
+  {
+    "revision": "c446d74a65b3651d63083570846c3b3b",
+    "url": "/static/img/bioimage-io-logo-transparent.png"
+  },
+  {
+    "revision": "917774a8febc2361a8c7481552e1e11a",
+    "url": "/static/img/bioimage-io-logo.png"
   },
   {
     "revision": "e1dd5654c3c8bcca4df6f56705b14a3c",
