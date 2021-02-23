@@ -10,7 +10,7 @@ Model contribution means that you will upload a fully-documented trained model t
 Therefore, the trained weights together with the architecture need to be uploaded to a public repository such as Zenodo or GitHub releases. 
 Additionally, you will need to provide example images and configuration specification file that describes technically your model in a way that 
 consumer software can load and run the model. All this information is embedded in a specific file called `Resource Description File` (RDF). 
-The RDF is then published in the [Central repo](https://github.com/bioimage-io/bioimage-io-models) through a pull request (PR). 
+The RDF is then published in the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) through a pull request (PR). 
 Once the PR is accepted, a resource card to display the model in the website will be generated.
 
 
@@ -18,8 +18,27 @@ Once the PR is accepted, a resource card to display the model in the website wil
 1. Check the programming language and libraries used to train your model. For the moment only TensorFlow and PyTorch are supported.
 2. Check that the version of these libraries are compatible with the consumer software.
 3. Export your trained model (architecture and weights) in a [supported format](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#weight-formats).
-4. Choose an input and output test images so we can check that your model can be run correctly. LINK TO MODEL RUNNERS.
-5. Generate a  a [`Resource Description File`](https://github.com/bioimage-io/bioimage.io/blob/master/docs/resource-description-file.md)(RDF)
+4. Create a folder with a unique name that addresses the model name and has some reference to the data used to train it. For example `2dUNet-SMLM`. This is the only way your model can coexist with others.
+
+5. Create a [Bioimage Model Zoo configuration specification](https://github.com/bioimage-io/configuration/blob/master/README.md) YAML file.
+   Each field on the file can be either mandatory or optional. You can use [our template](https://github.com/bioimage-io/bioimage-io-models/pull/55/files#diff-f6c64be5b9d764d0964654908b2ed4495fccc7624e58e9360bfdc6cef169edbe) to fill in the required information. 
+   Here is an example of a filled configuration YAML file. In the Bioimage Model Zoo web page you will also find different examples. 
+   
+6. Call the configuration specification model YAML as `model.yaml`. 
+7. Place the `model.yaml` inside your folder. 
+9. Fork the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) to your GitHub user account.
+10. Place the folder with the `model.yaml` inside the folder called `models` in the central repository.
+11. Open the file `manifest.bioimage.io.yaml` and edit it, adding your model to the list of models as follows:
+    ```yaml
+    model:
+     - id: 2dunet-lstm
+       source: models/2dUNet-SMLM/bioimage.config_template.yaml       
+   ```
+
+7. Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
+
+
+
 
 ## Submit to BioImage.IO
 * **Step 1**, prepare  and complete at least the mandatory fields and ideally also the recommended fields for different types of resource.
