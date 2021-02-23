@@ -29,11 +29,11 @@ Once the PR is accepted, a resource card to display the model in the website wil
 9. Fork the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) to your GitHub user account.
 10. In the forked repository, go to `Actions` (top bar) and enable them, so the continuous integration (CI) checker can also run in your repository and check that the files you uploaded are correct:
    
-    <img src="https://github.com/esgomezm/bioimage.io/blob/master/docs/assets/contribute_models/enable_actions.png" align="center" width="700"/>
+    <img src="docs/assets/contribute_models/enable_actions.png" align="center" width="700"/>
    
 11. Place the folder `mymodel-dataXYZ` with the `model.yaml` inside the folder called `models` in the central repository:
     
-    <img src="https://github.com/esgomezm/bioimage.io/blob/master/docs/assets/contribute_models/dummy_model_folder.png" align="center" width="500"/>
+    <img src="docs/assets/contribute_models/dummy_model_folder.png" align="center" width="500"/>
     
 12. Open the file `manifest.bioimage.io.yaml` and edit it. You need to add a unique `id` and a relative url to your model yaml as follows:
     ```yaml
