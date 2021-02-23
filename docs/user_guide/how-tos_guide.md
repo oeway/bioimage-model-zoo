@@ -17,7 +17,7 @@ This will give you all the necessary Plugins to run bioimage.io models at the mo
    b) For any other bioimage.io model, go to Plugins > bioimage.io > bioimage.io prediction. 
 4.  Continuing from 3b) you will arrive at this window:
 
-<img src="../assets/user_guides/fiji_bioimage_predict.jpg" alt="Fiji bioimage.io prediction" width="60%"/>
+<img src="user_guide/fiji_bioimage_predict.jpg" alt="Fiji bioimage.io prediction" width="60%"/>
 
 The configuration fields should be self-explanatory.
 
