@@ -40,48 +40,12 @@ Once the PR is accepted, a resource card to display the model in the website wil
     model:
      - id: 2dunet-lstm
        source: models/mymodel-dataXYZ/bioimage.config_template.yaml       
-   ```
+    ```
+13. Make a pull request!!
 
-7. Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
+## Considerations for Bioimage Model Zoo version 0.3.0
+The following information is also provided at the [Bioimage Model Zoo configuration specifications](https://github.com/bioimage-io/configuration/blob/master/README.md) but as it is quite important, we make you to pay special attention to it.
+* Choose an input and output test images so we can check that your model runs correctly in the chose consumer software. LINK TO MODEL RUNNERS.
+* Choose a nice cover image that will be used in the model card
+* Check the pre-processing and post-processing. 
 
-
-
-
-## Submit to BioImage.IO
-* **Step 1**, prepare  and complete at least the mandatory fields and ideally also the recommended fields for different types of resource.
-
-* **Step 2**, save the RDF file in one of the public git hosting website, it is recommended to store the RDF file in your project git repository on Github/Gitlab/Bitbucket (make sure it's a public repo). Alternatively, you can post it on [Gist](https://gist.github.com/), copy the the **raw** url to the actual file content.
-
-* **Step 3**, post the url to the comment box below (if you don't see it, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/26)). And the admin team will check and verify the format and incooperate to BioImage.IO if the submitted file is qualified.
-
-
-
-
-
-[comment]: <> (- [Central repo]&#40;https://github.com/bioimage-io/bioimage-io-models&#41; where the developer can do a PR. There is a Bioimage Model repo. )
-
-[comment]: <> (- How to contact:)
-
-[comment]: <> (    - image.sc &#40;join the community partner? tag: bioimagemodelzoo?&#41;)
-
-[comment]: <> (    - github issue)
-
-[comment]: <> (    - gitter)
-
-[comment]: <> (- What are the requirements in terms of compatibility with community partners to contribute a dataset, a notebook, a model, or a workflow? )
-
-[comment]: <> (    - goto the central repo)
-
-[comment]: <> (- What if a model cannot be loaded in any of the software? and if I provide the notebook? e.g. from https://github.com/bioimage-io/bioimage.io/blob/master/docs/resource-description-file.md#describing-ai-models, it could be assumed that almost anything can be loaded)
-
-[comment]: <> (    - This would be a special contribution. You will always need to provide a model example with the 0.3.0 format.)
-
-[comment]: <> (    - Models have attachments? The notebook could be in the attachment.)
-
-[comment]: <> (- If I want to contribute with a model, should I create the spec and then ask a partner to include the model in its github with a PR? --> [Central repo]&#40;https://github.com/bioimage-io/bioimage-io-models&#41; )
-
-[comment]: <> (- Could we provide the link to the repo of each community partner to make the RDF and manifests more accessible?)
-
-[comment]: <> (- This info is now at https://github.com/bioimage-io/bioimage.io/blob/master/docs/contribute.md)
-
-[comment]: <> (- Description of the RDF and the manifest. Sometimes they seem to be the same and other times, not.)
