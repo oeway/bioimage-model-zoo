@@ -7,6 +7,7 @@
   - [Explanations](/user_guide/explanations.md)
 * [Contribute Models](/contribute_models/README.md)
   - [Tutorials](/contribute_models/tutorials.md)
+  - [Model Configuration](/configuration)
   - [How-tos Guide](/contribute_models/how-tos_guide)
   - [Explanations](/contribute_models/explanations)
 * [Consumer Software](/consumer_software/README.md)
