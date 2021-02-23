@@ -1,12 +1,12 @@
 <!-- docs/user_guide/how-tos_guide.md -->
 
-# How-To use bioimage.io...
+# How-To use bioimage.io 
 
-## ...in DeepImageJ
+## DeepImageJ
 
 TBD
 
-## ...in Fiji
+## Fiji
 **Note: Fiji only supports Tensorflow 1 models at the moment!**
 
 1. Install the [CSBDeep-Plugin](https://github.com/CSBDeep/CSBDeep_website/wiki/CSBDeep-in-Fiji-%E2%80%93-Installation) in Fiji.
@@ -24,14 +24,14 @@ The configuration fields should be self-explanatory.
 5. Click "OK" to run the model prediction.
 
 
-## ...in ilastik
+## ilastik
 
 TBD
 
-## ...in ImJoy
+##  ImJoy
 
 TBD
 
-## ...in ZeroCostDL4Mic
+## ZeroCostDL4Mic
 
 TBD
