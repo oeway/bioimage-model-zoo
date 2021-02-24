@@ -30,7 +30,7 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a class="navbar-item" href="https://bioimage.io/docs">
+          <a class="navbar-item" href="/docs">
             <b-icon icon="playlist-check"></b-icon>
             <span>Documentation</span>
           </a>
