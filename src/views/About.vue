@@ -14,12 +14,25 @@
 
     <br />
     <section style="text-align: center;">
+      <b-button @click="$emit('contact')" v-if="siteConfig.contact_form_url"
+        >Contact Us</b-button
+      >
+      <b-button @click="$emit('subscribe')" v-if="siteConfig.subscribe_url"
+        >Subscribe</b-button
+      >
+    </section>
+    <br />
+    <section style="text-align: center;">
       <b-button @click="$emit('contribute')" v-if="siteConfig.contribute_url"
         >Contribute Models</b-button
       >
       <b-button @click="$emit('join')" v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
       >
+    </section>
+    <br />
+    <section class="hero">
+      <markdown v-if="aboutUrl" :url="aboutUrl"></markdown>
     </section>
     <br />
     <div class="columns is-mobile is-centered" v-if="siteConfig.footer">
@@ -45,13 +58,24 @@
     <div style="text-align: center" v-if="siteConfig.footnote">
       <p>{{ siteConfig.footnote }}</p>
     </div>
+    <br />
   </div>
 </template>
 <script>
 import siteConfig from "../../site.config.json";
 import { version } from "../../package.json";
+import Markdown from "@/components/Markdown.vue";
 export default {
   name: "About",
+  props: {
+    aboutUrl: {
+      type: String,
+      default: null
+    }
+  },
+  components: {
+    markdown: Markdown
+  },
   data() {
     return {
       version,
@@ -65,6 +89,7 @@ export default {
   height: calc(100% - 40px);
   background-repeat: no-repeat;
   background-position: bottom;
+  overflow: auto;
 }
 .hero {
   max-width: 100%;

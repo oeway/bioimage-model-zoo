@@ -34,19 +34,11 @@
             <b-icon icon="playlist-check"></b-icon>
             <span>Documentation</span>
           </a>
-          <!-- <a
-            class="navbar-item"
-            v-if="siteConfig.subscribe_url"
-            @click="showSubscribeDialog"
-          >
-            <b-icon icon="playlist-check"></b-icon>
-            <span>Subscribe</span>
-          </a> -->
           <a
             class="navbar-item"
             target="_blank"
             v-if="siteConfig.contribute_url"
-            @click="showContributeDialog"
+            :href="siteConfig.contribute_url"
           >
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
@@ -355,6 +347,9 @@
       </div>
       <about
         v-if="showInfoDialogMode === 'about'"
+        about-url="https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/README.md"
+        @subscribe="showSubscribeDialog"
+        @contact="showContactDialog"
         @contribute="showContributeDialog"
         @join="showJoinDialog"
       ></about>
@@ -383,6 +378,18 @@
         style="padding-bottom: 64px;width: 100%;
     height: 100%;"
         :src="siteConfig.subscribe_url"
+        width="640"
+        height="852"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        >Loading…</iframe
+      >
+      <iframe
+        v-else-if="showInfoDialogMode === 'contact'"
+        style="padding-bottom: 64px;width: 100%;
+    height: 100%;"
+        :src="siteConfig.contact_form_url"
         width="640"
         height="852"
         frameborder="0"
@@ -987,6 +994,15 @@ export default {
       query.show = "subscribe";
       this.$router.replace({ query: query }).catch(() => {});
     },
+    showContactDialog() {
+      this.showInfoDialogMode = "contact";
+      this.infoDialogTitle = "Contact Us";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+      const query = Object.assign({}, this.$route.query);
+      query.show = "subscribe";
+      this.$router.replace({ query: query }).catch(() => {});
+    },
     showContributeDialog() {
       this.infoDialogTitle = `Contribute to ${this.siteConfig.site_name}`;
       this.infoCommentBoxTitle = this.infoDialogTitle;
@@ -1278,7 +1294,7 @@ export default {
   text-align: center;
   cursor: pointer;
   font-size: 1.2em;
-  color: #006fcb;
+  color: #4f5050;
   border-bottom: 2px solid;
   border-radius: 5px;
 }
@@ -1288,7 +1304,8 @@ export default {
 }
 
 .item-lists.active {
-  font-weight: 600;
+  color: #2396f3;
+  font-weight: 800;
 }
 .noselect {
   -webkit-touch-callout: none;

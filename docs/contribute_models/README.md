@@ -6,7 +6,7 @@
 - Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#consumers).
 - **Special case**: Notebook contribution together with an example model. This case is not covered yet in the tutorial. 
 
-## Summary
+## Tutorial
 
  <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
 
@@ -19,3 +19,7 @@ We use GitHub to manage the contribution of your model, so you will need to make
 At the end of the process, a resource card to display your model in the website will be generated.
 
 Ready to follow the [Tutorial](/contribute_models/tutorials.md)?
+
+## Contributing other resource types
+
+To contribute a notebook, application or dataset, please use the [Resource Description File Foormat](/contribute_models/resource-description-file).

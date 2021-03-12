@@ -1,4 +1,6 @@
-# Steps to contribute a model:
+
+# Tutorial for contributing models
+
 1. Check the programming language and libraries used to train your model. For the moment, we only support TensorFlow and PyTorch.
 2. Check that the version of these libraries are compatible with the consumer software.
 3. Export your trained model (architecture and weights) to a [supported format](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#weight-formats).
