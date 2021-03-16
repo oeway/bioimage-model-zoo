@@ -2,8 +2,8 @@
 
 ## Model contribution requirements:
 
-- The model specification configuration [YAML version needs to be 0.3.0.](https://github.com/bioimage-io/configuration/blob/master/README.md) 
-- Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/configuration/blob/master/supported_formats_and_operations.md#consumers).
+- Follow the [BioImage.IO model description file format](https://github.com/bioimage-io/spec-bioimage-io/blob/master/README.md) with `format_version>= 0.3.0`
+- Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers).
 - **Special case**: Notebook contribution together with an example model. This case is not covered yet in the tutorial. 
 
 ## Tutorial
