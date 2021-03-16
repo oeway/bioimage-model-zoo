@@ -570,15 +570,17 @@ function normalizeItem(self, item) {
   }
 
   for (let att_name of Object.keys(item.attachments)) {
-    item.badges.unshift({
-      label: att_name,
-      label_type: "is-dark",
-      ext: Object.keys(item.attachments[att_name]).length,
-      ext_type: "is-primary",
-      run() {
-        self.showAttachmentsDialog(item, att_name);
-      }
-    });
+    if (Array.isArray(item.attachments[att_name]) && att_name !== "files") {
+      item.badges.unshift({
+        label: att_name,
+        label_type: "is-dark",
+        ext: item.attachments[att_name].length,
+        ext_type: "is-primary",
+        run() {
+          self.showAttachmentsDialog(item, att_name);
+        }
+      });
+    }
   }
 
   if (item.license) {
