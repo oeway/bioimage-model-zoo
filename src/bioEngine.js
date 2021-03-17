@@ -237,12 +237,12 @@ export async function loadPlugins(imjoy, appSources) {
               });
             }
           }
-        apps[ap.name] = p;
+        apps[ap.id] = p;
       } catch (e) {
         console.error(e);
       }
     } else {
-      if (ap.source) apps[ap.name] = new ProxyWindowPlugin(imjoy, ap);
+      if (ap.source) apps[ap.id] = new ProxyWindowPlugin(imjoy, ap);
     }
   }
   return apps;
