@@ -10,7 +10,7 @@ The admin team of BioImage.IO will discuss on the request and decide on whether 
 Upon approval, please following these steps to connect your repo to BioImage.IO:
 
 1. Firstly, please create a new Github Repo (if you don't have one) for hosting the models. Feel free to choose the repo name, or you can use the default name `bioimage-io-models`.
-2. Add your model configuration files and other resources into the repo. A recommended organization is to create subfolders for `models`, `notebooks`, `applications` etc. And then place the yaml file and other relevant files in the corresponding folders.
+2. Add your model description files and other resources into the repo. A recommended organization is to create subfolders for `models`, `notebooks`, `applications` etc. And then place the yaml file and other relevant files in the corresponding folders.
 3. Setup CI service for testing the models and verifying the spec in your repo. Please refer to "How to setup CI service for a community partners' repo".
 3. The key step to make the github repo as a model repo is to create a manifest file named `manifest.bioimage.io.yaml` under the root of the repo. For the content of the file, please follow the instructions in the [BioImage.IO Manifest File](/community_partners/manifest-format.md).
 
