@@ -537,8 +537,8 @@ function normalizeItem(self, item) {
       name: "Run",
       icon: "play",
       run() {
-        if (self.allApps[item.name])
-          runAppForAllItems(self.allApps[item.name], self.rawResourceItems);
+        if (self.allApps[item.id])
+          runAppForAllItems(self.allApps[item.id], self.rawResourceItems);
         else alert("This application is not ready or unavailable.");
       }
     });
