@@ -299,16 +299,8 @@ export async function runAppForAllItems(plugin, allItems) {
 }
 
 export async function runAppForItem(plugin, item) {
-  if (plugin.type === "window") {
-    const w = await plugin.api.run();
-    w.run({
-      config: { referer: window.location.href, mode: "one", type: "bioengine" },
-      data: item
-    });
-  } else {
-    plugin.api.run({
-      config: { referer: window.location.href, mode: "one", type: "bioengine" },
-      data: item
-    });
-  }
+  await plugin.api.run({
+    config: { referer: window.location.href, mode: "one", type: "bioengine" },
+    data: item
+  });
 }
