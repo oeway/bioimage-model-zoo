@@ -99,8 +99,14 @@ export default {
     normalizedAttachments: function() {
       const converted = {};
       for (let k of Object.keys(this.attachments)) {
+        if (k === "files") continue;
         const items = this.attachments[k];
-        if (typeof items === "object") {
+        if (Array.isArray(items)) {
+          converted[k] = items.map(item => {
+            if (typeof item !== "object") return { name: item };
+            else return item;
+          });
+        } else if (typeof items === "object") {
           const arr = [];
           for (let j of Object.keys(items)) {
             // make a shallow copy
