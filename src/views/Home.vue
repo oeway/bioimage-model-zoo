@@ -170,7 +170,7 @@
     </div>
     <resource-item-selector
       @selection-changed="updateResourceItemList"
-      :allItems="resourceItems"
+      :allItems="transformedResourceItems"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
       :type="selectedCategory && selectedCategory.type"
@@ -399,13 +399,14 @@
       >
       <resource-item-info
         v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
-        :resourceItem="selectedResourceItem"
+        :resource-item="selectedResourceItem"
       ></resource-item-info>
     </modal>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
@@ -429,7 +430,7 @@ import {
   runAppForItem,
   runAppForAllItems
 } from "../bioEngine";
-import { randId, concatAndResolveUrl, debounce } from "../utils";
+import { concatAndResolveUrl, debounce } from "../utils";
 
 // set default values for table_view
 siteConfig.table_view = siteConfig.table_view || {
@@ -446,6 +447,7 @@ const isTouchDevice = (function() {
 })();
 
 function normalizeItem(self, item) {
+  item = Object.assign({}, item); // make a copy
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";
@@ -538,7 +540,7 @@ function normalizeItem(self, item) {
       icon: "play",
       run() {
         if (self.allApps[item.id])
-          runAppForAllItems(self.allApps[item.id], self.rawResourceItems);
+          runAppForAllItems(self.allApps[item.id], self.resourceItems);
         else alert("This application is not ready or unavailable.");
       }
     });
@@ -628,6 +630,7 @@ function normalizeItem(self, item) {
       });
     }
   }
+  return item;
 }
 
 export default {
@@ -649,7 +652,6 @@ export default {
       searchTags: null,
       isTouchDevice: isTouchDevice,
       siteConfig: siteConfig,
-      resourceItems: null,
       rawResourceItems: null,
       selectedItems: null,
       showMenu: false,
@@ -717,37 +719,16 @@ export default {
         repo = query_repo;
       }
 
-      const response = await fetch(manifest_url + "?" + randId());
-      const repo_manifest = JSON.parse(await response.text());
-      if (repo_manifest.collections && this.siteConfig.partners) {
-        for (let c of repo_manifest.collections) {
-          const duplicates = this.siteConfig.partners.filter(
-            p => p.id === c.id
-          );
-          duplicates.forEach(p => {
-            this.siteConfig.partners.splice(
-              this.siteConfig.partners.indexOf(p),
-              1
-            );
-          });
-          this.siteConfig.partners.push(c);
-        }
-      }
-
-      const resourceItems = repo_manifest.resources;
-      this.rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
-      this.resourceItems = resourceItems;
-      for (let item of resourceItems) {
-        item.repo = repo;
-        normalizeItem(this, item);
-        // if (item.source && !item.source.startsWith("http"))
-        //   item.source = concatAndResolveUrl(item.root_url, item.source);
-      }
+      await this.$store.dispatch("getResourceItems", {
+        siteConfig,
+        repo,
+        manifest_url
+      });
 
       const tp = this.selectedCategory && this.selectedCategory.type;
       this.selectedItems = tp
-        ? resourceItems.filter(m => m.type === tp)
-        : resourceItems;
+        ? this.transformedResourceItems.filter(m => m.type === tp)
+        : this.transformedResourceItems;
 
       this.updateViewByUrlQuery();
       this.$forceUpdate();
@@ -775,7 +756,7 @@ export default {
         imjoy.event_bus.on("close_window", w => {
           this.closeDialogWindow(w);
         });
-        const applications = resourceItems.filter(
+        const applications = this.transformedResourceItems.filter(
           m => m.type === "application"
         );
         loadPlugins(imjoy, applications).then(allApps => {
@@ -795,6 +776,9 @@ export default {
     }
   },
   computed: {
+    transformedResourceItems() {
+      return this.resourceItems.map(item => normalizeItem(this, item));
+    },
     partners: function() {
       return (
         this.siteConfig.partners &&
@@ -816,11 +800,11 @@ export default {
     },
     fullLabelList: function() {
       const fullLabelList = [];
-      if (this.resourceItems) {
+      if (this.transformedResourceItems) {
         const tp = this.selectedCategory && this.selectedCategory.type;
         const items = tp
-          ? this.resourceItems.filter(m => m.type === tp)
-          : this.resourceItems;
+          ? this.transformedResourceItems.filter(m => m.type === tp)
+          : this.transformedResourceItems;
         for (let item of items) {
           item.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
@@ -844,7 +828,10 @@ export default {
         }
         return combined;
       }
-    }
+    },
+    ...mapState({
+      resourceItems: state => state.resourceItems
+    })
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
@@ -1134,7 +1121,7 @@ export default {
         }
       }
       if (this.$route.query.id) {
-        const m = this.resourceItems.filter(
+        const m = this.transformedResourceItems.filter(
           item => item.id === this.$route.query.id
         )[0];
         if (m) {

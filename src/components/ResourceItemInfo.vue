@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-item-info">
+  <div class="resource-item-info" v-if="resourceItem">
     <section style="margin-bottom:10px;">
       <app-icons :apps="resourceItem.apps"></app-icons>
       &nbsp;&nbsp;<badges :badges="resourceItem.badges"></badges>
@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import siteConfig from "../../site.config.json";
 import Badges from "@/components/Badges.vue";
 import AppIcons from "@/components/AppIcons.vue";
@@ -149,7 +150,10 @@ export default {
         }
       }
       return citations;
-    }
+    },
+    ...mapState({
+      resourceItems: state => state.resourceItems
+    })
   },
   methods: {
     async getDocs(resourceItem) {
