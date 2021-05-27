@@ -34,7 +34,7 @@
             <b-icon icon="playlist-check"></b-icon>
             <span>Documentation</span>
           </a>
-          <a
+          <!-- <a
             class="navbar-item"
             target="_blank"
             v-if="siteConfig.contribute_url"
@@ -42,6 +42,14 @@
           >
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
+          </a> -->
+          <a
+            class="navbar-item"
+            v-if="siteConfig.upload.enabled"
+            @click="showUploadDialog"
+          >
+            <b-icon icon="plus"></b-icon>
+            <span>Upload</span>
           </a>
           <a class="navbar-item" @click="showAboutDialog">
             <b-icon icon="information-outline"></b-icon>
@@ -345,6 +353,9 @@
         </div>
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
+      <upload
+        v-if="showInfoDialogMode === 'upload'"
+      ></upload>
       <about
         v-if="showInfoDialogMode === 'about'"
         about-url="https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/README.md"
@@ -413,6 +424,7 @@ import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import Attachments from "@/components/Attachments.vue";
 import Partners from "@/components/Partners.vue";
 import CommentBox from "@/components/CommentBox.vue";
+import Upload from "@/components/Upload.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
 import siteConfig from "../../site.config.json";
@@ -640,6 +652,7 @@ export default {
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
     "comment-box": CommentBox,
+    upload: Upload,
     attachments: Attachments,
     markdown: Markdown,
     partners: Partners,
@@ -964,6 +977,12 @@ export default {
         if (this.screenWidth < 700) this.infoDialogFullscreen = true;
         this.$forceUpdate();
       }, 250)();
+    },
+    showUploadDialog(){
+      this.showInfoDialogMode = "upload";
+      this.infoDialogTitle = "Upload";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
     },
     showAboutDialog() {
       this.showInfoDialogMode = "about";

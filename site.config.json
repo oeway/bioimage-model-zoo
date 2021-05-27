@@ -38,6 +38,12 @@
   "table_view": {
     "columns": ["name", "authors", "badges", "apps"]
   },
+  "upload": {
+    "enabled": true,
+    "type": "zenodo",
+    "client_id": "0Zb8YkwXBqt2zelL9WyorERRzJufdTJMgxxuibmQ",
+    "use_sandbox": true
+  },
   "attachment_table": {
     "columns": [
       {
