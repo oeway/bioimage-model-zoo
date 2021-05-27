@@ -89,8 +89,8 @@ import { randId, concatAndResolveUrl } from "../utils";
 export default {
   name: "ResourceItemInfo",
   props: {
-    id: {
-      type: String,
+    resourceItem: {
+      type: Object,
       default: null
     }
   },
@@ -122,9 +122,6 @@ export default {
     this.getDocs(this.resourceItem).then(focus);
   },
   computed: {
-    resourceItem() {
-      return this.resourceItems.filter(r => r.id == this.id)[0];
-    },
     formatedCitation: function() {
       let cites = this.resourceItem.cite;
       if (!cites) return null;

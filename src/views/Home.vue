@@ -399,7 +399,7 @@
       >
       <resource-item-info
         v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
-        :id="selectedResourceItem.id"
+        :resource-item="selectedResourceItem"
       ></resource-item-info>
     </modal>
   </div>

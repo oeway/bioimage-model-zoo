@@ -2,8 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import ResourceItemList from "../components/ResourceItemList.vue";
-import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
-
 Vue.use(VueRouter);
 
 const routes = [
@@ -16,11 +14,6 @@ const routes = [
     path: "/app",
     name: "App",
     component: ResourceItemList
-  },
-  {
-    path: "/r/:id+",
-    component: ResourceItemInfo,
-    props: true
   },
   {
     path: "/about",
