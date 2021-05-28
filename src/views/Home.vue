@@ -355,6 +355,8 @@
       </div>
       <upload
         v-if="showInfoDialogMode === 'upload'"
+        :client-id="siteConfig.upload.client_id"
+        :use-sandbox="siteConfig.upload.use_sandbox"
       ></upload>
       <about
         v-if="showInfoDialogMode === 'about'"
@@ -978,7 +980,7 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
-    showUploadDialog(){
+    showUploadDialog() {
       this.showInfoDialogMode = "upload";
       this.infoDialogTitle = "Upload";
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
