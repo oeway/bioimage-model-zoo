@@ -19,6 +19,18 @@
         </b-upload>
       </b-field>
 
+      <section style="padding: 20px;">
+        <form-json
+          v-if="jsonFields && jsonFields.length > 0"
+          :btnReset="{ value: 'Reset' }"
+          :btnSubmit="{ value: 'Save' }"
+          :camelizePayloadKeys="true"
+          :formFields="jsonFields"
+          :formName="'metadata'"
+        >
+        </form-json>
+      </section>
+
       <b-field style="height: 400px; overflow: auto;" v-if="rdfYaml">
         <markdown
           v-if="rdfYaml"
@@ -26,6 +38,7 @@
           :content="formatedModelYaml"
         ></markdown>
       </b-field>
+
       <b-button
         v-if="dropFile && client && !client.credential"
         style="text-transform:none;"
@@ -65,25 +78,18 @@
         <span>Publish</span>
       </b-button>
     </section>
-    <form-json
-      v-if="jsonFields && jsonFields.length > 0"
-      :btnReset="{ value: 'Reset' }"
-      :btnSubmit="{ value: 'Save' }"
-      :camelizePayloadKeys="true"
-      :formFields="jsonFields"
-      :formName="'metadata'"
-    >
-    </form-json>
   </div>
 </template>
 
 <script>
 import yaml from "js-yaml";
+import spdxIds from "spdx-license-ids";
 import "vue-form-json/dist/vue-form-json.css";
 import formJson from "vue-form-json/dist/vue-form-json.common.js";
-import { ZenodoClient } from "../utils";
+import { ZenodoClient, rdfToMetadata } from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
+
 export default {
   name: "upload",
   props: {
@@ -115,7 +121,7 @@ export default {
       uploadProgress: 0,
       uploadStatus: "",
       uploaded: false,
-      jsonFields: [],
+      jsonFields: null,
       zipFiles: null,
       rdfYaml: null,
       rdf: null
@@ -134,6 +140,26 @@ export default {
       }
       this.rdfYaml = await this.zipFiles["model.yaml"].async("string");
       this.rdf = yaml.load(this.rdfYaml);
+
+      this.jsonFields = [
+        {
+          label: "name",
+          placeholder: "name",
+          value: this.rdf.name
+        },
+        {
+          label: "description",
+          placeholder: "description",
+          value: this.rdf.description
+        },
+        {
+          label: "license",
+          type: "select",
+          placeholder: "Select your license",
+          options: spdxIds,
+          value: this.rdf.license
+        }
+      ];
     },
     async login() {
       try {
@@ -160,27 +186,29 @@ export default {
         } else depositionInfo = await this.client.createDeposition();
         this.depositId = depositionInfo.id;
 
-        const metadata = {
-          title: this.rdf.name,
-          description: this.rdf.description,
-          access_right: "open",
-          license: "CC-BY-4.0", //this.rdf.license
-          upload_type: "other",
-          creators: [{ name: "BioImage.IO user", affiliation: "BioImage.IO" }],
-          communities: [],
-          publication_type: "article",
-          publication_date: "2021-02-03",
-          keywords: ["bioimageio", "bioimageio:model"], //TODO: only support model for now
-          notes: "Uploaded via BioImage.IO website (https://bioimage.io)"
-        };
-        await this.client.updateMetadata(depositionInfo, metadata);
+        const baseUrl = depositionInfo.links.bucket + "/";
+        const metadata = rdfToMetadata(this.rdf, baseUrl);
+        metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
+        const result = await this.client.updateMetadata(
+          depositionInfo,
+          metadata
+        );
+        // transform the RDF here
+        this.rdf.id = result.metadata.prereserve_doi.doi;
+
         const zipFiles = Object.values(this.zipFiles);
         for (let i = 0; i < zipFiles.length; i++) {
           if (zipFiles[i].dir) {
             console.warn("Skipping directory: " + zipFiles[i].name);
             continue;
           }
-          const blob = await zipFiles[i].async("blob");
+          let blob;
+          if (zipFiles[i].name === "model.yaml") {
+            //TODO: How to deal with other types?
+            blob = yaml.dump(this.rdf);
+          } else {
+            blob = await zipFiles[i].async("blob");
+          }
           const file = new File([blob], zipFiles[i].name);
           await this.client.uploadFile(depositionInfo, file, size => {
             this.uploadProgress = Math.round((size / file.size) * 100);
@@ -206,5 +234,6 @@ export default {
   width: 100%;
   overflow: auto;
   height: calc(100% - 48px);
+  display: block;
 }
 </style>
