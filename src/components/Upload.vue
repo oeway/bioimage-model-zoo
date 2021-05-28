@@ -18,13 +18,7 @@
           </section>
         </b-upload>
       </b-field>
-      <b-button
-        v-if="dropFile && client && !client.credential"
-        style="text-transform:none;"
-        class="button is-primary is-fullwidth"
-        @click="login()"
-        >Login</b-button
-      >
+
       <b-field style="height: 400px; overflow: auto;" v-if="rdfYaml">
         <markdown
           v-if="rdfYaml"
@@ -33,11 +27,20 @@
         ></markdown>
       </b-field>
       <b-button
+        v-if="dropFile && client && !client.credential"
+        style="text-transform:none;"
+        class="button is-primary is-fullwidth"
+        @click="login()"
+        expanded
+        >Login</b-button
+      >
+      <b-button
         v-if="
           !uploaded && client && client.credential && rdfYaml && !uploadProgress
         "
         @click="uploadFiles()"
         class="button is-primary is-fullwidth"
+        expanded
       >
         <b-icon icon="upload"></b-icon>
         <span>Click to upload</span>
@@ -48,6 +51,7 @@
         type="is-primary"
         :value="uploadProgress"
         size="is-small"
+        expanded
       >
       </b-progress>
 
@@ -55,6 +59,7 @@
         v-if="client && client.credential && uploaded"
         @click="publishDeposition()"
         class="button is-primary is-fullwidth"
+        expanded
       >
         <b-icon icon="upload"></b-icon>
         <span>Publish</span>
