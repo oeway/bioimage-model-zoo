@@ -235,6 +235,8 @@
     </footer>
     <modal
       name="window-modal-dialog"
+      @opened="preventPageScroll"
+      @closed="restorePageScroll"
       :resizable="!dialogWindowConfig.fullscreen"
       :width="dialogWindowConfig.width"
       :height="dialogWindowConfig.height"
@@ -319,6 +321,8 @@
     </modal>
     <modal
       name="info-dialog"
+      @opened="preventPageScroll"
+      @closed="restorePageScroll"
       :resizable="true"
       :minWidth="200"
       :minHeight="150"
@@ -883,6 +887,14 @@ export default {
       query.tags = partner.tags;
       this.$router.replace({ query: query }).catch(() => {});
     },
+    preventPageScroll() {
+      document.getElementsByTagName("html")[0].style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    },
+    restorePageScroll() {
+      document.getElementsByTagName("html")[0].style.overflow = "auto";
+      document.body.style.overflow = "auto";
+    },
     showJoinDialog() {
       this.infoDialogTitle = `Join ${this.siteConfig.site_name} as a community partner`;
       this.infoCommentBoxTitle = this.infoDialogTitle;
@@ -1418,5 +1430,9 @@ export default {
 html,
 body {
   overflow-x: hidden;
+}
+
+form {
+  max-width: 100%;
 }
 </style>

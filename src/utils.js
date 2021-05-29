@@ -1,5 +1,5 @@
 import axios from "axios";
-import spdxIds from "spdx-license-ids";
+import spdxLicenseList from "spdx-license-list/full";
 export function randId() {
   return Math.random()
     .toString(36)
@@ -7,7 +7,7 @@ export function randId() {
 }
 
 export function rdfToMetadata(rdf, baseUrl) {
-  if (!spdxIds.includes(rdf.license))
+  if (!spdxLicenseList[rdf.license])
     throw new Error(
       "Invalid license, the license identifier must be one from the SPDX license list (https://spdx.org/licenses/)"
     );
@@ -33,14 +33,24 @@ export function rdfToMetadata(rdf, baseUrl) {
         scheme: "url"
       });
     }
+  if (rdf.documentation) {
+    related_identifiers.push({
+      identifier: rdf.documentation.startsWith("http")
+        ? rdf.documentation
+        : new URL(rdf.documentation, baseUrl).href,
+      relation: "isDocumentedBy", // is referenced by this upload
+      resource_type: "publication-technicalnote",
+      scheme: "url"
+    });
+  }
 
   const creators = rdf.authors.map(author => {
     return { name: author, affiliation: "" };
   });
-  const keywords = ["bioimageio", "bioimageio:" + rdf.type];
+  const keywords = ["bioimage.io", "bioimage.io:" + rdf.type];
   const metadata = {
     title: rdf.name,
-    description: rdf.description,
+    description: `<p>${rdf.description}</p>`,
     access_right: "open",
     license: rdf.license,
     upload_type: "other",
@@ -56,17 +66,16 @@ export function rdfToMetadata(rdf, baseUrl) {
 
 export function depositionToRdf(deposition) {
   const metadata = deposition.metadata;
-  let type = metadata.keywords.filter(k => k.startsWith("bioimageio:"))[0];
+  let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
   if (!type) {
     console.warn(
-      `RDF item ${metadata.name} does not contain a bioimageio type keyword starts with "bioimage:<TYPE>"`
+      `RDF item ${metadata.name} does not contain a bioimage.io type keyword starts with "bioimage:<TYPE>"`
     );
     return null;
   }
-  type = type.replace("bioimageio:", "");
+  type = type.replace("bioimage.io:", "");
   const files = deposition.files;
-
-  const source = deposition.links.doi;
+  const source = deposition.links.html;
   if (type === "model") {
     const modelYaml = files.filter(file => file.key === "model.yaml")[0];
     if (!modelYaml) {
@@ -78,6 +87,7 @@ export function depositionToRdf(deposition) {
   }
   const covers = [];
   const links = [];
+  let documentation = null;
   for (let idf of metadata.related_identifiers) {
     if (
       idf.relation === "hasPart" &&
@@ -94,19 +104,29 @@ export function depositionToRdf(deposition) {
       // links
       const id = idf.identifier.replace("https://bioimage.io/#/?id=", "");
       links.push(decodeURIComponent(id));
+    } else if (idf.relation === "isDocumentedBy" && idf.scheme === "url") {
+      // links
+      documentation = idf.identifier;
     }
   }
+  // strip the html tags
+  const div = document.createElement("div");
+  div.innerHTML = metadata.description;
+  const description = div.textContent || div.innerText || "";
+
   return {
     id: metadata.doi,
     name: metadata.title,
     type,
     authors: metadata.creators.map(author => author.name),
     tags: metadata.keywords.filter(
-      k => k !== "bioimageio" || !k.startsWith("bioimageio:")
+      k => k !== "bioimage.io" || !k.startsWith("bioimage.io:")
     ),
-    description: metadata.description,
+    description,
     license: metadata.license.id,
-    source: source //TODO: fix for other RDF types
+    documentation,
+    covers,
+    source //TODO: fix for other RDF types
   };
 }
 
@@ -118,9 +138,9 @@ export async function getZenodoResourceItems(page, type, keywords) {
     keywords.length > 0
       ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
       : "";
-  const kw = type === "all" ? "bioimageio" : "bioimageio:type";
+  const kw = type === "all" ? "bioimage.io" : "bioimage.io:" + type;
   const url =
-    `https://sandbox.zenodo.org/api/records/?page=${page}&size=20&keywords=${kw}` +
+    `https://sandbox.zenodo.org/api/records/?&all_versions&page=${page}&size=20&keywords=${kw}` +
     additionalKeywords;
   const response = await fetch(url);
   const results = JSON.parse(await response.text());
@@ -283,7 +303,6 @@ export class ZenodoClient {
     const bucketUrl = depositionInfo.links.bucket;
     const fileName = file.name;
     const url = `${bucketUrl}/${fileName}?access_token=${this.credential.access_token}`;
-    console.log("=========bucket url=>", bucketUrl);
     if (typeof axios === "undefined") {
       if (progressCallback) progressCallback(0);
       const response = await fetch(url, {
