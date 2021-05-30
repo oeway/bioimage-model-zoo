@@ -709,7 +709,7 @@ export default {
         window.location.pathname + "#" + window.location.hash.substr(1);
       window.history.replaceState(null, "", originalUrl);
 
-      let repo = this.siteConfig.model_repo;
+      let repo = this.siteConfig.rdf_root_repo;
       const query_repo = this.$route.query.repo;
       let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {

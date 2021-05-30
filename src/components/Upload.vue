@@ -28,15 +28,34 @@
             </section>
           </b-upload>
         </b-field>
-        <b-field label="Option 2: Input manually">
+        <b-field label="Option 2: Input RDF fields manually">
           <b-button
             style="text-transform:none;"
             class="button is-fullwidth"
-            @click="stepIndex = 1"
+            @click="initializeRdfForm()"
             expanded
-            >I don't have a file yet</b-button
+            >Fill the RDF form</b-button
           >
         </b-field>
+        <b-field
+          label="Option 3: Load from DOI or URL"
+          message="A URI can be a Zenodo DOI, Zenodo URL or Github URL to the RDF file"
+        >
+          <b-input
+            type="url"
+            placeholder="Type a DOI or URL here"
+            v-model="URI4Load"
+          >
+          </b-input>
+        </b-field>
+
+        <b-button
+          style="text-transform:none;"
+          class="button is-fullwidth"
+          @click="loadRdfFromURL(URI4Load)"
+          expanded
+          >Load</b-button
+        >
       </b-step-item>
 
       <b-step-item label="Edit & Review" icon="pencil" :disabled="!rdfYaml">
@@ -80,7 +99,7 @@
         <div class="columns">
           <div class="column">
             <b-button
-              v-if="dropFile"
+              v-if="zipPackage || editedFiles"
               style="text-transform:none;"
               class="button is-fullwidth"
               @click="exportPackage()"
@@ -91,7 +110,7 @@
           </div>
           <div class="column">
             <b-button
-              v-if="!uploaded && client && rdfYaml"
+              v-if="client && (zipPackage || editedFiles)"
               @click="uploadFiles()"
               class="button is-primary is-fullwidth"
               expanded
@@ -169,11 +188,12 @@ import { saveAs } from "file-saver";
 import spdxLicenseList from "spdx-license-list/full";
 import "vue-form-json/dist/vue-form-json.css";
 import formJson from "vue-form-json/dist/vue-form-json.common.js";
-import { rdfToMetadata } from "../utils";
+import { rdfToMetadata, resolveDOI, getFullRdfFromDeposit } from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
 import TagInputField from "./tagInputField.vue";
 import DropFilesField from "./dropFilesField.vue";
+import doiRegex from "doi-regex";
 
 export default {
   name: "upload",
@@ -223,7 +243,9 @@ export default {
       publishedDOI: null,
       rdfType: "model",
       zipPackage: null,
-      prereserveDOI: null
+      editedFiles: null,
+      prereserveDOI: null,
+      URI4Load: null
     };
   },
   methods: {
@@ -231,13 +253,61 @@ export default {
       var new_zip = new JSZip();
       this.zipPackage = await new_zip.loadAsync(file);
       console.log(this.zipPackage.files);
-      if (!this.zipPackage.files["model.yaml"]) {
-        alert("Invalid file: no model.yaml found in the model package.");
+      if (
+        !this.zipPackage.files["model.yaml"] &&
+        !this.zipPackage.files["rdf.yaml"]
+      ) {
+        alert(
+          "Invalid file: no model.yaml or rdf.yaml found in the model package."
+        );
         return;
       }
-      this.rdfYaml = await this.zipPackage.files["model.yaml"].async("string");
-      this.rdf = yaml.load(this.rdfYaml);
-      this.rdf.type = "model";
+      const configFile =
+        this.zipPackage.files["rdf.yaml"] ||
+        this.zipPackage.files["model.yaml"];
+      this.rdfYaml = await configFile.async("string");
+      const rdf = yaml.load(this.rdfYaml);
+      rdf.type = rdf.type || "model";
+      rdf.rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
+      this.initializeRdfForm(rdf, Object.values(this.zipPackage.files));
+    },
+    async loadRdfFromURL(url) {
+      const doiURLRegex = doiRegex.resolvePath();
+      if (doiURLRegex.test(url)) {
+        url = await resolveDOI(url.match(doiURLRegex)[4]);
+      } else if (doiRegex().test(url)) {
+        url = await resolveDOI(url);
+      }
+      const zenodoRegex = /zenodo.org\/(record|deposit)\/([0-9]+)/g;
+      const m = zenodoRegex.exec(url);
+      if (m) {
+        this.depositId = parseInt(m[2]);
+        console.log("orcid matched: " + this.depositId);
+        const depositionInfo = await this.client.retrieve(this.depositId);
+        const credential = await this.client.getCredential(true);
+        const rdf = await getFullRdfFromDeposit(
+          depositionInfo,
+          credential && credential.access_token
+        );
+        this.zipPackage = null;
+        // load files
+        this.initializeRdfForm(
+          rdf,
+          depositionInfo.files.map(item => {
+            return {
+              type: "remote",
+              name: item.filename,
+              size: item.filesize,
+              url: item.links.download,
+              checksum: item.checksum
+            };
+          })
+        );
+      }
+    },
+    initializeRdfForm(rdf, files) {
+      this.stepIndex = 1;
+      this.rdf = rdf || {};
       this.jsonFields = this.transformFields([
         {
           label: "Type",
@@ -262,10 +332,16 @@ export default {
           value: this.rdf.description
         },
         {
-          label: "Version",
-          placeholder: "Version in MAJOR.MINOR.PATCH format",
+          label: "Source",
+          placeholder: "A doi or URL to the source of the item",
           isRequired: false,
           value: this.rdf.version
+        },
+        {
+          label: "Version",
+          placeholder: "Version in MAJOR.MINOR.PATCH format(e.g. 0.1.0)",
+          isRequired: false,
+          value: this.rdf.version || "0.1.0"
         },
         {
           label: "License",
@@ -281,7 +357,7 @@ export default {
         },
         {
           label: "Git repository",
-          placeholder: "Git repository url",
+          placeholder: "Git repository URL",
           value: this.rdf.git_repo,
           isRequired: false
         },
@@ -295,10 +371,10 @@ export default {
         {
           label: "Files",
           type: "files",
-          value: Object.values(this.zipPackage.files)
+          value: files,
+          isRequired: false
         }
       ]);
-      this.stepIndex = 1;
     },
     transformFields(fields) {
       const typeMapping = {};
@@ -329,32 +405,53 @@ export default {
         this.rdf[k] = values[rdfNameMapping[k]];
       }
       // Fix files
-      const packageFiles = Object.values(this.zipPackage.files);
-      for (let file of values["Files"]) {
-        if (packageFiles.includes(file)) continue;
-        if (file instanceof Blob) {
-          this.zipPackage.file(file.name, file);
-        } else {
-          console.error("Invalid file type", file);
+      if (this.zipPackage) {
+        const packageFiles = Object.values(this.zipPackage.files);
+        for (let file of values["Files"]) {
+          if (packageFiles.includes(file)) continue;
+          if (file instanceof Blob) {
+            this.zipPackage.file(file.name, file);
+          } else {
+            console.error("Invalid file type", file);
+          }
         }
-      }
-      // remove files
-      for (let file of packageFiles) {
-        if (!values["Files"].includes(file)) {
-          delete this.zipPackage.files[file.name];
+        // remove files
+        for (let file of packageFiles) {
+          if (!values["Files"].includes(file)) {
+            delete this.zipPackage.files[file.name];
+          }
         }
+      } else {
+        this.editedFiles = values["Files"];
       }
+
       // TODO: fix attachments.files for the packager
       this.rdfYaml = yaml.dump(this.rdf);
       const blob = new Blob([this.rdfYaml], {
         type: "application/yaml"
       });
-      if (this.rdf.type === "model") {
-        delete this.zipPackage.files["model.yaml"];
-        this.zipPackage.file("model.yaml", blob);
+      if (this.zipPackage) {
+        if (this.rdf.type === "model") {
+          delete this.zipPackage.files["model.yaml"];
+          this.zipPackage.file("model.yaml", blob);
+        } else {
+          delete this.zipPackage.files["rdf.yaml"];
+          this.zipPackage.file("rdf.yaml", blob);
+        }
       } else {
-        delete this.zipPackage.files["config.yaml"];
-        this.zipPackage.file("config.yaml", blob);
+        if (this.rdf.type === "model") {
+          const file = new File([blob], "model.yaml");
+          this.editedFiles = this.editedFiles.filter(
+            item => item.name !== "model.yaml"
+          );
+          this.editedFiles.push(file);
+        } else {
+          const file = new File([blob], "rdf.yaml");
+          this.editedFiles = this.editedFiles.filter(
+            item => item.name !== "rdf.yaml"
+          );
+          this.editedFiles.push(file);
+        }
       }
 
       this.stepIndex = 2;
@@ -379,8 +476,42 @@ export default {
       }
     },
     async exportPackage() {
-      console.log("downloading", this.zipPackage);
-      const zipBlob = await this.zipPackage.generateAsync(
+      let zipPackage = this.zipPackage;
+      if (!zipPackage) {
+        zipPackage = new JSZip();
+        let i = 0;
+        const credential = await this.client.getCredential(true);
+        for (let item of this.editedFiles) {
+          this.uploadProgress = (i / this.editedFiles.length) * 100;
+          i++;
+          if (item.type === "remote") {
+            this.uploadStatus = "Download fille " + item.name;
+            let response;
+            // a token is required for sandbox mode
+            if (
+              credential &&
+              item.url.startsWith("https://sandbox.zenodo.org")
+            ) {
+              response = await fetch(
+                item.url + "?access_token=" + credential.access_token
+              );
+            } else {
+              response = await fetch(item.url);
+            }
+
+            if (response.ok) {
+              const blob = await response.blob();
+              zipPackage.file(item.name, blob);
+            } else {
+              throw new Error("Failed to download file: " + item.url);
+            }
+          } else if (item instanceof Blob) {
+            zipPackage.file(item.name, item);
+          }
+        }
+      }
+      console.log("downloading", zipPackage);
+      const zipBlob = await zipPackage.generateAsync(
         {
           type: "blob",
           compression: "DEFLATE",
@@ -417,7 +548,7 @@ export default {
         } else depositionInfo = await this.client.createDeposition();
         this.depositId = depositionInfo.id;
 
-        const baseUrl = depositionInfo.links.bucket + "/";
+        const baseUrl = "file:///"; //depositionInfo.links.bucket + "/";
         const metadata = rdfToMetadata(this.rdf, baseUrl);
         metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
         const result = await this.client.updateMetadata(

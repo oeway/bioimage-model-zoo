@@ -13,6 +13,7 @@
         :id="item.label"
         v-model="value"
         :data="item.options"
+        :allow-new="true"
         :open-on-focus="item.options && item.options.length > 0"
         autocomplete
         @input="$emit('input', value)"

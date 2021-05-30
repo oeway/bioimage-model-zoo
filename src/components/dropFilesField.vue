@@ -17,6 +17,7 @@
             @input="updateFiles()"
             multiple
             drag-drop
+            expanded
           >
             <section class="section">
               <div class="content has-text-centered">

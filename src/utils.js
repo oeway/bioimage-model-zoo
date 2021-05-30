@@ -1,4 +1,5 @@
 import axios from "axios";
+import yaml from "js-yaml";
 import spdxLicenseList from "spdx-license-list/full";
 export function randId() {
   return Math.random()
@@ -6,14 +7,40 @@ export function randId() {
     .substr(2, 10);
 }
 
+export async function resolveDOI(doi) {
+  const response = await fetch("https://doi.org/api/handles/" + doi);
+  if (response.ok) {
+    const result = await response.json();
+    return result.values.filter(v => v.type === "URL")[0].data.value;
+  } else {
+    throw new Error("Failed to resolve DOI:" + doi);
+  }
+}
+
+export async function getFullRdfFromDeposit(deposition, accessToken) {
+  const rdf = depositionToRdf(deposition, accessToken);
+  const response = await fetch(rdf.rdf_file);
+  if (response.ok) {
+    const yamlStr = await response.text();
+    return yaml.load(yamlStr);
+  } else {
+    throw new Error(`Failed to fetch RDF file.`);
+  }
+}
+
 export function rdfToMetadata(rdf, baseUrl) {
   if (!spdxLicenseList[rdf.license])
     throw new Error(
       "Invalid license, the license identifier must be one from the SPDX license list (https://spdx.org/licenses/)"
     );
-
-  const covers = rdf.covers.map(c =>
-    c.startsWith("http") ? c : new URL(c, baseUrl).href
+  if (!rdf.type) {
+    throw new Error("`type` key is not defined in the RDF.");
+  }
+  const covers = rdf.covers.map(
+    c =>
+      c.startsWith("http")
+        ? c
+        : new URL(c, baseUrl).href.replace("file:///", "file://") // Zenodo only allow file://
   );
   const related_identifiers = [];
   for (let c of covers) {
@@ -37,13 +64,28 @@ export function rdfToMetadata(rdf, baseUrl) {
         scheme: "url"
       });
     }
+  if (rdf.rdf_file)
+    // rdf.yaml or model.yaml
+    related_identifiers.push({
+      identifier: rdf.rdf_file.startsWith("http")
+        ? rdf.rdf_file
+        : new URL(rdf.rdf_file, baseUrl).href.replace("file:///", "file://"),
+      relation: "isCompiledBy", // compiled/created this upload
+      resource_type: "other",
+      scheme: "url"
+    });
+  else throw new Error("`rdf_file` key is not defined in the RDF");
+
   if (rdf.documentation) {
     if (rdf.documentation.includes("access_token="))
       throw new Error("Documentation URL should not contain access token");
     related_identifiers.push({
       identifier: rdf.documentation.startsWith("http")
         ? rdf.documentation
-        : new URL(rdf.documentation, baseUrl).href,
+        : new URL(rdf.documentation, baseUrl).href.replace(
+            "file:///",
+            "file://"
+          ),
       relation: "isDocumentedBy", // is referenced by this upload
       resource_type: "publication-technicalnote",
       scheme: "url"
@@ -70,41 +112,42 @@ export function rdfToMetadata(rdf, baseUrl) {
   return metadata;
 }
 
-export function depositionToRdf(deposition, accessToken) {
+export function depositionToRdf(deposition) {
   const metadata = deposition.metadata;
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
   if (!type) {
-    console.warn(
-      `RDF item ${metadata.name} does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
+    throw new Error(
+      `deposit (${metadata.name}) does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
     );
-    return null;
   }
   type = type.replace("bioimage.io:", "");
-  const files = deposition.files;
   const source = deposition.links.html;
-  if (type === "model") {
-    const modelYaml = files.filter(file => file.key === "model.yaml")[0];
-    if (!modelYaml) {
-      console.warn(
-        `RDF item ${metadata.name} does not contain a model.yaml file`
-      );
-      return null;
-    }
-  }
   const covers = [];
   const links = [];
+  let rdfFile = null;
   let documentation = null;
   for (let idf of metadata.related_identifiers) {
-    if (
+    if (idf.relation === "isCompiledBy" && idf.scheme === "url") {
+      rdfFile = idf.identifier;
+      // if (accessToken && rdfFile.startsWith("https://sandbox.zenodo.org")) {
+      //   rdfFile = rdfFile + "?access_token=" + accessToken;
+      // }
+      if (rdfFile.startsWith("file://")) {
+        rdfFile = rdfFile.replace("file://", deposition.links.bucket + "/");
+      }
+    } else if (
       idf.relation === "hasPart" &&
       idf.resource_type === "image-figure" &&
       idf.scheme === "url"
     ) {
       let url = idf.identifier;
-      // currently sandbox zenodo requires access token to get the cover images
-      if (accessToken && url.startsWith("https://sandbox.zenodo.org")) {
-        url = url + "?access_token=" + accessToken;
+      if (url.startsWith("file://")) {
+        url = url.replace("file://", deposition.links.bucket + "/");
       }
+      // currently sandbox zenodo requires access token to get the cover images
+      // if (accessToken && url.startsWith("https://sandbox.zenodo.org")) {
+      //   url = url + "?access_token=" + accessToken;
+      // }
       covers.push(url);
     } else if (
       idf.relation === "references" &&
@@ -123,7 +166,11 @@ export function depositionToRdf(deposition, accessToken) {
   const div = document.createElement("div");
   div.innerHTML = metadata.description;
   const description = div.textContent || div.innerText || "";
-
+  if (!rdfFile) {
+    throw new Error(
+      `Invalid deposit (${metadata.name}), rdf.yaml or model.yaml is not defined in the metadata (as part of the "related_identifiers")`
+    );
+  }
   return {
     id: metadata.doi,
     name: metadata.title,
@@ -133,9 +180,13 @@ export function depositionToRdf(deposition, accessToken) {
       k => k !== "bioimage.io" || !k.startsWith("bioimage.io:")
     ),
     description,
-    license: metadata.license.id,
+    license:
+      typeof metadata.license === "string"
+        ? metadata.license
+        : metadata.license.id, // sometimes it doesn't contain id
     documentation,
     covers,
+    rdf_file: rdfFile,
     source //TODO: fix for other RDF types
   };
 }
@@ -164,10 +215,15 @@ export async function getZenodoResourceItems(
   const results = JSON.parse(await response.text());
   const hits = results.hits.hits;
   const credential = await client.getCredential();
-  const resourceItems = hits.map(item =>
-    depositionToRdf(item, credential && credential.access_token)
-  );
-  return resourceItems.filter(item => item !== null);
+  const resourceItems = hits.map(item => {
+    try {
+      return depositionToRdf(item, credential && credential.access_token);
+    } catch (e) {
+      console.warn(e);
+      return null;
+    }
+  });
+  return resourceItems.filter(item => !!item);
 }
 
 export class ZenodoClient {
@@ -266,24 +322,28 @@ export class ZenodoClient {
   }
 
   async retrieve(depositionInfo) {
-    const depositionId =
-      typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
+    const depositionId = depositionInfo.id ? depositionInfo.id : depositionInfo;
     const response = await fetch(
       `${this.baseURL}/api/deposit/depositions/${depositionId}?access_token=${this.credential.access_token}`,
       { method: "GET" }
     );
-    return await response.json();
+    if (response.ok) return await response.json();
+    else {
+      throw new Error("Failed to retrieve deposit: " + depositionId);
+    }
   }
 
   async edit(depositionInfo) {
-    const depositionId =
-      typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
+    const depositionId = depositionInfo.id ? depositionInfo.id : depositionInfo;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
       `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/edit?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
-    return await response.json();
+    if (response.ok) return await response.json();
+    else {
+      throw new Error("Failed to edit deposit: " + depositionId);
+    }
   }
 
   async discard(depositionInfo) {
@@ -294,7 +354,10 @@ export class ZenodoClient {
       `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/discard?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
-    return await response.json();
+    if (response.ok) return await response.json();
+    else {
+      throw new Error("Failed to discard deposit: " + depositionId);
+    }
   }
 
   async createNewVersion(depositionInfo) {
@@ -305,7 +368,12 @@ export class ZenodoClient {
       `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/newversion?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
-    return await response.json();
+    if (response.ok) return await response.json();
+    else {
+      throw new Error(
+        "Failed to create a new version for deposit: " + depositionId
+      );
+    }
   }
 
   async updateMetadata(depositionInfo, metadata) {
@@ -363,8 +431,7 @@ export class ZenodoClient {
   }
 
   async publish(depositionInfo) {
-    const depositionId =
-      typeof depositionInfo === "number" ? depositionInfo : depositionInfo.id;
+    const depositionId = depositionInfo.id ? depositionInfo.id : depositionInfo;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
       `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/publish?access_token=${this.credential.access_token}`,
