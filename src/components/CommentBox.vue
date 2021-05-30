@@ -19,8 +19,8 @@ export default {
     },
     repo: {
       type: String,
-      default() {
-        this.siteConfig.model_repo;
+      function() {
+        return this.siteConfig.model_repo;
       }
     },
     label: {

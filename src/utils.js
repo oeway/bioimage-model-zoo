@@ -17,6 +17,8 @@ export function rdfToMetadata(rdf, baseUrl) {
   );
   const related_identifiers = [];
   for (let c of covers) {
+    if (c.includes("access_token="))
+      throw new Error("Cover URL should not contain access token: " + c);
     related_identifiers.push({
       relation: "hasPart", // is part of this upload
       identifier: c,
@@ -26,6 +28,8 @@ export function rdfToMetadata(rdf, baseUrl) {
   }
   if (rdf.links)
     for (let link of rdf.links) {
+      if (link.includes("access_token="))
+        throw new Error("Link should not contain access token: " + link);
       related_identifiers.push({
         identifier: "https://bioimage.io/#/?id=" + encodeURIComponent(link),
         relation: "references", // is referenced by this upload
@@ -34,6 +38,8 @@ export function rdfToMetadata(rdf, baseUrl) {
       });
     }
   if (rdf.documentation) {
+    if (rdf.documentation.includes("access_token="))
+      throw new Error("Documentation URL should not contain access token");
     related_identifiers.push({
       identifier: rdf.documentation.startsWith("http")
         ? rdf.documentation
@@ -170,18 +176,34 @@ export class ZenodoClient {
     this.clientId = clientId;
     this.callbackUrl = encodeURIComponent("https://imjoy.io/login-helper");
     this.credential = null;
+    try {
+      let lastCredential = localStorage.getItem("zenodo_credential");
+      if (lastCredential) {
+        this.credential = JSON.parse(lastCredential);
+        // check if it's still valid
+        this.getCredential();
+      }
+    } catch (e) {
+      console.error("Failed to reset zenodo_credential");
+    }
   }
 
   async getCredential(login) {
     if (this.credential) {
       if (
-        this.credential.createdAt + parseInt(this.credential.expires_in) <
-        Date.now() - 10
+        this.credential.create_at +
+          parseInt(this.credential.expires_in) * 1000 >
+        Date.now() - 10000
       ) {
         // add extra 10s to make sure
         return this.credential;
       } else {
         this.credential = null;
+        try {
+          localStorage.setItem("zenodo_credential", undefined);
+        } catch (e) {
+          console.error("Failed to reset zenodo_credential");
+        }
       }
     }
     if (login) {
@@ -216,8 +238,12 @@ export class ZenodoClient {
           }
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
-          this.credential.createdAt = Date.now();
+          this.credential.create_at = Date.now();
           resolve(event.data);
+          localStorage.setItem(
+            "zenodo_credential",
+            JSON.stringify(this.credential)
+          );
         }
       };
       window.addEventListener("message", handleLogin, false);

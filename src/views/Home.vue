@@ -851,7 +851,7 @@ export default {
         this.zenodoClient
           .getCredential()
           .then(credential => {
-            if (!credential)
+            if (!credential) {
               this.$buefy.dialog.confirm({
                 title: "Login required",
                 hasIcon: true,
@@ -871,6 +871,9 @@ export default {
                   resolve();
                 }
               });
+            } else {
+              resolve();
+            }
           })
           .catch(e => {
             console.error(e);
