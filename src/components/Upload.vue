@@ -5,7 +5,6 @@
       :has-navigation="false"
       v-model="stepIndex"
       label-position="right"
-      size="is-small"
     >
       <b-step-item :disabled="rdfYaml" label="Select file" icon="file">
         <b-field label="Option 1: Select a local file" expanded>
