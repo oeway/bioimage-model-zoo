@@ -55,11 +55,11 @@ export function rdfToMetadata(rdf, baseUrl) {
     license: rdf.license,
     upload_type: "other",
     creators: creators,
-    communities: [],
     publication_date: new Date().toISOString().split("T")[0],
     keywords: keywords.concat(rdf.tags),
     notes: "Uploaded via BioImage.IO website (https://bioimage.io)",
-    related_identifiers
+    related_identifiers,
+    communities: [{ identifier: "bioimage-io" }]
   };
   return metadata;
 }
@@ -69,7 +69,7 @@ export function depositionToRdf(deposition) {
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
   if (!type) {
     console.warn(
-      `RDF item ${metadata.name} does not contain a bioimage.io type keyword starts with "bioimage:<TYPE>"`
+      `RDF item ${metadata.name} does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
     );
     return null;
   }
@@ -134,18 +134,19 @@ export async function getZenodoResourceItems(page, type, keywords) {
   page = page || 1;
   type = type || "all";
   keywords = keywords || [];
+  const typeKeywords = type !== "all" ? "&keywords=bioimage.io:" + type : "";
   const additionalKeywords =
-    keywords.length > 0
+    typeKeywords +
+    (keywords.length > 0
       ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
-      : "";
-  const kw = type === "all" ? "bioimage.io" : "bioimage.io:" + type;
+      : "");
   const url =
-    `https://sandbox.zenodo.org/api/records/?&all_versions&page=${page}&size=20&keywords=${kw}` +
-    additionalKeywords;
+    `https://sandbox.zenodo.org/api/records/?communities=bioimage-io&page=${page}&size=20` +
+    additionalKeywords; //&all_versions
   const response = await fetch(url);
   const results = JSON.parse(await response.text());
   const hits = results.hits.hits;
-
+  debugger;
   const resourceItems = hits.map(depositionToRdf);
   return resourceItems.filter(item => item !== null);
 }
