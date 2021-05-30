@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import siteConfig from "../../site.config.json";
+import { mapState } from "vuex";
 export default {
   name: "CommentBox",
   props: {
@@ -19,15 +19,22 @@ export default {
     },
     repo: {
       type: String,
-      default: siteConfig.model_repo
+      default() {
+        this.siteConfig.model_repo;
+      }
     },
     label: {
       type: String,
       default: "comment"
     }
   },
+  computed: {
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
+  },
   mounted() {
-    if (siteConfig.enable_comment) {
+    if (this.siteConfig.enable_comment) {
       this.loading = true;
       setTimeout(() => this.showCommentBox(), 200);
     }

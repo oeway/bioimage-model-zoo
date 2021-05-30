@@ -62,7 +62,7 @@
   </div>
 </template>
 <script>
-import siteConfig from "../../site.config.json";
+import { mapState } from "vuex";
 import { version } from "../../package.json";
 import Markdown from "@/components/Markdown.vue";
 export default {
@@ -73,13 +73,17 @@ export default {
       default: null
     }
   },
+  computed: {
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
+  },
   components: {
     markdown: Markdown
   },
   data() {
     return {
-      version,
-      siteConfig
+      version
     };
   }
 };

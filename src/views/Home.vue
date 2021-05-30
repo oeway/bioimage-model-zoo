@@ -43,11 +43,7 @@
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
           </a> -->
-          <a
-            class="navbar-item"
-            v-if="siteConfig.upload.enabled"
-            @click="showUploadDialog"
-          >
+          <a class="navbar-item" @click="showUploadDialog">
             <b-icon icon="plus"></b-icon>
             <span>Upload</span>
           </a>
@@ -357,11 +353,7 @@
         </div>
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
-      <upload
-        v-if="showInfoDialogMode === 'upload'"
-        :client-id="siteConfig.upload.client_id"
-        :use-sandbox="siteConfig.upload.use_sandbox"
-      ></upload>
+      <upload v-if="showInfoDialogMode === 'upload'"></upload>
       <about
         v-if="showInfoDialogMode === 'about'"
         about-url="https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/README.md"
@@ -433,7 +425,7 @@ import CommentBox from "@/components/CommentBox.vue";
 import Upload from "@/components/Upload.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
-import siteConfig from "../../site.config.json";
+
 const DEFAULT_ICONS = {
   notebook: "notebook-outline",
   dataset: "database",
@@ -449,11 +441,6 @@ import {
   runAppForAllItems
 } from "../bioEngine";
 import { concatAndResolveUrl, debounce } from "../utils";
-
-// set default values for table_view
-siteConfig.table_view = siteConfig.table_view || {
-  columns: ["name", "authors", "badges", "apps"]
-};
 
 const isTouchDevice = (function() {
   try {
@@ -670,7 +657,6 @@ export default {
       progress: 100,
       searchTags: null,
       isTouchDevice: isTouchDevice,
-      siteConfig: siteConfig,
       rawResourceItems: null,
       selectedItems: null,
       showMenu: false,
@@ -699,6 +685,9 @@ export default {
     };
   },
   mounted: async function() {
+    if (this.siteConfig.zenodo_config.use_sandbox) {
+      await this.askForLogin();
+    }
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
 
@@ -720,7 +709,7 @@ export default {
         window.location.pathname + "#" + window.location.hash.substr(1);
       window.history.replaceState(null, "", originalUrl);
 
-      let repo = siteConfig.model_repo;
+      let repo = this.siteConfig.model_repo;
       const query_repo = this.$route.query.repo;
       let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {
@@ -739,7 +728,6 @@ export default {
       }
 
       await this.$store.dispatch("getResourceItems", {
-        siteConfig,
         repo,
         manifest_url
       });
@@ -849,6 +837,8 @@ export default {
       }
     },
     ...mapState({
+      zenodoClient: state => state.zenodoClient,
+      siteConfig: state => state.siteConfig,
       resourceItems: state => state.resourceItems
     })
   },
@@ -856,6 +846,37 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    askForLogin() {
+      return new Promise(resolve => {
+        this.zenodoClient
+          .getCredential()
+          .then(credential => {
+            if (!credential)
+              this.$buefy.dialog.confirm({
+                title: "Login required",
+                hasIcon: true,
+                icon: "share",
+                message: `You are using BioImage.IO in sandbox mode, it please login to make sure we display the resource items correctly.`,
+                confirmText: "Login",
+                onCancel: async () => {
+                  resolve();
+                },
+                onConfirm: async () => {
+                  try {
+                    await this.zenodoClient.getCredential(true);
+                  } catch (e) {
+                    alert(`Failed to login: ${e}`);
+                    console.error(e);
+                  }
+                  resolve();
+                }
+              });
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      });
+    },
     goHome() {
       this.selectedPartner = null;
       this.searchTags = [];

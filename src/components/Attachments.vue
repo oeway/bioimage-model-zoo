@@ -56,8 +56,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ResourceItemCard from "./ResourceItemCard";
-import siteConfig from "../../site.config.json";
+
 export default {
   name: "Attachments",
   props: {
@@ -75,7 +76,6 @@ export default {
   },
   data() {
     return {
-      siteConfig: siteConfig,
       columns: []
     };
   },
@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     availableColumns: function() {
-      return siteConfig.attachment_table.columns.filter(c =>
+      return this.siteConfig.attachment_table.columns.filter(c =>
         this.columns.includes(c.field)
       );
     },
@@ -120,7 +120,10 @@ export default {
         }
       }
       return converted;
-    }
+    },
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
   },
   methods: {
     focus(target) {

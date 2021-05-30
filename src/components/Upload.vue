@@ -91,16 +91,7 @@
           </div>
           <div class="column">
             <b-button
-              v-if="dropFile && client && !client.credential"
-              style="text-transform:none;"
-              class="button is-primary is-fullwidth"
-              @click="login()"
-              expanded
-              icon-left="upload"
-              >Login & upload</b-button
-            >
-            <b-button
-              v-if="!uploaded && client && client.credential && rdfYaml"
+              v-if="!uploaded && client && rdfYaml"
               @click="uploadFiles()"
               class="button is-primary is-fullwidth"
               expanded
@@ -172,12 +163,13 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import yaml from "js-yaml";
 import { saveAs } from "file-saver";
 import spdxLicenseList from "spdx-license-list/full";
 import "vue-form-json/dist/vue-form-json.css";
 import formJson from "vue-form-json/dist/vue-form-json.common.js";
-import { ZenodoClient, rdfToMetadata } from "../utils";
+import { rdfToMetadata } from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
 import TagInputField from "./tagInputField.vue";
@@ -185,16 +177,6 @@ import DropFilesField from "./dropFilesField.vue";
 
 export default {
   name: "upload",
-  props: {
-    clientId: {
-      type: String,
-      default: null
-    },
-    useSandbox: {
-      type: Boolean,
-      default: true
-    }
-  },
   components: {
     "form-json": formJson,
     markdown: Markdown,
@@ -207,7 +189,7 @@ export default {
     this.dropFile = null;
     this.uploadStatus = "";
     this.uploadProgress = 0;
-    this.client = new ZenodoClient(this.clientId, this.useSandbox);
+
     this.$root.$on("formSubmitted", this.formSubmitted);
   },
   computed: {
@@ -216,16 +198,18 @@ export default {
     },
     prereserveUrl() {
       if (this.prereserveDOI) {
-        return "https://sandbox.zenodo.org/deposit/" + this.prereserveDOI.recid;
+        return `${this.$store.state.zenodoBaseURL}/deposit/${this.prereserveDOI.recid}`;
       } else {
         return null;
       }
     },
-    components: () => ({ TagInputField, DropFilesField })
+    components: () => ({ TagInputField, DropFilesField }),
+    ...mapState({
+      client: state => state.zenodoClient
+    })
   },
   data() {
     return {
-      client: null,
       dropFile: null,
       uploadProgress: 0,
       uploadStatus: "",
@@ -375,14 +359,6 @@ export default {
 
       this.stepIndex = 2;
     },
-    async login() {
-      try {
-        await this.client.login();
-        this.$forceUpdate();
-      } catch (e) {
-        alert(`Failed to login: ${e}`);
-      }
-    },
     async publishDeposition() {
       if (
         !confirm(
@@ -397,8 +373,7 @@ export default {
         const result = await this.client.publish(this.depositId);
         console.log("Published", result);
         this.publishedDOI = result.doi;
-        this.publishedUrl =
-          "https://sandbox.zenodo.org/record/" + this.depositId;
+        this.publishedUrl = `${this.$store.state.zenodoBaseURL}/record/${this.depositId}`;
       } finally {
         loadingComponent.close();
       }
@@ -423,6 +398,13 @@ export default {
       this.uploadStatus = "Done!";
     },
     async uploadFiles() {
+      try {
+        await this.client.getCredential(true);
+        this.$forceUpdate();
+      } catch (e) {
+        alert(`Failed to login: ${e}`);
+        return;
+      }
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
       });

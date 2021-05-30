@@ -1,5 +1,5 @@
 import { reshape } from "mathjs";
-import siteConfig from "../site.config.json";
+import { store } from "./store";
 import { version } from "../package.json";
 
 const dtypeToTypedArray = {
@@ -56,7 +56,7 @@ export async function setupBioEngineAPI() {
   const imjoyRPC = await window.imjoyLoader.loadImJoyRPC({
     api_version: "0.2.3"
   });
-
+  const siteConfig = store.state.siteConfig;
   const api = await imjoyRPC.setupRPC({
     name: siteConfig.name,
     version: version,

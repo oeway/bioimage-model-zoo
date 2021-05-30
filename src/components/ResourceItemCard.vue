@@ -74,15 +74,10 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
-import siteConfig from "../../site.config.json";
-
-const colorMap = {};
-for (let it of siteConfig.resource_categories) {
-  colorMap[it.type] = it.outline_color;
-}
 
 const isTouchDevice = (function() {
   try {
@@ -94,7 +89,7 @@ const isTouchDevice = (function() {
 })();
 
 export default {
-  name: "ModelCard",
+  name: "ResourceItemCard",
   props: {
     resourceItem: {
       type: Object,
@@ -112,7 +107,7 @@ export default {
   },
   computed: {
     boxShadow: function() {
-      const color = colorMap[this.resourceItem.type] || "rgba(0,0,0,.2)";
+      const color = this.colorMap[this.resourceItem.type] || "rgba(0,0,0,.2)";
       return `0 3px 1px -2px ${color}, 0 2px 2px 0 ${color}, 0 1px 5px 0 rgba(0,0,0,.12)`;
     },
     icon: function() {
@@ -140,6 +135,15 @@ export default {
           src: selectedIcon
         };
       }
+    },
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
+  },
+  created() {
+    this.colorMap = {};
+    for (let it of this.siteConfig.resource_categories) {
+      this.colorMap[it.type] = it.outline_color;
     }
   },
   methods: {

@@ -64,7 +64,7 @@ export function rdfToMetadata(rdf, baseUrl) {
   return metadata;
 }
 
-export function depositionToRdf(deposition) {
+export function depositionToRdf(deposition, accessToken) {
   const metadata = deposition.metadata;
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
   if (!type) {
@@ -94,8 +94,12 @@ export function depositionToRdf(deposition) {
       idf.resource_type === "image-figure" &&
       idf.scheme === "url"
     ) {
-      // used by covers
-      covers.push(idf.identifier);
+      let url = idf.identifier;
+      // currently sandbox zenodo requires access token to get the cover images
+      if (accessToken && url.startsWith("https://sandbox.zenodo.org")) {
+        url = url + "?access_token=" + accessToken;
+      }
+      covers.push(url);
     } else if (
       idf.relation === "references" &&
       idf.scheme === "url" &&
@@ -130,10 +134,17 @@ export function depositionToRdf(deposition) {
   };
 }
 
-export async function getZenodoResourceItems(page, type, keywords) {
+export async function getZenodoResourceItems(
+  client,
+  page,
+  type,
+  keywords,
+  sort
+) {
   page = page || 1;
   type = type || "all";
   keywords = keywords || [];
+  sort = sort || "mostviewed";
   const typeKeywords = type !== "all" ? "&keywords=bioimage.io:" + type : "";
   const additionalKeywords =
     typeKeywords +
@@ -141,32 +152,48 @@ export async function getZenodoResourceItems(page, type, keywords) {
       ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
       : "");
   const url =
-    `https://sandbox.zenodo.org/api/records/?communities=bioimage-io&page=${page}&size=20` +
+    `${client.baseURL}/api/records/?communities=bioimage-io&sort=${sort}&page=${page}&size=20` +
     additionalKeywords; //&all_versions
   const response = await fetch(url);
   const results = JSON.parse(await response.text());
   const hits = results.hits.hits;
-  debugger;
-  const resourceItems = hits.map(depositionToRdf);
+  const credential = await client.getCredential();
+  const resourceItems = hits.map(item =>
+    depositionToRdf(item, credential && credential.access_token)
+  );
   return resourceItems.filter(item => item !== null);
 }
 
 export class ZenodoClient {
-  constructor(clientId, useSandbox) {
+  constructor(baseURL, clientId) {
+    this.baseURL = baseURL;
     this.clientId = clientId;
     this.callbackUrl = encodeURIComponent("https://imjoy.io/login-helper");
     this.credential = null;
-    if (useSandbox === undefined) useSandbox = true;
-    this.useSandbox = useSandbox;
   }
+
+  async getCredential(login) {
+    if (this.credential) {
+      if (
+        this.credential.createdAt + parseInt(this.credential.expires_in) <
+        Date.now() - 10
+      ) {
+        // add extra 10s to make sure
+        return this.credential;
+      } else {
+        this.credential = null;
+      }
+    }
+    if (login) {
+      await this.login();
+    }
+    return this.credential;
+  }
+
   login() {
     return new Promise((resolve, reject) => {
       const loginWindow = window.open(
-        `https://${
-          this.useSandbox ? "sandbox." : ""
-        }zenodo.org/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=CHANGEME&redirect_uri=${
-          this.callbackUrl
-        }&response_type=token&client_id=${this.clientId}`,
+        `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=CHANGEME&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
         "Login"
       );
       const timer = setTimeout(() => {
@@ -189,6 +216,7 @@ export class ZenodoClient {
           }
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
+          this.credential.createdAt = Date.now();
           resolve(event.data);
         }
       };
@@ -198,21 +226,13 @@ export class ZenodoClient {
 
   async createDeposition() {
     let response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions?access_token=${
-        this.credential.access_token
-      }`
+      `${this.baseURL}/api/deposit/depositions?access_token=${this.credential.access_token}`
     );
     console.log(await response.json());
     const headers = { "Content-Type": "application/json" };
     // create an empty deposition
     response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
     const depositionInfo = await response.json();
@@ -223,11 +243,7 @@ export class ZenodoClient {
     const depositionId =
       typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}?access_token=${this.credential.access_token}`,
       { method: "GET" }
     );
     return await response.json();
@@ -238,11 +254,7 @@ export class ZenodoClient {
       typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}/actions/edit?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/edit?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
     return await response.json();
@@ -253,11 +265,7 @@ export class ZenodoClient {
       typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}/actions/discard?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/discard?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
     return await response.json();
@@ -268,11 +276,7 @@ export class ZenodoClient {
       typeof depositionInfo === "string" ? depositionInfo : depositionInfo.id;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}/actions/newversion?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/newversion?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
     return await response.json();
@@ -284,11 +288,7 @@ export class ZenodoClient {
     console.log(`Updating deposition metadata of ${depositionId}:`, metadata);
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}?access_token=${this.credential.access_token}`,
       { method: "PUT", body: JSON.stringify({ metadata }), headers }
     );
     if (response.ok) return await response.json();
@@ -341,11 +341,7 @@ export class ZenodoClient {
       typeof depositionInfo === "number" ? depositionInfo : depositionInfo.id;
     const headers = { "Content-Type": "application/json" };
     const response = await fetch(
-      `https://${
-        this.useSandbox ? "sandbox." : ""
-      }zenodo.org/api/deposit/depositions/${depositionId}/actions/publish?access_token=${
-        this.credential.access_token
-      }`,
+      `${this.baseURL}/api/deposit/depositions/${depositionId}/actions/publish?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
     if (response.ok) {
