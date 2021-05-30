@@ -132,6 +132,15 @@
               <a :href="item.source" target="_blank">{{ item.name }}</a>
             </h1>
             <p>{{ item.description }}</p>
+            <b-button
+              v-if="userId && item._deposit.owners.includes(userId)"
+              @click="uploadFiles(item._deposit.id)"
+              class="button is-primary is-light is-fullwidth"
+              expanded
+              icon-left="autorenew"
+            >
+              <span>Update this deposit</span>
+            </b-button>
           </b-notification>
           <b-button
             style="text-transform:none;"
@@ -146,6 +155,16 @@
           >
         </div>
         <br />
+        <b-field>
+          <b-switch v-model="requestedJoinCommunity">
+            Apply for listing in the
+            <a
+              :href="client.baseURL + '/communities/bioimage-io/'"
+              target="_blank"
+              >bioimage.io community list</a
+            >
+          </b-switch>
+        </b-field>
         <div class="columns">
           <div v-if="client && (zipPackage || editedFiles)" class="column">
             <b-button
@@ -153,7 +172,7 @@
               @click="uploadFiles()"
               class="button is-primary is-light is-fullwidth"
               expanded
-              icon-left="add"
+              icon-left="plus"
             >
               <span>Upload as new deposit</span>
             </b-button>
@@ -198,6 +217,11 @@
             Note: Newly uploaded item may not appear immediately in the resource
             list.
           </p>
+          <p v-if="requestedJoinCommunity">
+            To be listed as part of the verified bioimage.io community list, a
+            notification will be sent to the admin team aand we will review
+            request soon.
+          </p>
         </b-notification>
         <b-notification
           v-else-if="prereserveDOI"
@@ -211,7 +235,7 @@
             <a :href="prereserveUrl" target="_blank">{{ prereserveUrl }}</a>
           </h2>
           <p>
-            Note: Please check carefully before publish, it won't be easy to
+            Note: Please check carefully before publishing, it won't be easy to
             remove items after made public. New changes will be added as a new
             version.
           </p>
@@ -266,12 +290,6 @@ export default {
   },
   computed: {
     sameNameDeposits() {
-      console.log(
-        "=======samename",
-        this.similarDeposits,
-        this.similarDeposits &&
-          this.similarDeposits.filter(item => item.name === this.rdf.name)
-      );
       return (
         this.similarDeposits &&
         this.similarDeposits.filter(item => item.name === this.rdf.name)
@@ -305,13 +323,15 @@ export default {
       stepIndex: 0,
       publishedUrl: null,
       publishedDOI: null,
+      requestedJoinCommunity: true,
       rdfType: "model",
       zipPackage: null,
       editedFiles: null,
       prereserveDOI: null,
       URI4Load: null,
       similarDeposits: null,
-      depositId: null
+      depositId: null,
+      userId: null
     };
   },
   methods: {
@@ -493,7 +513,9 @@ export default {
       }
 
       // TODO: fix attachments.files for the packager
-      this.rdfYaml = yaml.dump(this.rdf);
+      const rdf = Object.assign({}, this.rdf);
+      delete rdf._metadata;
+      this.rdfYaml = yaml.dump(rdf);
       const blob = new Blob([this.rdfYaml], {
         type: "application/yaml"
       });
@@ -524,6 +546,9 @@ export default {
       this.similarDeposits = await this.client.getResourceItems({
         sort: "bestmatch"
       });
+      // if there is any similar items, we can try to login first
+      if (this.similarDeposits.length > 0)
+        await this.client.getCredential(true);
       this.stepIndex = 2;
     },
     async publishDeposition() {
@@ -586,8 +611,10 @@ export default {
       this.uploadStatus = "Done!";
     },
     async uploadFiles(depositId) {
+      let credential;
       try {
-        await this.client.getCredential(true);
+        credential = await this.client.getCredential(true);
+        this.userId = credential.user_id;
         this.$forceUpdate();
       } catch (e) {
         alert(`Failed to login: ${e}`);
@@ -601,8 +628,8 @@ export default {
         if (depositId) {
           try {
             depositionInfo = await this.client.retrieve(depositId);
-            // enter edit mode
-            await this.client.edit(depositId);
+            // enter edit mode if submitted
+            if (depositionInfo.submitted) await this.client.edit(depositId);
           } catch (e) {
             console.error(e);
             if (
@@ -619,6 +646,10 @@ export default {
 
         const baseUrl = "file:///"; //depositionInfo.links.bucket + "/";
         const metadata = rdfToMetadata(this.rdf, baseUrl);
+        // this will send a email request to the admin of bioimgae-io team
+        if (this.requestedJoinCommunity) {
+          metadata.communities.push({ identifier: "bioimage-io" });
+        }
         metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
         const result = await this.client.updateMetadata(
           depositionInfo,

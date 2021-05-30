@@ -107,7 +107,7 @@ export function rdfToMetadata(rdf, baseUrl) {
     keywords: keywords.concat(rdf.tags),
     notes: "Uploaded via BioImage.IO website (https://bioimage.io)",
     related_identifiers,
-    communities: [{ identifier: "bioimage-io" }]
+    communities: []
   };
   return metadata;
 }
@@ -187,7 +187,8 @@ export function depositionToRdf(deposition) {
     documentation,
     covers,
     rdf_file: rdfFile,
-    source //TODO: fix for other RDF types
+    source, //TODO: fix for other RDF types
+    _deposit: deposition
   };
 }
 
@@ -291,6 +292,9 @@ export class ZenodoClient {
           }
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
+          this.credential.user_id = parseInt(
+            /'id': u'([0-9]+)'/gm.exec(event.data.user)[1]
+          );
           this.credential.create_at = Date.now();
           resolve(event.data);
           localStorage.setItem(
