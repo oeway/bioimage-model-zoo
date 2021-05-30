@@ -96,27 +96,79 @@
             >
           </b-taglist>
         </b-field>
+        <b-field v-else-if="editedFiles" label="Files">
+          <b-taglist attached rounded>
+            <b-tag v-for="file in editedFiles" :key="file.name" rounded>{{
+              file.name
+            }}</b-tag>
+          </b-taglist>
+        </b-field>
+        <div class="column">
+          <b-button
+            v-if="zipPackage || editedFiles"
+            style="text-transform:none;"
+            class="button is-fullwidth"
+            @click="exportPackage()"
+            expanded
+            icon-left="download"
+            >Export package locally</b-button
+          >
+        </div>
+        <br />
+        <div v-if="similarDeposits && similarDeposits.length > 0">
+          <label class="label">Similar Existing Items</label>
+          <p>
+            The following published deposit(s) are similar to yours (matched by
+            name), please make sure you are using distinctive names to avoid
+            confusion to the users.
+          </p>
+          <b-notification
+            v-for="item in similarDeposits"
+            :key="item.id"
+            :type="item.name === rdf.name ? 'is-danger' : null"
+            aria-close-label="Close notification"
+          >
+            <h1>
+              <a :href="item.source" target="_blank">{{ item.name }}</a>
+            </h1>
+            <p>{{ item.description }}</p>
+          </b-notification>
+          <b-button
+            style="text-transform:none;"
+            class="button is-fullwidth"
+            @click="stepIndex = 1"
+            expanded
+            :class="{
+              'is-primary': sameNameDeposits && sameNameDeposits.length > 0
+            }"
+            icon-left="arrow-left"
+            >Go back to rename</b-button
+          >
+        </div>
+        <br />
         <div class="columns">
-          <div class="column">
+          <div v-if="client && (zipPackage || editedFiles)" class="column">
             <b-button
-              v-if="zipPackage || editedFiles"
-              style="text-transform:none;"
-              class="button is-fullwidth"
-              @click="exportPackage()"
-              expanded
-              icon-left="download"
-              >Export package locally</b-button
-            >
-          </div>
-          <div class="column">
-            <b-button
-              v-if="client && (zipPackage || editedFiles)"
+              :disabled="sameNameDeposits && sameNameDeposits.length > 0"
               @click="uploadFiles()"
-              class="button is-primary is-fullwidth"
+              class="button is-primary is-light is-fullwidth"
               expanded
-              icon-left="upload"
+              icon-left="add"
             >
-              <span>Start Uploading</span>
+              <span>Upload as new deposit</span>
+            </b-button>
+          </div>
+          <div
+            v-if="client && (zipPackage || editedFiles) && depositId"
+            class="column"
+          >
+            <b-button
+              @click="uploadFiles(depositId)"
+              class="button is-primary is-light is-fullwidth"
+              expanded
+              icon-left="autorenew"
+            >
+              <span>Update existing deposit</span>
             </b-button>
           </div>
         </div>
@@ -130,7 +182,7 @@
         >
         </b-progress>
       </b-step-item>
-      <b-step-item label="Publish" icon="share" disabled>
+      <b-step-item label="Publish" icon="share-variant" disabled>
         <b-notification
           v-if="publishedUrl"
           type="is-success"
@@ -213,6 +265,18 @@ export default {
     this.$root.$on("formSubmitted", this.formSubmitted);
   },
   computed: {
+    sameNameDeposits() {
+      console.log(
+        "=======samename",
+        this.similarDeposits,
+        this.similarDeposits &&
+          this.similarDeposits.filter(item => item.name === this.rdf.name)
+      );
+      return (
+        this.similarDeposits &&
+        this.similarDeposits.filter(item => item.name === this.rdf.name)
+      );
+    },
     formatedModelYaml() {
       return this.rdfYaml && "```yaml\n" + this.rdfYaml + "\n```\n";
     },
@@ -245,7 +309,9 @@ export default {
       zipPackage: null,
       editedFiles: null,
       prereserveDOI: null,
-      URI4Load: null
+      URI4Load: null,
+      similarDeposits: null,
+      depositId: null
     };
   },
   methods: {
@@ -272,37 +338,38 @@ export default {
       this.initializeRdfForm(rdf, Object.values(this.zipPackage.files));
     },
     async loadRdfFromURL(url) {
-      const doiURLRegex = doiRegex.resolvePath();
-      if (doiURLRegex.test(url)) {
-        url = await resolveDOI(url.match(doiURLRegex)[4]);
-      } else if (doiRegex().test(url)) {
-        url = await resolveDOI(url);
-      }
-      const zenodoRegex = /zenodo.org\/(record|deposit)\/([0-9]+)/g;
-      const m = zenodoRegex.exec(url);
-      if (m) {
-        this.depositId = parseInt(m[2]);
-        console.log("orcid matched: " + this.depositId);
-        const depositionInfo = await this.client.retrieve(this.depositId);
-        const credential = await this.client.getCredential(true);
-        const rdf = await getFullRdfFromDeposit(
-          depositionInfo,
-          credential && credential.access_token
-        );
-        this.zipPackage = null;
-        // load files
-        this.initializeRdfForm(
-          rdf,
-          depositionInfo.files.map(item => {
-            return {
-              type: "remote",
-              name: item.filename,
-              size: item.filesize,
-              url: item.links.download,
-              checksum: item.checksum
-            };
-          })
-        );
+      try {
+        const doiURLRegex = doiRegex.resolvePath();
+        if (doiURLRegex.test(url)) {
+          url = await resolveDOI(url.match(doiURLRegex)[4]);
+        } else if (doiRegex().test(url)) {
+          url = await resolveDOI(url);
+        }
+        const zenodoRegex = /zenodo.org\/(record|deposit)\/([0-9]+)/g;
+        const m = zenodoRegex.exec(url);
+        if (m) {
+          this.depositId = parseInt(m[2]);
+          console.log("orcid matched: " + this.depositId);
+          // const credential = await this.client.getCredential(true);
+          const depositionInfo = await this.client.getDeposit(this.depositId);
+          const rdf = await getFullRdfFromDeposit(depositionInfo);
+          this.zipPackage = null;
+          // load files
+          this.initializeRdfForm(
+            rdf,
+            depositionInfo.files.map(item => {
+              return {
+                type: "remote",
+                name: item.filename || item.key, // depending on what api we use, it may be in two different format
+                size: item.filesize || item.size,
+                url: item.links.self,
+                checksum: item.checksum
+              };
+            })
+          );
+        }
+      } catch (e) {
+        alert(`Failed to fetch RDF from ${url}, error: ${e}`);
       }
     },
     initializeRdfForm(rdf, files) {
@@ -390,7 +457,7 @@ export default {
       }
       return fields;
     },
-    formSubmitted(result) {
+    async formSubmitted(result) {
       const rdfNameMapping = {
         type: "Type",
         name: "Name",
@@ -454,6 +521,9 @@ export default {
         }
       }
 
+      this.similarDeposits = await this.client.getResourceItems({
+        sort: "bestmatch"
+      });
       this.stepIndex = 2;
     },
     async publishDeposition() {
@@ -480,25 +550,12 @@ export default {
       if (!zipPackage) {
         zipPackage = new JSZip();
         let i = 0;
-        const credential = await this.client.getCredential(true);
         for (let item of this.editedFiles) {
           this.uploadProgress = (i / this.editedFiles.length) * 100;
           i++;
           if (item.type === "remote") {
             this.uploadStatus = "Download fille " + item.name;
-            let response;
-            // a token is required for sandbox mode
-            if (
-              credential &&
-              item.url.startsWith("https://sandbox.zenodo.org")
-            ) {
-              response = await fetch(
-                item.url + "?access_token=" + credential.access_token
-              );
-            } else {
-              response = await fetch(item.url);
-            }
-
+            const response = await fetch(item.url);
             if (response.ok) {
               const blob = await response.blob();
               zipPackage.file(item.name, blob);
@@ -528,7 +585,7 @@ export default {
       saveAs(zipBlob, this.rdf.name + ".bioimage.io.zip");
       this.uploadStatus = "Done!";
     },
-    async uploadFiles() {
+    async uploadFiles(depositId) {
       try {
         await this.client.getCredential(true);
         this.$forceUpdate();
@@ -541,11 +598,23 @@ export default {
       });
       try {
         let depositionInfo;
-        if (this.depositId) {
-          depositionInfo = await this.client.retrieve(this.depositId);
-          // enter edit mode
-          await this.client.edit(this.depositId);
+        if (depositId) {
+          try {
+            depositionInfo = await this.client.retrieve(depositId);
+            // enter edit mode
+            await this.client.edit(depositId);
+          } catch (e) {
+            console.error(e);
+            if (
+              !confirm(
+                `Failed to retrieve existing deposit (id: ${depositId}), would you like to create a new deposit instead?`
+              )
+            ) {
+              return;
+            }
+          }
         } else depositionInfo = await this.client.createDeposition();
+
         this.depositId = depositionInfo.id;
 
         const baseUrl = "file:///"; //depositionInfo.links.bucket + "/";

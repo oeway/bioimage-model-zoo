@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { randId } from "./utils";
-import { ZenodoClient, getZenodoResourceItems } from "./utils.js";
+import { ZenodoClient } from "./utils.js";
 import siteConfig from "../site.config.json";
 
 Vue.use(Vuex);
@@ -38,7 +38,7 @@ export const store = new Vuex.Store({
     },
 
     async getResourceItems(context, { manifest_url, repo }) {
-      const items = await getZenodoResourceItems(context.state.zenodoClient);
+      const items = await context.state.zenodoClient.getResourceItems({});
       items.map(item => context.commit("addResourceItem", item));
 
       const siteConfig = context.state.siteConfig;

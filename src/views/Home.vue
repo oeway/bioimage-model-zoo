@@ -685,9 +685,6 @@ export default {
     };
   },
   mounted: async function() {
-    if (this.siteConfig.zenodo_config.use_sandbox) {
-      await this.askForLogin();
-    }
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
 
@@ -846,40 +843,6 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
-    askForLogin() {
-      return new Promise(resolve => {
-        this.zenodoClient
-          .getCredential()
-          .then(credential => {
-            if (!credential) {
-              this.$buefy.dialog.confirm({
-                title: "Login required",
-                hasIcon: true,
-                icon: "share",
-                message: `You are using BioImage.IO in sandbox mode, it please login to make sure we display the resource items correctly.`,
-                confirmText: "Login",
-                onCancel: async () => {
-                  resolve();
-                },
-                onConfirm: async () => {
-                  try {
-                    await this.zenodoClient.getCredential(true);
-                  } catch (e) {
-                    alert(`Failed to login: ${e}`);
-                    console.error(e);
-                  }
-                  resolve();
-                }
-              });
-            } else {
-              resolve();
-            }
-          })
-          .catch(e => {
-            console.error(e);
-          });
-      });
-    },
     goHome() {
       this.selectedPartner = null;
       this.searchTags = [];

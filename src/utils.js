@@ -17,8 +17,8 @@ export async function resolveDOI(doi) {
   }
 }
 
-export async function getFullRdfFromDeposit(deposition, accessToken) {
-  const rdf = depositionToRdf(deposition, accessToken);
+export async function getFullRdfFromDeposit(deposition) {
+  const rdf = depositionToRdf(deposition);
   const response = await fetch(rdf.rdf_file);
   if (response.ok) {
     const yamlStr = await response.text();
@@ -117,7 +117,7 @@ export function depositionToRdf(deposition) {
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
   if (!type) {
     throw new Error(
-      `deposit (${metadata.name}) does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
+      `deposit (${deposition.id}) does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
     );
   }
   type = type.replace("bioimage.io:", "");
@@ -168,7 +168,7 @@ export function depositionToRdf(deposition) {
   const description = div.textContent || div.innerText || "";
   if (!rdfFile) {
     throw new Error(
-      `Invalid deposit (${metadata.name}), rdf.yaml or model.yaml is not defined in the metadata (as part of the "related_identifiers")`
+      `Invalid deposit (${deposition.id}), rdf.yaml or model.yaml is not defined in the metadata (as part of the "related_identifiers")`
     );
   }
   return {
@@ -189,41 +189,6 @@ export function depositionToRdf(deposition) {
     rdf_file: rdfFile,
     source //TODO: fix for other RDF types
   };
-}
-
-export async function getZenodoResourceItems(
-  client,
-  page,
-  type,
-  keywords,
-  sort
-) {
-  page = page || 1;
-  type = type || "all";
-  keywords = keywords || [];
-  sort = sort || "mostviewed";
-  const typeKeywords = type !== "all" ? "&keywords=bioimage.io:" + type : "";
-  const additionalKeywords =
-    typeKeywords +
-    (keywords.length > 0
-      ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
-      : "");
-  const url =
-    `${client.baseURL}/api/records/?communities=bioimage-io&sort=${sort}&page=${page}&size=20` +
-    additionalKeywords; //&all_versions
-  const response = await fetch(url);
-  const results = JSON.parse(await response.text());
-  const hits = results.hits.hits;
-  const credential = await client.getCredential();
-  const resourceItems = hits.map(item => {
-    try {
-      return depositionToRdf(item, credential && credential.access_token);
-    } catch (e) {
-      console.warn(e);
-      return null;
-    }
-  });
-  return resourceItems.filter(item => !!item);
 }
 
 export class ZenodoClient {
@@ -266,6 +231,38 @@ export class ZenodoClient {
       await this.login();
     }
     return this.credential;
+  }
+
+  async getResourceItems({ page, type, keywords, query, sort, size }) {
+    page = page || 1;
+    type = type || "all";
+    keywords = keywords || [];
+    if (!keywords.includes("bioimage.io")) keywords.push("bioimage.io");
+    size = size || 20;
+    sort = sort || "mostviewed";
+    const typeKeywords = type !== "all" ? "&keywords=bioimage.io:" + type : "";
+    const additionalKeywords =
+      typeKeywords +
+      (keywords.length > 0
+        ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
+        : "") +
+      (query ? "&q=" + query : "");
+    const url =
+      `${this.baseURL}/api/records/?communities=bioimage-io&sort=${sort}&page=${page}&size=${size}` +
+      additionalKeywords; //&all_versions
+    const response = await fetch(url);
+    const results = JSON.parse(await response.text());
+    const hits = results.hits.hits;
+
+    const resourceItems = hits.map(item => {
+      try {
+        return depositionToRdf(item);
+      } catch (e) {
+        console.warn(e);
+        return null;
+      }
+    });
+    return resourceItems.filter(item => !!item);
   }
 
   login() {
@@ -319,6 +316,18 @@ export class ZenodoClient {
     );
     const depositionInfo = await response.json();
     return depositionInfo;
+  }
+
+  async getDeposit(depositionInfo) {
+    const depositionId = depositionInfo.id ? depositionInfo.id : depositionInfo;
+    const response = await fetch(
+      `${this.baseURL}/api/records/${depositionId}`,
+      { method: "GET" }
+    );
+    if (response.ok) return await response.json();
+    else {
+      throw new Error("Failed to get deposit: " + depositionId);
+    }
   }
 
   async retrieve(depositionInfo) {
