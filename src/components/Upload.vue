@@ -164,6 +164,15 @@
             >
           </b-switch>
         </b-field>
+        <p v-if="uploadStatus">{{ uploadStatus }}</p>
+        <b-progress
+          v-if="uploadProgress"
+          type="is-primary"
+          :value="uploadProgress"
+          size="is-small"
+          expanded
+        >
+        </b-progress>
         <div class="columns">
           <div v-if="client && (zipPackage || editedFiles)" class="column">
             <b-button
@@ -190,15 +199,6 @@
             </b-button>
           </div>
         </div>
-        <p v-if="uploadStatus">{{ uploadStatus }}</p>
-        <b-progress
-          v-if="uploadProgress"
-          type="is-primary"
-          :value="uploadProgress"
-          size="is-small"
-          expanded
-        >
-        </b-progress>
       </b-step-item>
       <b-step-item label="Publish" icon="share-variant" disabled>
         <b-notification
@@ -642,8 +642,7 @@ export default {
         } else depositionInfo = await this.client.createDeposition();
 
         this.depositId = depositionInfo.id;
-
-        const baseUrl = "file:///"; //depositionInfo.links.bucket + "/";
+        const baseUrl = `${this.client.baseURL}/record/${this.depositId}/files/`; //"file:///"; //depositionInfo.links.bucket + "/";
         const metadata = rdfToMetadata(this.rdf, baseUrl);
         // this will send a email request to the admin of bioimgae-io team
         if (this.requestedJoinCommunity) {

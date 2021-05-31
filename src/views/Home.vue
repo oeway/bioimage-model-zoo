@@ -640,6 +640,7 @@ function normalizeItem(self, item) {
 
 export default {
   name: "Home",
+  props: ["resourceId"],
   components: {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
@@ -733,6 +734,11 @@ export default {
       this.selectedItems = tp
         ? this.transformedResourceItems.filter(m => m.type === tp)
         : this.transformedResourceItems;
+
+      // get id from component props
+      if (this.resourceId) {
+        this.$route.query.id = this.resourceId;
+      }
 
       this.updateViewByUrlQuery();
       this.$forceUpdate();

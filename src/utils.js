@@ -36,11 +36,8 @@ export function rdfToMetadata(rdf, baseUrl) {
   if (!rdf.type) {
     throw new Error("`type` key is not defined in the RDF.");
   }
-  const covers = rdf.covers.map(
-    c =>
-      c.startsWith("http")
-        ? c
-        : new URL(c, baseUrl).href.replace("file:///", "file://") // Zenodo only allow file://
+  const covers = rdf.covers.map(c =>
+    c.startsWith("http") ? c : new URL(c, baseUrl).href
   );
   const related_identifiers = [];
   for (let c of covers) {
@@ -58,7 +55,7 @@ export function rdfToMetadata(rdf, baseUrl) {
       if (link.includes("access_token="))
         throw new Error("Link should not contain access token: " + link);
       related_identifiers.push({
-        identifier: "https://bioimage.io/#/?id=" + encodeURIComponent(link),
+        identifier: "https://bioimage.io/#/r/" + encodeURIComponent(link),
         relation: "references", // is referenced by this upload
         resource_type: "other",
         scheme: "url"
@@ -69,7 +66,7 @@ export function rdfToMetadata(rdf, baseUrl) {
     related_identifiers.push({
       identifier: rdf.rdf_file.startsWith("http")
         ? rdf.rdf_file
-        : new URL(rdf.rdf_file, baseUrl).href.replace("file:///", "file://"),
+        : new URL(rdf.rdf_file, baseUrl).href,
       relation: "isCompiledBy", // compiled/created this upload
       resource_type: "other",
       scheme: "url"
@@ -82,10 +79,7 @@ export function rdfToMetadata(rdf, baseUrl) {
     related_identifiers.push({
       identifier: rdf.documentation.startsWith("http")
         ? rdf.documentation
-        : new URL(rdf.documentation, baseUrl).href.replace(
-            "file:///",
-            "file://"
-          ),
+        : new URL(rdf.documentation, baseUrl).href,
       relation: "isDocumentedBy", // is referenced by this upload
       resource_type: "publication-technicalnote",
       scheme: "url"
@@ -126,14 +120,17 @@ export function depositionToRdf(deposition) {
   const links = [];
   let rdfFile = null;
   let documentation = null;
+  // TODO: deprecate file:// format
   for (let idf of metadata.related_identifiers) {
     if (idf.relation === "isCompiledBy" && idf.scheme === "url") {
       rdfFile = idf.identifier;
-      // if (accessToken && rdfFile.startsWith("https://sandbox.zenodo.org")) {
-      //   rdfFile = rdfFile + "?access_token=" + accessToken;
-      // }
       if (rdfFile.startsWith("file://")) {
         rdfFile = rdfFile.replace("file://", deposition.links.bucket + "/");
+      } else if (rdfFile.includes(`${deposition.id}/files/`)) {
+        const fileName = rdfFile.split("/files/")[1];
+        rdfFile = `${deposition.links.bucket}/${fileName}`;
+      } else {
+        throw new Error("Invalid file identifier: " + idf.identifier);
       }
     } else if (
       idf.relation === "hasPart" &&
@@ -143,19 +140,20 @@ export function depositionToRdf(deposition) {
       let url = idf.identifier;
       if (url.startsWith("file://")) {
         url = url.replace("file://", deposition.links.bucket + "/");
+      } else if (url.includes(`${deposition.id}/files/`)) {
+        const fileName = url.split("/files/")[1];
+        url = `${deposition.links.bucket}/${fileName}`;
+      } else {
+        throw new Error("Invalid file identifier: " + idf.identifier);
       }
-      // currently sandbox zenodo requires access token to get the cover images
-      // if (accessToken && url.startsWith("https://sandbox.zenodo.org")) {
-      //   url = url + "?access_token=" + accessToken;
-      // }
       covers.push(url);
     } else if (
       idf.relation === "references" &&
       idf.scheme === "url" &&
-      idf.identifier.startsWith("https://bioimage.io/#/?id=")
+      idf.identifier.startsWith("https://bioimage.io/#/r/")
     ) {
       // links
-      const id = idf.identifier.replace("https://bioimage.io/#/?id=", "");
+      const id = idf.identifier.replace("https://bioimage.io/#/r/", "");
       links.push(decodeURIComponent(id));
     } else if (idf.relation === "isDocumentedBy" && idf.scheme === "url") {
       // links
