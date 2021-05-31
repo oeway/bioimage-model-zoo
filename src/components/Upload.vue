@@ -423,12 +423,12 @@ export default {
           placeholder: "description",
           value: this.rdf.description
         },
-        {
-          label: "Source",
-          placeholder: "A doi or URL to the source of the item",
-          isRequired: false,
-          value: this.rdf.version
-        },
+        // {
+        //   label: "Source",
+        //   placeholder: "A doi or URL to the source of the item",
+        //   isRequired: false,
+        //   value: this.rdf.version
+        // },
         {
           label: "Version",
           placeholder: "Version in MAJOR.MINOR.PATCH format(e.g. 0.1.0)",
@@ -500,6 +500,7 @@ export default {
         description: "Description",
         version: "Version",
         license: "License",
+        // source: "Source",
         git_repo: "Git Repository",
         tags: "Tags",
         links: "Links"
