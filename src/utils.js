@@ -178,7 +178,7 @@ export function depositionToRdf(deposition) {
     authors: metadata.creators.map(author => author.name),
     tags: metadata.keywords.filter(
       k => k !== "bioimage.io" || !k.startsWith("bioimage.io:")
-    ),
+    ).concat(["zenodo"]),
     description,
     license:
       typeof metadata.license === "string"
