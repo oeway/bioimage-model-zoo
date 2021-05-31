@@ -306,6 +306,7 @@ export default {
     },
     components: () => ({ TagInputField, DropFilesField }),
     ...mapState({
+      resourceItems: state => state.resourceItems,
       client: state => state.zenodoClient
     })
   },
@@ -354,6 +355,10 @@ export default {
       const rdf = yaml.load(this.rdfYaml);
       rdf.type = rdf.type || "model";
       rdf.rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
+      if (rdf.type === "model") {
+        rdf.links = rdf.links || [];
+        rdf.links.push("imjoy/BioImageIO-Packager");
+      }
       this.initializeRdfForm(rdf, Object.values(this.zipPackage.files));
     },
     async loadRdfFromURL(url) {
@@ -394,6 +399,7 @@ export default {
     initializeRdfForm(rdf, files) {
       this.stepIndex = 1;
       this.rdf = rdf || {};
+      this.rdf.links = this.rdf.links || [];
       this.jsonFields = this.transformFields([
         {
           label: "Type",
@@ -452,7 +458,18 @@ export default {
           type: "tags",
           value: this.rdf.tags,
           placeholder: "Add a tag",
-          icon: "label"
+          icon: "label",
+          isRequired: false
+        },
+        {
+          label: "Links",
+          type: "tags",
+          value: this.rdf.links,
+          placeholder: "Add a link (resource item ID)",
+          options: this.resourceItems.map(item => item.id),
+          allow_new: true,
+          icon: "vector-link",
+          isRequired: false
         },
         {
           label: "Files",
@@ -484,7 +501,8 @@ export default {
         version: "Version",
         license: "License",
         git_repo: "Git Repository",
-        tags: "Tags"
+        tags: "Tags",
+        links: "Links"
       };
       const values = result.values;
       for (let k in rdfNameMapping) {
