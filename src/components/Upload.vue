@@ -373,9 +373,14 @@ export default {
         const m = zenodoRegex.exec(url);
         if (m) {
           this.depositId = parseInt(m[2]);
-          console.log("orcid matched: " + this.depositId);
-          // const credential = await this.client.getCredential(true);
-          const depositionInfo = await this.client.getDeposit(this.depositId);
+          let depositionInfo;
+          if (url.includes("/record/"))
+            depositionInfo = await this.client.getDeposit(this.depositId);
+          else {
+            await this.client.getCredential(true);
+            depositionInfo = await this.client.retrieve(this.depositId);
+          }
+          console.log("orcid matched: " + this.depositId, depositionInfo);
           const rdf = await getFullRdfFromDeposit(depositionInfo);
           this.zipPackage = null;
           // load files
