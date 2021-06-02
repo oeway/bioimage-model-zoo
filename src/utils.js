@@ -205,6 +205,7 @@ export class ZenodoClient {
       }
     } catch (e) {
       console.error("Failed to reset zenodo_credential");
+      localStorage.removeItem("zenodo_credential");
     }
   }
 
@@ -220,7 +221,7 @@ export class ZenodoClient {
       } else {
         this.credential = null;
         try {
-          localStorage.setItem("zenodo_credential", undefined);
+          localStorage.removeItem("zenodo_credential");
         } catch (e) {
           console.error("Failed to reset zenodo_credential");
         }
