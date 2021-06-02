@@ -17,6 +17,7 @@ const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
 
 export const store = new Vuex.Store({
   state: {
+    allApps: {},
     resourceItems: [],
     zenodoClient: siteConfig.zenodo_config.enabled
       ? new ZenodoClient(zenodoBaseURL, siteConfig.zenodo_config.client_id)
@@ -62,9 +63,11 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);
     },
     removeResourceItem(state, item) {
+      if (item.type === "application") delete state.allApps[item.id];
       const index = state.resourceItems.indexOf(item);
       if (index >= 0) state.resourceItems.splice(index, 1);
     }
