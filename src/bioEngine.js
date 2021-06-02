@@ -5,6 +5,7 @@ export async function setupBioEngine() {
       show_window_title: false,
       show_progress_bar: true,
       show_empty_window: true,
+      hide_about_imjoy: true,
       menu_style: {},
       window_style: {
         width: "100%",
