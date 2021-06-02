@@ -421,7 +421,7 @@ const DEFAULT_ICONS = {
   application: "puzzle",
   model: "hubspot"
 };
-import { runAppForItem, runAppForAllItems } from "../bioEngine";
+import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
 import { concatAndResolveUrl, debounce } from "../utils";
 
 const isTouchDevice = (function() {
@@ -665,7 +665,7 @@ export default {
   mounted: async function() {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
-
+    setupBioEngine();
     // select models as default
     for (let list of this.resourceCategories) {
       if (list.type === "model") {
@@ -971,7 +971,8 @@ export default {
       this.$router.replace({ query: query }).catch(() => {});
     },
     showLoader(enable) {
-      if (enable) this.loadingComponent = this.$buefy.loading.open();
+      if (enable)
+        this.loadingComponent = this.$buefy.loading.open({ canCancel: true });
       else {
         if (this.loadingComponent) {
           this.loadingComponent.close();
