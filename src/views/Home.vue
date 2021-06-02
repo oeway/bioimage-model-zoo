@@ -537,8 +537,9 @@ function normalizeItem(self, item) {
           name: lit.name,
           icon: lit.icon || DEFAULT_ICONS[lit.type],
           run() {
-            if(self.allApps[link_key])
+            if (self.allApps[link_key])
               runAppForItem(self, self.allApps[link_key], item);
+            else self.showResourceItemInfo(lit);
           }
         });
       }
