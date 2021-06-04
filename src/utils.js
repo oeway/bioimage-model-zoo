@@ -188,6 +188,7 @@ export function depositionToRdf(deposition) {
     covers,
     rdf_file: rdfFile,
     source, //TODO: fix for other RDF types
+    links,
     _deposit: deposition
   };
 }
