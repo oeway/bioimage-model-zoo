@@ -577,7 +577,7 @@ export default {
     async publishDeposition() {
       if (
         !confirm(
-          "Are you sure about publish your RDF now? Please note that after publishing you won't be able to remove it and changes can only be added as new versions."
+          "Are you sure about publish your RDF now? Please note that after publishing you won't be able to remove it. Changes to existing published deposit can only be made by publishing new versions."
         )
       )
         return;
