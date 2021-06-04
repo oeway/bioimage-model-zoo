@@ -87,6 +87,7 @@ export function rdfToMetadata(rdf, baseUrl) {
     });
   }
 
+  rdf.authors = rdf.authors || [];
   const creators = rdf.authors.map(author => {
     return { name: author, affiliation: "" };
   });
