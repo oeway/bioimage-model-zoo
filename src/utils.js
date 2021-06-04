@@ -36,6 +36,7 @@ export function rdfToMetadata(rdf, baseUrl) {
   if (!rdf.type) {
     throw new Error("`type` key is not defined in the RDF.");
   }
+  rdf.covers = rdf.covers || [];
   const covers = rdf.covers.map(c =>
     c.startsWith("http") ? c : new URL(c, baseUrl).href
   );
@@ -50,17 +51,17 @@ export function rdfToMetadata(rdf, baseUrl) {
       scheme: "url"
     });
   }
-  if (rdf.links)
-    for (let link of rdf.links) {
-      if (link.includes("access_token="))
-        throw new Error("Link should not contain access token: " + link);
-      related_identifiers.push({
-        identifier: "https://bioimage.io/#/r/" + encodeURIComponent(link),
-        relation: "references", // is referenced by this upload
-        resource_type: "other",
-        scheme: "url"
-      });
-    }
+  rdf.links = rdf.links || [];
+  for (let link of rdf.links) {
+    if (link.includes("access_token="))
+      throw new Error("Link should not contain access token: " + link);
+    related_identifiers.push({
+      identifier: "https://bioimage.io/#/r/" + encodeURIComponent(link),
+      relation: "references", // is referenced by this upload
+      resource_type: "other",
+      scheme: "url"
+    });
+  }
   if (rdf.rdf_file)
     // rdf.yaml or model.yaml
     related_identifiers.push({
