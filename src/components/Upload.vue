@@ -336,30 +336,39 @@ export default {
   },
   methods: {
     async fileSelected(file) {
-      var new_zip = new JSZip();
-      this.zipPackage = await new_zip.loadAsync(file);
-      console.log(this.zipPackage.files);
-      if (
-        !this.zipPackage.files["model.yaml"] &&
-        !this.zipPackage.files["rdf.yaml"]
-      ) {
-        alert(
-          "Invalid file: no model.yaml or rdf.yaml found in the model package."
-        );
-        return;
+      const loadingComponent = this.$buefy.loading.open({
+        container: this.$el
+      });
+      try {
+        var new_zip = new JSZip();
+        this.zipPackage = await new_zip.loadAsync(file);
+        console.log(this.zipPackage.files);
+        if (
+          !this.zipPackage.files["model.yaml"] &&
+          !this.zipPackage.files["rdf.yaml"]
+        ) {
+          alert(
+            "Invalid file: no model.yaml or rdf.yaml found in the model package."
+          );
+          return;
+        }
+        const configFile =
+          this.zipPackage.files["rdf.yaml"] ||
+          this.zipPackage.files["model.yaml"];
+        this.rdfYaml = await configFile.async("string");
+        const rdf = yaml.load(this.rdfYaml);
+        rdf.type = rdf.type || "model";
+        rdf.rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
+        if (rdf.type === "model") {
+          rdf.links = rdf.links || [];
+          rdf.links.push("imjoy/BioImageIO-Packager");
+        }
+        this.initializeRdfForm(rdf, Object.values(this.zipPackage.files));
+      } catch (e) {
+        console.error(e);
+      } finally {
+        loadingComponent.close();
       }
-      const configFile =
-        this.zipPackage.files["rdf.yaml"] ||
-        this.zipPackage.files["model.yaml"];
-      this.rdfYaml = await configFile.async("string");
-      const rdf = yaml.load(this.rdfYaml);
-      rdf.type = rdf.type || "model";
-      rdf.rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
-      if (rdf.type === "model") {
-        rdf.links = rdf.links || [];
-        rdf.links.push("imjoy/BioImageIO-Packager");
-      }
-      this.initializeRdfForm(rdf, Object.values(this.zipPackage.files));
     },
     async loadRdfFromURL(url) {
       try {
@@ -538,6 +547,7 @@ export default {
       // TODO: fix attachments.files for the packager
       const rdf = Object.assign({}, this.rdf);
       delete rdf._metadata;
+      console.log("RDF: ", rdf);
       this.rdfYaml = yaml.dump(rdf);
       const blob = new Blob([this.rdfYaml], {
         type: "application/yaml"
@@ -567,7 +577,8 @@ export default {
       }
 
       this.similarDeposits = await this.client.getResourceItems({
-        sort: "bestmatch"
+        sort: "bestmatch",
+        query: this.rdf.name
       });
       // if there is any similar items, we can try to login first
       if (this.similarDeposits.length > 0)
