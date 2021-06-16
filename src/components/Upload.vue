@@ -132,8 +132,12 @@
             </h1>
             <p>{{ item.description }}</p>
             <b-button
-              v-if="userId && item._deposit.owners.includes(userId)"
-              @click="uploadFiles(item._deposit.id)"
+              v-if="
+                userId &&
+                  item.config._deposit &&
+                  item.config._deposit.owners.includes(userId)
+              "
+              @click="uploadFiles(item.config._deposit.id)"
               class="button is-primary is-light is-fullwidth"
               expanded
               icon-left="autorenew"
@@ -263,12 +267,19 @@ import { saveAs } from "file-saver";
 import spdxLicenseList from "spdx-license-list/full";
 import "vue-form-json/dist/vue-form-json.css";
 import formJson from "vue-form-json/dist/vue-form-json.common.js";
-import { rdfToMetadata, resolveDOI, getFullRdfFromDeposit } from "../utils";
+import {
+  rdfToMetadata,
+  resolveDOI,
+  getFullRdfFromDeposit,
+  compareVersions
+} from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
 import TagInputField from "./tagInputField.vue";
 import DropFilesField from "./dropFilesField.vue";
 import doiRegex from "doi-regex";
+import marked from "marked";
+import DOMPurify from "dompurify";
 
 export default {
   name: "upload",
@@ -358,7 +369,8 @@ export default {
         this.rdfYaml = await configFile.async("string");
         const rdf = yaml.load(this.rdfYaml);
         rdf.type = rdf.type || "model";
-        rdf.rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
+        rdf.config = rdf.config || {};
+        rdf.config._rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
         if (rdf.type === "model") {
           rdf.links = rdf.links || [];
           rdf.links.push("imjoy/BioImageIO-Packager");
@@ -552,28 +564,22 @@ export default {
       const blob = new Blob([this.rdfYaml], {
         type: "application/yaml"
       });
+      let rdfFileName = "rdf.yaml";
+      if (
+        this.rdf.type === "model" &&
+        compareVersions(rdf.format_version, "<", "0.3.2")
+      ) {
+        rdfFileName = "model.yaml";
+      }
       if (this.zipPackage) {
-        if (this.rdf.type === "model") {
-          delete this.zipPackage.files["model.yaml"];
-          this.zipPackage.file("model.yaml", blob);
-        } else {
-          delete this.zipPackage.files["rdf.yaml"];
-          this.zipPackage.file("rdf.yaml", blob);
-        }
+        delete this.zipPackage.files[rdfFileName];
+        this.zipPackage.file(rdfFileName, blob);
       } else {
-        if (this.rdf.type === "model") {
-          const file = new File([blob], "model.yaml");
-          this.editedFiles = this.editedFiles.filter(
-            item => item.name !== "model.yaml"
-          );
-          this.editedFiles.push(file);
-        } else {
-          const file = new File([blob], "rdf.yaml");
-          this.editedFiles = this.editedFiles.filter(
-            item => item.name !== "rdf.yaml"
-          );
-          this.editedFiles.push(file);
-        }
+        const file = new File([blob], rdfFileName);
+        this.editedFiles = this.editedFiles.filter(
+          item => item.name !== rdfFileName
+        );
+        this.editedFiles.push(file);
       }
 
       this.similarDeposits = await this.client.getResourceItems({
@@ -678,7 +684,24 @@ export default {
 
         this.depositId = depositionInfo.id;
         const baseUrl = `${this.client.baseURL}/record/${this.depositId}/files/`; //"file:///"; //depositionInfo.links.bucket + "/";
-        const metadata = rdfToMetadata(this.rdf, baseUrl);
+
+        let docstring = null;
+        if (
+          this.rdf.documentation &&
+          !this.rdf.documentation.startsWith("http") &&
+          this.rdf.documentation.endsWith(".md")
+        ) {
+          const file = this.zipPackage.files[
+            this.rdf.documentation.replace("./", "")
+          ];
+          if (file) {
+            docstring = await file.async("string"); // get markdown
+            docstring = DOMPurify.sanitize(marked(docstring));
+          }
+        }
+        this.rdf.config = this.rdf.config || {};
+        this.rdf.config._deposit = depositionInfo;
+        const metadata = rdfToMetadata(this.rdf, baseUrl, docstring);
         // this will send a email request to the admin of bioimgae-io team
         if (this.requestedJoinCommunity) {
           metadata.communities.push({ identifier: "bioimage-io" });

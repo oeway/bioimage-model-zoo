@@ -22,16 +22,19 @@ export async function resolveDOI(doi) {
 
 export async function getFullRdfFromDeposit(deposition) {
   const rdf = depositionToRdf(deposition);
-  const response = await fetch(rdf.rdf_file);
+  const response = await fetch(rdf.config._rdf_file);
   if (response.ok) {
     const yamlStr = await response.text();
-    return yaml.load(yamlStr);
+    const fullRdf = yaml.load(yamlStr);
+    fullRdf.config = fullRdf.config || {};
+    Object.assign(fullRdf.config, rdf.config);
+    return rdf;
   } else {
     throw new Error(`Failed to fetch RDF file.`);
   }
 }
 
-export function rdfToMetadata(rdf, baseUrl) {
+export function rdfToMetadata(rdf, baseUrl, docstring) {
   if (
     rdf.type === "model" &&
     compareVersions(rdf.format_version, ">", MAX_RDF_VERSION)
@@ -73,17 +76,17 @@ export function rdfToMetadata(rdf, baseUrl) {
       scheme: "url"
     });
   }
-  if (rdf.rdf_file)
+  if (rdf.config._rdf_file)
     // rdf.yaml or model.yaml
     related_identifiers.push({
-      identifier: rdf.rdf_file.startsWith("http")
-        ? rdf.rdf_file
-        : new URL(rdf.rdf_file, baseUrl).href,
+      identifier: rdf.config._rdf_file.startsWith("http")
+        ? rdf.config._rdf_file
+        : new URL(rdf.config._rdf_file, baseUrl).href,
       relation: "isCompiledBy", // compiled/created this upload
       resource_type: "other",
       scheme: "url"
     });
-  else throw new Error("`rdf_file` key is not defined in the RDF");
+  else throw new Error("`_rdf_file` key is not found in the RDF config");
 
   if (rdf.documentation) {
     if (rdf.documentation.includes("access_token="))
@@ -109,17 +112,22 @@ export function rdfToMetadata(rdf, baseUrl) {
         orcid: author.orcid
       };
   });
+  const description =
+    `<a href="https://bioimage.io/#/p/zenodo:${encodeURIComponent(
+      rdf.config._deposit.id
+    )}"><span class="label label-success">Download RDF Package</span></a>` +
+    (docstring || `<p>${docstring}</p>`);
   const keywords = ["bioimage.io", "bioimage.io:" + rdf.type];
   const metadata = {
     title: rdf.name,
-    description: `<p>${rdf.description}</p>`,
+    description,
     access_right: "open",
     license: rdf.license,
     upload_type: "other",
     creators: creators,
     publication_date: new Date().toISOString().split("T")[0],
     keywords: keywords.concat(rdf.tags),
-    notes: "Uploaded via BioImage.IO website (https://bioimage.io)",
+    notes: rdf.description + " (Uploaded via https://bioimage.io)",
     related_identifiers,
     communities: []
   };
@@ -204,10 +212,13 @@ export function depositionToRdf(deposition) {
         : metadata.license.id, // sometimes it doesn't contain id
     documentation,
     covers,
-    rdf_file: rdfFile,
+
     source, //TODO: fix for other RDF types
     links,
-    _deposit: deposition
+    config: {
+      _deposit: deposition,
+      _rdf_file: rdfFile
+    }
   };
 }
 
