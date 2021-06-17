@@ -26,7 +26,10 @@
     <span class="authors">
       {{
         resourceItem.authors && resourceItem.authors.length > 0
-          ? "Author(s): " + resourceItem.authors.join(",")
+          ? "Author(s): " +
+            resourceItem.authors
+              .map(author => author.name.split(";")[0])
+              .join(",")
           : ""
       }}
     </span>

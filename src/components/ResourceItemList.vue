@@ -48,7 +48,11 @@
             field="authors"
           >
             <span>
-              {{ props.row.authors.join(", ") }}
+              {{
+                props.row.authors
+                  .map(author => author.name.split(";")[0])
+                  .join(", ")
+              }}
             </span>
           </b-table-column>
           <b-table-column
