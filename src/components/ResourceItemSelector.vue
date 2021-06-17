@@ -34,9 +34,18 @@
                   >Match: {{ matchingAll ? " All" : "Any" }}</b-switch
                 >
                 <b-switch v-model="freeTextMode"
-                  >Free Text:
+                  >Free text:
                   {{ freeTextMode ? " Enabled" : "Disabled" }}</b-switch
                 >
+                <b-tooltip
+                  label="⚠️Include unverified resource items contributed by users on Zenodo."
+                  position="is-bottom"
+                >
+                  <b-switch v-model="includeWilderness"
+                    >Include wilderness:
+                    {{ includeWilderness ? " Yes" : "No" }}</b-switch
+                  >
+                </b-tooltip>
               </div>
 
               <div
@@ -135,6 +144,7 @@ export default {
       loading: false,
       matchingAll: true,
       freeTextMode: true,
+      includeWilderness: true,
       displayMode: "card"
     };
   },
@@ -289,7 +299,7 @@ export default {
 </script>
 <style scoped>
 .container {
-  width: 800px;
+  width: 860px;
 }
 .dropdown-panel {
   width: 100%;

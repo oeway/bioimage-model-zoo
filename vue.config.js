@@ -12,6 +12,7 @@ module.exports = {
       }
   },
   configureWebpack: {
+    devtool: 'cheap-module-source-map',
     plugins: [
       new HtmlWebpackPlugin({
         templateParameters: siteConfig,

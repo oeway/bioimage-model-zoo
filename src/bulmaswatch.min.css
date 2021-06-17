@@ -5604,7 +5604,7 @@ a.list-item {
   justify-content: center;
   overflow: hidden;
   position: fixed;
-  z-index: 40;
+  z-index: 9999;
 }
 .modal.is-active {
   display: flex;

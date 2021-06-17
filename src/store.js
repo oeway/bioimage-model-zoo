@@ -1,14 +1,48 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { randId } from "./utils";
+import { ZenodoClient } from "./utils.js";
+import siteConfig from "../site.config.json";
+
 Vue.use(Vuex);
+
+// set default values for table_view
+siteConfig.table_view = siteConfig.table_view || {
+  columns: ["name", "authors", "badges", "apps"]
+};
+
+const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
+  ? "https://sandbox.zenodo.org"
+  : "https://zenodo.org";
 
 export const store = new Vuex.Store({
   state: {
-    resourceItems: []
+    allApps: {},
+    resourceItems: [],
+    zenodoClient: siteConfig.zenodo_config.enabled
+      ? new ZenodoClient(
+          zenodoBaseURL,
+          siteConfig.zenodo_config.client_id,
+          siteConfig.zenodo_config.use_sandbox
+        )
+      : null,
+    zenodoBaseURL,
+    siteConfig
   },
   actions: {
-    async getResourceItems(context, { siteConfig, manifest_url, repo }) {
+    async login(context) {
+      try {
+        await context.state.client.login();
+      } catch (e) {
+        alert(`Failed to login: ${e}`);
+      }
+    },
+
+    async getResourceItems(context, { manifest_url, repo }) {
+      const items = await context.state.zenodoClient.getResourceItems({});
+      items.map(item => context.commit("addResourceItem", item));
+
+      const siteConfig = context.state.siteConfig;
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
       if (repo_manifest.collections && siteConfig.partners) {
@@ -25,6 +59,8 @@ export const store = new Vuex.Store({
       const rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
       for (let item of rawResourceItems) {
         item.repo = repo;
+        item.config = item.config || {};
+        item.config._rdf_file = item.source; // TODO: some resources current doesn't have a dedicated rdf_file
         // if (item.source && !item.source.startsWith("http"))
         //   item.source = concatAndResolveUrl(item.root_url, item.source);
         context.commit("addResourceItem", item);
@@ -33,9 +69,11 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);
     },
     removeResourceItem(state, item) {
+      if (item.type === "application") delete state.allApps[item.id];
       const index = state.resourceItems.indexOf(item);
       if (index >= 0) state.resourceItems.splice(index, 1);
     }

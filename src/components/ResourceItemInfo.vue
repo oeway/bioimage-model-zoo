@@ -78,7 +78,6 @@
 
 <script>
 import { mapState } from "vuex";
-import siteConfig from "../../site.config.json";
 import Badges from "@/components/Badges.vue";
 import AppIcons from "@/components/AppIcons.vue";
 import Attachments from "@/components/Attachments.vue";
@@ -103,7 +102,6 @@ export default {
   },
   data() {
     return {
-      siteConfig: siteConfig,
       maxDescriptionLetters: 100,
       maxDocsLetters: 500,
       showSource: false
@@ -152,7 +150,8 @@ export default {
       return citations;
     },
     ...mapState({
-      resourceItems: state => state.resourceItems
+      resourceItems: state => state.resourceItems,
+      siteConfig: state => state.siteConfig
     })
   },
   methods: {

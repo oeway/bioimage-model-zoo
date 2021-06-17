@@ -118,10 +118,11 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Vue from "vue";
 import AppIcons from "./AppIcons";
 import ResourceItemCard from "./ResourceItemCard";
-import siteConfig from "../../site.config.json";
+
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 Vue.component("label-selector", {
@@ -157,12 +158,14 @@ export default {
       return items.filter(item =>
         this.filters.every(label => item.allLabels.includes(label))
       );
-    }
+    },
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
   },
   data() {
     return {
       isSafari: isSafari,
-      siteConfig: siteConfig,
       currentPage: 1,
       itemsPerPage: 16
     };

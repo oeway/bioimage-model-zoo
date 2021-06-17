@@ -1,306 +1,141 @@
-import { reshape } from "mathjs";
-import siteConfig from "../site.config.json";
-import { version } from "../package.json";
-
-const dtypeToTypedArray = {
-  int8: "Int8Array",
-  int16: "Int16Array",
-  int32: "Int32Array",
-  uint8: "Uint8Array",
-  uint16: "Uint16Array",
-  uint32: "Uint32Array",
-  float32: "Float32Array",
-  float64: "Float64Array",
-  array: "Array"
-};
-
-const ArrayBufferView = Object.getPrototypeOf(
-  Object.getPrototypeOf(new Uint8Array())
-).constructor;
-
-// eslint-disable-next-line no-unused-vars
-function toArray(data) {
-  if (
-    typeof data === "number" ||
-    typeof data === "string" ||
-    typeof data === "boolean" ||
-    data === null ||
-    data === undefined
-  ) {
-    return data;
-  }
-  if (data instanceof ArrayBuffer) {
-    return Array.from(new Uint8Array(data));
-  }
-  if (data instanceof ArrayBufferView) {
-    return Array.from(data);
-  }
-  if (Array.isArray(data)) return data.map(toArray);
-  if (data.constructor === Object) {
-    if (data._rtype) {
-      if (data._rtype !== "ndarray") throw "Invalid input type: " + data._rtype;
-      const arraytype = eval(dtypeToTypedArray[data._rdtype]);
-      return reshape(Array.from(new arraytype(data._rvalue)), data._rshape);
-    }
-    const obj = {};
-    Object.entries(data).forEach(arr => {
-      obj[arr[0]] = toArray(arr[1]);
-    });
-    return obj;
-  } else {
-    throw new Error("Unsupported type conversion");
-  }
-}
-
-export async function setupBioEngineAPI() {
-  const imjoyRPC = await window.imjoyLoader.loadImJoyRPC({
-    api_version: "0.2.3"
-  });
-
-  const api = await imjoyRPC.setupRPC({
-    name: siteConfig.name,
-    version: version,
-    description: siteConfig.description,
-    type: "rpc-window"
-  });
-  const service_api = {
-    setup() {
-      api.log(`${siteConfig.name} loaded successfully.`);
-    },
-    async run() {},
-    getSelection() {
-      return [];
-    }
-  };
-
-  api.export(service_api);
-}
-
-export async function setupBioEngine(
-  workspace,
-  showMessage,
-  showProgress,
-  showDialog,
-  closeDialog,
-  updateStatus
-) {
-  const imjoyCore = await window.loadImJoyCore();
-  console.log("ImJoy-Core version: " + imjoyCore.VERSION);
-  var imjoy_api = {
-    showStatus(plugin, info) {
-      showMessage(info);
-    },
-    showMessage(plugin, info, duration) {
-      showMessage(info, duration);
-    },
-    showProgress(plugin, progress) {
-      if (progress < 1) progress = progress * 100;
-      showProgress(progress);
-    },
-    showDialog(_plugin, config) {
-      return new Promise((resolve, reject) => {
-        if (config.ui) {
-          showDialog(config);
-          const joy_config = {
-            container: document.getElementById("window-dialog-container"),
-            init: config.ui || "", //"{id:'localizationWorkflow', type:'ops'} " + // a list of ops
-            data: config.data, // || Joy.loadFromURL(),
-            modules: config.modules || ["instructions", "math"],
-            onexecute: config.onexecute,
-            onupdate: config.onupdate
-          };
-          try {
-            new imjoyCore.Joy(joy_config);
-          } catch (e) {
-            console.error("error occured when loading the workflow", e);
-            joy_config.data = "";
-            new imjoyCore.Joy(joy_config);
-            throw e;
-          }
-        } else if (config.type) {
-          config.window_container = "window-dialog-container";
-          config.standalone = true;
-          if (config.type.startsWith("imjoy/")) {
-            config.render = () => {};
-          }
-          showDialog(config);
-          setTimeout(() => {
-            imjoy.pm
-              .createWindow(null, config)
-              .then(api => {
-                const _close = api.close;
-                api.close = async () => {
-                  await _close();
-                  closeDialog();
-                };
-                resolve(api);
-              })
-              .catch(reject);
-          }, 0);
-        } else {
-          alert("Unsupported dialog type.");
+export async function setupBioEngine() {
+  window
+    .loadImJoyBasicApp({
+      process_url_query: true,
+      show_window_title: false,
+      show_progress_bar: true,
+      show_empty_window: true,
+      hide_about_imjoy: true,
+      menu_style: {},
+      window_style: {
+        width: "100%",
+        height: "100%"
+      },
+      main_container: null,
+      menu_container: "imjoy-menu",
+      window_manager_container: null,
+      imjoy_api: {} // override some imjoy API functions here
+    })
+    .then(async app => {
+      // get the api object from the root plugin
+      const api = app.imjoy.api;
+      app.$on("window-size-pos-changing", changing => {
+        const iframes = document.querySelectorAll(".reveal iframe");
+        for (let iframe of iframes) {
+          iframe.style.pointerEvents = changing ? "none" : "all";
         }
       });
-    }
-  };
-
-  const imjoy = new imjoyCore.ImJoy({
-    imjoy_api: imjoy_api
-  });
-  imjoy.lazy_dependencies = {};
-  const _getPlugin = imjoy.pm.imjoy_api.getPlugin;
-  imjoy.pm.imjoy_api.getPlugin = async (_plugin, plugin_name) => {
-    if (plugin_name.includes("\n")) {
-      return await _getPlugin(_plugin, plugin_name);
-    }
-    const target_plugin = imjoy.pm.plugin_names[plugin_name];
-    if (target_plugin) {
-      return target_plugin.api;
-    } else if (imjoy.pm.internal_plugins[plugin_name]) {
-      try {
-        updateStatus({ loading: true });
-        const p = await imjoy.pm.reloadPluginRecursively(
-          {
-            uri: imjoy.pm.internal_plugins[plugin_name].uri
-          },
-          null,
-          "eval is evil"
-        );
-        console.log(`${p.name} loaded.`);
-        return p.api;
-      } catch (e) {
-        console.error(e);
-        throw e;
-      } finally {
-        updateStatus({ loading: false });
-      }
-    } else if (imjoy.lazy_dependencies[plugin_name]) {
-      try {
-        updateStatus({ loading: true });
-        const p = await imjoy.pm.reloadPluginRecursively({
-          uri: imjoy.lazy_dependencies[plugin_name]
-        });
-        console.log(`${p.name} loaded.`);
-        return p.api;
-      } catch (e) {
-        console.error(e);
-        throw e;
-      } finally {
-        updateStatus({ loading: false });
-      }
-    } else {
-      throw `plugin with type ${plugin_name} not found.`;
-    }
-  };
-  await imjoy.start({ workspace: workspace });
-  console.log("ImJoy loaded successfully.");
-  return imjoy;
-}
-
-class ProxyWindowPlugin {
-  constructor(imjoy, item) {
-    this.name = item.name;
-    this.id = item.id;
-    this.config = item;
-    this.api = {
-      setup: function() {},
-      run() {
-        imjoy.pm.createWindow(null, { src: item.source });
-      }
-    };
-  }
-}
-export async function loadPlugins(imjoy, appSources) {
-  console.log("ImJoy started: ", imjoy);
-  await imjoy.pm.reloadPluginRecursively({
-    uri:
-      "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
-  });
-  const apps = {};
-  // await imjoy.pm.reloadInternalPlugins()
-  for (let ap of appSources) {
-    if (ap.source.endsWith(".imjoy.html")) {
-      try {
-        const config = await imjoy.pm.getPluginFromUrl(ap.source);
-        const p = await imjoy.pm.reloadPlugin(config);
-        if (config.dependencies)
-          for (let i = 0; i < config.dependencies.length; i++) {
-            const d_config = await imjoy.pm.getPluginFromUrl(
-              config.dependencies[i]
-            );
-            // TODO: use a better way to determin if it's an internal plugin type
-            if (imjoy.pm.getBadges(d_config) === "🚀") {
-              imjoy.lazy_dependencies[d_config.name] = config.dependencies[i];
-            } else {
-              await imjoy.pm.reloadPluginRecursively({
-                uri: config.dependencies[i]
-              });
-            }
-          }
-        apps[ap.id] = p;
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      if (ap.source) apps[ap.id] = new ProxyWindowPlugin(imjoy, ap);
-    }
-  }
-  return apps;
-}
-
-export function loadCodeFromFile(imjoy, file) {
-  return new Promise((resolve, reject) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const code = reader.result;
-
-        const config = imjoy.pm.parsePluginCode(code);
-        config.dependencies = config.dependencies || [];
-        try {
-          for (let i = 0; i < config.dependencies.length; i++) {
-            await imjoy.pm.reloadPluginRecursively({
-              uri: config.dependencies[i]
-            });
-          }
-          const plugin = await imjoy.pm.reloadPlugin(config);
-          resolve(plugin);
-          console.log(`Plugin "${plugin.name}" loaded successfully.`);
-        } catch (error) {
-          reject(`Failed to load dependencies for ${config.name}: ${error}`);
+      // if you want to let users to load new plugins, add a menu item
+      app.addMenuItem({
+        label: "➕ Load Plugin",
+        callback() {
+          const uri = prompt(
+            `Please type a ImJoy plugin URL`,
+            "https://github.com/imjoy-team/imjoy-plugins/blob/master/repository/ImageAnnotator.imjoy.html"
+          );
+          if (uri) app.loadPlugin(uri);
         }
-      } catch (e) {
-        console.error(e);
-        reject(`Failed to load plugin: ${e}`);
-      }
-    };
-    reader.onerror = e => {
+      });
+      // expose global variables
+      window.api = api;
+      window.imjoy = app.imjoy;
+      window.app = app;
+      // TODO: hacky solution, need further investigation
+      // imjoy.event_bus.on("add_window", w => {
+      //   if(imjoy.wm.windows.indexOf(w)<0){
+      //     imjoy.wm.windows.push(w);
+      //   }
+      // });
+
+      app.imjoy.pm
+        .reloadPluginRecursively({
+          // uri: "http://localhost:9090/Jupyter-Engine-Manager.imjoy.html"
+          uri:
+            "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
+        })
+        .then(enginePlugin => {
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          const engine = urlParams.get("engine");
+          const spec = urlParams.get("spec");
+          if (engine) {
+            enginePlugin.api
+              .createEngine({
+                name: "MyCustomEngine",
+                nbUrl: engine,
+                url: engine.split("?")[0]
+              })
+              .then(() => {
+                console.log("Jupyter Engine connected!");
+              })
+              .catch(e => {
+                console.error("Failed to connect to Jupyter Engine", e);
+              });
+          } else {
+            enginePlugin.api
+              .createEngine({
+                name: "MyBinder Engine",
+                url: "https://mybinder.org",
+                spec: spec || "oeway/imjoy-binder-image/master"
+              })
+              .then(() => {
+                console.log("Binder Engine connected!");
+              })
+              .catch(e => {
+                console.error("Failed to connect to MyBinder Engine", e);
+              });
+          }
+        });
+      app.addMenuItem({
+        label: "ℹ️ Github",
+        callback() {
+          window.open("https://github.com/bioimage-io/bioimage.io");
+        }
+      });
+    })
+    .catch(e => {
       console.error(e);
-      reject(`Failed to load plugin: ${e}`);
-    };
-    reader.readAsText(file);
-  });
+    });
 }
 
-export async function runAppForAllItems(plugin, allItems) {
-  if (plugin.type === "window") {
-    const w = await plugin.api.run();
-    await w.run({
+export async function runAppForAllItems(context, config, allItems) {
+  console.log(config, allItems);
+  context.showLoader(true);
+  try {
+    if (config.passive) {
+      await window.api.createWindow({ src: config.source, passive: true });
+      return;
+    }
+    const plugin = await window.api.getPlugin({ src: config.source });
+    await plugin.run({
       config: { referer: window.location.href, mode: "all", type: "bioengine" },
       data: allItems
     });
-  } else {
-    await plugin.api.run({
-      config: { referer: window.location.href, mode: "all", type: "bioengine" },
-      data: allItems
-    });
+    context.showLoader(false);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    context.showLoader(false);
   }
+  // }
 }
 
-export async function runAppForItem(plugin, item) {
-  await plugin.api.run({
-    config: { referer: window.location.href, mode: "one", type: "bioengine" },
-    data: item
-  });
+export async function runAppForItem(context, config, item) {
+  console.log(config, item);
+  context.showLoader(true);
+  try {
+    if (config.passive) {
+      await window.api.createWindow({ src: config.source, passive: true });
+      return;
+    }
+    const plugin = await window.api.getPlugin({ src: config.source });
+    await plugin.run({
+      config: { referer: window.location.href, mode: "one", type: "bioengine" },
+      data: item
+    });
+  } catch (e) {
+    console.error(e);
+  } finally {
+    context.showLoader(false);
+  }
 }

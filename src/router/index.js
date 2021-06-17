@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import ResourceItemList from "../components/ResourceItemList.vue";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -9,6 +10,18 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home
+  },
+  {
+    path: "/r/:resourceId+",
+    name: "Home",
+    component: Home,
+    props: true
+  },
+  {
+    path: "/p/:resourceId+",
+    name: "Package",
+    component: Home,
+    props: true
   },
   {
     path: "/app",

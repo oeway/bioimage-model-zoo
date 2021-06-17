@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import siteConfig from "../../site.config.json";
+import { mapState } from "vuex";
 export default {
   name: "CommentBox",
   props: {
@@ -17,17 +17,18 @@ export default {
       type: String,
       default: null
     },
-    repo: {
-      type: String,
-      default: siteConfig.model_repo
-    },
     label: {
       type: String,
       default: "comment"
     }
   },
+  computed: {
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
+  },
   mounted() {
-    if (siteConfig.enable_comment) {
+    if (this.siteConfig.enable_comment) {
       this.loading = true;
       setTimeout(() => this.showCommentBox(), 200);
     }
@@ -49,7 +50,7 @@ export default {
       window.document.title = this.title;
       const utteranc = document.createElement("script");
       utteranc.src = "https://utteranc.es/client.js";
-      utteranc.setAttribute("repo", this.repo);
+      utteranc.setAttribute("repo", this.siteConfig.rdf_root_repo);
       utteranc.setAttribute("issue-term", "title");
       utteranc.setAttribute("label", this.label);
       utteranc.setAttribute("theme", "github-light");

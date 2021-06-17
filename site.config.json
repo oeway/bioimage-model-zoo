@@ -25,7 +25,7 @@
       "url": "https://github.com/bioimage-io/bioimage-io-models"
     }
   ],
-  "model_repo": "bioimage-io/bioimage-io-models",
+  "rdf_root_repo": "bioimage-io/bioimage-io-models",
   "enable_comment": true,
   "splash_title": "Bioimage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
@@ -37,6 +37,11 @@
   ],
   "table_view": {
     "columns": ["name", "authors", "badges", "apps"]
+  },
+  "zenodo_config": {
+    "enabled": true,
+    "client_id": "0Zb8YkwXBqt2zelL9WyorERRzJufdTJMgxxuibmQ",
+    "use_sandbox": true
   },
   "attachment_table": {
     "columns": [

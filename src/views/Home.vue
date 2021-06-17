@@ -34,7 +34,7 @@
             <b-icon icon="playlist-check"></b-icon>
             <span>Documentation</span>
           </a>
-          <a
+          <!-- <a
             class="navbar-item"
             target="_blank"
             v-if="siteConfig.contribute_url"
@@ -42,11 +42,16 @@
           >
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
+          </a> -->
+          <a class="navbar-item" @click="showUploadDialog">
+            <b-icon icon="plus"></b-icon>
+            <span>Upload</span>
           </a>
           <a class="navbar-item" @click="showAboutDialog">
             <b-icon icon="information-outline"></b-icon>
             <span>About</span>
           </a>
+          <a class="navbar-item" id="imjoy-menu"> </a>
         </div>
       </div>
     </nav>
@@ -180,18 +185,6 @@
       @tags-updated="updateQueryTags"
       @input-change="removePartner"
     ></resource-item-selector>
-    <div
-      v-if="selectedCategory && selectedCategory.type === 'application'"
-      style="text-align:center;"
-    >
-      <a @click="$refs.file_select.click()">Load application from file</a>
-      <input
-        type="file"
-        style="display:none;"
-        @change="fileSelected"
-        ref="file_select"
-      />
-    </div>
     <br />
     <resource-item-list
       @show-resource-item-info="showResourceItemInfo"
@@ -227,6 +220,8 @@
     </footer>
     <modal
       name="window-modal-dialog"
+      @opened="preventPageScroll"
+      @closed="restorePageScroll"
       :resizable="!dialogWindowConfig.fullscreen"
       :width="dialogWindowConfig.width"
       :height="dialogWindowConfig.height"
@@ -311,6 +306,8 @@
     </modal>
     <modal
       name="info-dialog"
+      @opened="preventPageScroll"
+      @closed="restorePageScroll"
       :resizable="true"
       :minWidth="200"
       :minHeight="150"
@@ -345,6 +342,7 @@
         </div>
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
+      <upload v-if="showInfoDialogMode === 'upload'"></upload>
       <about
         v-if="showInfoDialogMode === 'about'"
         about-url="https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/README.md"
@@ -413,29 +411,18 @@ import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import Attachments from "@/components/Attachments.vue";
 import Partners from "@/components/Partners.vue";
 import CommentBox from "@/components/CommentBox.vue";
+import Upload from "@/components/Upload.vue";
 import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
-import siteConfig from "../../site.config.json";
+
 const DEFAULT_ICONS = {
   notebook: "notebook-outline",
   dataset: "database",
   application: "puzzle",
   model: "hubspot"
 };
-import {
-  setupBioEngine,
-  loadPlugins,
-  loadCodeFromFile,
-  setupBioEngineAPI,
-  runAppForItem,
-  runAppForAllItems
-} from "../bioEngine";
+import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
 import { concatAndResolveUrl, debounce } from "../utils";
-
-// set default values for table_view
-siteConfig.table_view = siteConfig.table_view || {
-  columns: ["name", "authors", "badges", "apps"]
-};
 
 const isTouchDevice = (function() {
   try {
@@ -510,7 +497,7 @@ function normalizeItem(self, item) {
     }
   });
 
-  if (item.source && item.source.startsWith("http"))
+  if (item.config && item.config._rdf_file)
     item.apps.unshift({
       name: "Source",
       icon: "code-tags",
@@ -539,9 +526,7 @@ function normalizeItem(self, item) {
       name: "Run",
       icon: "play",
       run() {
-        if (self.allApps[item.id])
-          runAppForAllItems(self.allApps[item.id], self.resourceItems);
-        else alert("This application is not ready or unavailable.");
+        runAppForAllItems(self, self.allApps[item.id], self.resourceItems);
       }
     });
   } else if (item.links) {
@@ -553,7 +538,7 @@ function normalizeItem(self, item) {
           icon: lit.icon || DEFAULT_ICONS[lit.type],
           run() {
             if (self.allApps[link_key])
-              runAppForItem(self.allApps[link_key], item);
+              runAppForItem(self, self.allApps[link_key], item);
             else self.showResourceItemInfo(lit);
           }
         });
@@ -635,11 +620,13 @@ function normalizeItem(self, item) {
 
 export default {
   name: "Home",
+  props: ["resourceId"],
   components: {
     "resource-item-list": ResourceItemList,
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
     "comment-box": CommentBox,
+    upload: Upload,
     attachments: Attachments,
     markdown: Markdown,
     partners: Partners,
@@ -651,12 +638,10 @@ export default {
       progress: 100,
       searchTags: null,
       isTouchDevice: isTouchDevice,
-      siteConfig: siteConfig,
       rawResourceItems: null,
       selectedItems: null,
       showMenu: false,
       applications: [],
-      allApps: {},
       dialogWindowConfig: {
         width: "800px",
         height: "670px",
@@ -682,7 +667,7 @@ export default {
   mounted: async function() {
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
-
+    setupBioEngine();
     // select models as default
     for (let list of this.resourceCategories) {
       if (list.type === "model") {
@@ -701,7 +686,7 @@ export default {
         window.location.pathname + "#" + window.location.hash.substr(1);
       window.history.replaceState(null, "", originalUrl);
 
-      let repo = siteConfig.model_repo;
+      let repo = this.siteConfig.rdf_root_repo;
       const query_repo = this.$route.query.repo;
       let manifest_url = this.siteConfig.manifest_url;
       if (query_repo) {
@@ -720,7 +705,6 @@ export default {
       }
 
       await this.$store.dispatch("getResourceItems", {
-        siteConfig,
         repo,
         manifest_url
       });
@@ -730,46 +714,23 @@ export default {
         ? this.transformedResourceItems.filter(m => m.type === tp)
         : this.transformedResourceItems;
 
+      // get id from component props
+      if (this.resourceId) {
+        if (this.resourceId.startsWith("zenodo:")) {
+          const zenodoId = parseInt(this.resourceId.split(":")[1]);
+          const matchedItem = this.resourceItems.filter(
+            item =>
+              item.config &&
+              item.config._deposit &&
+              item.config._deposit.id === zenodoId
+          )[0];
+          if (matchedItem) this.$route.query.id = matchedItem.id;
+        } else this.$route.query.id = this.resourceId;
+      }
+
       this.updateViewByUrlQuery();
       this.$forceUpdate();
       console.log("Loading ImJoy...");
-      const workspace = this.$route.query.workspace || this.$route.query.w;
-      setupBioEngine(
-        workspace,
-        this.showMessage,
-        this.showProgress,
-        this.showWindowDialog,
-        this.closeWindowDialog,
-        this.updateStatus
-      ).then(imjoy => {
-        this.imjoy = imjoy;
-        imjoy.event_bus.on("show_message", msg => {
-          this.showMessage(msg);
-        });
-        imjoy.event_bus.on("add_window", w => {
-          this.addWindow(w);
-        });
-        imjoy.event_bus.on("plugin_loaded", () => {});
-
-        imjoy.event_bus.on("imjoy_ready", () => {});
-
-        imjoy.event_bus.on("close_window", w => {
-          this.closeDialogWindow(w);
-        });
-        const applications = this.transformedResourceItems.filter(
-          m => m.type === "application"
-        );
-        loadPlugins(imjoy, applications).then(allApps => {
-          this.showMessage(
-            `Successfully loaded ${Object.keys(allApps).length} applications.`
-          );
-          this.allApps = allApps;
-        });
-      });
-      // inside an iframe
-      if (window.self !== window.top) {
-        setupBioEngineAPI();
-      }
     } catch (e) {
       console.error(e);
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
@@ -830,6 +791,9 @@ export default {
       }
     },
     ...mapState({
+      allApps: state => state.allApps,
+      zenodoClient: state => state.zenodoClient,
+      siteConfig: state => state.siteConfig,
       resourceItems: state => state.resourceItems
     })
   },
@@ -867,6 +831,14 @@ export default {
       query.partner = partner.id;
       query.tags = partner.tags;
       this.$router.replace({ query: query }).catch(() => {});
+    },
+    preventPageScroll() {
+      document.getElementsByTagName("html")[0].style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    },
+    restorePageScroll() {
+      document.getElementsByTagName("html")[0].style.overflow = "auto";
+      document.body.style.overflow = "auto";
     },
     showJoinDialog() {
       this.infoDialogTitle = `Join ${this.siteConfig.site_name} as a community partner`;
@@ -965,6 +937,12 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
+    showUploadDialog() {
+      this.showInfoDialogMode = "upload";
+      this.infoDialogTitle = "Upload";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+    },
     showAboutDialog() {
       this.showInfoDialogMode = "about";
       this.infoDialogTitle = "About";
@@ -1003,6 +981,16 @@ export default {
       query.show = "contribute";
       this.$router.replace({ query: query }).catch(() => {});
     },
+    showLoader(enable) {
+      if (enable)
+        this.loadingComponent = this.$buefy.loading.open({ canCancel: true });
+      else {
+        if (this.loadingComponent) {
+          this.loadingComponent.close();
+          this.loadingComponent = null;
+        }
+      }
+    },
     showAboutPartner(partner) {
       if (partner.about_url.startsWith("http")) {
         if (partner.about_url.endsWith(".md")) {
@@ -1028,24 +1016,23 @@ export default {
     },
     showSource(item) {
       if (
-        item.source.endsWith(".yaml") ||
-        item.source.endsWith(".yml") ||
-        item.source.endsWith(".imjoy.html")
+        item.config._rdf_file.endsWith(".yaml") ||
+        item.config._rdf_file.endsWith(".yml")
       ) {
         this.infoDialogTitle = "Source: " + item.name;
-        this.infoMarkdownUrl = item.source;
+        this.infoMarkdownUrl = item.config._rdf_file;
         this.infoCommentBoxTitle = item.name;
         this.showInfoDialogMode = "markdown";
         if (this.screenWidth < 700) this.infoDialogFullscreen = true;
         this.$modal.show("info-dialog");
-      } else if (item.source.startsWith("http")) {
-        window.open(item.source);
+      } else if (item.config._rdf_file.startsWith("http")) {
+        window.open(item.config._rdf_file);
       } else {
         this.$buefy.dialog.alert({
           title: "Source: " + item.name,
           hasIcon: true,
           icon: "code-tags",
-          message: item.source,
+          message: item.config._rdf_file,
           confirmText: "OK"
         });
       }
@@ -1187,12 +1174,6 @@ export default {
     },
     showWindowDialog() {},
     closeWindowDialog() {},
-    fileSelected() {
-      if (!this.$refs.file_select.files) return;
-      const local_file = this.$refs.file_select.files[0];
-      this.showMessage("Loading App...");
-      loadCodeFromFile(this.imjoy, local_file);
-    },
     getLabelCount(label) {
       return this.filteredModels.filter(models =>
         models.allLabels.includes(label)
@@ -1397,5 +1378,9 @@ export default {
 html,
 body {
   overflow-x: hidden;
+}
+
+form {
+  max-width: 100%;
 }
 </style>

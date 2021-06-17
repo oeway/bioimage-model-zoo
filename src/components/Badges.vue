@@ -3,7 +3,7 @@
     <a
       class="badge"
       v-for="badge in badges"
-      :key="badge.label"
+      :key="badge.label + badge.ext"
       :href="badge.url"
       target="_blank"
       @click="!badge.url && badge.run && badge.run()"

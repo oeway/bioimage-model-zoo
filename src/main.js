@@ -8,6 +8,19 @@ import { store } from "./store";
 import "./bulmaswatch.min.css";
 import vmodal from "vue-js-modal";
 import "@mdi/font/css/materialdesignicons.css";
+import { extend, ValidationProvider } from "vee-validate";
+import * as rules from "vee-validate/dist/rules";
+import { messages } from "vee-validate/dist/locale/en.json";
+
+// for vue-form-json
+Vue.component("ValidationProvider", ValidationProvider);
+
+Object.keys(rules).forEach(rule => {
+  extend(rule, {
+    ...rules[rule],
+    message: messages[rule]
+  });
+});
 
 Vue.use(vmodal);
 
