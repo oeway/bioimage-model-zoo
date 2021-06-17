@@ -20,7 +20,11 @@ export const store = new Vuex.Store({
     allApps: {},
     resourceItems: [],
     zenodoClient: siteConfig.zenodo_config.enabled
-      ? new ZenodoClient(zenodoBaseURL, siteConfig.zenodo_config.client_id)
+      ? new ZenodoClient(
+          zenodoBaseURL,
+          siteConfig.zenodo_config.client_id,
+          siteConfig.zenodo_config.use_sandbox
+        )
       : null,
     zenodoBaseURL,
     siteConfig

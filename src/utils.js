@@ -222,9 +222,10 @@ export function depositionToRdf(deposition) {
 }
 
 export class ZenodoClient {
-  constructor(baseURL, clientId) {
+  constructor(baseURL, clientId, isSandbox) {
     this.baseURL = baseURL;
     this.clientId = clientId;
+    this.isSandbox = isSandbox;
     this.callbackUrl = encodeURIComponent("https://imjoy.io/login-helper");
     this.credential = null;
     try {

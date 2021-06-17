@@ -44,7 +44,6 @@ export async function setupBioEngine() {
       // imjoy.event_bus.on("add_window", w => {
       //   if(imjoy.wm.windows.indexOf(w)<0){
       //     imjoy.wm.windows.push(w);
-      //     debugger
       //   }
       // });
 
