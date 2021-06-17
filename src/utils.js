@@ -143,7 +143,6 @@ export function depositionToRdf(deposition) {
     );
   }
   type = type.replace("bioimage.io:", "");
-  const source = deposition.links.html;
   const covers = [];
   const links = [];
   let rdfFile = null;
@@ -212,10 +211,10 @@ export function depositionToRdf(deposition) {
         : metadata.license.id, // sometimes it doesn't contain id
     documentation,
     covers,
-
-    source, //TODO: fix for other RDF types
+    source: rdfFile, //TODO: fix for other RDF types
     links,
     config: {
+      _zenodo: deposition.links.html,
       _deposit: deposition,
       _rdf_file: rdfFile
     }
