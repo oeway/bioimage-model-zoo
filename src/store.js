@@ -55,6 +55,8 @@ export const store = new Vuex.Store({
       const rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
       for (let item of rawResourceItems) {
         item.repo = repo;
+        item.config = item.config || {};
+        item.config._rdf_file = item.source; // TODO: some resources current doesn't have a dedicated rdf_file
         // if (item.source && !item.source.startsWith("http"))
         //   item.source = concatAndResolveUrl(item.root_url, item.source);
         context.commit("addResourceItem", item);

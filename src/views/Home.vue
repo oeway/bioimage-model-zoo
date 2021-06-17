@@ -497,7 +497,7 @@ function normalizeItem(self, item) {
     }
   });
 
-  if (item.source && item.source.startsWith("http"))
+  if (item.config && item.config._rdf_file)
     item.apps.unshift({
       name: "Source",
       icon: "code-tags",
@@ -1007,24 +1007,23 @@ export default {
     },
     showSource(item) {
       if (
-        item.source.endsWith(".yaml") ||
-        item.source.endsWith(".yml") ||
-        item.source.endsWith(".imjoy.html")
+        item.config._rdf_file.endsWith(".yaml") ||
+        item.config._rdf_file.endsWith(".yml")
       ) {
         this.infoDialogTitle = "Source: " + item.name;
-        this.infoMarkdownUrl = item.source;
+        this.infoMarkdownUrl = item.config._rdf_file;
         this.infoCommentBoxTitle = item.name;
         this.showInfoDialogMode = "markdown";
         if (this.screenWidth < 700) this.infoDialogFullscreen = true;
         this.$modal.show("info-dialog");
-      } else if (item.source.startsWith("http")) {
-        window.open(item.source);
+      } else if (item.config._rdf_file.startsWith("http")) {
+        window.open(item.config._rdf_file);
       } else {
         this.$buefy.dialog.alert({
           title: "Source: " + item.name,
           hasIcon: true,
           icon: "code-tags",
-          message: item.source,
+          message: item.config._rdf_file,
           confirmText: "OK"
         });
       }
