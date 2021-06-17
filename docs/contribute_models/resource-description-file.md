@@ -90,7 +90,7 @@ attachments:
 
 For more examples, see the [HPA repo](https://github.com/CellProfiling/HPA-model-zoo/blob/master/manifest.bioimage.io.yaml).
 
-If you would like to also support interoperability and reproducibility, we have been working on an extended version of RDF for models, please see the [BioImage.IO model description file specification](https://github.com/bioimage-io/spec-bioimage-io/).
+If you would like to also support interoperability and reproducibility, we have been working on an extended version of RDF for models, please see the [BioImage.IO Model Resource Description File Specification](https://github.com/bioimage-io/spec-bioimage-io/).
 
 Here is an example: https://raw.githubusercontent.com/bioimage-io/pytorch-bioimage-io/v0.1.1/specs/models/unet2d/nuclei_broad/UNet2DNucleiBroad.model.yaml 
 
