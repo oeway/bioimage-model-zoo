@@ -59,8 +59,6 @@ export const store = new Vuex.Store({
       const rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
       for (let item of rawResourceItems) {
         item.repo = repo;
-        item.config = item.config || {};
-        item.config._rdf_file = item.source; // TODO: some resources current doesn't have a dedicated rdf_file
         // if (item.source && !item.source.startsWith("http"))
         //   item.source = concatAndResolveUrl(item.root_url, item.source);
         context.commit("addResourceItem", item);
@@ -69,6 +67,11 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      item.authors = item.authors.map(author =>
+        typeof author === "string" ? { name: author } : author
+      );
+      item.config = item.config || {};
+      item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);
     },

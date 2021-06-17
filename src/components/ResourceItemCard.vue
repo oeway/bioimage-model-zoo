@@ -149,7 +149,7 @@ export default {
   methods: {
     etAl(authors) {
       authors = authors.map(author => {
-        return author.split(";")[0];
+        return author.name.split(";")[0];
       });
       if (authors.length < 3) {
         return authors.join(", ");
