@@ -2,17 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import ResourceItemList from "../components/ResourceItemList.vue";
-import { compileToFunctions } from "vue-template-compiler";
 
 Vue.use(VueRouter);
-
-const Package = Vue.component("Package", {
-  props: ["resourceId"],
-  mounted() {
-    alert("Oops, downloading Package from Zenodo is not Implemented yet!");
-  },
-  ...compileToFunctions("<p>TODO: Download Package:  {{resourceId}}</p>")
-});
 
 const routes = [
   {
@@ -29,7 +20,7 @@ const routes = [
   {
     path: "/p/:resourceId+",
     name: "Package",
-    component: Package,
+    component: Home,
     props: true
   },
   {

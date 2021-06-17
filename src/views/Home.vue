@@ -716,7 +716,16 @@ export default {
 
       // get id from component props
       if (this.resourceId) {
-        this.$route.query.id = this.resourceId;
+        if (this.resourceId.startsWith("zenodo:")) {
+          const zenodoId = parseInt(this.resourceId.split(":")[1]);
+          const matchedItem = this.resourceItems.filter(
+            item =>
+              item.config &&
+              item.config._deposit &&
+              item.config._deposit.id === zenodoId
+          )[0];
+          if (matchedItem) this.$route.query.id = matchedItem.id;
+        } else this.$route.query.id = this.resourceId;
       }
 
       this.updateViewByUrlQuery();

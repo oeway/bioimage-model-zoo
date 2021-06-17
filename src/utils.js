@@ -214,7 +214,6 @@ export function depositionToRdf(deposition) {
     source: rdfFile, //TODO: fix for other RDF types
     links,
     config: {
-      _zenodo: deposition.links.html,
       _deposit: deposition,
       _rdf_file: rdfFile
     }
