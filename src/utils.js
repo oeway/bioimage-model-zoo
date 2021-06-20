@@ -330,7 +330,6 @@ export class ZenodoClient {
           reject("User canceled login");
         } else {
           countDown--;
-          console.log("waiting...");
           if (countDown <= 0) {
             clearInterval(timer);
             loginWindow.close();
