@@ -259,7 +259,14 @@ export class ZenodoClient {
       }
     }
     if (login) {
-      await this.login();
+      try {
+        await this.login();
+      } catch (e) {
+        if (confirm(`Failed to login: ${e}, would you like to try again?`)) {
+          return await this.getCredential(login);
+        }
+        throw e;
+      }
     }
     return this.credential;
   }
@@ -302,17 +309,42 @@ export class ZenodoClient {
         `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=CHANGEME&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
         "Login"
       );
-      const timer = setTimeout(() => {
-        loginWindow.close();
-        // make sure we closed the window
-        reject("Timeout error");
-      }, 20000);
+      try {
+        loginWindow.focus();
+      } catch (e) {
+        reject(
+          "Login window blocked. If you have a popup blocker enabled, please add bioimage.io to your exception list."
+        );
+        return;
+      }
+
+      let countDown = 60;
+      let loggedIn = false;
+      const timer = setInterval(function() {
+        if (loggedIn) {
+          clearInterval(timer);
+          return;
+        }
+        if (loginWindow.closed) {
+          clearInterval(timer);
+          reject("User canceled login");
+        } else {
+          countDown--;
+          console.log("waiting...");
+          if (countDown <= 0) {
+            clearInterval(timer);
+            loginWindow.close();
+            // make sure we closed the window
+            reject("Timeout error");
+          }
+        }
+      }, 1000);
       const handleLogin = event => {
         if (loginWindow === event.source) {
           // run only once
           window.removeEventListener("message", handleLogin);
+          clearInterval(timer);
           loginWindow.close();
-          clearTimeout(timer);
           if (event.data.error) {
             // make sure we closed the window
             setTimeout(() => {
@@ -320,6 +352,7 @@ export class ZenodoClient {
             }, 1);
             return;
           }
+          loggedIn = true;
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
           this.credential.user_id = parseInt(

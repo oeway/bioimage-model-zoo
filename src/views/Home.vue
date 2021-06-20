@@ -1092,7 +1092,7 @@ export default {
     },
     updateResourceItemList(models) {
       if (models.length <= 0) {
-        this.showMessage("No item found.");
+        if (this.initialized) this.showMessage("No item found.");
       }
       this.selectedItems = models;
     },
