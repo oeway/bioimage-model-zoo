@@ -333,7 +333,7 @@ export class ZenodoClient {
           console.log("waiting...");
           if (countDown <= 0) {
             clearInterval(timer);
-            loginWindow.close();
+            // loginWindow.close();
             // make sure we closed the window
             reject("Timeout error");
           }
