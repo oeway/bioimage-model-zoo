@@ -464,7 +464,13 @@ export default {
           label: "Type",
           type: "select",
           placeholder: "Select resource type",
-          options: ["model", "dataset", "notebook", "application"].map(opt => {
+          options: [
+            "model",
+            "dataset",
+            "notebook",
+            "workflow",
+            "application"
+          ].map(opt => {
             return {
               text: opt,
               value: opt,
