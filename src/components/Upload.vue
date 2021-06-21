@@ -140,22 +140,35 @@
             aria-close-label="Close notification"
           >
             <h1>
-              <a :href="item.source" target="_blank">{{ item.name }}</a>
+              <a :href="item.config._deposit.links.html" target="_blank">{{
+                item.name
+              }}</a>
             </h1>
-            <p>{{ item.description }}</p>
-            <b-button
-              v-if="
-                userId &&
-                  item.config._deposit &&
-                  item.config._deposit.owners.includes(userId)
-              "
-              @click="uploadFiles(item.config._deposit.id)"
-              class="button is-primary is-light is-fullwidth"
-              expanded
-              icon-left="autorenew"
-            >
-              <span>Update this deposit</span>
-            </b-button>
+            <p>{{ item.description.slice(0, 200) }}</p>
+
+            <p>
+              Authors:
+              {{
+                item.authors.map(author => author.name.split(";")[0]).join(",")
+              }}
+            </p>
+            <p>Uploaded: {{ item.config._deposit.updated }}</p>
+            <br />
+            <div class="columns">
+              <b-button
+                v-if="
+                  userId &&
+                    item.config._deposit &&
+                    item.config._deposit.owners.includes(userId)
+                "
+                @click="createOrUpdateDeposit(item.config._deposit.id, false)"
+                class="column button is-primary is-light is-fullwidth"
+                expanded
+                icon-left="autorenew"
+              >
+                <span>Update as a new version</span>
+              </b-button>
+            </div>
           </b-notification>
           <b-button
             style="text-transform:none;"
@@ -193,7 +206,7 @@
           <div v-if="client && (zipPackage || editedFiles)" class="column">
             <b-button
               :disabled="sameNameDeposits && sameNameDeposits.length > 0"
-              @click="uploadFiles()"
+              @click="createOrUpdateDeposit()"
               class="button is-primary is-light is-fullwidth"
               expanded
               icon-left="plus"
@@ -206,12 +219,12 @@
             class="column"
           >
             <b-button
-              @click="uploadFiles(depositId)"
+              @click="createOrUpdateDeposit(depositId, false)"
               class="button is-primary is-light is-fullwidth"
               expanded
               icon-left="autorenew"
             >
-              <span>Update existing deposit</span>
+              <span>Add new version to deposit</span>
             </b-button>
           </div>
         </div>
@@ -327,6 +340,11 @@ export default {
         return null;
       }
     },
+    userId() {
+      return (
+        this.client && this.client.credential && this.client.credential.user_id
+      );
+    },
     components: () => ({ TagInputField, DropFilesField }),
     ...mapState({
       resourceItems: state => state.resourceItems,
@@ -353,8 +371,7 @@ export default {
       prereserveDOI: null,
       URI4Load: null,
       similarDeposits: null,
-      depositId: null,
-      userId: null
+      depositId: null
     };
   },
   methods: {
@@ -598,6 +615,7 @@ export default {
         sort: "bestmatch",
         query: this.rdf.name
       });
+      console.log("Similar deposits:", this.similarDeposits);
       // if there is any similar items, we can try to login first
       if (this.similarDeposits.length > 0)
         await this.client.getCredential(true);
@@ -662,11 +680,9 @@ export default {
       saveAs(zipBlob, this.rdf.name + ".bioimage.io.zip");
       this.uploadStatus = "Done!";
     },
-    async uploadFiles(depositId) {
-      let credential;
+    async createOrUpdateDeposit(depositId, skipUpload) {
       try {
-        credential = await this.client.getCredential(true);
-        this.userId = credential.user_id;
+        await this.client.getCredential(true);
         this.$forceUpdate();
       } catch (e) {
         alert(`Failed to login: ${e}`);
@@ -675,13 +691,33 @@ export default {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
       });
+      this.similarDeposits = null;
       try {
         let depositionInfo;
         if (depositId) {
           try {
             depositionInfo = await this.client.retrieve(depositId);
+
             // enter edit mode if submitted
-            if (depositionInfo.submitted) await this.client.edit(depositId);
+            // if deposit.state == 'inprogress', the metadata can be updated
+            // if deposit.submitted == false files can be updated as well.
+            if (!skipUpload) {
+              // The response body of this action is NOT the new version deposit, but the original resource.
+              // The new version deposition can be accessed through the "latest_draft" under "links" in the response body.
+              const deposit = await this.client.createNewVersion(
+                depositionInfo
+              );
+              // e.g. https://sandbox.zenodo.org/api/deposit/depositions/868929
+              const tmp = deposit.links.latest_draft.split("/");
+              depositId = parseInt(tmp[tmp.length - 1]);
+              depositionInfo = await this.client.retrieve(depositId);
+              console.log("======new version===>", depositionInfo);
+            }
+            if (
+              depositionInfo.state !== "inprogress" &&
+              depositionInfo.state !== "unsubmitted"
+            )
+              await this.client.edit(depositId);
           } catch (e) {
             console.error(e);
             if (
@@ -719,14 +755,19 @@ export default {
           metadata.communities.push({ identifier: "bioimage-io" });
         }
         metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
-        const result = await this.client.updateMetadata(
+        depositionInfo = await this.client.updateMetadata(
           depositionInfo,
           metadata
         );
-        // transform the RDF here
-        this.prereserveDOI = result.metadata.prereserve_doi;
-        this.rdf.id = result.metadata.prereserve_doi.doi; //doi and recid
 
+        // transform the RDF here
+        this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
+        this.rdf.id = depositionInfo.metadata.prereserve_doi.doi; //doi and recid
+
+        if (skipUpload) {
+          this.stepIndex = 3;
+          return depositionInfo;
+        }
         const zipFiles = Object.values(this.zipPackage.files);
         // sort the files so we will upload the covers in the end
         // this allows zenodo to display it as preview
