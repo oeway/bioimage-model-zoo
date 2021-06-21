@@ -27,8 +27,12 @@ export async function getFullRdfFromDeposit(deposition) {
     const yamlStr = await response.text();
     const fullRdf = yaml.load(yamlStr);
     fullRdf.config = fullRdf.config || {};
+    // infer the rdf type for old RDFs
+    if (!fullRdf.type && fullRdf.inputs && fullRdf.outputs) {
+      fullRdf.type = "model";
+    }
     Object.assign(fullRdf.config, rdf.config);
-    return rdf;
+    return fullRdf;
   } else {
     throw new Error(`Failed to fetch RDF file.`);
   }
@@ -200,7 +204,7 @@ export function depositionToRdf(deposition) {
     id: metadata.doi,
     name: metadata.title,
     type,
-    authors: metadata.creators.map(author => author.name),
+    authors: metadata.creators,
     tags: metadata.keywords
       .filter(k => k !== "bioimage.io" || !k.startsWith("bioimage.io:"))
       .concat(["zenodo"]),
