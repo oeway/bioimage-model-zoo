@@ -205,7 +205,10 @@
         <div class="columns">
           <div v-if="client && (zipPackage || editedFiles)" class="column">
             <b-button
-              :disabled="sameNameDeposits && sameNameDeposits.length > 0"
+              :disabled="
+                uploadProgress ||
+                  (sameNameDeposits && sameNameDeposits.length > 0)
+              "
               @click="createOrUpdateDeposit()"
               class="button is-primary is-light is-fullwidth"
               expanded
@@ -219,6 +222,7 @@
             class="column"
           >
             <b-button
+              :disabled="uploadProgress"
               @click="createOrUpdateDeposit(depositId, false)"
               class="button is-primary is-light is-fullwidth"
               expanded
@@ -693,6 +697,7 @@ export default {
       });
       this.similarDeposits = null;
       try {
+        this.uploadProgress = 1;
         let depositionInfo;
         if (depositId) {
           try {
@@ -811,6 +816,7 @@ export default {
         console.error(e);
         alert(`Failed to upload file: ${e}`);
       } finally {
+        this.uploadProgress = 0;
         loadingComponent.close();
       }
     }
