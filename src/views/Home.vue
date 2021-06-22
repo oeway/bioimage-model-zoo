@@ -175,7 +175,7 @@
     </div>
     <resource-item-selector
       @selection-changed="updateResourceItemList"
-      :allItems="transformedResourceItems"
+      :allItems="resourceItems"
       :fullLabelList="fullLabelList"
       :tagCategories="tagCategories"
       :type="selectedCategory && selectedCategory.type"
@@ -717,15 +717,19 @@ export default {
         repo = query_repo;
       }
 
-      await this.$store.dispatch("getResourceItems", {
+      const self = this;
+      await this.$store.dispatch("fetchResourceItems", {
         repo,
-        manifest_url
+        manifest_url,
+        transform(item) {
+          return normalizeItem(self, item);
+        }
       });
 
       const tp = this.selectedCategory && this.selectedCategory.type;
       this.selectedItems = tp
-        ? this.transformedResourceItems.filter(m => m.type === tp)
-        : this.transformedResourceItems;
+        ? this.resourceItems.filter(m => m.type === tp)
+        : this.resourceItems;
 
       // get id from component props
       if (this.resourceId) {
@@ -750,9 +754,6 @@ export default {
     }
   },
   computed: {
-    transformedResourceItems() {
-      return this.resourceItems.map(item => normalizeItem(this, item));
-    },
     partners: function() {
       return (
         this.siteConfig.partners &&
@@ -774,11 +775,11 @@ export default {
     },
     fullLabelList: function() {
       const fullLabelList = [];
-      if (this.transformedResourceItems) {
+      if (this.resourceItems) {
         const tp = this.selectedCategory && this.selectedCategory.type;
         const items = tp
-          ? this.transformedResourceItems.filter(m => m.type === tp)
-          : this.transformedResourceItems;
+          ? this.resourceItems.filter(m => m.type === tp)
+          : this.resourceItems;
         for (let item of items) {
           item.allLabels.forEach(label => {
             if (fullLabelList.indexOf(label) === -1) {
@@ -1121,7 +1122,7 @@ export default {
         }
       }
       if (this.$route.query.id) {
-        const m = this.transformedResourceItems.filter(
+        const m = this.resourceItems.filter(
           item => item.id === this.$route.query.id
         )[0];
         if (m) {

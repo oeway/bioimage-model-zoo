@@ -119,7 +119,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
   const description =
     `<a href="https://bioimage.io/#/p/zenodo:${encodeURIComponent(
       rdf.config._deposit.id
-    )}"><span class="label label-success">Download RDF Package</span></a>` +
+    )}"><span class="label label-success">Download RDF Package</span></a><br>` +
     (docstring || `<p>${docstring}</p>`);
   const keywords = ["bioimage.io", "bioimage.io:" + rdf.type];
   const metadata = {
