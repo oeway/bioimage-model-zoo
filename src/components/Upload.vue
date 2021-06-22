@@ -722,7 +722,6 @@ export default {
               const tmp = deposit.links.latest_draft.split("/");
               depositId = parseInt(tmp[tmp.length - 1]);
               depositionInfo = await this.client.retrieve(depositId);
-              console.log("======new version===>", depositionInfo);
             }
             if (
               depositionInfo.state !== "inprogress" &&

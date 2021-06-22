@@ -572,7 +572,6 @@ function normalizeItem(self, item) {
   }
 
   if (item.license) {
-    console.log("=======>", spdxLicenseList[item.license]);
     item.badges.unshift({
       label: "license",
       ext: item.license,
