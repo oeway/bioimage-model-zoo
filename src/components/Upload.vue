@@ -722,7 +722,6 @@ export default {
               const tmp = deposit.links.latest_draft.split("/");
               depositId = parseInt(tmp[tmp.length - 1]);
               depositionInfo = await this.client.retrieve(depositId);
-              console.log("======new version===>", depositionInfo);
             }
             if (
               depositionInfo.state !== "inprogress" &&
@@ -774,7 +773,7 @@ export default {
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
         this.rdf.id = depositionInfo.metadata.prereserve_doi.doi; //doi and recid
-
+        this.rdf.config._doi = depositionInfo.metadata.prereserve_doi.doi;
         if (skipUpload) {
           this.stepIndex = 3;
           return depositionInfo;
