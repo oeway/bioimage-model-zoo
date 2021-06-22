@@ -9,7 +9,14 @@
       @click="!badge.url && badge.run && badge.run()"
     >
       <b-taglist v-if="!badge.icon" attached rounded>
-        <b-tag :type="badge.label_type || 'is-dark'">{{ badge.label }}</b-tag>
+        <b-tag
+          v-if="badge.label_short && badges.length > 3"
+          :type="badge.label_type || 'is-dark'"
+          >{{ badge.label_short }}</b-tag
+        >
+        <b-tag v-else :type="badge.label_type || 'is-dark'">{{
+          badge.label
+        }}</b-tag>
         <b-tag :type="badge.ext_type || 'is-success'" v-if="badge.ext">{{
           badge.ext
         }}</b-tag>

@@ -405,6 +405,7 @@
 
 <script>
 import { mapState } from "vuex";
+import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
@@ -571,10 +572,23 @@ function normalizeItem(self, item) {
   }
 
   if (item.license) {
+    console.log("=======>", spdxLicenseList[item.license]);
     item.badges.unshift({
       label: "license",
       ext: item.license,
-      ext_type: "is-info"
+      ext_type: "is-info",
+      url: spdxLicenseList[item.license] && spdxLicenseList[item.license].url
+    });
+  }
+
+  if (item.config && item.config._doi) {
+    item.badges.unshift({
+      label: item.config._doi,
+      label_type: "is-dark",
+      label_short: self.zenodoClient.isSandbox ? "Zenodo" : "DOI",
+      url: self.zenodoClient.isSandbox
+        ? `${item.config._deposit.links.html}`
+        : `https://doi.org/${item.config._doi}`
     });
   }
   if (item.type === "model" && item.co2) {

@@ -218,6 +218,7 @@ export function depositionToRdf(deposition) {
     source: rdfFile, //TODO: fix for other RDF types
     links,
     config: {
+      _doi: metadata.doi,
       _deposit: deposition,
       _rdf_file: rdfFile
     }
