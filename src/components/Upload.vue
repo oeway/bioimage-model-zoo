@@ -351,6 +351,7 @@ export default {
     },
     components: () => ({ TagInputField, DropFilesField }),
     ...mapState({
+      allTags: state => state.allTags,
       resourceItems: state => state.resourceItems,
       client: state => state.zenodoClient
     })
@@ -523,6 +524,8 @@ export default {
           type: "tags",
           value: this.rdf.tags,
           placeholder: "Add a tag",
+          options: this.allTags,
+          allow_new: true,
           icon: "label",
           isRequired: false
         },

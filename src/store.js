@@ -18,6 +18,7 @@ const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
 export const store = new Vuex.Store({
   state: {
     allApps: {},
+    allTags: [],
     resourceItems: [],
     zenodoClient: siteConfig.zenodo_config.enabled
       ? new ZenodoClient(
@@ -38,7 +39,7 @@ export const store = new Vuex.Store({
       }
     },
 
-    async getResourceItems(context, { manifest_url, repo }) {
+    async fetchResourceItems(context, { manifest_url, repo, transform }) {
       const items = await context.state.zenodoClient.getResourceItems({});
       items.map(item => context.commit("addResourceItem", item));
 
@@ -63,6 +64,7 @@ export const store = new Vuex.Store({
         //   item.source = concatAndResolveUrl(item.root_url, item.source);
         context.commit("addResourceItem", item);
       }
+      context.commit("normalizeItems", transform);
     }
   },
   mutations: {
@@ -74,11 +76,21 @@ export const store = new Vuex.Store({
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);
+      // index tags
+      if (item.tags && item.tags.length > 0)
+        item.tags.map(tag => {
+          if (!state.allTags.includes(tag)) {
+            state.allTags.push(tag);
+          }
+        });
     },
     removeResourceItem(state, item) {
       if (item.type === "application") delete state.allApps[item.id];
       const index = state.resourceItems.indexOf(item);
       if (index >= 0) state.resourceItems.splice(index, 1);
+    },
+    normalizeItems(state, transform) {
+      state.resourceItems = state.resourceItems.map(transform);
     }
   }
 });
