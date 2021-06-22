@@ -130,6 +130,12 @@
       "description": "List software, web apps and utility tools"
     },
     {
+      "name": "Workflows",
+      "type": "workflow",
+      "outline_color": "rgb(255 6 6)",
+      "description": "List workflows and scripts"
+    },
+    {
       "name": "Notebooks",
       "type": "notebook",
       "outline_color": "rgb(224 188 9)",
