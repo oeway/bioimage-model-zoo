@@ -38,6 +38,8 @@ export async function getFullRdfFromDeposit(deposition) {
   }
 }
 
+const additionalNote = " (Uploaded via https://bioimage.io)";
+
 export function rdfToMetadata(rdf, baseUrl, docstring) {
   if (
     rdf.type === "model" &&
@@ -120,7 +122,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
     `<a href="https://bioimage.io/#/p/zenodo:${encodeURIComponent(
       rdf.config._deposit.id
     )}"><span class="label label-success">Download RDF Package</span></a><br>` +
-    (docstring || `<p>${docstring}</p>`);
+    (docstring && `<p>${docstring}</p>`);
   const keywords = ["bioimage.io", "bioimage.io:" + rdf.type];
   const metadata = {
     title: rdf.name,
@@ -131,7 +133,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
     creators: creators,
     publication_date: new Date().toISOString().split("T")[0],
     keywords: keywords.concat(rdf.tags),
-    notes: rdf.description + " (Uploaded via https://bioimage.io)",
+    notes: rdf.description + additionalNote,
     related_identifiers,
     communities: []
   };
@@ -187,14 +189,11 @@ export function depositionToRdf(deposition) {
       const id = idf.identifier.replace("https://bioimage.io/#/r/", "");
       links.push(decodeURIComponent(id));
     } else if (idf.relation === "isDocumentedBy" && idf.scheme === "url") {
-      // links
-      documentation = idf.identifier;
+      const fileName = idf.identifier.split("/files/")[1];
+      documentation = `${deposition.links.bucket}/${fileName}`;
     }
   }
-  // strip the html tags
-  const div = document.createElement("div");
-  div.innerHTML = metadata.description;
-  const description = div.textContent || div.innerText || "";
+  const description = metadata.notes.replace(additionalNote, "");
   if (!rdfFile) {
     throw new Error(
       `Invalid deposit (${deposition.id}), rdf.yaml or model.yaml is not defined in the metadata (as part of the "related_identifiers")`
