@@ -18,7 +18,7 @@
       v-model="stepIndex"
       label-position="right"
     >
-      <b-step-item :disabled="rdfYaml" label="Select file" icon="file">
+      <b-step-item :disabled="rdfYaml" label="Start" icon="file">
         <b-field label="Option 1: Select a local file" expanded>
           <b-upload
             v-model="dropFile"
@@ -69,7 +69,7 @@
         >
       </b-step-item>
 
-      <b-step-item label="Edit & Review" icon="pencil" :disabled="!rdfYaml">
+      <b-step-item label="Edit" icon="pencil" :disabled="!rdfYaml">
         <section style="padding: 20px;">
           <form-json
             v-if="jsonFields && jsonFields.length > 0"
@@ -85,7 +85,7 @@
         </section>
       </b-step-item>
 
-      <b-step-item label="Export & Upload" icon="upload">
+      <b-step-item label="Review & Upload" icon="upload">
         <b-field
           label="RDF content"
           style="height: 260px; overflow: auto;"
@@ -304,8 +304,8 @@ import {
 } from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
-import TagInputField from "./tagInputField.vue";
-import DropFilesField from "./dropFilesField.vue";
+import TagInputField from "@/components/TagInputField.vue";
+import DropFilesField from "@/components/DropFilesField.vue";
 import doiRegex from "doi-regex";
 import marked from "marked";
 import DOMPurify from "dompurify";

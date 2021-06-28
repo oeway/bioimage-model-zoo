@@ -69,6 +69,7 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      item.authors = item.authors || [];
       item.authors = item.authors.map(author =>
         typeof author === "string" ? { name: author } : author
       );
