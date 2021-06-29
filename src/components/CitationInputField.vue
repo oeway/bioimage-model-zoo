@@ -41,7 +41,7 @@
           >
           </b-input>
           <b-button
-            v-if="value.length > 1"
+            v-if="value.length > 0"
             style="text-transform:none;"
             class="button"
             icon-left="delete"
