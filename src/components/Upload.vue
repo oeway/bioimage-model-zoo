@@ -19,7 +19,41 @@
       label-position="right"
     >
       <b-step-item :disabled="rdfYaml" label="Start" icon="file">
-        <b-field label="Option 1: Select a local file" expanded>
+        <b-field
+          v-if="!client.credential"
+          label="Please login or signup to Zenodo.org"
+          message="ShareLoc.XYZ uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow ShareLoc.XYZ to upload files to zenodo on behave of you."
+          expanded
+        >
+          <b-button
+            style="text-transform:none;"
+            class="button is-fullwidth is-primary"
+            @click="client.login()"
+            expanded
+            icon-left="login"
+            >Login to Zenodo</b-button
+          >
+        </b-field>
+        <b-field
+          v-else
+          label="You have already logged in via Zenodo"
+          message="ShareLoc.XYZ uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow ShareLoc.XYZ to upload files to zenodo on behave of you."
+          expanded
+        >
+          <b-button
+            style="text-transform:none;"
+            class="button is-small"
+            @click="client.logout()"
+            icon-left="logout"
+            >Logout</b-button
+          >
+        </b-field>
+
+        <b-field
+          v-if="client.credential"
+          label="Option 1: Select a local file"
+          expanded
+        >
           <b-upload
             v-model="dropFile"
             @input="fileSelected(dropFile)"
@@ -39,7 +73,10 @@
             </section>
           </b-upload>
         </b-field>
-        <b-field label="Option 2: Input RDF fields manually">
+        <b-field
+          v-if="client.credential"
+          label="Option 2: Input RDF fields manually"
+        >
           <b-button
             style="text-transform:none;"
             class="button is-fullwidth"
@@ -49,6 +86,7 @@
           >
         </b-field>
         <b-field
+          v-if="client.credential"
           label="Option 3: Load from DOI or URL"
           message="A URI can be a Zenodo DOI, Zenodo URL or Github URL to the RDF file"
         >
@@ -61,6 +99,7 @@
         </b-field>
 
         <b-button
+          v-if="client.credential"
           style="text-transform:none;"
           class="button is-fullwidth"
           @click="loadRdfFromURL(URI4Load)"
@@ -482,7 +521,8 @@ export default {
         {
           label: "Name",
           placeholder: "name",
-          value: this.rdf.name
+          value: this.rdf.name,
+          help: "The name of your deposit"
         },
         {
           label: "Description",
@@ -511,7 +551,8 @@ export default {
               value: opt,
               selected: this.rdf.license === opt
             };
-          })
+          }),
+          help: "A short description in one sentence"
         },
         {
           label: "Git repository",

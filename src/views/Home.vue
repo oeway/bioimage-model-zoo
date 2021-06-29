@@ -405,6 +405,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { randId } from "../utils";
 import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
@@ -436,6 +437,8 @@ const isTouchDevice = (function() {
 
 function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
+  item.id = item.id || randId();
+  item.id = item.id.toLowerCase();
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";
@@ -677,6 +680,7 @@ export default {
     };
   },
   mounted: async function() {
+    this.resourceId = this.resourceId && this.resourceId.toLowerCase();
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
     setupBioEngine();
