@@ -439,6 +439,8 @@ function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
   item.id = item.id || randId();
   item.id = item.id.toLowerCase();
+  item.links = item.links || [];
+  item.links = item.links.map(link => link.toLowerCase());
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";
