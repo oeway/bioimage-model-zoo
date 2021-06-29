@@ -103,6 +103,7 @@ export default {
       else {
         if (this.value[this.value.length - 1].text === "")
           this.$emit("input", this.value.slice(0, this.value.length - 1));
+        else this.$emit("input", this.value);
       }
     },
     addNewCitation() {

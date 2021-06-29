@@ -544,7 +544,7 @@ export default {
           label: "Authors",
           type: "author",
           value: this.rdf.authors,
-          help: "The authors who contributed to this dataset or application"
+          help: "The authors who contributed to this resource item"
         },
         // {
         //   label: "Source",
@@ -591,8 +591,7 @@ export default {
           label: "Citation",
           type: "citation",
           value: this.rdf.cite,
-          placeholder: "Add a citation",
-          help: "Indicate how this dataset should be cited",
+          help: "How this resource item should be cited",
           isRequired: false
         },
         {
@@ -637,7 +636,9 @@ export default {
         // source: "Source",
         git_repo: "Git Repository",
         tags: "Tags",
-        links: "Links"
+        links: "Links",
+        cite: "Citation",
+        authors: "Authors"
       };
       const values = result.values;
       for (let k in rdfNameMapping) {

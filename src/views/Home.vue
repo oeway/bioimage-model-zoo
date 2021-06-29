@@ -783,11 +783,13 @@ export default {
           ? this.resourceItems.filter(m => m.type === tp)
           : this.resourceItems;
         for (let item of items) {
-          item.allLabels.forEach(label => {
-            if (fullLabelList.indexOf(label) === -1) {
-              fullLabelList.push(label.toLowerCase());
-            }
-          });
+          // TODO: why item.allLabels can be empty sometimes?
+          if (item.allLabels)
+            item.allLabels.forEach(label => {
+              if (fullLabelList.indexOf(label) === -1) {
+                fullLabelList.push(label.toLowerCase());
+              }
+            });
         }
       }
       fullLabelList.sort((a, b) =>

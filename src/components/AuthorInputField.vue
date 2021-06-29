@@ -103,6 +103,7 @@ export default {
       else {
         if (this.value[this.value.length - 1].name === "")
           this.$emit("input", this.value.slice(0, this.value.length - 1));
+        else this.$emit("input", this.value);
       }
     },
     addNewAuthor() {
