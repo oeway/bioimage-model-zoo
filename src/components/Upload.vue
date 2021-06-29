@@ -19,7 +19,7 @@
       label-position="right"
     >
       <b-step-item :disabled="rdfYaml" label="Start" icon="file">
-        <b-fields
+        <b-field
           v-if="!client.credential"
           label="Please login or signup to Zenodo.org"
           message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on behave of you."
@@ -33,7 +33,7 @@
             icon-left="login"
             >Login to Zenodo</b-button
           >
-        </b-fields>
+        </b-field>
         <b-field
           v-else
           label="You have already logged in via Zenodo"
