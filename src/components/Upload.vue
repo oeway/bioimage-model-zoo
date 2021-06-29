@@ -552,7 +552,7 @@ export default {
               selected: this.rdf.license === opt
             };
           }),
-          help: ""
+          help: "A short description in one sentence"
         },
         {
           label: "Git repository",
