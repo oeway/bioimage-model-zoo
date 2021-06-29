@@ -111,7 +111,7 @@ export default {
           for (let j of Object.keys(items)) {
             // make a shallow copy
             const item = Object.assign({}, items[j]);
-            item.name = j;
+            item.name = item.name || j;
             arr.push(item);
           }
           converted[k] = arr;

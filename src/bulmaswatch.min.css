@@ -357,7 +357,7 @@ h6 {
   font-weight: 400;
 }
 ul {
-  list-style: disc;
+  list-style: none;
 }
 button,
 input,

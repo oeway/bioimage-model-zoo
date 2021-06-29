@@ -651,7 +651,6 @@ export default {
       progress: 100,
       searchTags: null,
       isTouchDevice: isTouchDevice,
-      rawResourceItems: null,
       selectedItems: null,
       showMenu: false,
       applications: [],
@@ -747,7 +746,6 @@ export default {
 
       this.updateViewByUrlQuery();
       this.$forceUpdate();
-      console.log("Loading ImJoy...");
     } catch (e) {
       console.error(e);
       alert(`Failed to fetch manifest file from the repo: ${e}.`);
