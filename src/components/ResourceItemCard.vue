@@ -56,7 +56,7 @@
               :enableHover="!isTouchDevice"
             ></app-icons>
           </div>
-          <span class="authors">
+          <span class="authors" :title="affil(resourceItem.authors)">
             {{
               resourceItem.authors && resourceItem.authors.length > 0
                 ? "by " + etAl(resourceItem.authors)
@@ -159,6 +159,12 @@ export default {
       } else {
         return authors.slice(0, 3).join(", ") + " et al.";
       }
+    },
+    affil(authors) {
+      const affliations = authors.map(author => {
+        return author.affiliation;
+      });
+      return Array.from(new Set(affliations)).join("; ");
     },
     showResourceItemInfo() {
       this.$emit("show-info", this.resourceItem);

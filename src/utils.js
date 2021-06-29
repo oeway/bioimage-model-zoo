@@ -244,6 +244,40 @@ export class ZenodoClient {
     }
   }
 
+  logout() {
+    return new Promise((resolve, reject) => {
+      this.credential = null;
+      const loginWindow = window.open(`${this.baseURL}/logout`, "Logout");
+      try {
+        loginWindow.focus();
+      } catch (e) {
+        reject(
+          "Logout window blocked. If you have a popup blocker enabled, please add shareloc.xyz to your exception list."
+        );
+        return;
+      }
+
+      let countDown = 120;
+      const timer = setInterval(function() {
+        if (loginWindow.closed) {
+          clearInterval(timer);
+          resolve();
+        } else {
+          countDown--;
+          if (countDown <= 0) {
+            clearInterval(timer);
+            loginWindow.close();
+            // make sure we closed the window
+            reject("Timeout error");
+          }
+        }
+      }, 1000);
+      setTimeout(() => {
+        loginWindow.close();
+      }, 1000);
+    });
+  }
+
   async getCredential(login) {
     if (this.credential) {
       if (
