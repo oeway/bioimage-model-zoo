@@ -19,10 +19,10 @@
       label-position="right"
     >
       <b-step-item :disabled="rdfYaml" label="Start" icon="file">
-        <b-field
+        <b-fields
           v-if="!client.credential"
           label="Please login or signup to Zenodo.org"
-          message="ShareLoc.XYZ uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow ShareLoc.XYZ to upload files to zenodo on behave of you."
+          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on behave of you."
           expanded
         >
           <b-button
@@ -33,11 +33,11 @@
             icon-left="login"
             >Login to Zenodo</b-button
           >
-        </b-field>
+        </b-fields>
         <b-field
           v-else
           label="You have already logged in via Zenodo"
-          message="ShareLoc.XYZ uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow ShareLoc.XYZ to upload files to zenodo on behave of you."
+          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on behave of you."
           expanded
         >
           <b-button
@@ -345,6 +345,8 @@ import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
 import TagInputField from "@/components/TagInputField.vue";
 import DropFilesField from "@/components/DropFilesField.vue";
+import CitationInputField from "@/components/CitationInputField.vue";
+import AuthorInputField from "@/components/AuthorInputField.vue";
 import doiRegex from "doi-regex";
 import marked from "marked";
 import DOMPurify from "dompurify";
@@ -357,7 +359,11 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     TagInputField,
     // eslint-disable-next-line vue/no-unused-components
-    DropFilesField
+    DropFilesField,
+    // eslint-disable-next-line vue/no-unused-components
+    AuthorInputField,
+    // eslint-disable-next-line vue/no-unused-components
+    CitationInputField
   },
   mounted() {
     this.dropFile = null;
@@ -388,7 +394,12 @@ export default {
         this.client && this.client.credential && this.client.credential.user_id
       );
     },
-    components: () => ({ TagInputField, DropFilesField }),
+    components: () => ({
+      TagInputField,
+      DropFilesField,
+      AuthorInputField,
+      CitationInputField
+    }),
     ...mapState({
       allTags: state => state.allTags,
       resourceItems: state => state.resourceItems,
@@ -529,6 +540,12 @@ export default {
           placeholder: "description",
           value: this.rdf.description
         },
+        {
+          label: "Authors",
+          type: "author",
+          value: this.rdf.authors,
+          help: "The authors who contributed to this dataset or application"
+        },
         // {
         //   label: "Source",
         //   placeholder: "A doi or URL to the source of the item",
@@ -568,6 +585,14 @@ export default {
           options: this.allTags,
           allow_new: true,
           icon: "label",
+          isRequired: false
+        },
+        {
+          label: "Citation",
+          type: "citation",
+          value: this.rdf.cite,
+          placeholder: "Add a citation",
+          help: "Indicate how this dataset should be cited",
           isRequired: false
         },
         {

@@ -252,7 +252,7 @@ export class ZenodoClient {
         loginWindow.focus();
       } catch (e) {
         reject(
-          "Logout window blocked. If you have a popup blocker enabled, please add shareloc.xyz to your exception list."
+          "Logout window blocked. If you have a popup blocker enabled, please add BioImage.IO to your exception list."
         );
         return;
       }
