@@ -1,6 +1,6 @@
 {
   "name": "bioimage",
-  "version": "0.2.20",
+  "version": "0.2.21ss",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
