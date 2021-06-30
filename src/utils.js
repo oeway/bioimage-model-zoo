@@ -140,8 +140,6 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
   return metadata;
 }
 
-const zenodoFileRegex = /.*zenodo.org\/record\/.*\/files\/(.*)/;
-
 export function depositionToRdf(deposition) {
   const metadata = deposition.metadata;
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
@@ -162,6 +160,8 @@ export function depositionToRdf(deposition) {
       if (rdfFile.startsWith("file://")) {
         rdfFile = rdfFile.replace("file://", deposition.links.bucket + "/");
       } else if (rdfFile.includes(`/files/`)) {
+        // reset the regex
+        const zenodoFileRegex = /.*zenodo.org\/.*\/files\/(.*)/;
         const matches = zenodoFileRegex.exec(rdfFile);
         if (matches) {
           const fileName = matches[1];
@@ -181,6 +181,8 @@ export function depositionToRdf(deposition) {
       if (url.startsWith("file://")) {
         url = url.replace("file://", deposition.links.bucket + "/");
       } else if (url.includes(`${deposition.id}/files/`)) {
+        // reset the regex
+        const zenodoFileRegex = /.*zenodo.org\/.*\/files\/(.*)/;
         const matches = zenodoFileRegex.exec(url);
         if (matches) {
           url = `${deposition.links.bucket}/${matches[1]}`;
