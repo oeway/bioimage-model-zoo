@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import ResourceItemList from "../components/ResourceItemList.vue";
-
+import ResourceItemList from "@/components/ResourceItemList.vue";
+import Upload from "@/components/Upload.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -21,6 +21,17 @@ const routes = [
     path: "/p/:resourceId+",
     name: "Package",
     component: Home,
+    props: true
+  },
+  {
+    path: "/upload",
+    name: "Upload",
+    component: Upload
+  },
+  {
+    path: "/update/:updateDepositId+",
+    name: "Update",
+    component: Upload,
     props: true
   },
   {

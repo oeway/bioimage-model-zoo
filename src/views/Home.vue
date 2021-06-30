@@ -405,7 +405,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { randId } from "../utils";
 import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
@@ -437,10 +436,6 @@ const isTouchDevice = (function() {
 
 function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
-  item.id = item.id || randId();
-  item.id = item.id.toLowerCase();
-  item.links = item.links || [];
-  item.links = item.links.map(link => link.toLowerCase());
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";
@@ -485,6 +480,21 @@ function normalizeItem(self, item) {
     new Set(item.allLabels.map(label => label.toLowerCase()))
   );
   item.apps = [];
+  if (item.config._deposit) {
+    if (item.config._deposit.owners.includes(self.userId)) {
+      item.apps.unshift({
+        name: "Edit",
+        icon: "pencil",
+        show_on_hover: true,
+        run() {
+          self.$router.push({
+            name: "Update",
+            params: { updateDepositId: item.config._deposit.id }
+          });
+        }
+      });
+    }
+  }
   item.apps.unshift({
     name: "Share",
     icon: "share-variant",
@@ -537,7 +547,9 @@ function normalizeItem(self, item) {
     });
   } else if (item.links) {
     for (let link_key of item.links) {
-      const linked = self.resourceItems.filter(item => item.id === link_key);
+      const linked = self.resourceItems.filter(
+        item => item.id.toLowerCase() === link_key.toLowerCase()
+      );
       for (let lit of linked) {
         item.apps.unshift({
           name: lit.name,
@@ -759,6 +771,13 @@ export default {
     }
   },
   computed: {
+    userId() {
+      return (
+        this.zenodoClient &&
+        this.zenodoClient.credential &&
+        this.zenodoClient.credential.user_id
+      );
+    },
     partners: function() {
       return (
         this.siteConfig.partners &&

@@ -69,11 +69,24 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      item.id = item.id || randId();
+      item.id = item.id.toLowerCase();
+      item.links = item.links || [];
+      item.links = item.links.map(link => link.toLowerCase());
       item.authors = item.authors || [];
       item.authors = item.authors.map(author =>
         typeof author === "string" ? { name: author } : author
       );
       item.config = item.config || {};
+      if (item.config._deposit) {
+        const userId =
+          state.zenodoClient &&
+          state.zenodoClient.credential &&
+          state.zenodoClient.credential.user_id;
+        if (userId && item.config._deposit.owners.includes(userId)) {
+          if (!item.tags.includes("editable")) item.tags.push("editable");
+        }
+      }
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);
@@ -91,7 +104,14 @@ export const store = new Vuex.Store({
       if (index >= 0) state.resourceItems.splice(index, 1);
     },
     normalizeItems(state, transform) {
-      state.resourceItems = state.resourceItems.map(transform);
+      state.resourceItems = state.resourceItems.map(item => {
+        // make sure the id and links are in lowercase
+        item.id = item.id || randId();
+        item.id = item.id.toLowerCase();
+        item.links = item.links || [];
+        item.links = item.links.map(link => link.toLowerCase());
+        return transform(item);
+      });
     }
   }
 });
