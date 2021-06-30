@@ -405,7 +405,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { randId } from "../utils";
 import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
@@ -437,10 +436,6 @@ const isTouchDevice = (function() {
 
 function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
-  item.id = item.id || randId();
-  item.id = item.id.toLowerCase();
-  item.links = item.links || [];
-  item.links = item.links.map(link => link.toLowerCase());
   item.covers = item.covers || [];
   item.authors = item.authors || [];
   item.description = item.description || "";

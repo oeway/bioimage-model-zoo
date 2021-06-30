@@ -69,6 +69,10 @@ export const store = new Vuex.Store({
   },
   mutations: {
     addResourceItem(state, item) {
+      item.id = item.id || randId();
+      item.id = item.id.toLowerCase();
+      item.links = item.links || [];
+      item.links = item.links.map(link => link.toLowerCase());
       item.authors = item.authors || [];
       item.authors = item.authors.map(author =>
         typeof author === "string" ? { name: author } : author
@@ -100,7 +104,14 @@ export const store = new Vuex.Store({
       if (index >= 0) state.resourceItems.splice(index, 1);
     },
     normalizeItems(state, transform) {
-      state.resourceItems = state.resourceItems.map(transform);
+      state.resourceItems = state.resourceItems.map(item => {
+        // make sure the id and links are in lowercase
+        item.id = item.id || randId();
+        item.id = item.id.toLowerCase();
+        item.links = item.links || [];
+        item.links = item.links.map(link => link.toLowerCase());
+        return transform(item);
+      });
     }
   }
 });
