@@ -74,6 +74,15 @@ export const store = new Vuex.Store({
         typeof author === "string" ? { name: author } : author
       );
       item.config = item.config || {};
+      if (item.config._deposit) {
+        const userId =
+          state.zenodoClient &&
+          state.zenodoClient.credential &&
+          state.zenodoClient.credential.user_id;
+        if (userId && item.config._deposit.owners.includes(userId)) {
+          if (!item.tags.includes("editable")) item.tags.push("editable");
+        }
+      }
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application") state.allApps[item.id] = item;
       state.resourceItems.push(item);

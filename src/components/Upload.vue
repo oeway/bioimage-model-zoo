@@ -136,7 +136,11 @@
             :content="formatedModelYaml"
           ></markdown>
         </b-field>
-        <b-field v-if="zipPackage" label="Files">
+        <b-field
+          v-if="zipPackage"
+          label="Files"
+          message="These files will be uploaded"
+        >
           <b-taglist attached rounded>
             <b-tag
               v-for="(file, name) in zipPackage.files"
@@ -146,7 +150,11 @@
             >
           </b-taglist>
         </b-field>
-        <b-field v-else-if="editedFiles" label="Files">
+        <b-field
+          v-else-if="editedFiles"
+          label="Files"
+          message="The following files will be updated"
+        >
           <b-taglist attached rounded>
             <b-tag v-for="file in editedFiles" :key="file.name" rounded>{{
               file.name
@@ -353,6 +361,7 @@ import DOMPurify from "dompurify";
 
 export default {
   name: "upload",
+  props: ["updateDepositId"],
   components: {
     "form-json": formJson,
     markdown: Markdown,
@@ -371,6 +380,11 @@ export default {
     this.uploadProgress = 0;
 
     this.$root.$on("formSubmitted", this.formSubmitted);
+    if (this.updateDepositId) {
+      this.startFromDepositURL().catch(e => {
+        alert(`Failed to load from deposit URL: ${e}`);
+      });
+    }
   },
   computed: {
     sameNameDeposits() {
@@ -403,7 +417,8 @@ export default {
     ...mapState({
       allTags: state => state.allTags,
       resourceItems: state => state.resourceItems,
-      client: state => state.zenodoClient
+      client: state => state.zenodoClient,
+      zenodoBaseURL: state => state.zenodoBaseURL
     })
   },
   data() {
@@ -430,6 +445,20 @@ export default {
     };
   },
   methods: {
+    async startFromDepositURL() {
+      const loadingComponent = this.$buefy.loading.open({
+        container: this.$el
+      });
+      try {
+        if (!this.client.credential) await this.login();
+        this.URI4Load = `${this.zenodoBaseURL}/record/${this.updateDepositId}`;
+        await this.loadRdfFromURL(this.URI4Load);
+      } catch (e) {
+        alert("Failed to load resource: " + this.updateDepositId);
+      } finally {
+        loadingComponent.close();
+      }
+    },
     async fileSelected(file) {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
@@ -662,7 +691,9 @@ export default {
           }
         }
       } else {
-        this.editedFiles = values["Files"];
+        this.editedFiles = values["Files"].filter(
+          file => file.type !== "remote"
+        );
       }
 
       // TODO: fix attachments.files for the packager
@@ -689,6 +720,9 @@ export default {
           item => item.name !== rdfFileName
         );
         this.editedFiles.push(file);
+        this.zipPackage = new JSZip();
+        this.editedFiles.push(file);
+        this.editedFiles.map(file => this.zipPackage.file(file.name, file));
       }
 
       this.similarDeposits = await this.client.getResourceItems({
@@ -716,6 +750,9 @@ export default {
         console.log("Published", result);
         this.publishedDOI = result.doi;
         this.publishedUrl = `${this.$store.state.zenodoBaseURL}/record/${this.depositId}`;
+      } catch (e) {
+        console.error(e);
+        alert(`Failed to publish: ${e}`);
       } finally {
         loadingComponent.close();
       }
@@ -905,5 +942,6 @@ export default {
   overflow: auto;
   height: calc(100% - 48px);
   display: block;
+  background: white;
 }
 </style>
