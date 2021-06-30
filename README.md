@@ -12,7 +12,7 @@ An repository for sharing AI models, datasets and tools for bioimage analysis.
 
 ## License
 
-The source code of BioImage.IO platform is released under MIT license. The content hosted in BioImage.IO, including models, datasets and applications are owned by the original authors and made available according to the corresponding license.
+The source code of BioImage.IO platform is released under MIT license. The content hosted in BioImage.IO, including models, datasets and applications are owned by the original authors and made available according to the corresponding license specified by the authors.
 
 ## Citation
 If you find BioImage.IO helpful for your research please consider cite BioImage.IO: [TODO]
