@@ -552,7 +552,9 @@ function normalizeItem(self, item) {
     });
   } else if (item.links) {
     for (let link_key of item.links) {
-      const linked = self.resourceItems.filter(item => item.id === link_key);
+      const linked = self.resourceItems.filter(
+        item => item.id.toLowerCase() === link_key.toLowerCase()
+      );
       for (let lit of linked) {
         item.apps.unshift({
           name: lit.name,
