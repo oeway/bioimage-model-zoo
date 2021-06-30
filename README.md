@@ -1,7 +1,21 @@
 # BioImage.IO
 
-An AI model repository for bioimage analysis.
+An repository for sharing AI models, datasets and tools for bioimage analysis.
+
+## Key Features
+ * Open repository for AI models, datasets and tools
+ * Storing data on [Zenodo](https://zenodo.org)
+ * Open and extendable via [ImJoy](https://imjoy.io) plugins
+ * Test run buttons for testing models without installation
+ * Easy-to-use upload interface
+
 
 ## License
 
-MIT
+The source code of BioImage.IO platform is released under MIT license. The content hosted in BioImage.IO, including models, datasets and applications are owned by the original authors and made available according to the corresponding license.
+
+## Citation
+If you find BioImage.IO helpful for your research please consider cite BioImage.IO: [TODO]
+
+## User Agreement
+By using the BioImage.IO website and/or viewing material on the website, you agree to become bound by the terms of this [User Agreement](./docs/user-agreement.md). If you do not agree to the Disclaimer, Terms of Use, and Privacy Statements of this User Agreement, do not use this website or any portion thereof in any form or manner.
