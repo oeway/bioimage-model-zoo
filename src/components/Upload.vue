@@ -404,9 +404,7 @@ export default {
       }
     },
     userId() {
-      return (
-        this.client && this.client.credential && this.client.credential.user_id
-      );
+      return this.client && this.client.getUserId();
     },
     components: () => ({
       TagInputField,

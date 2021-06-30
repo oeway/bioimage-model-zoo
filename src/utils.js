@@ -237,24 +237,41 @@ export function depositionToRdf(deposition) {
   };
 }
 
+export function getUserId(client) {
+  return (
+    client &&
+    ((client.credential && client.credential.user_id) || client.lastUserId)
+  );
+}
+
 export class ZenodoClient {
   constructor(baseURL, clientId, isSandbox) {
     this.baseURL = baseURL;
     this.clientId = clientId;
     this.isSandbox = isSandbox;
+    this.lastUserId = null;
     this.callbackUrl = encodeURIComponent("https://imjoy.io/login-helper");
     this.credential = null;
     try {
+      this.lastUserId = localStorage.getItem("zenodo_user_id");
       let lastCredential = localStorage.getItem("zenodo_credential");
       if (lastCredential) {
         this.credential = JSON.parse(lastCredential);
         // check if it's still valid
         this.getCredential();
+        if (this.lastUserId !== this.credential.user_id) {
+          this.lastUserId = this.credential.user_id;
+          localStorage.setItem("zenodo_user_id", this.lastUserId);
+        }
       }
     } catch (e) {
       console.error("Failed to reset zenodo_credential");
       localStorage.removeItem("zenodo_credential");
     }
+  }
+
+  getUserId() {
+    return (this.credential && this.credential.user_id) || this.lastUserId;
   }
 
   logout() {
@@ -415,6 +432,10 @@ export class ZenodoClient {
             /'id': u'([0-9]+)'/gm.exec(event.data.user)[1]
           );
           this.credential.create_at = Date.now();
+          if (this.lastUserId !== this.credential.user_id) {
+            this.lastUserId = this.credential.user_id;
+            localStorage.setItem("zenodo_user_id", this.lastUserId);
+          }
           resolve(event.data);
           localStorage.setItem(
             "zenodo_credential",
