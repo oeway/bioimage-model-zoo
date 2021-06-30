@@ -140,6 +140,8 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
   return metadata;
 }
 
+const zenodoFileRegex = /.*zenodo.org\/record\/.*\/files\/(.*)/;
+
 export function depositionToRdf(deposition) {
   const metadata = deposition.metadata;
   let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
@@ -159,9 +161,14 @@ export function depositionToRdf(deposition) {
       rdfFile = idf.identifier;
       if (rdfFile.startsWith("file://")) {
         rdfFile = rdfFile.replace("file://", deposition.links.bucket + "/");
-      } else if (rdfFile.includes(`${deposition.id}/files/`)) {
-        const fileName = rdfFile.split("/files/")[1];
-        rdfFile = `${deposition.links.bucket}/${fileName}`;
+      } else if (rdfFile.includes(`/files/`)) {
+        const matches = zenodoFileRegex.exec(rdfFile);
+        if (matches) {
+          const fileName = matches[1];
+          rdfFile = `${deposition.links.bucket}/${fileName}`;
+        } else {
+          throw new Error("Invalid file identifier: " + idf.identifier);
+        }
       } else {
         throw new Error("Invalid file identifier: " + idf.identifier);
       }
@@ -174,8 +181,12 @@ export function depositionToRdf(deposition) {
       if (url.startsWith("file://")) {
         url = url.replace("file://", deposition.links.bucket + "/");
       } else if (url.includes(`${deposition.id}/files/`)) {
-        const fileName = url.split("/files/")[1];
-        url = `${deposition.links.bucket}/${fileName}`;
+        const matches = zenodoFileRegex.exec(url);
+        if (matches) {
+          url = `${deposition.links.bucket}/${matches[1]}`;
+        } else {
+          throw new Error("Invalid file identifier: " + idf.identifier);
+        }
       } else {
         throw new Error("Invalid file identifier: " + idf.identifier);
       }
