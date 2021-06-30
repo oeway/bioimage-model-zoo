@@ -8,7 +8,7 @@
       role="alert"
     >
       You are using the development mode of the upload feature, this means files
-      will be uploaded the sandbox version of Zenodo
+      will be uploaded to the sandbox version of Zenodo
       (https://sandbox.zenodo.org). The uploaded files can be removed from
       Zenodo at anytime without notice.
     </b-notification>

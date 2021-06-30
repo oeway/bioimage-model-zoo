@@ -39,6 +39,12 @@
             <a @click="showResourceItemInfo(props.row)">
               {{ props.row.name }}
             </a>
+            <p>
+              {{
+                props.row.description.slice(0, 100) +
+                  (props.row.description.length > 100 ? "..." : "")
+              }}
+            </p>
           </b-table-column>
           <b-table-column
             v-if="siteConfig.table_view.columns.includes('authors')"
@@ -47,13 +53,14 @@
             sortable
             field="authors"
           >
-            <span>
-              {{
-                props.row.authors
-                  .map(author => author.name.split(";")[0])
-                  .join(", ")
-              }}
-            </span>
+            <b-tooltip
+              v-for="author in props.row.authors"
+              :key="author.name"
+              :label="author.affiliation"
+              position="is-bottom"
+            >
+              <span>{{ author.name }}</span>
+            </b-tooltip>
           </b-table-column>
           <b-table-column
             v-if="siteConfig.table_view.columns.includes('badges')"

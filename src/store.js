@@ -108,7 +108,8 @@ export const store = new Vuex.Store({
         item.id = item.id.toLowerCase();
         item.links = item.links || [];
         item.links = item.links.map(link => link.toLowerCase());
-        return transform(item);
+        if (transform) return transform(item);
+        else return item;
       });
     }
   }
