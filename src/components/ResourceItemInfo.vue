@@ -124,7 +124,8 @@ export default {
         }
       }
     };
-    this.getDocs(this.resourceItem).then(focus);
+    if (this.resourceItem.documentation)
+      this.getDocs(this.resourceItem).then(focus);
   },
   computed: {
     formatedCitation: function() {

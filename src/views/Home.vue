@@ -772,11 +772,7 @@ export default {
   },
   computed: {
     userId() {
-      return (
-        this.zenodoClient &&
-        this.zenodoClient.credential &&
-        this.zenodoClient.credential.user_id
-      );
+      return this.zenodoClient && this.zenodoClient.getUserId();
     },
     partners: function() {
       return (
