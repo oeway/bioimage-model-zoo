@@ -30,10 +30,6 @@
         class="navbar-menu"
       >
         <div class="navbar-end">
-          <a class="navbar-item" href="/docs">
-            <b-icon icon="playlist-check"></b-icon>
-            <span>Documentation</span>
-          </a>
           <!-- <a
             class="navbar-item"
             target="_blank"
@@ -46,6 +42,10 @@
           <a class="navbar-item" href="#/upload">
             <b-icon icon="plus"></b-icon>
             <span>Upload</span>
+          </a>
+          <a class="navbar-item" href="/docs">
+            <b-icon icon="playlist-check"></b-icon>
+            <span>Documentation</span>
           </a>
           <a class="navbar-item" href="#/about">
             <b-icon icon="information-outline"></b-icon>

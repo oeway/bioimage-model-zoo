@@ -17,6 +17,7 @@ const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
 
 export const store = new Vuex.Store({
   state: {
+    loadedUrl: null,
     allApps: {},
     allTags: [],
     resourceItems: [],
@@ -44,6 +45,10 @@ export const store = new Vuex.Store({
     },
 
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
+      if (context.state.loadedUrl === manifest_url) {
+        console.log("manifest already loaded");
+        return;
+      }
       const items = await context.state.zenodoClient.getResourceItems({});
       items.map(item => context.commit("addResourceItem", item));
 
@@ -69,6 +74,7 @@ export const store = new Vuex.Store({
         context.commit("addResourceItem", item);
       }
       context.commit("normalizeItems", transform);
+      context.state.loadedUrl = manifest_url;
     }
   },
   mutations: {
