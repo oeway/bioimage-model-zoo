@@ -1,64 +1,9 @@
 <template>
   <div class="home">
-    <!-- Navigation bar -->
-    <nav class="navbar is-link is-fixed-top">
-      <div class="navbar-brand">
-        <span class="site-icon" @click="goHome()" style="cursor: pointer;">
-          {{ siteConfig.site_icon }}</span
-        >
-        <span class="site-title" @click="goHome()" style="cursor: pointer;">
-          {{ siteConfig.site_name }}
-        </span>
-        <span v-if="selectedPartner" class="site-title hide-on-small-screen"
-          >| {{ selectedPartner.name }}</span
-        >
-        <div
-          class="navbar-burger burger"
-          :class="{ 'is-active': showMenu }"
-          data-target="navbarExampleTransparentExample"
-          @click="showMenu = !showMenu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-
-      <div
-        id="navbarExampleTransparentExample"
-        :class="{ 'is-active': showMenu }"
-        class="navbar-menu"
-      >
-        <div class="navbar-end">
-          <a class="navbar-item" href="/docs">
-            <b-icon icon="playlist-check"></b-icon>
-            <span>Documentation</span>
-          </a>
-          <!-- <a
-            class="navbar-item"
-            target="_blank"
-            v-if="siteConfig.contribute_url"
-            :href="siteConfig.contribute_url"
-          >
-            <b-icon icon="plus"></b-icon>
-            <span>Contribute</span>
-          </a> -->
-          <a class="navbar-item" @click="showUploadDialog">
-            <b-icon icon="plus"></b-icon>
-            <span>Upload</span>
-          </a>
-          <a class="navbar-item" @click="showAboutDialog">
-            <b-icon icon="information-outline"></b-icon>
-            <span>About</span>
-          </a>
-          <a class="navbar-item" id="imjoy-menu"> </a>
-        </div>
-      </div>
-    </nav>
     <!-- Header -->
     <section
       class="hero is-link is-fullheight is-fullheight-with-navbar"
-      style="max-height: 1024px!important;height:100%;min-height:680px;"
+      style="max-height: 1024px!important;height:100%;min-height:640px;"
     >
       <div class="hero-body" style="position: relative;">
         <img
@@ -74,7 +19,11 @@
           @switchPartner="switchPartner"
         ></partners>
 
-        <div class="container" v-if="selectedPartner">
+        <div
+          class="container"
+          style="margin-bottom: 100px;"
+          v-if="selectedPartner"
+        >
           <h1 class="title is-1">
             {{ selectedPartner.splash_title }}
           </h1>
@@ -106,7 +55,7 @@
           >
         </div>
 
-        <div class="container" v-else>
+        <div class="container" style="margin-bottom: 100px;" v-else>
           <h1 class="title is-1">
             {{ siteConfig.splash_title }}
           </h1>
@@ -342,19 +291,7 @@
         </div>
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
-      <upload v-if="showInfoDialogMode === 'upload'"></upload>
-      <about
-        v-if="showInfoDialogMode === 'about'"
-        about-url="https://raw.githubusercontent.com/bioimage-io/bioimage.io/master/docs/README.md"
-        @subscribe="showSubscribeDialog"
-        @contact="showContactDialog"
-        @contribute="showContributeDialog"
-        @join="showJoinDialog"
-      ></about>
-      <div
-        class="markdown-container"
-        v-else-if="showInfoDialogMode === 'markdown'"
-      >
+      <div class="markdown-container" v-if="showInfoDialogMode === 'markdown'">
         <markdown :url="infoMarkdownUrl"></markdown>
         <comment-box
           v-if="infoDialogTitle"
@@ -370,31 +307,6 @@
           :focusTarget="selectedResourceItem._focus"
         ></attachments>
       </div>
-
-      <iframe
-        v-else-if="showInfoDialogMode === 'subscribe'"
-        style="padding-bottom: 64px;width: 100%;
-    height: 100%;"
-        :src="siteConfig.subscribe_url"
-        width="640"
-        height="852"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        >Loading…</iframe
-      >
-      <iframe
-        v-else-if="showInfoDialogMode === 'contact'"
-        style="padding-bottom: 64px;width: 100%;
-    height: 100%;"
-        :src="siteConfig.contact_form_url"
-        width="640"
-        height="852"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        >Loading…</iframe
-      >
       <resource-item-info
         v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
         :resource-item="selectedResourceItem"
@@ -412,8 +324,6 @@ import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import Attachments from "@/components/Attachments.vue";
 import Partners from "@/components/Partners.vue";
 import CommentBox from "@/components/CommentBox.vue";
-import Upload from "@/components/Upload.vue";
-import About from "@/views/About.vue";
 import Markdown from "@/components/Markdown.vue";
 
 const DEFAULT_ICONS = {
@@ -656,11 +566,9 @@ export default {
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
     "comment-box": CommentBox,
-    upload: Upload,
     attachments: Attachments,
     markdown: Markdown,
-    partners: Partners,
-    about: About
+    partners: Partners
   },
   data() {
     return {
@@ -973,50 +881,7 @@ export default {
         this.$forceUpdate();
       }, 250)();
     },
-    showUploadDialog() {
-      this.showInfoDialogMode = "upload";
-      this.infoDialogTitle = "Upload";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
-    },
-    showAboutDialog() {
-      this.showInfoDialogMode = "about";
-      this.infoDialogTitle = "About";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
-      const query = Object.assign({}, this.$route.query);
-      query.show = "about";
-      this.$router.replace({ query: query }).catch(() => {});
-    },
-    showSubscribeDialog() {
-      this.showInfoDialogMode = "subscribe";
-      this.infoDialogTitle = "Subscribe to News and Updates";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
-      const query = Object.assign({}, this.$route.query);
-      query.show = "subscribe";
-      this.$router.replace({ query: query }).catch(() => {});
-    },
-    showContactDialog() {
-      this.showInfoDialogMode = "contact";
-      this.infoDialogTitle = "Contact Us";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
-      const query = Object.assign({}, this.$route.query);
-      query.show = "subscribe";
-      this.$router.replace({ query: query }).catch(() => {});
-    },
-    showContributeDialog() {
-      this.infoDialogTitle = `Contribute to ${this.siteConfig.site_name}`;
-      this.infoCommentBoxTitle = this.infoDialogTitle;
-      this.infoMarkdownUrl = this.siteConfig.contribute_url;
-      this.showInfoDialogMode = "markdown";
-      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
-      this.$modal.show("info-dialog");
-      const query = Object.assign({}, this.$route.query);
-      query.show = "contribute";
-      this.$router.replace({ query: query }).catch(() => {});
-    },
+
     showLoader(enable) {
       if (enable)
         this.loadingComponent = this.$buefy.loading.open({ canCancel: true });
@@ -1127,9 +992,6 @@ export default {
       window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
     },
     updateResourceItemList(models) {
-      if (models.length <= 0) {
-        if (this.initialized) this.showMessage("No item found.");
-      }
       this.selectedItems = models;
     },
     updateViewByUrlQuery() {

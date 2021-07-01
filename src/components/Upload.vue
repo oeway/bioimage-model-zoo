@@ -1,5 +1,5 @@
 <template>
-  <div class="upload">
+  <div class="upload width-limited">
     <b-notification
       v-if="client.isSandbox"
       type="is-warning"
