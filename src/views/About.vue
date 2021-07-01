@@ -14,24 +14,32 @@
 
     <br />
     <section style="text-align: center;">
-      <b-button @click="$emit('contact')" v-if="siteConfig.contact_form_url"
+      <b-button
+        @click="openUrl(siteConfig.contact_form_url)"
+        v-if="siteConfig.contact_form_url"
         >Contact Us</b-button
       >
-      <b-button @click="$emit('subscribe')" v-if="siteConfig.subscribe_url"
+      <b-button
+        @click="openUrl(siteConfig.subscribe_url)"
+        v-if="siteConfig.subscribe_url"
         >Subscribe</b-button
       >
     </section>
     <br />
     <section style="text-align: center;">
-      <b-button @click="$emit('contribute')" v-if="siteConfig.contribute_url"
+      <b-button
+        @click="openUrl('/docs#/contribute_models/README')"
+        v-if="siteConfig.contribute_url"
         >Contribute Models</b-button
       >
-      <b-button @click="$emit('join')" v-if="siteConfig.join_partners_url"
+      <b-button
+        @click="openUrl('/docs#/community_partners/README')"
+        v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
       >
     </section>
     <br />
-    <section class="hero">
+    <section class="hero" style="min-height: 100px">
       <markdown v-if="aboutUrl" :url="aboutUrl"></markdown>
     </section>
     <br />
@@ -67,12 +75,6 @@ import { version } from "../../package.json";
 import Markdown from "@/components/Markdown.vue";
 export default {
   name: "About",
-  props: {
-    aboutUrl: {
-      type: String,
-      default: null
-    }
-  },
   computed: {
     ...mapState({
       siteConfig: state => state.siteConfig
@@ -85,6 +87,11 @@ export default {
     return {
       version
     };
+  },
+  methods: {
+    openUrl(url) {
+      window.open(url);
+    }
   }
 };
 </script>
@@ -92,7 +99,7 @@ export default {
 .about {
   height: calc(100% - 40px);
   background-repeat: no-repeat;
-  background-position: bottom;
+  background-position: bottom 50px;
   overflow: auto;
 }
 .hero {
@@ -101,14 +108,5 @@ export default {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-}
-.background-img {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 90%;
-  max-height: 50%;
-  max-width: 100%;
-  object-fit: contain;
 }
 </style>

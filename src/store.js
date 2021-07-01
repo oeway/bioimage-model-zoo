@@ -28,9 +28,13 @@ export const store = new Vuex.Store({
         )
       : null,
     zenodoBaseURL,
-    siteConfig
+    siteConfig,
+    showNavbar: true
   },
   actions: {
+    async toggleNavbar(context, enable) {
+      context.state.showNavbar = enable;
+    },
     async login(context) {
       try {
         await context.state.client.login();

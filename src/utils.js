@@ -358,6 +358,13 @@ export class ZenodoClient {
       additionalKeywords; //&all_versions
     const response = await fetch(url);
     const results = JSON.parse(await response.text());
+    // retry in 1s
+    if (!results || !results.hits) {
+      console.warn("Hitting rate limit, retrying in 1s");
+      setTimeout(() => {
+        this.getResourceItems({ page, type, keywords, query, sort, size });
+      }, 1000);
+    }
     const hits = results.hits.hits;
 
     const resourceItems = hits.map(item => {
