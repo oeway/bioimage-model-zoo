@@ -1,5 +1,12 @@
 <template>
-  <div class="upload width-limited">
+  <div
+    class="upload width-limited"
+    :style="{
+      'background-image': !client.credential
+        ? 'url(' + siteConfig.background_image + ')'
+        : null
+    }"
+  >
     <b-notification
       v-if="client.isSandbox"
       type="is-warning"
@@ -416,7 +423,8 @@ export default {
       allTags: state => state.allTags,
       resourceItems: state => state.resourceItems,
       client: state => state.zenodoClient,
-      zenodoBaseURL: state => state.zenodoBaseURL
+      zenodoBaseURL: state => state.zenodoBaseURL,
+      siteConfig: state => state.siteConfig
     })
   },
   data() {
@@ -938,8 +946,10 @@ export default {
   padding: 10px;
   width: 100%;
   overflow: auto;
-  height: calc(100% - 48px);
+  height: calc(100vh - 70px);
   display: block;
   background: white;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 </style>
