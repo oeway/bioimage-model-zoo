@@ -538,7 +538,7 @@ export default {
           );
         }
       } catch (e) {
-        alert(`Failed to fetch RDF from ${url}, error: ${e}`);
+        alert(`Oops, failed to fetch RDF from ${url}, error: ${e}`);
       }
     },
     initializeRdfForm(rdf, files) {

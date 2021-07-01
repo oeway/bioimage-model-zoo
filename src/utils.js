@@ -34,7 +34,7 @@ export async function getFullRdfFromDeposit(deposition) {
     Object.assign(fullRdf.config, rdf.config);
     return fullRdf;
   } else {
-    throw new Error(`Failed to fetch RDF file.`);
+    throw new Error(`Oops, failed to fetch RDF file.`);
   }
 }
 

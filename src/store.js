@@ -49,8 +49,16 @@ export const store = new Vuex.Store({
         console.log("manifest already loaded");
         return;
       }
-      const items = await context.state.zenodoClient.getResourceItems({});
-      items.map(item => context.commit("addResourceItem", item));
+      try {
+        const items = await context.state.zenodoClient.getResourceItems({});
+        console.log("All items", items);
+        items.map(item => context.commit("addResourceItem", item));
+      } catch (e) {
+        console.error(e);
+        throw new Error(
+          "It appears that we cannot reach to the Zenodo server (https://zenodo.org), please check whether you are connected to the internet, otherwise it might be because the Zenodo server is currently down."
+        );
+      }
 
       const siteConfig = context.state.siteConfig;
       const response = await fetch(manifest_url + "?" + randId());

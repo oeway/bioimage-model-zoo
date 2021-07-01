@@ -675,7 +675,7 @@ export default {
       this.$forceUpdate();
     } catch (e) {
       console.error(e);
-      alert(`Failed to fetch manifest file from the repo: ${e}.`);
+      alert(`Oops, failed to fetch manifest data. Details: ${e}.`);
     }
   },
   computed: {
