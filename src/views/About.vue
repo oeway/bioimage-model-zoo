@@ -109,4 +109,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
 }
+button {
+  margin: 2px;
+}
 </style>
