@@ -436,7 +436,6 @@ export class ZenodoClient {
           }
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
-          debugger;
           this.credential.user_id = parseInt(
             /'id': u'([0-9]+)'/gm.exec(event.data.user)[1]
           );
