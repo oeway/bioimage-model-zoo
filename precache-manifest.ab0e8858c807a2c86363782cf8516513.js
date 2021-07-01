@@ -4,8 +4,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "e4778f488ad077134473",
-    "url": "/css/app.6cbc8f03.css"
+    "revision": "62ad6ab1f3e9bc208822",
+    "url": "/css/about.1fe473dd.css"
+  },
+  {
+    "revision": "cf64519c3b2beb91ac3f",
+    "url": "/css/app.f4e8c5d2.css"
   },
   {
     "revision": "3b049c917bf8de9a00db",
@@ -28,23 +32,27 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/fonts/materialdesignicons-webfont.dc85ceeb.woff2"
   },
   {
-    "revision": "68cbd983f60233ce71ce2c81b2a1208e",
+    "revision": "baf565aac44801dbc2afa827dc30ee65",
     "url": "/index.ejs"
   },
   {
-    "revision": "860efcc2ea9393ca47963d71a92f6752",
+    "revision": "165e09ec1d0f96fb3e1e99c1924133da",
     "url": "/index.html"
   },
   {
-    "revision": "e4778f488ad077134473",
-    "url": "/js/app.2f1c05d6.js"
+    "revision": "62ad6ab1f3e9bc208822",
+    "url": "/js/about.b41bc775.js"
+  },
+  {
+    "revision": "cf64519c3b2beb91ac3f",
+    "url": "/js/app.4e6f7dc5.js"
   },
   {
     "revision": "3b049c917bf8de9a00db",
     "url": "/js/chunk-vendors.470b33a2.js"
   },
   {
-    "revision": "92bd4beab12e8be7f9b016551c51718a",
+    "revision": "27aa1b48711c5cdb54292448e178af1d",
     "url": "/manifest.json"
   },
   {
@@ -336,32 +344,76 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/anonymousAnimals/Wombat.png"
   },
   {
-    "revision": "0b4076a9fccce144a6469bae996ef326",
+    "revision": "399d36ee8304292542f47c57b6d5bbed",
     "url": "/static/icons/android-chrome-192x192.png"
   },
   {
-    "revision": "733990191480edf9c4ef9169a3f98cba",
-    "url": "/static/icons/android-chrome-512x512.png"
+    "revision": "4876fddab8c7c1101a219e17ec3e82ce",
+    "url": "/static/icons/android-chrome-384x384.png"
   },
   {
-    "revision": "e22f183e285d262c95efccdd7fc9f1d9",
+    "revision": "7c2e238a95759b6200c955a0a91db379",
     "url": "/static/icons/apple-touch-icon.png"
   },
   {
-    "revision": "2f8e5f54e38951bb5c880712c9e788c2",
+    "revision": "5e2231c7dd1cce20c19f5ecdb4aee1f2",
+    "url": "/static/icons/browserconfig.xml"
+  },
+  {
+    "revision": "73aad7a496a4890af17281a09c267fa1",
     "url": "/static/icons/favicon-16x16.png"
   },
   {
-    "revision": "c3cfd64bc87fa3867c77e31082bc05d2",
+    "revision": "e0d028dc3e64bdde826168b527230109",
     "url": "/static/icons/favicon-32x32.png"
   },
   {
-    "revision": "c446d74a65b3651d63083570846c3b3b",
-    "url": "/static/img/bioimage-io-logo-transparent.png"
+    "revision": "d0f2a821eab0f288872552ef835a3593",
+    "url": "/static/icons/mstile-150x150.png"
   },
   {
-    "revision": "917774a8febc2361a8c7481552e1e11a",
+    "revision": "7af52f726e1e6b93e2b75e4540979dfb",
+    "url": "/static/icons/safari-pinned-tab.svg"
+  },
+  {
+    "revision": "7ef6b603f28146be8c89b325d5b75741",
+    "url": "/static/img/bioimage-io-banner.png"
+  },
+  {
+    "revision": "29052395f6b9cc1e222c9ea92527a3a1",
+    "url": "/static/img/bioimage-io-banner.svg"
+  },
+  {
+    "revision": "98f65e301c92fe040fb93330ceb25494",
+    "url": "/static/img/bioimage-io-icon-small.png"
+  },
+  {
+    "revision": "793549a3dfd1280cc77dff4c5b872e3d",
+    "url": "/static/img/bioimage-io-icon-small.svg"
+  },
+  {
+    "revision": "e792453f780b6f613cef5cd6d002c6e6",
+    "url": "/static/img/bioimage-io-icon.png"
+  },
+  {
+    "revision": "c11b550610a104f63f652faae6dfd009",
+    "url": "/static/img/bioimage-io-icon.svg"
+  },
+  {
+    "revision": "8e5a7433a97a7bda4da71a739be40eab",
+    "url": "/static/img/bioimage-io-logo-white.png"
+  },
+  {
+    "revision": "d31413dcd7f4eecdfaa1e6cfafcae281",
+    "url": "/static/img/bioimage-io-logo-white.svg"
+  },
+  {
+    "revision": "32e133c6273d95eab0d5a19a24748a6e",
     "url": "/static/img/bioimage-io-logo.png"
+  },
+  {
+    "revision": "8da76154e62a53d4ad2cc01955546045",
+    "url": "/static/img/bioimage-io-logo.svg"
   },
   {
     "revision": "e1dd5654c3c8bcca4df6f56705b14a3c",
