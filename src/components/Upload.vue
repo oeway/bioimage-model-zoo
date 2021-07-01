@@ -20,6 +20,7 @@
       Zenodo at anytime without notice.
     </b-notification>
     <b-steps
+      style="margin-top: 20px;"
       position="left"
       :has-navigation="false"
       v-model="stepIndex"
@@ -35,7 +36,7 @@
           <b-button
             style="text-transform:none;"
             class="button is-fullwidth is-primary"
-            @click="client.login()"
+            @click="login()"
             expanded
             icon-left="login"
             >Login to Zenodo</b-button
@@ -802,6 +803,14 @@ export default {
       this.uploadStatus = "Exporting zip package...";
       saveAs(zipBlob, this.rdf.name + ".bioimage.io.zip");
       this.uploadStatus = "Done!";
+    },
+    async login() {
+      try {
+        await this.client.getCredential(true);
+        this.$forceUpdate();
+      } catch (e) {
+        alert(`Failed to login: ${e}`);
+      }
     },
     async createOrUpdateDeposit(depositId, skipUpload) {
       try {

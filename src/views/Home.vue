@@ -137,6 +137,7 @@
     <br />
     <resource-item-list
       @show-resource-item-info="showResourceItemInfo"
+      @select-tag="searchTags = [$event]"
       v-if="selectedItems"
       :allItems="selectedItems"
       :displayMode="screenWidth > 700 ? displayMode : 'card'"
@@ -378,6 +379,11 @@ function normalizeItem(self, item) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
   if (item.tags) {
+    item.tags = item.tags.filter(tag => {
+      return (
+        typeof tag === "string" && !self.siteConfig.excluded_tags.includes(tag)
+      );
+    });
     item.allLabels = item.allLabels.concat(
       item.tags
         .filter(tag => typeof tag === "string")

@@ -65,10 +65,28 @@
           </span>
           <p class="resource-item-description" v-if="resourceItem.description">
             {{
-              resourceItem.description.slice(0, 100) +
-                (resourceItem.description.length > 100 ? "..." : "")
+              resourceItem.description.slice(0, 64) +
+                (resourceItem.description.length > 64 ? "..." : "")
             }}
           </p>
+          <span style="margin-top:3px;display: block;">
+            <span v-for="t in resourceItem.tags.slice(0, 4)" :key="t">
+              <b-tag
+                style="cursor: pointer;"
+                rounded
+                @click.native="selectTag(t)"
+                >{{ t }}</b-tag
+              >
+            </span>
+            <span v-if="resourceItem.tags.length > 4">
+              <b-tag
+                style="cursor: pointer;"
+                rounded
+                @click.native="showResourceItemInfo"
+                >...</b-tag
+              >
+            </span>
+          </span>
           <badges class="badges" :badges="resourceItem.badges"></badges>
         </div>
       </div>
@@ -168,6 +186,9 @@ export default {
     },
     showResourceItemInfo() {
       this.$emit("show-info", this.resourceItem);
+    },
+    selectTag(tag) {
+      this.$emit("select-tag", tag);
     }
   }
 };
@@ -189,6 +210,7 @@ export default {
 }
 .resource-item-title {
   margin-top: 6px;
+  margin-bottom: 2px;
   font-size: 1.2em;
   font-weight: 400;
   cursor: pointer;

@@ -12,6 +12,7 @@
         >
           <resource-item-card
             @show-info="showResourceItemInfo"
+            @select-tag="$emit('select-tag', $event)"
             :resourceItem="item"
           ></resource-item-card>
         </div>
@@ -105,6 +106,7 @@
         <template slot="detail" slot-scope="props">
           <resource-item-card
             @show-info="showResourceItemInfo"
+            @select-tag="$emit('select-tag', $event)"
             :resourceItem="props.row"
           ></resource-item-card>
         </template>

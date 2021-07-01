@@ -380,8 +380,9 @@ export class ZenodoClient {
 
   login() {
     return new Promise((resolve, reject) => {
+      const randomState = randId();
       const loginWindow = window.open(
-        `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=CHANGEME&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
+        `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=${randomState}&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
         "Login"
       );
       try {
@@ -402,7 +403,7 @@ export class ZenodoClient {
         }
         if (loginWindow.closed) {
           clearInterval(timer);
-          reject("User canceled login");
+          reject("The login window was closed unexpectedly");
         } else {
           countDown--;
           if (countDown <= 0) {
@@ -427,7 +428,7 @@ export class ZenodoClient {
             return;
           }
           loggedIn = true;
-          if (!event.data.access_token) {
+          if (!event.data.access_token || event.data.state !== randomState) {
             reject(
               "Failed to obtain the access token, please make sure your account is valid and try it again."
             );
@@ -435,6 +436,7 @@ export class ZenodoClient {
           }
           console.log("Successfully logged in", event.data);
           this.credential = event.data;
+          debugger;
           this.credential.user_id = parseInt(
             /'id': u'([0-9]+)'/gm.exec(event.data.user)[1]
           );

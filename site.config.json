@@ -86,6 +86,7 @@
   },
   "footnote": "BioImage.io -- a collaborative effort to bring AI models to the bioimaging community.",
   "partners": [],
+  "excluded_tags": ["bioimage.io", "bioimage.io:model", "bioimage.io:application", "bioimage.io:workflow", "bioimage.io:notebook", "bioimage.io:dataset", "zenodo"],
   "resource_categories": [
     {
       "name": "Models",
