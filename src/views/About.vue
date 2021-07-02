@@ -40,7 +40,10 @@
     </section>
     <br />
     <section class="hero" style="min-height: 100px">
-      <markdown v-if="aboutUrl" :url="aboutUrl"></markdown>
+      <markdown
+        v-if="siteConfig.about_url"
+        :url="siteConfig.about_url"
+      ></markdown>
     </section>
     <br />
 
@@ -67,11 +70,11 @@
     <div style="text-align: center" v-if="siteConfig.footnote">
       <p>{{ siteConfig.footnote }}</p>
       <p>
-        The BioImage.IO logo is adapted from the
+        The giraffe icon used in the BioImage logo is adapted from the
         <a href="https://twemoji.twitter.com/" target="_blank"
           >Twemoji project</a
         >
-        with
+        maintained by Twitter and released under
         <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>
         license.
       </p>

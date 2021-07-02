@@ -19,6 +19,7 @@
   "contact_form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdHpcFC59if8KXpHbvaRl6daBwn_C1zsX-lE4SgAoFrjIf2cg/viewform?embedded=true",
   "contribute_url": "https://bioimage.io/docs/#/contribute_models/README",
   "join_partners_url": "https://bioimage.io/docs/community_partners/README.md",
+  "about_url": null,
   "footer": [
     { "label": "Github Model Repository",
       "tooltip": "Bioimage Model Repository",
