@@ -89,11 +89,7 @@ export default {
     this.value = this.item.value;
     this.value = this.value || [];
     if (this.value.length <= 0) {
-      this.value.push({
-        text: "",
-        doi: "",
-        url: ""
-      });
+      this.value.push({});
     }
     this.commitValue();
   },

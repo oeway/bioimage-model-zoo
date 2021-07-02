@@ -108,11 +108,7 @@ export default {
     },
     addNewCitation() {
       if (this.value[this.value.length - 1].text !== "") {
-        this.value.push({
-          text: "",
-          doi: "",
-          url: ""
-        });
+        this.value.push({});
       }
       this.commitValue();
     },
