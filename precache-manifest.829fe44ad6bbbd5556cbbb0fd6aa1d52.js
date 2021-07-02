@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "d605cc8c585f82c420b2",
-    "url": "/css/about.878a36cc.css"
+    "revision": "54a448d928d413956df3",
+    "url": "/css/about.c96f02cd.css"
   },
   {
-    "revision": "740d781525a2148a6be9",
+    "revision": "e256e75c60926ceefc1d",
     "url": "/css/app.b860a663.css"
   },
   {
@@ -36,16 +36,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "8773ba44cc046e1fe31a82a9bd21e1df",
+    "revision": "178a193e9d23921958684fc20989b80e",
     "url": "/index.html"
   },
   {
-    "revision": "d605cc8c585f82c420b2",
-    "url": "/js/about.bd3ea8ad.js"
+    "revision": "54a448d928d413956df3",
+    "url": "/js/about.5b9eb27e.js"
   },
   {
-    "revision": "740d781525a2148a6be9",
-    "url": "/js/app.b5e478e2.js"
+    "revision": "e256e75c60926ceefc1d",
+    "url": "/js/app.ecf6aff4.js"
   },
   {
     "revision": "3b049c917bf8de9a00db",
@@ -432,7 +432,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/img/zoo-background.svg"
   },
   {
-    "revision": "88fe8ad8d1311594c43484acbfb3ae96",
+    "revision": "e5ed1d17a070046e651a9cad27b8232d",
     "url": "/static/test_manifest.bioimage.io.json"
   }
 ]);

@@ -63,7 +63,7 @@
       "name": "Ilastik Model Preview",
       "version": "0.1.0",
       "api_version": "0.1.7",
-      "description": "Ilastik Model Preview for BioImage.io",
+      "description": "Ilastik Model Preview for BioImage.IO",
       "requirements": [
         "https://static.imjoy.io/spectre.css/spectre.min.css",
         "https://static.imjoy.io/spectre.css/spectre-exp.min.css",
@@ -114,7 +114,7 @@
       "name": "Fiji Model Preview",
       "version": "0.1.0",
       "api_version": "0.1.7",
-      "description": "Fiji Model Preview for BioImage.io",
+      "description": "Fiji Model Preview for BioImage.IO",
       "requirements": [
         "https://static.imjoy.io/spectre.css/spectre.min.css",
         "https://static.imjoy.io/spectre.css/spectre-exp.min.css",
