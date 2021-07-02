@@ -43,6 +43,7 @@
       <markdown v-if="aboutUrl" :url="aboutUrl"></markdown>
     </section>
     <br />
+
     <div class="columns is-mobile is-centered" v-if="siteConfig.footer">
       <div
         v-for="item in siteConfig.footer"
@@ -65,6 +66,15 @@
 
     <div style="text-align: center" v-if="siteConfig.footnote">
       <p>{{ siteConfig.footnote }}</p>
+      <p>
+        The BioImage.IO logo is adapted from the
+        <a href="https://twemoji.twitter.com/" target="_blank"
+          >Twemoji project</a
+        >
+        with
+        <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>
+        license.
+      </p>
     </div>
     <br />
   </div>
