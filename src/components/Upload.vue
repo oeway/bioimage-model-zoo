@@ -2,6 +2,7 @@
   <div
     class="upload width-limited"
     :style="{
+      height: !client.credential ? 'calc(100vh - 70px)' : '',
       'background-image': !client.credential
         ? 'url(' + siteConfig.background_image + ')'
         : null
@@ -955,7 +956,6 @@ export default {
   padding: 10px;
   width: 100%;
   overflow: auto;
-  height: calc(100vh - 70px);
   display: block;
   background: white;
   background-repeat: no-repeat;
