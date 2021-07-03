@@ -1,10 +1,7 @@
 /*! bulmaswatch v0.8.1 | MIT License */
 /*! bulma.io v0.8.1 | MIT License | github.com/jgthms/bulma */
 @import url(
-  https://fonts.googleapis.com/css?family=Roboto:300,
-  400,
-  500,
-  700&display=swap
+  "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
 );
 @-webkit-keyframes spinAround {
   0% {
@@ -999,13 +996,13 @@ a.has-text-danger:hover {
   background-color: #363636 !important;
 }
 .has-text-grey-dark {
-  color: #4a4a4a !important;
+  color: #303030 !important;
 }
 .has-background-grey-dark {
   background-color: #4a4a4a !important;
 }
 .has-text-grey {
-  color: #7a7a7a !important;
+  color: #444444 !important;
 }
 .has-background-grey {
   background-color: #7a7a7a !important;

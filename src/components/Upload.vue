@@ -596,7 +596,14 @@ export default {
           value: this.rdf.version || "0.1.0"
         },
         {
+          html: `<p class='label'>License<span
+        class="helpLabel has-text-grey-light is-size-7 is-italic"
+        style="margin-left: .5rem;font-weight: 400;"
+        >Choose the license that fits you most, we recommend to use <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a> (free to share and adapt under the condition of attribution). For other license options, please visit here <a target="_blank" href="https://spdx.org/licenses">https://spdx.org/licenses<a></span><sup class='has-text-grey-light is-size-7'> *</sup></p>`
+        },
+        {
           label: "License",
+          showLabel: false,
           type: "select",
           placeholder: "Select your license",
           options: Object.keys(spdxLicenseList).map(opt => {
