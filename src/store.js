@@ -30,7 +30,8 @@ export const store = new Vuex.Store({
       : null,
     zenodoBaseURL,
     siteConfig,
-    showNavbar: true
+    showNavbar: true,
+    devPlugins: []
   },
   actions: {
     async toggleNavbar(context, enable) {
@@ -43,7 +44,33 @@ export const store = new Vuex.Store({
         alert(`Failed to login: ${e}`);
       }
     },
-
+    async addDevPlugin(context, plugin) {
+      const plugins = context.state.devPlugins;
+      let matched = false;
+      for (let i = 0; i < plugins.length; i++) {
+        if (plugins[i].name === plugin.name || plugins[i].id === plugin.id) {
+          matched = i;
+          break;
+        }
+      }
+      if (matched !== false) {
+        context.state.devPlugins.splice(matched, 1);
+      }
+      context.state.devPlugins.push(plugin);
+    },
+    async removeDevPlugin(context, plugin) {
+      const plugins = context.state.devPlugins;
+      let matched = false;
+      for (let i = 0; i < plugins.length; i++) {
+        if (plugins[i].name === plugin.name || plugins[i].id === plugin.id) {
+          matched = i;
+          break;
+        }
+      }
+      if (matched !== false) {
+        context.state.devPlugins.splice(matched, 1);
+      }
+    },
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
       if (context.state.loadedUrl === manifest_url) {
         console.log("manifest already loaded");

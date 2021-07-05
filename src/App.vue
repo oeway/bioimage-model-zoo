@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div>
     <!-- Navigation bar -->
     <nav class="navbar is-link is-fixed-top">
       <div class="navbar-brand">

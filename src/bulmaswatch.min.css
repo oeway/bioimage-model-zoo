@@ -1,8 +1,6 @@
 /*! bulmaswatch v0.8.1 | MIT License */
 /*! bulma.io v0.8.1 | MIT License | github.com/jgthms/bulma */
-@import url(
-  "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-);
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
 @-webkit-keyframes spinAround {
   0% {
     transform: rotate(0deg);

@@ -1,6 +1,39 @@
-export async function setupBioEngine() {
+const cssPatch = `
+.window>.titlebar {
+  cursor: move;
+}
+.window>.titlebar>.title {
+  font-size: 1rem!important;
+}
+
+.window>.titlebar>.title>div>.button {
+  height: 18px!important;
+  line-height: 18px!important;
+}
+
+/* hide the fullscreen button */
+.window>.titlebar>.title>div>.button:nth-child(3){
+  display:none!important;
+}
+`;
+export async function setupBioEngine(updateDevMenu) {
+  const queryString = window.location.href.split("#")[1].split("?")[1];
+  const urlParams = new URLSearchParams(queryString);
+  const devMode = urlParams.get("dev");
+  if (devMode) {
+    if (devMode) {
+      const styleSheet = document.createElement("style");
+      styleSheet.innerText = cssPatch;
+      document.head.appendChild(styleSheet);
+
+      const container = document.createElement("div");
+      container.id = "window-container";
+      document.body.appendChild(container);
+    }
+  }
   window
     .loadImJoyBasicApp({
+      version: "0.13.78",
       process_url_query: true,
       show_window_title: false,
       show_progress_bar: true,
@@ -13,7 +46,7 @@ export async function setupBioEngine() {
       },
       main_container: null,
       menu_container: "imjoy-menu",
-      window_manager_container: null,
+      window_manager_container: devMode ? "window-container" : null,
       imjoy_api: {} // override some imjoy API functions here
     })
     .then(async app => {
@@ -54,8 +87,6 @@ export async function setupBioEngine() {
             "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
         })
         .then(enginePlugin => {
-          const queryString = window.location.search;
-          const urlParams = new URLSearchParams(queryString);
           const engine = urlParams.get("engine");
           const spec = urlParams.get("spec");
           if (engine) {
@@ -84,6 +115,26 @@ export async function setupBioEngine() {
               .catch(e => {
                 console.error("Failed to connect to MyBinder Engine", e);
               });
+          }
+          if (devMode) {
+            app.loadPlugin("https://if.imjoy.io").then(() => {
+              app.imjoy.event_bus.on("plugin_loaded", plugin => {
+                updateDevMenu("add", plugin);
+              });
+              app.imjoy.event_bus.on("plugin_unloaded", plugin => {
+                updateDevMenu("remove", plugin);
+              });
+              app.imjoy.event_bus.on("add_window", w => {
+                window.scrollTo(0, 0);
+                setTimeout(() => {
+                  if (!w.dialog) {
+                    const windowElem = document.getElementById(w.window_id)
+                      .parentElement.parentElement;
+                    windowElem.style.top = "100px";
+                  }
+                }, 200);
+              });
+            });
           }
         });
       app.addMenuItem({
