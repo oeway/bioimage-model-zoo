@@ -51,6 +51,7 @@
             {{ resourceItem.name }}
           </h4>
           <div class="buttons floating-buttons">
+            <dev-menu :resourceItem="resourceItem"> </dev-menu>
             <app-icons
               :apps="resourceItem.apps"
               :enableHover="!isTouchDevice"
@@ -99,6 +100,7 @@ import { mapState } from "vuex";
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
+import DevMenu from "./DevMenu.vue";
 
 const isTouchDevice = (function() {
   try {
@@ -124,7 +126,8 @@ export default {
   },
   components: {
     badges: Badges,
-    "app-icons": AppIcons
+    "app-icons": AppIcons,
+    "dev-menu": DevMenu
   },
   computed: {
     boxShadow: function() {

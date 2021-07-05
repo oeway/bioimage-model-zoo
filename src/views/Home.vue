@@ -396,6 +396,7 @@ function normalizeItem(self, item) {
     new Set(item.allLabels.map(label => label.toLowerCase()))
   );
   item.apps = [];
+
   if (item.config._deposit) {
     if (item.config._deposit.owners.includes(self.userId)) {
       item.apps.unshift({
@@ -611,7 +612,7 @@ export default {
     this.resourceId = this.resourceId && this.resourceId.toLowerCase();
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
-    setupBioEngine();
+    setupBioEngine(this.updateDevMenu);
     // select models as default
     for (let list of this.resourceCategories) {
       if (list.type === "model") {
@@ -751,6 +752,10 @@ export default {
     window.removeEventListener("resize", this.updateSize);
   },
   methods: {
+    async updateDevMenu(action, plugin) {
+      if (action === "add") await this.$store.dispatch("addDevPlugin", plugin);
+      else await this.$store.dispatch("removeDevPlugin", plugin);
+    },
     goHome() {
       this.selectedPartner = null;
       this.searchTags = [];
