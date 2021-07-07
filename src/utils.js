@@ -82,17 +82,25 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       scheme: "url"
     });
   }
-  if (rdf.config._rdf_file)
+  if (rdf.config._rdf_file) {
     // rdf.yaml or model.yaml
+    let rdf_file = rdf.config._rdf_file.startsWith("http")
+      ? rdf.config._rdf_file
+      : new URL(rdf.config._rdf_file, baseUrl).href;
+    // When we update an existing deposit, make sure we save the relative link
+    if (rdf_file.startsWith("http") && rdf_file.includes("api/files")) {
+      rdf_file = rdf_file.split("/");
+      rdf_file = rdf_file[rdf_file.length - 1];
+      rdf_file = new URL(rdf_file, baseUrl).href;
+    }
+
     related_identifiers.push({
-      identifier: rdf.config._rdf_file.startsWith("http")
-        ? rdf.config._rdf_file
-        : new URL(rdf.config._rdf_file, baseUrl).href,
+      identifier: rdf_file,
       relation: "isCompiledBy", // compiled/created this upload
       resource_type: "other",
       scheme: "url"
     });
-  else throw new Error("`_rdf_file` key is not found in the RDF config");
+  } else throw new Error("`_rdf_file` key is not found in the RDF config");
 
   if (rdf.documentation) {
     if (rdf.documentation.includes("access_token="))
@@ -161,7 +169,9 @@ export function depositionToRdf(deposition) {
         rdfFile = rdfFile.replace("file://", deposition.links.bucket + "/");
       } else if (rdfFile.includes(`/files/`)) {
         // reset the regex
-        const zenodoFileRegex = /.*zenodo.org\/.*\/files\/(.*)/;
+        const zenodoFileRegex = rdfFile.includes("/api/files/")
+          ? /.*zenodo.org\/api\/files\/.*\/(.*)/
+          : /.*zenodo.org\/.*\/files\/(.*)/;
         const matches = zenodoFileRegex.exec(rdfFile);
         if (matches) {
           const fileName = matches[1];
@@ -182,7 +192,9 @@ export function depositionToRdf(deposition) {
         url = url.replace("file://", deposition.links.bucket + "/");
       } else if (url.includes(`${deposition.id}/files/`)) {
         // reset the regex
-        const zenodoFileRegex = /.*zenodo.org\/.*\/files\/(.*)/;
+        const zenodoFileRegex = url.includes("/api/files/")
+          ? /.*zenodo.org\/api\/files\/.*\/(.*)/
+          : /.*zenodo.org\/.*\/files\/(.*)/;
         const matches = zenodoFileRegex.exec(url);
         if (matches) {
           url = `${deposition.links.bucket}/${matches[1]}`;
