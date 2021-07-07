@@ -87,8 +87,6 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
     let rdf_file = rdf.config._rdf_file.startsWith("http")
       ? rdf.config._rdf_file
       : new URL(rdf.config._rdf_file, baseUrl).href;
-
-    debugger;
     // When we update an existing deposit, make sure we save the relative link
     if (rdf_file.startsWith("http") && rdf_file.includes("api/files")) {
       rdf_file = rdf_file.split("/");
