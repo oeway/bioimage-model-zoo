@@ -9,5 +9,4 @@ These Model Runners are currently used by consumer software:
 
 | model runner | used by ilastik | used by DeepImageJ | used by Fiji |
 | --- | --- | --- | --- |
-| pybio: https://github.com/bioimage-io/python-bioimage-io/blob/master/pybio/runners/base.py#L29 | yes | no | no |
-
+| tiktorch runner: https://github.com/ilastik/tiktorch/tree/master/tiktorch/runner | yes | no | no |
