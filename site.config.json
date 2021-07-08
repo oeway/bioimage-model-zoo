@@ -43,6 +43,7 @@
   "zenodo_config": {
     "enabled": true,
     "client_id": "0Zb8YkwXBqt2zelL9WyorERRzJufdTJMgxxuibmQ",
+    "community": "bioimage-io",
     "use_sandbox": true
   },
   "attachment_table": {
