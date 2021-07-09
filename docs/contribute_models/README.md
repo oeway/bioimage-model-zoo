@@ -2,7 +2,7 @@
 
 ## Model contribution requirements:
 
-- Follow the [BioImage.IO model description file format](https://github.com/bioimage-io/spec-bioimage-io/blob/master/README.md) with `format_version>= 0.3.0`
+- Follow the [BioImage.IO Model Resource Description File Specification](/bioimageio_model_spec) with `format_version>= 0.3.0`
 - Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers).
 - **Special case**: Notebook contribution together with an example model. This case is not covered yet in the tutorial. 
 
@@ -22,4 +22,4 @@ Ready to follow the [Tutorial](/contribute_models/tutorials.md)?
 
 ## Contributing other resource types
 
-To contribute a notebook, application or dataset, please use the [Resource Description File Foormat](/contribute_models/resource-description-file).
+To contribute a notebook, application or dataset, please use the [Resource Description File Format](/bioimageio_rdf_spec).

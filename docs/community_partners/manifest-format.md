@@ -57,7 +57,7 @@ config:
 ```
 
 ## Add resources
-You can now list your resource grouped by their types, each resource item follows the [`Resource Description File`](https://github.com/bioimage-io/bioimage.io/blob/master/docs/resource-description-file.md)(RDF) format. You can write all the RDF fields in the manifest or link to a standalone RDF file by setting the url as the `source` field. See the example below:
+You can now list your resource grouped by their types, each resource item follows the [`Resource Description File`](/bioimageio_rdf_spec)(RDF) format. You can write all the RDF fields in the manifest or link to a standalone RDF file by setting the url as the `source` field. See the example below:
 
 ```yaml
 application:
