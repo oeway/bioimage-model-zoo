@@ -26,6 +26,8 @@ export async function getFullRdfFromDeposit(deposition) {
   if (response.ok) {
     const yamlStr = await response.text();
     const fullRdf = yaml.load(yamlStr);
+    // fix id;
+    fullRdf.id = deposition.conceptdoi;
     fullRdf.config = fullRdf.config || {};
     // infer the rdf type for old RDFs
     if (!fullRdf.type && fullRdf.inputs && fullRdf.outputs) {

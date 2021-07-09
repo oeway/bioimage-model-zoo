@@ -81,6 +81,7 @@
     </div>
     <comment-box :title="resourceItem.name"></comment-box>
   </div>
+  <h2 v-else>Resource not found: {{ resourceId }}</h2>
 </template>
 
 <script>
