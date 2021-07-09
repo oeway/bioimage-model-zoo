@@ -18,7 +18,9 @@
       You are using the development mode of the upload feature, this means files
       will be uploaded to the sandbox version of Zenodo
       (https://sandbox.zenodo.org). The uploaded files can be removed from
-      Zenodo at anytime without notice.
+      Zenodo at any time without notice. This is temporary. In the future, the
+      upload feature will connect to the main Zenodo storage and allow permanent
+      storage of your data.
     </b-notification>
     <b-steps
       style="margin-top: 20px;"
@@ -31,7 +33,7 @@
         <b-field
           v-if="!client.credential"
           label="Please login or signup to Zenodo.org"
-          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on behave of you."
+          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on your behalf."
           expanded
         >
           <b-button
@@ -46,7 +48,7 @@
         <b-field
           v-else
           label="You have already logged in via Zenodo"
-          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on behave of you."
+          message="BioImage.IO uses https://zenodo.org as storage service, you will need to sign up or login to Zenodo, and allow BioImage.IO to upload files to zenodo on your behalf."
           expanded
         >
           <b-button
@@ -243,7 +245,11 @@
           <b-switch v-model="requestedJoinCommunity">
             Apply for listing in the
             <a
-              :href="client.baseURL + '/communities/bioimage-io/'"
+              :href="
+                client.baseURL +
+                  '/communities/' +
+                  siteConfig.zenodo_config.community
+              "
               target="_blank"
               >bioimage.io community list</a
             >
@@ -323,9 +329,10 @@
             <a :href="prereserveUrl" target="_blank">{{ prereserveUrl }}</a>
           </h2>
           <p>
-            Note: Please check carefully before publishing, it won't be easy to
-            remove items after made public. New changes will be added as a new
-            version.
+            Note: Note: Please check carefully before publishing. It is
+            generally not possible to remove items after they have been
+            published. Changes will be added as a new version, but will not
+            erase the previous version.
           </p>
         </b-notification>
 
@@ -741,6 +748,7 @@ export default {
       }
 
       this.similarDeposits = await this.client.getResourceItems({
+        community: this.siteConfig.zenodo_config.community,
         sort: "bestmatch",
         query: this.rdf.name
       });
@@ -751,12 +759,6 @@ export default {
       this.stepIndex = 2;
     },
     async publishDeposition() {
-      if (
-        !confirm(
-          "Are you sure about publish your RDF now? Please note that after publishing you won't be able to remove it. Changes to existing published deposit can only be made by publishing new versions."
-        )
-      )
-        return;
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
       });
@@ -892,7 +894,9 @@ export default {
         const metadata = rdfToMetadata(this.rdf, baseUrl, docstring);
         // this will send a email request to the admin of bioimgae-io team
         if (this.requestedJoinCommunity) {
-          metadata.communities.push({ identifier: "bioimage-io" });
+          metadata.communities.push({
+            identifier: this.siteConfig.zenodo_config.community
+          });
         }
         metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
         depositionInfo = await this.client.updateMetadata(
@@ -902,8 +906,9 @@ export default {
 
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
-        this.rdf.id = depositionInfo.metadata.prereserve_doi.doi; //doi and recid
+        this.rdf.id = depositionInfo.conceptdoi; //doi and recid
         this.rdf.config._doi = depositionInfo.metadata.prereserve_doi.doi;
+        this.rdf.config._conceptdoi = depositionInfo.conceptdoi;
         if (skipUpload) {
           this.stepIndex = 3;
           return depositionInfo;

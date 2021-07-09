@@ -225,7 +225,7 @@ export function depositionToRdf(deposition) {
     );
   }
   return {
-    id: metadata.doi,
+    id: deposition.conceptdoi,
     name: metadata.title,
     type,
     authors: metadata.creators,
@@ -242,7 +242,8 @@ export function depositionToRdf(deposition) {
     source: rdfFile, //TODO: fix for other RDF types
     links,
     config: {
-      _doi: metadata.doi,
+      _doi: deposition.doi,
+      _conceptdoi: deposition.conceptdoi,
       _deposit: deposition,
       _rdf_file: rdfFile
     }
@@ -266,6 +267,7 @@ export class ZenodoClient {
     this.credential = null;
     try {
       this.lastUserId = localStorage.getItem("zenodo_user_id");
+      if (this.lastUserId) this.lastUserId = parseInt(this.lastUserId);
       let lastCredential = localStorage.getItem("zenodo_credential");
       if (lastCredential) {
         this.credential = JSON.parse(lastCredential);
@@ -278,7 +280,6 @@ export class ZenodoClient {
       }
     } catch (e) {
       console.error("Failed to reset zenodo_credential");
-      localStorage.removeItem("zenodo_credential");
     }
   }
 
@@ -289,6 +290,11 @@ export class ZenodoClient {
   logout() {
     return new Promise((resolve, reject) => {
       this.credential = null;
+      try {
+        localStorage.removeItem("zenodo_credential");
+      } catch (e) {
+        console.error("Failed to reset zenodo_credential");
+      }
       const loginWindow = window.open(`${this.baseURL}/logout`, "Logout");
       try {
         loginWindow.focus();
@@ -351,7 +357,15 @@ export class ZenodoClient {
     return this.credential;
   }
 
-  async getResourceItems({ page, type, keywords, query, sort, size }) {
+  async getResourceItems({
+    community,
+    page,
+    type,
+    keywords,
+    query,
+    sort,
+    size
+  }) {
     page = page || 1;
     type = type || "all";
     keywords = keywords || [];
@@ -366,15 +380,24 @@ export class ZenodoClient {
         : "") +
       (query ? "&q=" + query : "");
     const url =
-      `${this.baseURL}/api/records/?communities=bioimage-io&sort=${sort}&page=${page}&size=${size}` +
-      additionalKeywords; //&all_versions
+      `${this.baseURL}/api/records/?${
+        community ? "communities=" + community : ""
+      }&sort=${sort}&page=${page}&size=${size}` + additionalKeywords; //&all_versions
     const response = await fetch(url);
     const results = JSON.parse(await response.text());
     // retry in 1s
     if (!results || !results.hits) {
       console.warn("Hitting rate limit, retrying in 1s");
       setTimeout(() => {
-        this.getResourceItems({ page, type, keywords, query, sort, size });
+        this.getResourceItems({
+          community,
+          page,
+          type,
+          keywords,
+          query,
+          sort,
+          size
+        });
       }, 1000);
     }
     const hits = results.hits.hits;
@@ -392,6 +415,14 @@ export class ZenodoClient {
 
   login() {
     return new Promise((resolve, reject) => {
+      if (!this.lastUserId) {
+        if (
+          !confirm(
+            "Redirecting to Zenodo.org. If you failed to login, please come back here to try it again."
+          )
+        )
+          return;
+      }
       const randomState = randId();
       const loginWindow = window.open(
         `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=${randomState}&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
@@ -405,7 +436,7 @@ export class ZenodoClient {
         );
         return;
       }
-
+      this.credential = null;
       let countDown = 120;
       let loggedIn = false;
       const timer = setInterval(function() {
@@ -440,6 +471,8 @@ export class ZenodoClient {
             return;
           }
           loggedIn = true;
+          // already logged in
+          if (this.credential) return;
           if (!event.data.access_token || event.data.state !== randomState) {
             reject(
               "Failed to obtain the access token, please make sure your account is valid and try it again."
