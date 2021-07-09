@@ -27,7 +27,7 @@
       "url": "https://github.com/bioimage-io/bioimage-io-models"
     },
     { "label": "Contact Us",
-      "tooltip": "Send us an email",
+      "tooltip": "Send us a message",
       "logo": "/static/img/contact.png", 
       "url": "https://oeway.typeform.com/to/K3j2tJt7"
     }
