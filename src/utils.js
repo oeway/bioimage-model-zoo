@@ -225,7 +225,7 @@ export function depositionToRdf(deposition) {
     );
   }
   return {
-    id: metadata.doi,
+    id: deposition.conceptdoi,
     name: metadata.title,
     type,
     authors: metadata.creators,
@@ -242,7 +242,8 @@ export function depositionToRdf(deposition) {
     source: rdfFile, //TODO: fix for other RDF types
     links,
     config: {
-      _doi: metadata.doi,
+      _doi: deposition.doi,
+      _conceptdoi: deposition.conceptdoi,
       _deposit: deposition,
       _rdf_file: rdfFile
     }
@@ -266,6 +267,7 @@ export class ZenodoClient {
     this.credential = null;
     try {
       this.lastUserId = localStorage.getItem("zenodo_user_id");
+      if (this.lastUserId) this.lastUserId = parseInt(this.lastUserId);
       let lastCredential = localStorage.getItem("zenodo_credential");
       if (lastCredential) {
         this.credential = JSON.parse(lastCredential);
@@ -278,7 +280,6 @@ export class ZenodoClient {
       }
     } catch (e) {
       console.error("Failed to reset zenodo_credential");
-      localStorage.removeItem("zenodo_credential");
     }
   }
 
@@ -289,6 +290,11 @@ export class ZenodoClient {
   logout() {
     return new Promise((resolve, reject) => {
       this.credential = null;
+      try {
+        localStorage.removeItem("zenodo_credential");
+      } catch (e) {
+        console.error("Failed to reset zenodo_credential");
+      }
       const loginWindow = window.open(`${this.baseURL}/logout`, "Logout");
       try {
         loginWindow.focus();

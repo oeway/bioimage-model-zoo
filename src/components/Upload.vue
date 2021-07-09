@@ -906,8 +906,9 @@ export default {
 
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
-        this.rdf.id = depositionInfo.metadata.prereserve_doi.doi; //doi and recid
+        this.rdf.id = depositionInfo.conceptdoi; //doi and recid
         this.rdf.config._doi = depositionInfo.metadata.prereserve_doi.doi;
+        this.rdf.config._conceptdoi = depositionInfo.conceptdoi;
         if (skipUpload) {
           this.stepIndex = 3;
           return depositionInfo;
