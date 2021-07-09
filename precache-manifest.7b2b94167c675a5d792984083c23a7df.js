@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "a8e3eee6bcad6dade7e9",
+    "revision": "a720f49c5b327a7e6fff",
     "url": "/css/about.c96f02cd.css"
   },
   {
-    "revision": "6b51329cd32f1ff72ab7",
+    "revision": "de061049da2d88db4201",
     "url": "/css/app.991761de.css"
   },
   {
@@ -36,16 +36,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "00b4eb4dbfa22e67e40bf5d53d5157f2",
+    "revision": "58f746355342982b82486a3c89ef958c",
     "url": "/index.html"
   },
   {
-    "revision": "a8e3eee6bcad6dade7e9",
-    "url": "/js/about.062af57f.js"
+    "revision": "a720f49c5b327a7e6fff",
+    "url": "/js/about.61600bb9.js"
   },
   {
-    "revision": "6b51329cd32f1ff72ab7",
-    "url": "/js/app.c0cb70a5.js"
+    "revision": "de061049da2d88db4201",
+    "url": "/js/app.f2749836.js"
   },
   {
     "revision": "3b049c917bf8de9a00db",
@@ -414,6 +414,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "8da76154e62a53d4ad2cc01955546045",
     "url": "/static/img/bioimage-io-logo.svg"
+  },
+  {
+    "revision": "10006be82ff63620ea3c48af7ba92e8f",
+    "url": "/static/img/contact.png"
   },
   {
     "revision": "e1dd5654c3c8bcca4df6f56705b14a3c",
