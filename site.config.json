@@ -16,7 +16,7 @@
   "manifest_url": "https://bioimage-io.github.io/bioimage-io-models/manifest.bioimage.io.json",
   "explore_button_text": "🚀 Explore the Zoo",
   "subscribe_url": "https://docs.google.com/forms/d/e/1FAIpQLSfQhTjXOuTXZNtalprbsXMPd4ct2ydiMhlPc2lhcs6WY4yo0w/viewform?embedded=true",
-  "contact_form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdHpcFC59if8KXpHbvaRl6daBwn_C1zsX-lE4SgAoFrjIf2cg/viewform?embedded=true",
+  "contact_form_url": "https://oeway.typeform.com/to/K3j2tJt7",
   "contribute_url": "https://bioimage.io/docs/#/contribute_models/README",
   "join_partners_url": "https://bioimage.io/docs/community_partners/README.md",
   "about_url": null,
@@ -25,6 +25,11 @@
       "tooltip": "Bioimage Model Repository",
       "logo": "/static/img/github.png", 
       "url": "https://github.com/bioimage-io/bioimage-io-models"
+    },
+    { "label": "Contact Us",
+      "tooltip": "Send us an email",
+      "logo": "/static/img/contact.png", 
+      "url": "https://oeway.typeform.com/to/K3j2tJt7"
     }
   ],
   "rdf_root_repo": "bioimage-io/bioimage-io-models",
