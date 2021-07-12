@@ -33,7 +33,7 @@ export async function setupBioEngine(updateDevMenu) {
   }
   window
     .loadImJoyBasicApp({
-      version: "0.13.80",
+      version: "0.13.81",
       process_url_query: true,
       show_window_title: false,
       show_progress_bar: true,
