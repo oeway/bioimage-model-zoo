@@ -15,6 +15,9 @@ const cssPatch = `
 .window>.titlebar>.title>div>.button:nth-child(3){
   display:none!important;
 }
+.imjoy-windows > img {
+  display: none;
+}
 `;
 export async function setupBioEngine(updateDevMenu) {
   const queryString = window.location.href.split("#")[1].split("?")[1];
