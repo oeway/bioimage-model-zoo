@@ -201,10 +201,12 @@ export function depositionToRdf(deposition) {
         if (matches) {
           url = `${deposition.links.bucket}/${matches[1]}`;
         } else {
-          throw new Error("Invalid file identifier: " + idf.identifier);
+          console.error(
+            "Invalid cover image file identifier: " + idf.identifier
+          );
         }
       } else {
-        throw new Error("Invalid file identifier: " + idf.identifier);
+        console.error("Invalid cover image file identifier: " + idf.identifier);
       }
       covers.push(url);
     } else if (

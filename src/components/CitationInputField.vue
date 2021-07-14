@@ -87,6 +87,8 @@ export default {
   },
   created() {
     this.value = this.item.value;
+    if (typeof this.value === "string") this.value = [{ text: this.value }];
+    if (this.value && !Array.isArray(this.value)) this.value = [this.value];
     this.value = this.value || [];
     if (this.value.length <= 0) {
       this.value.push({
