@@ -479,24 +479,45 @@ export default {
         container: this.$el
       });
       try {
-        var new_zip = new JSZip();
-        this.zipPackage = await new_zip.loadAsync(file);
-        console.log(this.zipPackage.files);
-        if (
-          !this.zipPackage.files["model.yaml"] &&
-          !this.zipPackage.files["rdf.yaml"]
-        ) {
-          alert(
-            "Invalid file: no model.yaml or rdf.yaml found in the model package."
-          );
-          return;
+        let configFile;
+        if (file.name.endsWith(".yaml")) {
+          this.rdfYaml = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              resolve(event.target.result);
+            };
+            reader.onerror = reject;
+            reader.readAsText(file);
+          });
+          configFile = file;
+          this.zipPackage = new JSZip();
+          this.zipPackage.file(file.name, file);
+        } else if (!file.name(".zip")) {
+          alert("Only .zip and .yaml file are supported.");
+          throw new Error("Only zip and .yaml file are supported");
+        } else {
+          var new_zip = new JSZip();
+          this.zipPackage = await new_zip.loadAsync(file);
+          console.log(this.zipPackage.files);
+          if (
+            !this.zipPackage.files["model.yaml"] &&
+            !this.zipPackage.files["rdf.yaml"]
+          ) {
+            alert(
+              "Invalid file: no model.yaml or rdf.yaml found in the model package."
+            );
+            throw new Error("Invalid file: no rdf file found in the package");
+          }
+          configFile =
+            this.zipPackage.files["rdf.yaml"] ||
+            this.zipPackage.files["model.yaml"];
+          this.rdfYaml = await configFile.async("string");
         }
-        const configFile =
-          this.zipPackage.files["rdf.yaml"] ||
-          this.zipPackage.files["model.yaml"];
-        this.rdfYaml = await configFile.async("string");
         const rdf = yaml.load(this.rdfYaml);
-        rdf.type = rdf.type || "model";
+        if (!rdf.type) {
+          alert("Invalid rdf file: type key is not found");
+          throw new Error("Invalid rdf file: type key is not found");
+        }
         rdf.config = rdf.config || {};
         rdf.config._rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
         if (rdf.type === "model") {
