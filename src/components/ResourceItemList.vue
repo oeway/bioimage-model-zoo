@@ -223,5 +223,6 @@ a.badge {
 }
 .resource-card {
   height: 400px;
+  min-width: 320px;
 }
 </style>

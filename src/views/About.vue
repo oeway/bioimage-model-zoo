@@ -114,6 +114,9 @@ export default {
   background-repeat: no-repeat;
   background-position: bottom 50px;
   overflow: auto;
+  background-color: white;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 .hero {
   max-width: 100%;
