@@ -75,15 +75,14 @@ export default {
       siteConfig: state => state.siteConfig
     })
   },
-  mounted(){
-  }
+  mounted() {}
 };
 </script>
 
 <style>
 html,
 body {
-  overflow: auto!important;
+  overflow: auto !important;
   width: 100vw;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
