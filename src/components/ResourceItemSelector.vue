@@ -1,7 +1,21 @@
 <template>
   <div class="container content-wrapper">
     <section class="center ">
-      <b-field style="max-width: calc(100vw - 10px);" @keyup.enter="search">
+      <b-field
+        style="max-width: calc(100vw - 10px); margin-bottom: 20px;"
+        @keyup.enter="search"
+      >
+        <div
+          style="position:absolute; top:36px; left: 50%;  transform: translate3d(-50%, 0, 0); "
+        >
+          <a
+            style="margin: 3px;"
+            @click="selectedTags = [tag]"
+            v-for="(tag, k) in commonTags"
+            :key="tag"
+            >{{ tag }}{{ k === commonTags.length - 1 ? "" : "," }}</a
+          >
+        </div>
         <b-taginput
           :loading="loading"
           type="is-info"
@@ -108,13 +122,13 @@
         </b-field>
         <!-- <button style="height:36px;" class="button is-primary">Search</button> -->
       </b-field>
-      <b-field> </b-field>
     </section>
   </div>
 </template>
 
 <script>
 import { debounce } from "../utils";
+import { mapState } from "vuex";
 export default {
   name: "ResourceItemSelector",
   props: {
@@ -186,6 +200,13 @@ export default {
     this.filteredTags = this.fullLabelList;
   },
   computed: {
+    commonTags() {
+      return (
+        this.siteConfig.resource_categories.filter(
+          cat => cat.type === this.type
+        )[0]?.common_tags || []
+      );
+    },
     categories() {
       if (!this.tagCategories) {
         return { grouped: {}, other: this.fullLabelList };
@@ -212,7 +233,10 @@ export default {
       }
 
       return { grouped: cate, other: other };
-    }
+    },
+    ...mapState({
+      siteConfig: state => state.siteConfig
+    })
   },
   methods: {
     applySearch(newTags) {
