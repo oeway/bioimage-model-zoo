@@ -350,10 +350,23 @@
             <a :href="prereserveUrl" target="_blank">{{ prereserveUrl }}</a>
           </h2>
           <p>
-            Note: Note: Please check carefully before publishing. It is
-            generally not possible to remove items after they have been
-            published. Changes will be added as a new version, but will not
-            erase the previous version.
+            Note: Please check carefully before publishing. It is generally not
+            possible to remove items after they have been published. Changes
+            will be added as a new version, but will not erase the previous
+            version.
+          </p>
+        </b-notification>
+
+        <b-notification
+          v-if="uploadMode === 'update'"
+          has-icon
+          type="is-info"
+          aria-close-label="Close notification"
+        >
+          <p>
+            Note: After publishing the updated deposit, you may see the item
+            disappear from the website, this is normal because Zenodo need some
+            time to index the new version. It should combe back in a while.
           </p>
         </b-notification>
 
@@ -478,7 +491,8 @@ export default {
       URI4Load: null,
       similarDeposits: null,
       depositId: null,
-      newRDFFile: null
+      newRDFFile: null,
+      uploadMode: null
     };
   },
   methods: {
@@ -900,6 +914,7 @@ export default {
       try {
         this.uploadProgress = 1;
         let depositionInfo;
+        this.uploadMode = "new";
         if (depositId) {
           try {
             depositionInfo = await this.client.retrieve(depositId);
@@ -923,6 +938,7 @@ export default {
               depositionInfo.state !== "unsubmitted"
             )
               await this.client.edit(depositId);
+            this.uploadMode = "update";
           } catch (e) {
             console.error(e);
             if (
