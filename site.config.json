@@ -141,7 +141,7 @@
       "name": "Applications",
       "type": "application",
       "outline_color": "rgb(83 230 7)",
-      "common_tags": ["notebook", "workflow", "software", "bioengine"],
+      "common_tags": ["software", "notebook", "bioengine", "workflow", "macro"],
       "description": "List software, web apps, notebooks and utility tools"
     },
     {
