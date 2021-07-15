@@ -492,7 +492,7 @@ export default {
           configFile = file;
           this.zipPackage = new JSZip();
           this.zipPackage.file(file.name, file);
-        } else if (!file.name(".zip")) {
+        } else if (!file.name.endsWith(".zip")) {
           alert("Only .zip and .yaml file are supported.");
           throw new Error("Only zip and .yaml file are supported");
         } else {
@@ -514,6 +514,8 @@ export default {
           this.rdfYaml = await configFile.async("string");
         }
         const rdf = yaml.load(this.rdfYaml);
+        // TODO: remove this when the migration is finished
+        if (configFile.name === "model.yaml") rdf.type = "model";
         if (!rdf.type) {
           alert("Invalid rdf file: type key is not found");
           throw new Error("Invalid rdf file: type key is not found");
