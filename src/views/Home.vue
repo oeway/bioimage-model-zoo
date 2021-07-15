@@ -811,7 +811,8 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.partner = partner.id;
       query.tags = partner.tags;
-      this.$router.replace({ query: query }).catch(() => {});
+      if (this.initialized)
+        this.$router.replace({ query: query }).catch(() => {});
     },
     preventPageScroll() {
       document.getElementsByTagName("html")[0].style.overflow = "hidden";
@@ -847,7 +848,6 @@ export default {
     },
     updateQueryTags(newTags) {
       if (!this.initialized) {
-        this.initialized = true;
         return;
       }
       this.searchTags = newTags;
@@ -985,7 +985,8 @@ export default {
       if (mInfo.id) {
         const query = Object.assign({}, this.$route.query);
         query.id = mInfo.id;
-        this.$router.replace({ query: query }).catch(() => {});
+        if (this.initialized)
+          this.$router.replace({ query: query }).catch(() => {});
       }
     },
     updateStatus(status) {
@@ -1001,7 +1002,8 @@ export default {
       const query = Object.assign({}, this.$route.query);
       delete query.id;
       delete query.show;
-      this.$router.replace({ query: query }).catch(() => {});
+      if (this.initialized)
+        this.$router.replace({ query: query }).catch(() => {});
     },
     maximizeInfoWindow() {
       this.infoDialogFullscreen = !this.infoDialogFullscreen;
@@ -1054,9 +1056,14 @@ export default {
         }
       }
       if (this.$route.query.tags) {
+        let tags = null;
         if (typeof this.$route.query.tags === "string")
-          this.searchTags = this.$route.query.tags.split(",");
-        else this.searchTags = this.$route.query.tags;
+          tags = this.$route.query.tags.split(",");
+        else tags = this.$route.query.tags;
+        setTimeout(() => {
+          this.searchTags = tags;
+        }, 0);
+
         hasQuery = true;
       }
 
@@ -1093,6 +1100,7 @@ export default {
       if (hasQuery) {
         this.enter();
       }
+      this.initialized = true;
     },
     showProgress(p) {
       this.progress = p;
