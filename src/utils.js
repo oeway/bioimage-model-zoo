@@ -375,7 +375,7 @@ export class ZenodoClient {
     keywords = keywords || [];
     if (!keywords.includes("bioimage.io")) keywords.push("bioimage.io");
     size = size || 20;
-    sort = sort || "mostviewed";
+    sort = sort || "mostrecent";
     const typeKeywords = type !== "all" ? "&keywords=bioimage.io:" + type : "";
     const additionalKeywords =
       typeKeywords +
