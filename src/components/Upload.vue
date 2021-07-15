@@ -135,6 +135,7 @@
           <br />
           <b-field
             label="Optionally, you can update the form with values from an local RDF file"
+            message="Note: This operation will overwrite the values in the above RDF form, if you have further changes to make, please load the local RDF file first, then make changes in the form."
             expanded
           >
             <b-upload
