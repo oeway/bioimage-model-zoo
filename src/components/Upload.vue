@@ -132,6 +132,26 @@
             :components="components"
           >
           </form-json>
+          <br />
+          <b-field
+            label="Optionally, you can update the form with values from an local RDF file"
+            expanded
+          >
+            <b-upload
+              v-model="newRDFFile"
+              @input="updateFormWithLocalFile(newRDFFile)"
+              class="file-label"
+            >
+              <span class="file-cta">
+                <b-icon class="file-icon" icon="upload"></b-icon>
+                <span class="file-label"
+                  >Load a local RDF file [{{
+                    newRDFFile ? newRDFFile.name : ""
+                  }}]</span
+                >
+              </span>
+            </b-upload>
+          </b-field>
         </section>
       </b-step-item>
 
@@ -456,7 +476,8 @@ export default {
       prereserveDOI: null,
       URI4Load: null,
       similarDeposits: null,
-      depositId: null
+      depositId: null,
+      newRDFFile: null
     };
   },
   methods: {
@@ -573,10 +594,27 @@ export default {
         alert(`Oops, failed to fetch RDF from ${url}, error: ${e}`);
       }
     },
+    async updateFormWithLocalFile(file) {
+      const rdfYaml = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          resolve(event.target.result);
+        };
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+      const rdf = yaml.load(rdfYaml);
+      // make sure we reset the table
+      this.jsonFields = null;
+      setTimeout(() => {
+        this.initializeRdfForm(rdf);
+      }, 10);
+    },
     initializeRdfForm(rdf, files) {
       this.stepIndex = 1;
       this.rdf = rdf || {};
       this.rdf.links = this.rdf.links || [];
+      files = files || this.files || [];
       this.jsonFields = this.transformFields([
         {
           label: "Type",
@@ -685,6 +723,7 @@ export default {
           isRequired: false
         }
       ]);
+      this.files = files;
     },
     transformFields(fields) {
       const typeMapping = {};
