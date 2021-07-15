@@ -371,6 +371,11 @@ function normalizeItem(self, item) {
     }
   }
 
+  // if no cover image added, use the icon image
+  if (item.cover_images.length <= 0 && item?.icon?.startsWith("http")) {
+    item.cover_images.push(item.icon);
+  }
+
   item.allLabels = item.labels || [];
   if (item.license) {
     item.allLabels.push(item.license);
