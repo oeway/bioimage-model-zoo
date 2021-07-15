@@ -133,7 +133,8 @@ export const store = new Vuex.Store({
         }
       }
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
-      if (item.type === "application") state.allApps[item.id] = item;
+      if (item.type === "application" && item?.source.endsWith(".imjoy.html"))
+        state.allApps[item.id] = item;
       state.resourceItems.push(item);
       // index tags
       if (item.tags && item.tags.length > 0)

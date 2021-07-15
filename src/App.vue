@@ -84,6 +84,7 @@ html,
 body {
   overflow: auto !important;
   width: 100vw;
+  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   background: #dcdcdc;

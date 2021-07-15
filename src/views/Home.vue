@@ -455,13 +455,38 @@ function normalizeItem(self, item) {
     });
 
   if (item.type === "application") {
-    item.apps.unshift({
-      name: "Run",
-      icon: "play",
-      run() {
-        runAppForAllItems(self, self.allApps[item.id], self.resourceItems);
+    if (self.allApps[item.id]) {
+      item.apps.unshift({
+        name: "Run",
+        icon: "play",
+        run() {
+          runAppForAllItems(self, self.allApps[item.id], self.resourceItems);
+        }
+      });
+    } else if (item.tags.includes("colab") && item.source.endsWith(".ipynb")) {
+      // convert github raw url to colab url
+      item.config = item.config || {};
+
+      if (item.source.startsWith("https://raw.githubusercontent.com/")) {
+        const b = item.source.split("/");
+        item.config._colab_url = `https://colab.research.google.com/github/${
+          b[3]
+        }/${b[4]}/blob/${b[5]}/${b.slice(6).join("/")}`;
+        item.apps.unshift({
+          name: "Run",
+          icon: "play",
+          run() {
+            window.open(item.config._colab_url);
+          }
+        });
+      } else {
+        console.warn(
+          "Invalid colab source URL: " +
+            item.source +
+            " (the URL must be a raw github URL starts with https://raw.githubusercontent.com/)"
+        );
       }
-    });
+    }
   } else if (item.links) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter(
@@ -786,7 +811,8 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.partner = partner.id;
       query.tags = partner.tags;
-      this.$router.replace({ query: query }).catch(() => {});
+      if (this.initialized)
+        this.$router.replace({ query: query }).catch(() => {});
     },
     preventPageScroll() {
       document.getElementsByTagName("html")[0].style.overflow = "hidden";
@@ -822,7 +848,6 @@ export default {
     },
     updateQueryTags(newTags) {
       if (!this.initialized) {
-        this.initialized = true;
         return;
       }
       this.searchTags = newTags;
@@ -960,7 +985,8 @@ export default {
       if (mInfo.id) {
         const query = Object.assign({}, this.$route.query);
         query.id = mInfo.id;
-        this.$router.replace({ query: query }).catch(() => {});
+        if (this.initialized)
+          this.$router.replace({ query: query }).catch(() => {});
       }
     },
     updateStatus(status) {
@@ -976,7 +1002,8 @@ export default {
       const query = Object.assign({}, this.$route.query);
       delete query.id;
       delete query.show;
-      this.$router.replace({ query: query }).catch(() => {});
+      if (this.initialized)
+        this.$router.replace({ query: query }).catch(() => {});
     },
     maximizeInfoWindow() {
       this.infoDialogFullscreen = !this.infoDialogFullscreen;
@@ -1029,9 +1056,14 @@ export default {
         }
       }
       if (this.$route.query.tags) {
+        let tags = null;
         if (typeof this.$route.query.tags === "string")
-          this.searchTags = this.$route.query.tags.split(",");
-        else this.searchTags = this.$route.query.tags;
+          tags = this.$route.query.tags.split(",");
+        else tags = this.$route.query.tags;
+        setTimeout(() => {
+          this.searchTags = tags;
+        }, 0);
+
         hasQuery = true;
       }
 
@@ -1068,6 +1100,7 @@ export default {
       if (hasQuery) {
         this.enter();
       }
+      this.initialized = true;
     },
     showProgress(p) {
       this.progress = p;
