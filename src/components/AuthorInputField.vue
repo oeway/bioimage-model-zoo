@@ -89,11 +89,7 @@ export default {
     this.value = this.item.value;
     if (this.value && !Array.isArray(this.value)) this.value = [this.value];
     this.value = this.value || [];
-    this.value = this.value
-      .map(v => {
-        return { name: v.name, affiliation: v.affiliation, orcid: v.orcid };
-      })
-      .filter(v => v.name && v.name != "");
+    this.value = this.value.filter(v => v.name && v.name != "");
     this.commitValue();
 
     if (this.value.length <= 0) {
