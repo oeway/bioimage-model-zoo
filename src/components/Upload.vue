@@ -630,18 +630,13 @@ export default {
       this.rdf = rdf || {};
       this.rdf.links = this.rdf.links || [];
       files = files || this.files || [];
+      const types = this.siteConfig.resource_categories.map(cat => cat.type);
       this.jsonFields = this.transformFields([
         {
           label: "Type",
           type: "select",
           placeholder: "Select resource type",
-          options: [
-            "model",
-            "dataset",
-            "notebook",
-            "workflow",
-            "application"
-          ].map(opt => {
+          options: types.map(opt => {
             return {
               text: opt,
               value: opt,
