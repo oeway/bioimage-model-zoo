@@ -21,10 +21,15 @@
   "join_partners_url": "https://bioimage.io/docs/community_partners/README.md",
   "about_url": null,
   "footer": [
-    { "label": "Github Model Repository",
-      "tooltip": "Bioimage Model Repository",
+    { "label": "Bug Report",
+      "tooltip": "Send a bug report on Github",
+      "logo": "/static/img/bug-icon.png", 
+      "url": "https://github.com/bioimage-io/bioimage.io/issues"
+    },
+    { "label": "Source Code",
+      "tooltip": "Github Repository",
       "logo": "/static/img/github.png", 
-      "url": "https://github.com/bioimage-io/bioimage-io-models"
+      "url": "https://github.com/bioimage-io/bioimage.io"
     },
     { "label": "Contact Us",
       "tooltip": "Send us a message",
@@ -32,7 +37,7 @@
       "url": "https://oeway.typeform.com/to/K3j2tJt7"
     }
   ],
-  "rdf_root_repo": "bioimage-io/bioimage-io-models",
+  "rdf_root_repo": "bioimage-io/bioimage.io",
   "enable_comment": true,
   "splash_title": "Bioimage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
