@@ -87,11 +87,18 @@ export default {
   },
   created() {
     this.value = this.item.value;
+    if (this.value && !Array.isArray(this.value)) this.value = [this.value];
     this.value = this.value || [];
+    this.value = this.value
+      .map(v => {
+        return { name: v.name, affiliation: v.affiliation, orcid: v.orcid };
+      })
+      .filter(v => v.name && v.name != "");
+    this.commitValue();
+
     if (this.value.length <= 0) {
       this.value.push({});
     }
-    this.commitValue();
   },
   methods: {
     commitValue() {
@@ -104,11 +111,7 @@ export default {
     },
     addNewAuthor() {
       if (this.value[this.value.length - 1].name !== "") {
-        this.value.push({
-          text: "",
-          doi: "",
-          url: ""
-        });
+        this.value.push({});
       }
       this.commitValue();
     },
