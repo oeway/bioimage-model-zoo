@@ -57,13 +57,13 @@
               :enableHover="!isTouchDevice"
             ></app-icons>
           </div>
-          <span class="authors" :title="affil(resourceItem.authors)">
+          <!-- <span class="authors" :title="affil(resourceItem.authors)">
             {{
               resourceItem.authors && resourceItem.authors.length > 0
                 ? "by " + etAl(resourceItem.authors)
                 : ""
             }}
-          </span>
+          </span> -->
           <p class="resource-item-description" v-if="resourceItem.description">
             {{
               resourceItem.description.slice(0, 64) +
