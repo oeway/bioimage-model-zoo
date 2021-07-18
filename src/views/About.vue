@@ -1,6 +1,6 @@
 <template>
   <div
-    class="about"
+    class="about width-limited"
     :style="{ 'background-image': 'url(' + siteConfig.background_image + ')' }"
   >
     <section class="hero">
@@ -127,5 +127,11 @@ export default {
 }
 button {
   margin: 2px;
+}
+.width-limited {
+  max-width: 1000px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
 }
 </style>
