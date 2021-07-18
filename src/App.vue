@@ -87,7 +87,7 @@ body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  background: #dcdcdc;
+  background: #ffffff;
   overscroll-behavior-y: none;
 }
 #app {
