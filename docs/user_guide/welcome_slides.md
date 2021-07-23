@@ -1,37 +1,47 @@
-# <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-logo-white.svg">
+<!--# <img style="height:80px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-logo-white.svg">
+-->
+### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">Welcome to the BioImage Model Zoo!
 
-## Welcome to the BioImage Model Zoo!
+##### 🔍What you can find:
+* Pretrained AI models to perform bioimage analysis tasks. 
+* Reference datasets used to train the models (and to test them!)
+* Python notebooks to train or fin-tune your models.
 
-Advanced AI models in one-click
+##### 🌟Why is worth trying it? 
+You can easily run any of the models in user-friendly tools such as Ilastik, deepImageJ, ZeroCostDL4Mic, ImJoy or Fiji.
 
 <!-- .slide: data-background="black" -->
 <a class="button" href="https://bioimage.io/">Skip tutorial</a>
 
 -----
-<!-- .slide: data-state="embed-demo" -->
-## Embed ImJoy windows
-
-ImJoy windows can be directly embedded to your slide:
-
-<div id="kaibu-window" style="display: inline-block;width: 100%; height: calc(100vh - 300px);"></div>
+### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQUggA3FQC15eu6xvUYX51PEfqrMbyZud3ujiqXCLEH3F58db23mUEC7Kd2tbKjlfi9cKruwSQuOK18/pub?w=960&amp;h=650">
+ 
+-----
+### 👐Open Integration with Web Apps
+🎯
+-----
+<!-- .slide: data-background="black" -->
+### 🦒BioImage Model Zoo: Overview
+<img style="height:calc(100% - 200px);object-fit:contain;background-color: white;"  src="https://docs.google.com/drawings/d/e/2PACX-1vRSNdb6sW-nrTjmHgqwG8sOTdQTjdNjWH0y4DveZwairx_NUKiHg3dm0-0Z7VU4ppFdwSiK2BLn4hKo/pub?w=1732&amp;h=1343">
 
 
 -----
-## Getting started
+### Acknowledgements
 
-To make your own slides, you can open the slides editor.
+BioImage.IO is powered by the 🧠 and ❤️ of:
+ * deepImageJ Team
+ * Fiji/ImageJ Team
+ * Ilastik Team
+ * ImJoy Team
+ * ZeroCostDL4Mic Team
+ * ...
 
- ![](https://slides.imjoy.io/assets/screenshot-imjoy-slide-editor.png)
-
-You can save and preview changes directly.
+Follow us on twitter @bioimageio
 
 -----
-## Advanced features
 
- For more advanced features, see [here](https://github.com/imjoy-team/imjoy-slides#getting-started)
-
------
-## Thank you!
+# 🙏Thank You!
 
 ImJoy Slides is made by the [@ImJoyTeam](https://twitter.com/imjoyteam).
 
