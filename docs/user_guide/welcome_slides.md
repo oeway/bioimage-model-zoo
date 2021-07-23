@@ -13,6 +13,11 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 <!-- .slide: data-background="black" -->
 <a class="button" href="https://bioimage.io/">Skip tutorial</a>
 
+
+-----
+### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vRZ1C-kHXKBo92EjJS2dgUtc09J3rLcPGHWwJucg1oCZ4eDdS7ADoZtiYto4UwHdiHDt3Jya4vmrgFQ/pub?w=906&amp;h=499">
+
 -----
 ### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQUggA3FQC15eu6xvUYX51PEfqrMbyZud3ujiqXCLEH3F58db23mUEC7Kd2tbKjlfi9cKruwSQuOK18/pub?w=960&amp;h=650">
