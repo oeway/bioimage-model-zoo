@@ -51,15 +51,6 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQvOjOK7thaFDxmqzhsQ0l2O6IAD7nmgjlpaDsEYcZEZ1VcuAUIWAiQ5TtfuiXwog2RaBkhb4Y3AIkU/pub?w=960&amp;h=650">
 
 -----
-### 👐Open Integration with Web Apps
-🎯
------
-<!-- .slide: data-background="black" -->
-### 🦒BioImage Model Zoo: Overview
-<img style="height:calc(100% - 200px);object-fit:contain;background-color: white;"  src="https://docs.google.com/drawings/d/e/2PACX-1vRSNdb6sW-nrTjmHgqwG8sOTdQTjdNjWH0y4DveZwairx_NUKiHg3dm0-0Z7VU4ppFdwSiK2BLn4hKo/pub?w=1732&amp;h=1343">
-
-
------
 ### Acknowledgements
 
 BioImage.IO is powered by the 🧠 and ❤️ of:
