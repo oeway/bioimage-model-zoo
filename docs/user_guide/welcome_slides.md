@@ -16,7 +16,15 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 -----
 ### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQUggA3FQC15eu6xvUYX51PEfqrMbyZud3ujiqXCLEH3F58db23mUEC7Kd2tbKjlfi9cKruwSQuOK18/pub?w=960&amp;h=650">
- 
+
+-----
+### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQR8BUgupQr4cjXYB16ocFkyfUMWlnS8kzNJFfcCaFIfLvCeSsoWEh51bd8KpGOG-iApdxmJXZeGlUW/pub?w=960&amp;h=650">
+
+-----
+### <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg">BioImage Model Zoo: Overview
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQvOjOK7thaFDxmqzhsQ0l2O6IAD7nmgjlpaDsEYcZEZ1VcuAUIWAiQ5TtfuiXwog2RaBkhb4Y3AIkU/pub?w=960&amp;h=650">
+
 -----
 ### 👐Open Integration with Web Apps
 🎯
