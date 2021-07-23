@@ -1,8 +1,11 @@
-﻿# Welcome to the BioImage Model Zoo
+# <img style="height:100px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-logo-white.svg">
 
-Powering interactive presentation with ImJoy plugins
+## Welcome to the BioImage Model Zoo!
 
-You can run ImJoy plugins, for example: <button class="button" onclick="api.showDialog({src: 'https://hms-dbmi.github.io/vizarr/?source=https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/4495402.zarr'})">Run</button>
+Advanced AI models in one-click
+
+<!-- .slide: data-background="black" -->
+<a class="button" href="https://bioimage.io/">Skip tutorial</a>
 
 -----
 <!-- .slide: data-state="embed-demo" -->
