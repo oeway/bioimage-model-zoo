@@ -12,7 +12,7 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 
 <!-- .slide: data-background="black" -->
 <a class="button" href="https://bioimage.io/">Skip tutorial</a>
-
+<a class="button" href="https://bioimage.io/docs/#/">Back to the documentation</a>
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Overview
 <!-- bmz consumer sfotware -->
