@@ -3,9 +3,9 @@
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">Welcome to the BioImage Model Zoo!
 
 ##### 🔍What you can find:
-* Pretrained AI models to perform bioimage analysis tasks. 
-* Reference datasets used to train the models (and to test them!)
-* Python notebooks to train or fin-tune your models.
+* <font size="5"> Pretrained AI models to perform bioimage analysis tasks. </font>  
+* <font size="5"> Reference datasets used to train the models (and to test them!) </font>
+* <font size="5"> Python notebooks to train or fin-tune your models. (and to test them!) </font>
 
 ##### 🌟Why is worth trying it? 
 You can easily run any of the models in user-friendly tools such as Ilastik, deepImageJ, ZeroCostDL4Mic, ImJoy or Fiji.
