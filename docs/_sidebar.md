@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 * [Overview](/)
-* [Getting Started](https://slides.imjoy.io/?slides=https://github.com/esgomezm/bioimage.io/blob/main/docs/user_guide/welcome_slides.md)
+* [Getting Started](getting_started.md)
 * [User Guide](/user_guide/README.md)
   - [Tutorial](/user_guide/tutorial.md)
   - [How-tos Guide](/user_guide/how-tos_guide.md)
