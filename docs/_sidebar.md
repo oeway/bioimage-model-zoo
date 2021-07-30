@@ -2,7 +2,7 @@
 * [Overview](/)
 * [Getting Started](getting_started.md)
 * [User Guide](/user_guide/README.md)
-  - [Tutorial](/user_guide/how-tos_guide.md)
+  - [Tutorials](/user_guide/tutorials.md)
   - [Explanations](/user_guide/explanations.md)
 * [Contribute Models](/contribute_models/README.md)
   - [Tutorials](/contribute_models/tutorials.md)
