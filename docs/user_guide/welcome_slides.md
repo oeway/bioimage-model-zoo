@@ -26,7 +26,7 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Overview
 <!-- search bar -->
-<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vQR8BUgupQr4cjXYB16ocFkyfUMWlnS8kzNJFfcCaFIfLvCeSsoWEh51bd8KpGOG-iApdxmJXZeGlUW/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vTJ9MugED7OT1r7DoL_RXe3P-SzDDspfamwdAg5mNDBebiHLBQ0xMusnPQFwsAPzY5QEhu2LusM0DVz/pub?w=960&amp;h=720">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Content
@@ -37,12 +37,12 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Models
 <!-- bmz model card-->
-<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vSHjIBGVs_DMTM0uBmAFF75kU_o14kBnUX0HpGhvikGHFoNTjmYOPmIHj2-wdBJohCRven7ixGemeYQ/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vSUpvNPtKE3VcuYUFuM7cO3XCRnt2V50ougTbBPTSns4XSGX770jOou_hRR7u7BjdCLVqUaaW78NDx-/pub?w=1072&amp;h=615">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Models
 <!-- download model -->
-<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vR_zA5BFsWdKf0msaksD5QnwN6IYPHzpVosYDKIA8R4Bcs9eO9zvb6NUFYPi5icNzLzmiawzSg8u7a3/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vTViy4NgvCSBQL3D4a8GevS3TwO93Tsir4zk5PXXJudCiRMeJ1KRpLqjSjlt_jSDmJgO7HnePIqCIbl/pub?w=950&amp;h=515">
 
 
 -----
