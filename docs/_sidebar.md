@@ -10,7 +10,6 @@
   - [Explanations](/contribute_models/explanations)
 * [Consumer Software](/consumer_software/README.md)
   - [Tutorials](/consumer_software/tutorials.md)
-  - [How-tos Guide](/consumer_software/how-tos_guide)
   - [Explanations](/consumer_software/explanations)
   - [Model Runner](/consumer_software/model_runner.md)
 * [BioEngine Apps](/bioengine_apps/README.md)
