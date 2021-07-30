@@ -9,14 +9,15 @@
    - [Here is an example](https://github.com/bioimage-io/pytorch-bioimage-io/blob/master/specs/models/unet2d_nuclei_broad/UNet2DNucleiBroad.model.yaml) of a filled configuration YAML file. In the Bioimage Model Zoo web page you will also find different examples. 
 
 3. In the BioImage Model Zoo web plage, click on `+Upload` and follow the steps:
-   (i) Log in to Zenodo and give access to the BioEngine Application. You will see an automatic message once you are logged in. If not, refresh the page.
+
+   1) Log in to Zenodo and give access to the BioEngine Application. You will see an automatic message once you are logged in. If not, refresh the page.
    This step needs to be done just for the first time you upload a model. 
-   (ii) Upload the model RDF specification file.
+   2) Upload the model RDF specification file.
    <img src="contribute_models/upload_1.png" align="center" width="1000"/>
-   (iii) Complete the missing fields. Check out how to get most of your model documentation
+   3) Complete the missing fields. Check out how to get most of your model documentation
    <img src="contribute_models/upload_2.png" align="center" width="1000"/>
    <img src="contribute_models/upload_3.png" align="center" width="1000"/>
-   (iv)
+   4)
 
 
 ## How to get most of your model documentation
