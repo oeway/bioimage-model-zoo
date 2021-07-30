@@ -6,11 +6,10 @@
 
 <img src="user_guide/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
 
+## Consumer-software guidelines
 
+### DeepImageJ
 
-## Sofware guidelines
-
-### [DeepImageJ](https://deepimagej.github.io/deepimagej/)
 **Note: deepImageJ supports PyTorch and Tensorflow 1 models**
 
 1. Install the [deepImageJ plugin](https://deepimagej.github.io/deepimagej/download.html) in ImageJ.
@@ -49,8 +48,8 @@ TBD
 
 TBD
 
-### [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki)
-**Note: ZeroCostDL4Mic allows you trainig models and upload them to the BioImage Model Zoo or fine-tune existing ones!**
+### ZeroCostDL4Mic
+**Note: [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki) allows you trainig models and upload them to the BioImage Model Zoo or fine-tune existing ones!**
 
 1. Download a ZeroCostDL4Mic model from the [BioImage Model Zoo](https://bioimage.io/) repository. 
 2. Unzip the model `.zip` file so you can use it later in the notebook.
