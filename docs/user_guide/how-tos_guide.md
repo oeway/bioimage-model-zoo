@@ -4,7 +4,7 @@
 
 ## Download a model
 
-<img src="download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
+<img src="user_guide/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
 
 
 
