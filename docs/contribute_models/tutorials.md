@@ -13,11 +13,15 @@
    1) Log in to Zenodo and give access to the BioEngine Application. You will see an automatic message once you are logged in. If not, refresh the page.
    This step needs to be done just for the first time you upload a model. 
    2) Upload the model RDF specification file.
+   
    <img src="contribute_models/upload_1.png" align="center" width="1000"/>
+   
    3) Complete the missing fields. Check out how to get most of your model documentation
+    
    <img src="contribute_models/upload_2.png" align="center" width="1000"/>
+   
    <img src="contribute_models/upload_3.png" align="center" width="1000"/>
-   4)
+   
 
 
 ## How to get most of your model documentation
