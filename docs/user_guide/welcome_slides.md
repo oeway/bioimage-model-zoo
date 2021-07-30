@@ -16,39 +16,39 @@ You can easily run any of the models in user-friendly tools such as Ilastik, dee
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Overview
 <!-- bmz consumer sfotware -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vQUggA3FQC15eu6xvUYX51PEfqrMbyZud3ujiqXCLEH3F58db23mUEC7Kd2tbKjlfi9cKruwSQuOK18/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vQUggA3FQC15eu6xvUYX51PEfqrMbyZud3ujiqXCLEH3F58db23mUEC7Kd2tbKjlfi9cKruwSQuOK18/pub?w=960&amp;h=650">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Overview
 <!-- bmz choose an item -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vSYLbtzNfkLbv4onJQZqHqKdxzdLv-7rZAyqITrke-tFOSnOzKq6rcg1uqyuNqxV9CccaHW7BeU_jkD/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vSYLbtzNfkLbv4onJQZqHqKdxzdLv-7rZAyqITrke-tFOSnOzKq6rcg1uqyuNqxV9CccaHW7BeU_jkD/pub?w=960&amp;h=650">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Overview
 <!-- search bar -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vQR8BUgupQr4cjXYB16ocFkyfUMWlnS8kzNJFfcCaFIfLvCeSsoWEh51bd8KpGOG-iApdxmJXZeGlUW/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vQR8BUgupQr4cjXYB16ocFkyfUMWlnS8kzNJFfcCaFIfLvCeSsoWEh51bd8KpGOG-iApdxmJXZeGlUW/pub?w=960&amp;h=650">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Content
 <!-- bmz cards -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vRZ1C-kHXKBo92EjJS2dgUtc09J3rLcPGHWwJucg1oCZ4eDdS7ADoZtiYto4UwHdiHDt3Jya4vmrgFQ/pub?w=906&amp;h=499">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vRZ1C-kHXKBo92EjJS2dgUtc09J3rLcPGHWwJucg1oCZ4eDdS7ADoZtiYto4UwHdiHDt3Jya4vmrgFQ/pub?w=906&amp;h=499">
 
 -----
 
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Models
 <!-- bmz model card-->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vSHjIBGVs_DMTM0uBmAFF75kU_o14kBnUX0HpGhvikGHFoNTjmYOPmIHj2-wdBJohCRven7ixGemeYQ/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vSHjIBGVs_DMTM0uBmAFF75kU_o14kBnUX0HpGhvikGHFoNTjmYOPmIHj2-wdBJohCRven7ixGemeYQ/pub?w=960&amp;h=650">
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Models
 <!-- download model -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vR_zA5BFsWdKf0msaksD5QnwN6IYPHzpVosYDKIA8R4Bcs9eO9zvb6NUFYPi5icNzLzmiawzSg8u7a3/pub?w=960&amp;h=650">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vR_zA5BFsWdKf0msaksD5QnwN6IYPHzpVosYDKIA8R4Bcs9eO9zvb6NUFYPi5icNzLzmiawzSg8u7a3/pub?w=960&amp;h=650">
 
 
 -----
 ### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">BioImage Model Zoo: Models
 <!-- docuemntation -->
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vQvOjOK7thaFDxmqzhsQ0l2O6IAD7nmgjlpaDsEYcZEZ1VcuAUIWAiQ5TtfuiXwog2RaBkhb4Y3AIkU/pub?w=700&amp;h=650"  align="right">
+<img style="height: 60vh" src="https://docs.google.com/drawings/d/e/2PACX-1vQvOjOK7thaFDxmqzhsQ0l2O6IAD7nmgjlpaDsEYcZEZ1VcuAUIWAiQ5TtfuiXwog2RaBkhb4Y3AIkU/pub?w=700&amp;h=650"  align="right">
 
 ##### If you want to know more about the BioImage Model Zoo, check out the documentation or 📩 <a href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">contact us.</a>
 
