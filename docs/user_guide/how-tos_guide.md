@@ -2,6 +2,14 @@
 
 # How-To use bioimage.io 
 
+## Download a model
+
+<img src="user_guide/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
+
+
+
+## Sofware guidelines
+
 ## DeepImageJ
 **Note: deepImageJ supports PyTorch and Tensorflow 1 models**
 
