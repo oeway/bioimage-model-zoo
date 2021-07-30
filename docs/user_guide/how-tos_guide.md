@@ -10,7 +10,7 @@
 
 ## Sofware guidelines
 
-## DeepImageJ
+### [DeepImageJ](https://deepimagej.github.io/deepimagej/)
 **Note: deepImageJ supports PyTorch and Tensorflow 1 models**
 
 1. Install the [deepImageJ plugin](https://deepimagej.github.io/deepimagej/download.html) in ImageJ.
@@ -23,7 +23,7 @@ This will give you all the necessary Plugins to run bioimage.io models at the mo
       4) See a detailed tutorial [here](https://deepimagej.github.io/deepimagej/tutorials.html).      
 
 
-## Fiji
+### Fiji
 **Note: Fiji only supports Tensorflow 1 models at the moment!**
 
 1. Install the [CSBDeep-Plugin](https://github.com/CSBDeep/CSBDeep_website/wiki/CSBDeep-in-Fiji-%E2%80%93-Installation) in Fiji.
@@ -41,14 +41,18 @@ The configuration fields should be self-explanatory.
 5. Click "OK" to run the model prediction.
 
 
-## ilastik
+### Ilastik
 
 TBD
 
-##  ImJoy
+###  ImJoy
 
 TBD
 
-## ZeroCostDL4Mic
+### [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki)
+**Note: ZeroCostDL4Mic allows you trainig models and upload them to the BioImage Model Zoo or fine-tune existing ones!**
 
-TBD
+1. Download a ZeroCostDL4Mic model from the [BioImage Model Zoo](https://bioimage.io/) repository. 
+2. Unzip the model `.zip` file so you can use it later in the notebook.
+3. Open the ZeroCostDL4Mic notebook that corresponds to the model you downloaded. 
+4. When required, specify the path to the unziped folder containing the model.
