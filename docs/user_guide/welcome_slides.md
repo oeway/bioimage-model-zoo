@@ -5,7 +5,7 @@
 ##### 🔍What you can find:
 * <font size="5"> Pretrained AI models to perform bioimage analysis tasks. </font>  
 * <font size="5"> Reference datasets used to train the models (and to test them!) </font>
-* <font size="5"> Python notebooks to train or fin-tune your models. (and to test them!) </font>
+* <font size="5"> Python notebooks to train or fin-tune your models. </font>
 
 ##### 🌟Why is worth trying it? 
 You can easily run any of the models in user-friendly tools such as Ilastik, deepImageJ, ZeroCostDL4Mic, ImJoy or Fiji.
