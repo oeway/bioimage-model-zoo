@@ -3,8 +3,17 @@
 # How-To use bioimage.io 
 
 ## DeepImageJ
+**Note: deepImageJ supports PyTorch and Tensorflow 1 models**
 
-TBD
+1. Install the [deepImageJ plugin](https://deepimagej.github.io/deepimagej/download.html) in ImageJ.
+This will give you all the necessary Plugins to run bioimage.io models at the moment.
+
+2. Install a model from the [BioImage Model Zoo](https://bioimage.io/):
+      1) Download a deepImageJ model from the BioImage Model Zoo repository.
+      2) Use `DeepImageJ Install Model` in ImageJ to install the `.zip` file that you just downloaded: choose the `Private model` option and `From ZIP file`.
+      3) In the `zip` file you just downloaded, there is an `exampleImage.tif`that you can open in ImageJ and process with the model you just downloaded.
+      4) See a detailed tutorial [here](https://deepimagej.github.io/deepimagej/tutorials.html).      
+
 
 ## Fiji
 **Note: Fiji only supports Tensorflow 1 models at the moment!**
