@@ -1,16 +1,15 @@
 <!--# <img style="height:80px;" alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-logo-white.svg">
 -->
-### <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70">Welcome to the BioImage Model Zoo!
+## <img alt="BioImage Model Zoo" src="https://bioimage.io/static/img/bioimage-io-icon.svg" width="70"> <font size="6"> Welcome to the BioImage Model Zoo! </font>
 
-##### 🔍What you can find:
-* <font size="5"> Pretrained AI models to perform bioimage analysis tasks. </font>  
-* <font size="5"> Reference datasets used to train the models (and to test them!) </font>
-* <font size="5"> Python notebooks to train or fin-tune your models. </font>
+#### <font size="5"> 🔍 What you can find: </font>
+* <font size="4"> Pretrained AI models to perform bioimage analysis tasks. </font>  
+* <font size="4"> Reference datasets used to train the models (and to test them!) </font>
+* <font size="4"> Python notebooks to train or fin-tune your models. </font>
 
-##### 🌟Why is worth trying it? 
-You can easily run any of the models in user-friendly tools such as Ilastik, deepImageJ, ZeroCostDL4Mic, ImJoy or Fiji.
+####  <font size="5"> 🌟 Why is worth trying it? </font>
+<font size="4"> You can easily run any of the models in user-friendly tools such as Ilastik, deepImageJ, ZeroCostDL4Mic, ImJoy or Fiji. </font>
 
-<!-- .slide: data-background="black" -->
 <a class="button" href="https://bioimage.io/">Skip tutorial</a>
 <a class="button" href="https://bioimage.io/docs/#/">Back to the documentation</a>
 -----
