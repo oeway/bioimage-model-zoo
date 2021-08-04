@@ -74,6 +74,7 @@ export default {
   color: #407ae6;
 }
 .partners {
+  width: 100% !important;
   background-color: #fdfdfdfd;
   text-align: center;
   width: 100vw;

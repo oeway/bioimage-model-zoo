@@ -170,8 +170,6 @@
     </footer>
     <modal
       name="window-modal-dialog"
-      @opened="preventPageScroll"
-      @closed="restorePageScroll"
       :resizable="!dialogWindowConfig.fullscreen"
       :width="dialogWindowConfig.width"
       :height="dialogWindowConfig.height"
@@ -256,8 +254,6 @@
     </modal>
     <modal
       name="info-dialog"
-      @opened="preventPageScroll"
-      @closed="restorePageScroll"
       :resizable="true"
       :minWidth="200"
       :minHeight="150"
@@ -293,10 +289,13 @@
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
       <div class="markdown-container" v-if="showInfoDialogMode === 'markdown'">
-        <markdown :url="infoMarkdownUrl"></markdown>
+        <markdown
+          :content="infoMarkdownContent"
+          :url="infoMarkdownUrl"
+        ></markdown>
         <comment-box
-          v-if="infoDialogTitle"
-          :title="infoDialogTitle"
+          v-if="infoCommentBoxTitle"
+          :title="infoCommentBoxTitle"
         ></comment-box>
       </div>
       <div
@@ -336,6 +335,11 @@ const DEFAULT_ICONS = {
 import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
 import { concatAndResolveUrl, debounce } from "../utils";
 
+function titleCase(str) {
+  return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
+    return t.toUpperCase();
+  });
+}
 const isTouchDevice = (function() {
   try {
     document.createEvent("TouchEvent");
@@ -545,6 +549,16 @@ function normalizeItem(self, item) {
     });
   }
 
+  if (item.stats && item.stats.downloads !== undefined)
+    item.badges.unshift({
+      label: "stats",
+      label_type: "is-dark",
+      ext: item.stats.downloads,
+      run() {
+        self.showStatsDialog(item);
+      }
+    });
+
   if (item.config && item.config._conceptdoi) {
     item.badges.unshift({
       label: item.config._conceptdoi,
@@ -632,6 +646,7 @@ export default {
       showInfoDialogMode: null,
       infoDialogTitle: "",
       infoMarkdownUrl: null,
+      infoMarkdownContent: null,
       infoCommentBoxTitle: null,
       selectedCategory: null,
       displayMode: "card",
@@ -706,7 +721,13 @@ export default {
                 item.config._deposit.conceptrecid === zenodoId)
           )[0];
           if (matchedItem) this.$route.query.id = matchedItem.id;
-          else alert("Oops, resource item not found: " + this.resourceId);
+          else {
+            alert(
+              "Oops, resource item not found: " +
+                this.resourceId +
+                ". Possibly because it has not been approved yet."
+            );
+          }
         } else this.$route.query.id = this.resourceId;
       }
 
@@ -752,14 +773,12 @@ export default {
           if (item.allLabels)
             item.allLabels.forEach(label => {
               if (fullLabelList.indexOf(label) === -1) {
-                fullLabelList.push(label.toLowerCase());
+                fullLabelList.push(label.toLowerCase().replace(/ /g, "-"));
               }
             });
         }
       }
-      fullLabelList.sort((a, b) =>
-        a.toLowerCase() < b.toLowerCase() ? -1 : 1
-      );
+      fullLabelList.sort((a, b) => (a < b ? -1 : 1));
       return Array.from(new Set(fullLabelList));
     },
     tagCategories: function() {
@@ -820,19 +839,29 @@ export default {
       if (this.initialized)
         this.$router.replace({ query: query }).catch(() => {});
     },
-    preventPageScroll() {
-      document.getElementsByTagName("html")[0].style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-    },
-    restorePageScroll() {
-      document.getElementsByTagName("html")[0].style.overflow = "auto";
-      document.body.style.overflow = "auto";
-    },
     showJoinDialog() {
       this.infoDialogTitle = `Join ${this.siteConfig.site_name} as a community partner`;
       this.infoCommentBoxTitle = this.infoDialogTitle;
       this.infoMarkdownUrl = this.siteConfig.join_partners_url;
       this.showInfoDialogMode = "markdown";
+      if (this.screenWidth < 700) this.infoDialogFullscreen = true;
+      this.$modal.show("info-dialog");
+    },
+    showStatsDialog(item) {
+      this.infoDialogTitle = "Statistics for " + item.name;
+      this.showInfoDialogMode = "markdown";
+      this.infoCommentBoxTitle = null;
+      if (!item.stats) this.infoMarkdownContent = `No stats info available.`;
+      else {
+        let statsText = "";
+        for (let k of Object.keys(item.stats)) {
+          statsText += `\n * ${titleCase(k)}: ${item.stats[k]}`;
+        }
+        this.infoMarkdownContent = `# Statistics for ${item.name}` + statsText;
+        this.infoMarkdownContent +=
+          "\n\n[More info on how stats are collected](https://help.zenodo.org/#statistics)";
+      }
+
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
@@ -988,7 +1017,7 @@ export default {
       this.infoDialogTitle = this.selectedResourceItem.name;
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
-      if (mInfo.id) {
+      if (mInfo.id && !window.location.href.includes("#/r/")) {
         const query = Object.assign({}, this.$route.query);
         query.id = mInfo.id;
         if (this.initialized)
@@ -1003,6 +1032,7 @@ export default {
       this.selectedResourceItem = null;
       this.showInfoDialogMode = null;
       this.infoMarkdownUrl = null;
+      this.infoMarkdownContent = null;
       this.infoCommentBoxTitle = null;
       this.$modal.hide("info-dialog");
       const query = Object.assign({}, this.$route.query);
@@ -1058,7 +1088,11 @@ export default {
           this.showResourceItemInfo(m);
           hasQuery = true;
         } else {
-          alert("Oops, resource item not found: " + this.$route.query.id);
+          alert(
+            "Oops, resource item not found: " +
+              this.$route.query.id +
+              ". Possibly because it has not been approved yet."
+          );
         }
       }
       if (this.$route.query.tags) {

@@ -27,14 +27,14 @@
       class="authors"
       v-if="resourceItem.authors && resourceItem.authors.length > 0"
     >
-      Author(s):
+      {{ resourceItem.authors.length > 1 ? "Authors: " : "Author: " }}
       <b-tooltip
         v-for="author in resourceItem.authors"
         :key="author.name"
         :label="author.affiliation"
         position="is-bottom"
       >
-        <span>{{ author.name }}</span>
+        <span class="authors">{{ author.name }}</span>
       </b-tooltip>
     </p>
     <br />
@@ -246,5 +246,8 @@ export default {
 }
 .tags:not(:last-child) {
   margin-bottom: -10px;
+}
+.authors {
+  margin: 10px;
 }
 </style>

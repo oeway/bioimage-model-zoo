@@ -11,6 +11,16 @@ siteConfig.table_view = siteConfig.table_view || {
   columns: ["name", "authors", "badges", "apps"]
 };
 
+let allTags = [];
+for (let cat of siteConfig.resource_categories) {
+  const tagCates = cat.tag_categories;
+  if (tagCates)
+    for (let cat in tagCates) {
+      allTags = allTags.concat(tagCates[cat]);
+    }
+}
+allTags = allTags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+
 const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
   ? "https://sandbox.zenodo.org"
   : "https://zenodo.org";
@@ -19,7 +29,7 @@ export const store = new Vuex.Store({
   state: {
     loadedUrl: null,
     allApps: {},
-    allTags: [],
+    allTags: [...allTags],
     resourceItems: [],
     zenodoClient: siteConfig.zenodo_config.enabled
       ? new ZenodoClient(
@@ -76,6 +86,10 @@ export const store = new Vuex.Store({
         console.log("manifest already loaded");
         return;
       }
+      // clear items
+      context.state.resourceItems = [];
+      context.state.allApps = {};
+      context.state.allTags = [...allTags];
       const siteConfig = context.state.siteConfig;
       try {
         const items = await context.state.zenodoClient.getResourceItems({
@@ -135,14 +149,15 @@ export const store = new Vuex.Store({
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application" && item?.source?.endsWith(".imjoy.html"))
         state.allApps[item.id] = item;
-      state.resourceItems.push(item);
       // index tags
       if (item.tags && item.tags.length > 0)
-        item.tags.map(tag => {
-          if (!state.allTags.includes(tag)) {
-            state.allTags.push(tag);
-          }
-        });
+        item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+      item.tags.map(tag => {
+        if (!state.allTags.includes(tag)) {
+          state.allTags.push(tag);
+        }
+      });
+      state.resourceItems.push(item);
     },
     removeResourceItem(state, item) {
       if (item.type === "application") delete state.allApps[item.id];
@@ -155,7 +170,12 @@ export const store = new Vuex.Store({
         item.id = item.id || randId();
         item.id = item.id.toLowerCase();
         item.links = item.links || [];
+        item.tags = item.tags || [];
         item.links = item.links.map(link => link.toLowerCase());
+        item.links = [...new Set(item.links)];
+        item.tags = item.tags || [];
+        item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+        item.links = [...new Set(item.links)];
         if (transform) return transform(item);
         else return item;
       });
