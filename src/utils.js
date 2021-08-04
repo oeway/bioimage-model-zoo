@@ -219,9 +219,8 @@ export function depositionToRdf(deposition) {
       links.push(decodeURIComponent(id));
     } else if (idf.relation === "isDocumentedBy" && idf.scheme === "url") {
       const fileName = idf.identifier.split("/files/")[1];
-      if(!fileName) documentation = idf.identifier
-      else
-        documentation = `${deposition.links.bucket}/${fileName}`;
+      if (!fileName) documentation = idf.identifier;
+      else documentation = `${deposition.links.bucket}/${fileName}`;
     }
   }
   const description = metadata.notes.replace(additionalNote, "");
