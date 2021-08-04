@@ -354,6 +354,9 @@ h6 {
 ul {
   list-style: none;
 }
+.markdown-body ul {
+  list-style: disc;
+}
 button,
 input,
 select,
