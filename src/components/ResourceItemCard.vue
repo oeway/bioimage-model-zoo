@@ -3,16 +3,14 @@
     <div class="card is-shady" :style="{ 'box-shadow': boxShadow }">
       <div class="card-image">
         <b-carousel
-          v-if="
-            resourceItem.cover_images && resourceItem.cover_images.length > 0
-          "
-          :indicator="resourceItem.cover_images.length > 1"
-          :arrow="resourceItem.cover_images.length > 1"
+          v-if="resourceItem.covers && resourceItem.covers.length > 0"
+          :indicator="resourceItem.covers.length > 1"
+          :arrow="resourceItem.covers.length > 1"
           :pause-info="false"
         >
           <b-carousel-item
             class="carousel-image"
-            v-for="cover in resourceItem.cover_images"
+            v-for="cover in resourceItem.covers"
             :key="cover"
           >
             <img

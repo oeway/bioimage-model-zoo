@@ -333,7 +333,7 @@ const DEFAULT_ICONS = {
   model: "hubspot"
 };
 import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
-import { concatAndResolveUrl, debounce, getFullRdfFromDeposit } from "../utils";
+import { debounce, getFullRdfFromDeposit } from "../utils";
 
 function titleCase(str) {
   return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
@@ -369,26 +369,9 @@ function normalizeItem(self, item) {
     item.covers = [item.covers];
   }
   if (item.icon === "extension") item.icon = "puzzle";
-  item.cover_images = [];
-  for (let cover of item.covers) {
-    if (cover.includes("(") || cover.includes(")")) {
-      console.error("cover image file name cannot contain brackets.");
-      continue;
-    }
-    if (!cover.startsWith("http")) {
-      item.cover_images.push(
-        encodeURI(concatAndResolveUrl(item.root_url, cover))
-      );
-    } else {
-      if (cover.includes(" ")) {
-        item.cover_images.push(encodeURI(cover));
-      } else item.cover_images.push(cover);
-    }
-  }
-
   // if no cover image added, use the icon image
-  if (item.cover_images.length <= 0 && item?.icon?.startsWith("http")) {
-    item.cover_images.push(item.icon);
+  if (item.covers.length <= 0 && item?.icon?.startsWith("http")) {
+    item.covers.push(item.icon);
   }
 
   item.allLabels = item.labels || [];

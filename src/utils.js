@@ -35,7 +35,6 @@ export async function getFullRdfFromDeposit(deposition, resolveUrl) {
     // fix id;
     fullRdf.id = deposition.conceptdoi;
     fullRdf.config = fullRdf.config || {};
-    debugger;
     // infer the rdf type for old RDFs
     if (!fullRdf.type && fullRdf.inputs && fullRdf.outputs) {
       fullRdf.type = "model";
