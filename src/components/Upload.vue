@@ -703,8 +703,14 @@ export default {
           label: "Tags",
           type: "tags",
           value: this.rdf.tags,
-          placeholder: "Add a tag",
-          options: this.allTags,
+          help:
+            "Tags should contain only lower case letters with no space, numbers, or the following characters: +*#;./%@",
+          placeholder:
+            "Add a tag and press ENTER to confirm (lower case, no space, numbers, or any of +*#;./%@)",
+          options: this.allTags.map(tag =>
+            tag.toLowerCase().replace(/ /g, "-")
+          ),
+          pattern: /^[-0-9a-z+*#;./%@:]*$/,
           allow_new: true,
           icon: "label",
           isRequired: false
@@ -980,8 +986,9 @@ export default {
 
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
-        this.rdf.id = depositionInfo.conceptdoi; //doi and recid
+        this.rdf.id = this.prereserveDOI.doi; //doi and recid
         this.rdf.config._doi = depositionInfo.metadata.prereserve_doi.doi;
+        // concept doi can be undefined for new deposition
         this.rdf.config._conceptdoi = depositionInfo.conceptdoi;
         if (skipUpload) {
           this.stepIndex = 3;

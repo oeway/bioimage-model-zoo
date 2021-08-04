@@ -17,9 +17,11 @@
         <b-tag v-else :type="badge.label_type || 'is-dark'">{{
           badge.label
         }}</b-tag>
-        <b-tag :type="badge.ext_type || 'is-success'" v-if="badge.ext">{{
-          badge.ext
-        }}</b-tag>
+        <b-tag
+          :type="badge.ext_type || 'is-success'"
+          v-if="badge.ext !== undefined"
+          >{{ badge.ext }}</b-tag
+        >
       </b-taglist>
 
       <img v-else class="badge-img" :alt="badge.label" :src="badge.icon" />

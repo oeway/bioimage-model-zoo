@@ -237,6 +237,7 @@ export function depositionToRdf(deposition) {
       .filter(k => k !== "bioimage.io" || !k.startsWith("bioimage.io:"))
       .concat(["zenodo"]),
     description,
+    stats: deposition.stats,
     license:
       typeof metadata.license === "string"
         ? metadata.license
