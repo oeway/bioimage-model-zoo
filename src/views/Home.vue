@@ -551,7 +551,7 @@ function normalizeItem(self, item) {
 
   if (item.stats && item.stats.downloads !== undefined)
     item.badges.unshift({
-      label: "stats",
+      label: "downloads",
       label_type: "is-dark",
       ext: item.stats.downloads,
       run() {
