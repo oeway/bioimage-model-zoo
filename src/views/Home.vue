@@ -333,7 +333,7 @@ const DEFAULT_ICONS = {
   model: "hubspot"
 };
 import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
-import { debounce, getFullRdfFromDeposit } from "../utils";
+import { concatAndResolveUrl, debounce, getFullRdfFromDeposit } from "../utils";
 
 function titleCase(str) {
   return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
@@ -369,6 +369,16 @@ function normalizeItem(self, item) {
     item.covers = [item.covers];
   }
   if (item.icon === "extension") item.icon = "puzzle";
+
+  item.covers = item.covers.map(cover => {
+    if (!cover.startsWith("http")) {
+      return encodeURI(concatAndResolveUrl(item.root_url, cover));
+    } else {
+      if (cover.includes(" ")) {
+        return encodeURI(cover);
+      } else return cover;
+    }
+  });
   // if no cover image added, use the icon image
   if (item.covers.length <= 0 && item?.icon?.startsWith("http")) {
     item.covers.push(item.icon);
