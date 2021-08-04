@@ -20,7 +20,13 @@ export async function resolveDOI(doi) {
   }
 }
 
-export async function getFullRdfFromDeposit(deposition) {
+function getAbsoluteUrl(baseUrl, c) {
+  if (!c) return c;
+  if (!baseUrl.endsWith("/")) baseUrl = baseUrl + "/";
+  return c.startsWith("http") ? c : new URL(c, baseUrl).href;
+}
+
+export async function getFullRdfFromDeposit(deposition, resolveUrl) {
   const rdf = depositionToRdf(deposition);
   const response = await fetch(rdf.config._rdf_file);
   if (response.ok) {
@@ -29,9 +35,21 @@ export async function getFullRdfFromDeposit(deposition) {
     // fix id;
     fullRdf.id = deposition.conceptdoi;
     fullRdf.config = fullRdf.config || {};
+    debugger;
     // infer the rdf type for old RDFs
     if (!fullRdf.type && fullRdf.inputs && fullRdf.outputs) {
       fullRdf.type = "model";
+    }
+    if (resolveUrl) {
+      fullRdf.documentation = getAbsoluteUrl(
+        deposition.links.bucket,
+        fullRdf.documentation
+      );
+      if (fullRdf.covers) {
+        fullRdf.covers = fullRdf.covers.map(cover =>
+          getAbsoluteUrl(deposition.links.bucket, cover)
+        );
+      }
     }
     Object.assign(fullRdf.config, rdf.config);
     return fullRdf;

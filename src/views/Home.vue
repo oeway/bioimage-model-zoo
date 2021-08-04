@@ -351,7 +351,7 @@ const isTouchDevice = (function() {
 
 async function updateFullRDF(item) {
   if (item.config._deposit) {
-    const newRDF = await getFullRdfFromDeposit(item.config._deposit);
+    const newRDF = await getFullRdfFromDeposit(item.config._deposit, true);
     for (let k of Object.keys(newRDF)) {
       if (k !== "config") {
         item[k] = newRDF[k];
