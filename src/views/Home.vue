@@ -333,7 +333,7 @@ const DEFAULT_ICONS = {
   model: "hubspot"
 };
 import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
-import { concatAndResolveUrl, debounce } from "../utils";
+import { concatAndResolveUrl, debounce, getFullRdfFromDeposit } from "../utils";
 
 function titleCase(str) {
   return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
@@ -348,6 +348,17 @@ const isTouchDevice = (function() {
     return false;
   }
 })();
+
+async function updateFullRDF(item) {
+  if (item.config._deposit) {
+    const newRDF = await getFullRdfFromDeposit(item.config._deposit);
+    for (let k of Object.keys(newRDF)) {
+      if (k !== "config") {
+        item[k] = newRDF[k];
+      }
+    }
+  }
+}
 
 function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
@@ -506,10 +517,11 @@ function normalizeItem(self, item) {
         item.apps.unshift({
           name: lit.name,
           icon: lit.icon || DEFAULT_ICONS[lit.type],
-          run() {
-            if (self.allApps[link_key])
-              runAppForItem(self, self.allApps[link_key], item);
-            else self.showResourceItemInfo(lit);
+          async run() {
+            if (self.allApps[link_key]) {
+              await updateFullRDF(item);
+              await runAppForItem(self, self.allApps[link_key], item);
+            } else self.showResourceItemInfo(lit);
           }
         });
       }
@@ -847,9 +859,10 @@ export default {
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
-    showStatsDialog(item) {
+    async showStatsDialog(item) {
       this.infoDialogTitle = "Statistics for " + item.name;
       this.showInfoDialogMode = "markdown";
+      await updateFullRDF(item);
       this.infoCommentBoxTitle = null;
       if (!item.stats) this.infoMarkdownContent = `No stats info available.`;
       else {
@@ -865,7 +878,8 @@ export default {
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
-    showAttachmentsDialog(item, focus) {
+    async showAttachmentsDialog(item, focus) {
+      await updateFullRDF(item);
       this.infoDialogTitle = focus
         ? item.name + ": " + focus
         : item.name + ": Attachments";
@@ -1010,8 +1024,9 @@ export default {
         });
       }
     },
-    showResourceItemInfo(mInfo, focus) {
+    async showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";
+      await updateFullRDF(mInfo);
       mInfo._focus = focus;
       this.selectedResourceItem = mInfo;
       this.infoDialogTitle = this.selectedResourceItem.name;

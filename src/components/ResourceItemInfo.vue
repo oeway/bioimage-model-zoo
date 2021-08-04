@@ -131,7 +131,7 @@ export default {
   computed: {
     formatedCitation: function() {
       let cites = this.resourceItem.cite;
-      if (!cites) return null;
+      if (!cites || cites.length <= 0) return null;
       if (this.resourceItem.cite && !Array.isArray(this.resourceItem.cite)) {
         cites = [this.resourceItem.cite];
       }
@@ -248,6 +248,6 @@ export default {
   margin-bottom: -10px;
 }
 .authors {
-  margin: 10px;
+  margin-left: 10px;
 }
 </style>
