@@ -619,6 +619,8 @@ export default {
         reader.readAsText(file);
       });
       const rdf = yaml.load(rdfYaml);
+      rdf.config = rdf.config || {};
+      rdf.config._rdf_file = "./" + file.name;
       // make sure we reset the table
       this.jsonFields = null;
       setTimeout(() => {
@@ -797,8 +799,10 @@ export default {
       }
 
       // TODO: fix attachments.files for the packager
-      const rdf = Object.assign({}, this.rdf);
+      const rdf = JSON.parse(JSON.stringify(this.rdf));
       delete rdf._metadata;
+      if (rdf?.config?._deposit) delete rdf.config._deposit;
+      if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
       console.log("RDF: ", rdf);
       this.rdfYaml = yaml.dump(rdf);
       const blob = new Blob([this.rdfYaml], {
@@ -911,7 +915,7 @@ export default {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
       });
-      this.similarDeposits = null;
+
       try {
         this.uploadProgress = 1;
         let depositionInfo;
@@ -1021,17 +1025,23 @@ export default {
           }
           const blob = await zipFiles[i].async("blob");
           const file = new File([blob], zipFiles[i].name);
-          await this.client.uploadFile(depositionInfo, file, size => {
-            this.uploadProgress = Math.round((size / file.size) * 100);
-            this.uploadStatus = `Uploading ${i + 1}/${zipFiles.length}(${
-              this.uploadProgress
-            }%): ${file.name.slice(0, 40)}... `;
-            this.$forceUpdate();
-          });
+          await this.client.uploadFile(
+            depositionInfo,
+            file,
+            file.name,
+            size => {
+              this.uploadProgress = Math.round((size / file.size) * 100);
+              this.uploadStatus = `Uploading ${i + 1}/${zipFiles.length}(${
+                this.uploadProgress
+              }%): ${file.name.slice(0, 40)}... `;
+              this.$forceUpdate();
+            }
+          );
         }
         this.uploadProgress = 0;
         this.uploadStatus = `Successfully uploaded ${zipFiles.length} files.`;
         this.uploaded = true;
+        this.similarDeposits = null;
         this.stepIndex = 3;
       } catch (e) {
         console.error(e);

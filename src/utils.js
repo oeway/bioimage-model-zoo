@@ -288,82 +288,47 @@ export class ZenodoClient {
     this.lastUserId = null;
     this.callbackUrl = encodeURIComponent("https://imjoy.io/login-helper");
     this.credential = null;
+    this.credentialKey = isSandbox
+      ? "sandbox_zenodo_credential"
+      : "production_zenodo_credential";
+    this.userIdKey = isSandbox
+      ? "sandbox_zenodo_user_id"
+      : "production_zenodo_user_id";
     try {
-      this.lastUserId = localStorage.getItem("zenodo_user_id");
+      this.lastUserId = localStorage.getItem(this.userIdKey);
       if (this.lastUserId) this.lastUserId = parseInt(this.lastUserId);
-      let lastCredential = localStorage.getItem("zenodo_credential");
+      let lastCredential = localStorage.getItem(this.credentialKey);
       if (lastCredential) {
         this.credential = JSON.parse(lastCredential);
         // check if it's still valid
         this.getCredential();
         if (this.lastUserId !== this.credential.user_id) {
           this.lastUserId = this.credential.user_id;
-          localStorage.setItem("zenodo_user_id", this.lastUserId);
+          localStorage.setItem(this.userIdKey, this.lastUserId);
         }
       }
     } catch (e) {
-      console.error("Failed to reset zenodo_credential");
+      console.error(`Failed to reset ${this.credentialKey}: ${e}`);
+      localStorage.removeItem(this.credentialKey);
     }
   }
 
-  getUserId() {
-    return (this.credential && this.credential.user_id) || this.lastUserId;
-  }
-
-  logout() {
-    return new Promise((resolve, reject) => {
-      this.credential = null;
-      try {
-        localStorage.removeItem("zenodo_credential");
-      } catch (e) {
-        console.error("Failed to reset zenodo_credential");
-      }
-      const loginWindow = window.open(`${this.baseURL}/logout`, "Logout");
-      try {
-        loginWindow.focus();
-      } catch (e) {
-        reject(
-          "Logout window blocked. If you have a popup blocker enabled, please add BioImage.IO to your exception list."
-        );
-        return;
-      }
-
-      let countDown = 120;
-      const timer = setInterval(function() {
-        if (loginWindow.closed) {
-          clearInterval(timer);
-          resolve();
-        } else {
-          countDown--;
-          if (countDown <= 0) {
-            clearInterval(timer);
-            loginWindow.close();
-            // make sure we closed the window
-            reject("Timeout error");
-          }
-        }
-      }, 1000);
-      setTimeout(() => {
-        loginWindow.close();
-      }, 1000);
-    });
-  }
-
-  async getCredential(login) {
+  async getCredential(login, expiryTolerance) {
+    expiryTolerance = (expiryTolerance || 40) * 60 * 1000;
     if (this.credential) {
       if (
         this.credential.create_at +
           parseInt(this.credential.expires_in) * 1000 >
-        Date.now() - 10000
+        Date.now() + expiryTolerance
       ) {
-        // add extra 10s to make sure
+        // add extra time to make sure we can upload a dataset
         return this.credential;
       } else {
         this.credential = null;
         try {
-          localStorage.removeItem("zenodo_credential");
+          localStorage.removeItem(this.credentialKey);
         } catch (e) {
-          console.error("Failed to reset zenodo_credential");
+          console.error(`Failed to reset ${this.credentialKey}: ${e}`);
         }
       }
     }
@@ -411,20 +376,24 @@ export class ZenodoClient {
     // retry in 1s
     if (!results || !results.hits) {
       console.warn("Hitting rate limit, retrying in 1s");
-      setTimeout(() => {
-        this.getResourceItems({
-          community,
-          page,
-          type,
-          keywords,
-          query,
-          sort,
-          size
-        });
-      }, 1000);
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.getResourceItems({
+            community,
+            page,
+            type,
+            keywords,
+            query,
+            sort,
+            size
+          })
+            .then(resolve)
+            .catch(reject);
+        }, 1000);
+      });
     }
-    const hits = results.hits.hits;
 
+    const hits = results.hits.hits;
     const resourceItems = hits.map(item => {
       try {
         return depositionToRdf(item);
@@ -433,7 +402,53 @@ export class ZenodoClient {
         return null;
       }
     });
-    return resourceItems.filter(item => !!item);
+    console.log("Get items from URL: ", resourceItems, url);
+    const items = resourceItems.filter(item => !!item);
+    items.total = results.aggregations.access_right.buckets[0].doc_count;
+    return items;
+  }
+
+  getUserId() {
+    return (this.credential && this.credential.user_id) || this.lastUserId;
+  }
+
+  logout() {
+    return new Promise((resolve, reject) => {
+      this.credential = null;
+      try {
+        localStorage.removeItem(this.credentialKey);
+      } catch (e) {
+        console.error(`Failed to reset ${this.credentialKey}`);
+      }
+      const loginWindow = window.open(`${this.baseURL}/logout`, "Logout");
+      try {
+        loginWindow.focus();
+      } catch (e) {
+        reject(
+          "Logout window blocked. If you have a popup blocker enabled, please add bioimage.io to your exception list."
+        );
+        return;
+      }
+
+      let countDown = 120;
+      const timer = setInterval(function() {
+        if (loginWindow.closed) {
+          clearInterval(timer);
+          resolve();
+        } else {
+          countDown--;
+          if (countDown <= 0) {
+            clearInterval(timer);
+            loginWindow.close();
+            // make sure we closed the window
+            reject("Timeout error");
+          }
+        }
+      }, 1000);
+      setTimeout(() => {
+        loginWindow.close();
+      }, 1000);
+    });
   }
 
   login() {
@@ -446,6 +461,7 @@ export class ZenodoClient {
         )
           return;
       }
+
       const randomState = randId();
       const loginWindow = window.open(
         `${this.baseURL}/oauth/authorize?scope=deposit%3Awrite+deposit%3Aactions&state=${randomState}&redirect_uri=${this.callbackUrl}&response_type=token&client_id=${this.clientId}`,
@@ -486,6 +502,10 @@ export class ZenodoClient {
           window.removeEventListener("message", handleLogin);
           clearInterval(timer);
           loginWindow.close();
+          loggedIn = true;
+
+          // already logged in
+          if (this.credential) return;
           if (event.data.error) {
             // make sure we closed the window
             setTimeout(() => {
@@ -493,9 +513,7 @@ export class ZenodoClient {
             }, 1);
             return;
           }
-          loggedIn = true;
-          // already logged in
-          if (this.credential) return;
+
           if (!event.data.access_token || event.data.state !== randomState) {
             reject(
               "Failed to obtain the access token, please make sure your account is valid and try it again."
@@ -510,13 +528,13 @@ export class ZenodoClient {
           this.credential.create_at = Date.now();
           if (this.lastUserId !== this.credential.user_id) {
             this.lastUserId = this.credential.user_id;
-            localStorage.setItem("zenodo_user_id", this.lastUserId);
+            localStorage.setItem(this.userIdKey, this.lastUserId);
           }
-          resolve(event.data);
           localStorage.setItem(
-            "zenodo_credential",
+            this.credentialKey,
             JSON.stringify(this.credential)
           );
+          resolve(event.data);
         }
       };
       window.addEventListener("message", handleLogin, false);
@@ -524,18 +542,18 @@ export class ZenodoClient {
   }
 
   async createDeposition() {
-    let response = await fetch(
-      `${this.baseURL}/api/deposit/depositions?access_token=${this.credential.access_token}`
-    );
-    console.log(await response.json());
     const headers = { "Content-Type": "application/json" };
     // create an empty deposition
-    response = await fetch(
+    const response = await fetch(
       `${this.baseURL}/api/deposit/depositions?access_token=${this.credential.access_token}`,
       { method: "POST", body: JSON.stringify({}), headers }
     );
-    const depositionInfo = await response.json();
-    return depositionInfo;
+    if (response.ok) return await response.json();
+    else {
+      throw new Error(
+        "Failed to create deposition, error: " + (await response.text())
+      );
+    }
   }
 
   async getDeposit(depositionInfo) {
@@ -618,45 +636,62 @@ export class ZenodoClient {
     else {
       const details = await response.json();
       throw new Error(
-        "Failed to update metadata, error: " + JSON.stringify(details.errors)
+        "Failed to update metadata, error: " +
+          JSON.stringify(details.errors || details.message)
       );
     }
   }
 
-  async uploadFile(depositionInfo, file, progressCallback) {
+  async uploadFile(depositionInfo, file, newName, progressCallback) {
     const bucketUrl = depositionInfo.links.bucket;
-    const fileName = file.name;
-    const url = `${bucketUrl}/${fileName}?access_token=${this.credential.access_token}`;
-    if (typeof axios === "undefined") {
-      if (progressCallback) progressCallback(0);
-      const response = await fetch(url, {
-        method: "PUT",
-        body: file
-      });
-      if (progressCallback) progressCallback(file.size);
-      return await response.json();
-    } else {
-      const options = {
-        headers: { "Content-Type": file.type },
-        onUploadProgress: progressEvent => {
-          if (progressCallback) progressCallback(progressEvent.loaded);
-          else {
-            const progress = Math.round(
-              ((1.0 * progressEvent.loaded) / file.size) * 100.0
-            );
-            console.log(
-              "uploading annotation, size: " +
-                Math.round(progressEvent.loaded / 1000000) +
-                "MB, " +
-                progress +
-                "% uploaded."
-            );
-          }
+    const fileName = newName || file.name;
+
+    const options = {
+      headers: { "Content-Type": file.type },
+      onUploadProgress: progressEvent => {
+        if (progressCallback) progressCallback(progressEvent.loaded);
+        else {
+          const progress = Math.round(
+            ((1.0 * progressEvent.loaded) / file.size) * 100.0
+          );
+          console.log(
+            "uploading annotation, size: " +
+              Math.round(progressEvent.loaded / 1000000) +
+              "MB, " +
+              progress +
+              "% uploaded."
+          );
         }
-      };
-      const response = await axios.put(url, file, options);
-      return response.data;
+      }
+    };
+    let response;
+    try {
+      const url = `${bucketUrl}/${fileName}?access_token=${this.credential.access_token}`;
+      response = await axios.put(url, file, options);
+    } catch (e) {
+      console.error(e);
+      // check if it's because the credential is expired
+      // if (
+      //   this.credential.create_at +
+      //     parseInt(this.credential.expires_in) * 1000 >
+      //   Date.now() + 1000
+      // ) {
+      console.error(
+        "Failed to upload, possibly due to access token expired:",
+        e
+      );
+      alert(
+        `Authentication information expired, please login to Zenodo and authorize ShareLoc.XYZ again.`
+      );
+      await this.login();
+      debugger;
+      const url = `${bucketUrl}/${fileName}?access_token=${this.credential.access_token}`;
+      response = await axios.put(url, file, options);
+      // } else {
+      //   throw e;
+      // }
     }
+    return response.data;
   }
 
   async publish(depositionInfo) {
@@ -676,7 +711,8 @@ export class ZenodoClient {
     } else {
       const details = await response.json();
       throw new Error(
-        "Failed to publish, error: " + JSON.stringify(details.errors)
+        "Failed to publish, error: " +
+          JSON.stringify(details.errors || details.message)
       );
     }
   }
