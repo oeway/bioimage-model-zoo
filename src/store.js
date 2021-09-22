@@ -94,7 +94,7 @@ export const store = new Vuex.Store({
       try {
         const items = await context.state.zenodoClient.getResourceItems({
           community: siteConfig.zenodo_config.community,
-          size: 1000
+          size: 5000
         });
         context.state.totalItemCount = items.total;
         console.log("All items", items);
