@@ -19,7 +19,13 @@ const cssPatch = `
   display: none;
 }
 `;
-export async function setupBioEngine(updateDevMenu) {
+
+let resolveImJoy, rejectImJoy;
+const imjoyReady = new Promise((resolve, reject) => {
+  resolveImJoy = resolve;
+  rejectImJoy = reject;
+});
+export async function setupBioEngine() {
   const queryString = window.location.href.split("#")[1].split("?")[1];
   const urlParams = new URLSearchParams(queryString);
   const devMode = urlParams.get("dev");
@@ -76,13 +82,23 @@ export async function setupBioEngine(updateDevMenu) {
       window.api = api;
       window.imjoy = app.imjoy;
       window.app = app;
+      resolveImJoy(app.imjoy);
       // TODO: hacky solution, need further investigation
       // imjoy.event_bus.on("add_window", w => {
       //   if(imjoy.wm.windows.indexOf(w)<0){
       //     imjoy.wm.windows.push(w);
       //   }
       // });
-
+      app.imjoy.pm
+        .reloadPluginRecursively({
+          uri:
+            "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
+        })
+        .then(() => {
+          // debugger
+          // p.setup()
+          // api.alert("done")
+        });
       app.imjoy.pm
         .reloadPluginRecursively({
           // uri: "http://localhost:9090/Jupyter-Engine-Manager.imjoy.html"
@@ -119,26 +135,6 @@ export async function setupBioEngine(updateDevMenu) {
                 console.error("Failed to connect to MyBinder Engine", e);
               });
           }
-          if (devMode) {
-            app.loadPlugin("https://if.imjoy.io").then(() => {
-              app.imjoy.event_bus.on("plugin_loaded", plugin => {
-                updateDevMenu("add", plugin);
-              });
-              app.imjoy.event_bus.on("plugin_unloaded", plugin => {
-                updateDevMenu("remove", plugin);
-              });
-              app.imjoy.event_bus.on("add_window", w => {
-                window.scrollTo(0, 0);
-                setTimeout(() => {
-                  if (!w.dialog) {
-                    const windowElem = document.getElementById(w.window_id)
-                      .parentElement.parentElement;
-                    windowElem.style.top = "100px";
-                  }
-                }, 200);
-              });
-            });
-          }
         });
       app.addMenuItem({
         label: "ℹ️ Github",
@@ -149,7 +145,31 @@ export async function setupBioEngine(updateDevMenu) {
     })
     .catch(e => {
       console.error(e);
+      rejectImJoy();
     });
+}
+
+export async function setupDevMenu(updateDevMenu) {
+  await imjoyReady;
+  const app = window.app;
+  app.loadPlugin("https://if.imjoy.io").then(() => {
+    app.imjoy.event_bus.on("plugin_loaded", plugin => {
+      updateDevMenu("add", plugin);
+    });
+    app.imjoy.event_bus.on("plugin_unloaded", plugin => {
+      updateDevMenu("remove", plugin);
+    });
+    app.imjoy.event_bus.on("add_window", w => {
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        if (!w.dialog) {
+          const windowElem = document.getElementById(w.window_id).parentElement
+            .parentElement;
+          windowElem.style.top = "100px";
+        }
+      }, 200);
+    });
+  });
 }
 
 export async function runAppForAllItems(context, config, allItems) {

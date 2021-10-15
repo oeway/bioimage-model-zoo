@@ -332,7 +332,7 @@ const DEFAULT_ICONS = {
   application: "puzzle",
   model: "hubspot"
 };
-import { setupBioEngine, runAppForItem, runAppForAllItems } from "../bioEngine";
+import { setupDevMenu, runAppForItem, runAppForAllItems } from "../bioEngine";
 import { concatAndResolveUrl, debounce, getFullRdfFromDeposit } from "../utils";
 
 function titleCase(str) {
@@ -663,7 +663,7 @@ export default {
     this.resourceId = this.resourceId && this.resourceId.toLowerCase();
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
-    setupBioEngine(this.updateDevMenu);
+    setupDevMenu(this.updateDevMenu);
     // select models as default
     for (let list of this.resourceCategories) {
       if (list.type === "model") {

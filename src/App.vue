@@ -61,6 +61,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import { setupBioEngine } from "./bioEngine";
 
 export default {
   name: "App",
@@ -75,7 +76,9 @@ export default {
       siteConfig: state => state.siteConfig
     })
   },
-  mounted() {}
+  mounted() {
+    setupBioEngine();
+  }
 };
 </script>
 

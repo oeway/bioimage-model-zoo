@@ -402,6 +402,7 @@ import {
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
 import TagInputField from "@/components/TagInputField.vue";
+import SelectButtonField from "@/components/selectButtonField.vue";
 import DropFilesField from "@/components/DropFilesField.vue";
 import CitationInputField from "@/components/CitationInputField.vue";
 import AuthorInputField from "@/components/AuthorInputField.vue";
@@ -417,6 +418,8 @@ export default {
     markdown: Markdown,
     // eslint-disable-next-line vue/no-unused-components
     TagInputField,
+    // eslint-disable-next-line vue/no-unused-components
+    SelectButtonField,
     // eslint-disable-next-line vue/no-unused-components
     DropFilesField,
     // eslint-disable-next-line vue/no-unused-components
@@ -458,6 +461,7 @@ export default {
     },
     components: () => ({
       TagInputField,
+      SelectButtonField,
       DropFilesField,
       AuthorInputField,
       CitationInputField
@@ -630,6 +634,7 @@ export default {
     initializeRdfForm(rdf, files) {
       this.stepIndex = 1;
       this.rdf = rdf || {};
+      delete this.rdf.id;
       this.rdf.links = this.rdf.links || [];
       files = files || this.files || [];
       const types = this.siteConfig.resource_categories.map(cat => cat.type);
@@ -739,6 +744,41 @@ export default {
           type: "files",
           value: files,
           isRequired: false
+        },
+        {
+          html: `<p class='label'>Validation<span
+        class="helpLabel has-text-grey-light is-size-7 is-italic"
+        style="margin-left: .5rem;font-weight: 400;"
+        >Validate the RDF fields against the bioimageio RDF specification using the python module, see <a target="_blank" href="https://github.com/bioimage-io/spec-bioimage-io">Specifications for BioImage.IO</a>. <br>Note: It may take a while to load for the first time.<sup class='has-text-grey-light is-size-7'> *</sup></p>`
+        },
+        {
+          type: "button",
+          showLabel: false,
+          label: "Validate",
+          callback: async () => {
+            // TODO: fix attachments.files for the packager
+            this.showLoader(true);
+            try {
+              const rdf = JSON.parse(JSON.stringify(this.rdf));
+              delete rdf._metadata;
+              if (rdf?.config?._deposit) delete rdf.config._deposit;
+              if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
+              console.log("RDF: ", rdf);
+              const validator = await window.api.getPlugin(
+                "https://gist.githubusercontent.com/oeway/39505145f67253f4d0bf2c3bfcdc224c/raw/BIO-RDF-Validator.imjoy.html"
+              );
+              const results = await validator.validate(rdf);
+              if (Object.keys(results).length == 0) return "Validation passed!";
+              else {
+                throw new Error(JSON.stringify(results, null, "  "));
+              }
+              // eslint-disable-next-line no-useless-catch
+            } catch (e) {
+              throw e;
+            } finally {
+              this.showLoader(false);
+            }
+          }
         }
       ]);
       this.files = files;
@@ -804,6 +844,7 @@ export default {
       if (rdf?.config?._deposit) delete rdf.config._deposit;
       if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
       console.log("RDF: ", rdf);
+
       this.rdfYaml = yaml.dump(rdf);
       const blob = new Blob([this.rdfYaml], {
         type: "application/yaml"
@@ -895,6 +936,16 @@ export default {
       this.uploadStatus = "Exporting zip package...";
       saveAs(zipBlob, this.rdf.name + ".bioimage.io.zip");
       this.uploadStatus = "Done!";
+    },
+    showLoader(enable) {
+      if (enable)
+        this.loadingComponent = this.$buefy.loading.open({ canCancel: true });
+      else {
+        if (this.loadingComponent) {
+          this.loadingComponent.close();
+          this.loadingComponent = null;
+        }
+      }
     },
     async login() {
       try {
