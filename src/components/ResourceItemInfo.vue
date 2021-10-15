@@ -4,6 +4,15 @@
       <app-icons :apps="resourceItem.apps"></app-icons>
       &nbsp;&nbsp;<badges :badges="resourceItem.badges"></badges>
     </section>
+    <section>
+      <pre class="resource-id">ID:</pre>
+      <pre ref="resourceId" class="resource-id">{{ resourceItem.id }}</pre>
+      <b-button
+        size="is-small"
+        icon-left="content-copy"
+        @click="copyId(resourceItem.id)"
+      ></b-button>
+    </section>
     <b-carousel
       style="max-width: 1024px;"
       v-if="resourceItem.covers && resourceItem.covers.length > 0"
@@ -164,6 +173,21 @@ export default {
     })
   },
   methods: {
+    copyId(value) {
+      const tempInput = document.createElement("input");
+      tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+      tempInput.value = value;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+      const data = {
+        message: "Copied to your clipboard!",
+        duration: 1000,
+        queue: false
+      };
+      this.$buefy.snackbar.open(data);
+    },
     async getDocs(resourceItem) {
       resourceItem.docs = "@loading...";
       try {
@@ -249,5 +273,11 @@ export default {
 }
 .authors {
   margin-left: 10px;
+}
+.resource-id {
+  padding: 3px;
+  font-size: 1.1rem;
+  display: inline-block;
+  margin-right: 5px;
 }
 </style>
