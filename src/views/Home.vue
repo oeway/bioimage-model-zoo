@@ -12,12 +12,12 @@
           :src="selectedPartner.background_image"
         />
         <img class="background-img" v-else :src="siteConfig.background_image" />
-        <partners
+        <partners-component
           v-if="partners"
           style="position: absolute;bottom: 0px;"
           :partners="partners"
           @switchPartner="switchPartner"
-        ></partners>
+        ></partners-component>
 
         <div
           class="container"
@@ -289,10 +289,10 @@
         <span class="noselect dialog-title"> {{ infoDialogTitle }}</span>
       </div>
       <div class="markdown-container" v-if="showInfoDialogMode === 'markdown'">
-        <markdown
+        <markdown-component
           :content="infoMarkdownContent"
           :url="infoMarkdownUrl"
-        ></markdown>
+        ></markdown-component>
         <comment-box
           v-if="infoCommentBoxTitle"
           :title="infoCommentBoxTitle"
@@ -302,10 +302,10 @@
         class="markdown-container"
         v-else-if="showInfoDialogMode === 'attachments' && selectedResourceItem"
       >
-        <attachments
+        <attachments-component
           :attachments="selectedResourceItem.attachments"
           :focusTarget="selectedResourceItem._focus"
-        ></attachments>
+        ></attachments-component>
       </div>
       <resource-item-info
         v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
@@ -321,10 +321,10 @@ import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
-import Attachments from "@/components/Attachments.vue";
-import Partners from "@/components/Partners.vue";
+import AttachmentsComponent from "@/components/Attachments.vue";
+import PartnersComponent from "@/components/Partners.vue";
 import CommentBox from "@/components/CommentBox.vue";
-import Markdown from "@/components/Markdown.vue";
+import MarkdownComponent from "@/components/Markdown.vue";
 
 const DEFAULT_ICONS = {
   notebook: "notebook-outline",
@@ -623,9 +623,9 @@ export default {
     "resource-item-selector": ResourceItemSelector,
     "resource-item-info": ResourceItemInfo,
     "comment-box": CommentBox,
-    attachments: Attachments,
-    markdown: Markdown,
-    partners: Partners
+    "attachments-component": AttachmentsComponent,
+    "markdown-component": MarkdownComponent,
+    "partners-component": PartnersComponent
   },
   data() {
     return {
