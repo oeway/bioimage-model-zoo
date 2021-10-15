@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label :for="item.label" class="label">
+    <label v-if="item.showLabel" :for="item.label" class="label">
       {{ item.label }}
       <span
         v-if="item.help"
@@ -17,6 +17,14 @@
     </label>
     <div class="control">
       <b-button
+        expanded
+        :type="
+          callbackError
+            ? 'is-danger'
+            : item.value
+            ? 'is-success'
+            : 'is-warning is-light'
+        "
         :id="item.label"
         class="select-button"
         @click="resolveCallback(item)"

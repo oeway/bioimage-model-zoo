@@ -746,8 +746,14 @@ export default {
           isRequired: false
         },
         {
+          html: `<p class='label'>Validation<span
+        class="helpLabel has-text-grey-light is-size-7 is-italic"
+        style="margin-left: .5rem;font-weight: 400;"
+        >Validate the RDF fields against the bioimageio RDF specification using the python module, see <a target="_blank" href="https://github.com/bioimage-io/spec-bioimage-io">Specifications for BioImage.IO</a>. <br>Note: It may take a while to load for the first time.<sup class='has-text-grey-light is-size-7'> *</sup></p>`
+        },
+        {
           type: "button",
-          help: "Validate the fields against the bioimageio RDF specification.",
+          showLabel: false,
           label: "Validate",
           callback: async () => {
             // TODO: fix attachments.files for the packager
