@@ -768,12 +768,13 @@ export default {
                 "https://gist.githubusercontent.com/oeway/39505145f67253f4d0bf2c3bfcdc224c/raw/BIO-RDF-Validator.imjoy.html"
               );
               const results = await validator.validate(rdf);
-              if (Object.keys(results).length == 0) return "Validation passed!";
+              if (!results.error) return "Validation passed!";
               else {
                 throw new Error(JSON.stringify(results, null, "  "));
               }
               // eslint-disable-next-line no-useless-catch
             } catch (e) {
+              alert("Failed to run the validator, could you maybe try it with Chrome or Firefox browser in a desktop computer?")
               throw e;
             } finally {
               this.showLoader(false);
