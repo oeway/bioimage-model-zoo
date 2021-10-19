@@ -774,7 +774,9 @@ export default {
               }
               // eslint-disable-next-line no-useless-catch
             } catch (e) {
-              alert("Failed to run the validator, could you maybe try it with Chrome or Firefox browser in a desktop computer?")
+              alert(
+                "Failed to run the validator, could you maybe try it with Chrome or Firefox browser in a desktop computer?"
+              );
               throw e;
             } finally {
               this.showLoader(false);
