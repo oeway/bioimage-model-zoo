@@ -150,6 +150,10 @@ export async function setupBioEngine() {
 }
 
 export async function setupDevMenu(updateDevMenu) {
+  const queryString = window.location.href.split("#")[1].split("?")[1];
+  const urlParams = new URLSearchParams(queryString);
+  const devMode = urlParams.get("dev");
+  if (!devMode) return;
   await imjoyReady;
   const app = window.app;
   app.loadPlugin("https://if.imjoy.io").then(() => {
