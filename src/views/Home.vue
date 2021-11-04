@@ -79,12 +79,13 @@
         </div>
       </div>
     </section>
+
+    <span ref="search_anchor"></span>
     <br />
     <section style="margin-top: -30px;opacity: 0.6;">
       <b-progress :value="progress"></b-progress>
     </section>
     <br />
-    <span ref="search_anchor"></span>
     <div
       class="container"
       v-if="resourceCategories.length > 1"
@@ -1069,10 +1070,7 @@ export default {
       this.dialogWindowConfig.fullscreen = !this.dialogWindowConfig.fullscreen;
     },
     enter() {
-      const top =
-        window.pageYOffset +
-        this.$refs.search_anchor.getBoundingClientRect().top;
-      window.scrollTo({ top: top - 100, behavior: "smooth", block: "start" });
+      this.$refs.search_anchor.scrollIntoView();
     },
     updateResourceItemList(models) {
       this.selectedItems = models;
