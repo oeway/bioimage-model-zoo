@@ -2,7 +2,7 @@ import axios from "axios";
 import yaml from "js-yaml";
 import spdxLicenseList from "spdx-license-list/full";
 
-export const MAX_RDF_VERSION = "0.3.2";
+export const MAX_RDF_VERSION = "0.5.0";
 
 export function randId() {
   return Math.random()
