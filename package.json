@@ -22,7 +22,7 @@
     "highlight.js": "^10.1.1",
     "js-yaml": "^4.1.0",
     "json-stringify-safe": "^5.0.1",
-    "jszip": "^3.6.0",
+    "jszip": "^3.7.0",
     "marked": "^2.0.0",
     "mathjs": "^7.0.1",
     "ol": "^6.3.1",
