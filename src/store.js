@@ -25,6 +25,9 @@ const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
   ? "https://sandbox.zenodo.org"
   : "https://zenodo.org";
 
+const client_id = siteConfig.zenodo_config.use_sandbox
+  ? siteConfig.zenodo_config.sandbox_client_id
+  : siteConfig.zenodo_config.production_client_id;
 export const store = new Vuex.Store({
   state: {
     loadedUrl: null,
@@ -34,7 +37,7 @@ export const store = new Vuex.Store({
     zenodoClient: siteConfig.zenodo_config.enabled
       ? new ZenodoClient(
           zenodoBaseURL,
-          siteConfig.zenodo_config.client_id,
+          client_id,
           siteConfig.zenodo_config.use_sandbox
         )
       : null,
