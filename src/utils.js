@@ -402,7 +402,11 @@ export class ZenodoClient {
         return null;
       }
     });
-    console.log("Get items from URL: ", resourceItems, url);
+    console.log(
+      "Get items from URL: ",
+      resourceItems.map(item => item.id),
+      url
+    );
     const items = resourceItems.filter(item => !!item);
     if (results.aggregations.access_right.buckets.length > 0) {
       items.total = results.aggregations.access_right.buckets[0].doc_count;

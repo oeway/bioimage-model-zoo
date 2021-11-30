@@ -85,49 +85,15 @@ export const store = new Vuex.Store({
       }
     },
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
-      if (context.state.loadedUrl === manifest_url) {
-        console.log("manifest already loaded");
-        return;
-      }
-      // clear items
-      context.state.resourceItems = [];
-      context.state.allApps = {};
-      context.state.allTags = [...allTags];
-      const siteConfig = context.state.siteConfig;
-      try {
-        const items = await context.state.zenodoClient.getResourceItems({
-          community: siteConfig.zenodo_config.community,
-          size: 5000
-        });
-        context.state.totalItemCount = items.total;
-        console.log("All items", items);
-        items.map(item => context.commit("addResourceItem", item));
-      } catch (e) {
-        console.error(e);
-        throw new Error(
-          "It appears that we cannot reach to the Zenodo server (https://zenodo.org), please check whether you are connected to the internet, otherwise it might be because the Zenodo server is currently down."
-        );
-      }
-
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
-      if (repo_manifest.collections && siteConfig.partners) {
-        for (let c of repo_manifest.collections) {
-          const duplicates = siteConfig.partners.filter(p => p.id === c.id);
-          duplicates.forEach(p => {
-            siteConfig.partners.splice(siteConfig.partners.indexOf(p), 1);
-          });
-          siteConfig.partners.push(c);
+      if (repo_manifest.attachments && siteConfig.partners) {
+        for (let k of Object.keys(repo_manifest.attachments)) {
+          for (let item of repo_manifest.attachments[k]) {
+            item.repo = repo;
+            context.commit("addResourceItem", item);
+          }
         }
-      }
-
-      const resourceItems = repo_manifest.resources;
-      const rawResourceItems = JSON.parse(JSON.stringify(resourceItems));
-      for (let item of rawResourceItems) {
-        item.repo = repo;
-        // if (item.source && !item.source.startsWith("http"))
-        //   item.source = concatAndResolveUrl(item.root_url, item.source);
-        context.commit("addResourceItem", item);
       }
       context.commit("normalizeItems", transform);
       context.state.loadedUrl = manifest_url;
@@ -140,6 +106,7 @@ export const store = new Vuex.Store({
       item.links = item.links || [];
       item.links = item.links.map(link => link.toLowerCase());
       item.authors = item.authors || [];
+      item.tags = item.tags || [];
       item.authors = item.authors.map(author =>
         typeof author === "string" ? { name: author } : author
       );
@@ -154,9 +121,7 @@ export const store = new Vuex.Store({
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application" && item?.source?.endsWith(".imjoy.html"))
         state.allApps[item.id] = item;
-      // index tags
-      if (item.tags && item.tags.length > 0)
-        item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+      item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
       item.tags.map(tag => {
         if (!state.allTags.includes(tag)) {
           state.allTags.push(tag);
