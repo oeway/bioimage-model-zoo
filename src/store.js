@@ -85,50 +85,12 @@ export const store = new Vuex.Store({
       }
     },
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
-      // if (context.state.loadedUrl === manifest_url) {
-      //   console.log("manifest already loaded");
-      //   return;
-      // }
-      // // clear items
-      // context.state.resourceItems = [];
-      // context.state.allApps = {};
-      // context.state.allTags = [...allTags];
-      // const siteConfig = context.state.siteConfig;
-      // try {
-      //   const items = await context.state.zenodoClient.getResourceItems({
-      //     community: siteConfig.zenodo_config.community,
-      //     size: 5000
-      //   });
-      //   context.state.totalItemCount = items.total;
-      //   console.log("All items", items);
-      //   items.map(item => context.commit("addResourceItem", item));
-      // } catch (e) {
-      //   console.error(e);
-      //   throw new Error(
-      //     "It appears that we cannot reach to the Zenodo server (https://zenodo.org), please check whether you are connected to the internet, otherwise it might be because the Zenodo server is currently down."
-      //   );
-      // }
-
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
-      // if (repo_manifest.attachments && siteConfig.partners) {
-      //   for (let k of Object.keys(repo_manifest.attachments)) {
-      //     for(let item of repo_manifest.attachments[k]) {
-      //       const duplicates = siteConfig.partners.filter(p => p.id === c.id);
-      //       duplicates.forEach(p => {
-      //         siteConfig.partners.splice(siteConfig.partners.indexOf(p), 1);
-      //       });
-      //       siteConfig.partners.push(c);
-      //     }
-      //   }
-      // }
-
       if (repo_manifest.attachments && siteConfig.partners) {
         for (let k of Object.keys(repo_manifest.attachments)) {
           for (let item of repo_manifest.attachments[k]) {
             item.repo = repo;
-            // if (item.source && !item.source.startsWith("http"))
-            //   item.source = concatAndResolveUrl(item.root_url, item.source);
             context.commit("addResourceItem", item);
           }
         }
