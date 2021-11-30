@@ -87,6 +87,19 @@ export const store = new Vuex.Store({
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
+      if (
+        repo_manifest.config &&
+        repo_manifest.config.partners &&
+        siteConfig.partners
+      ) {
+        for (let c of repo_manifest.config.partners) {
+          const duplicates = siteConfig.partners.filter(p => p.id === c.id);
+          duplicates.forEach(p => {
+            siteConfig.partners.splice(siteConfig.partners.indexOf(p), 1);
+          });
+          siteConfig.partners.push(c);
+        }
+      }
       if (repo_manifest.attachments && siteConfig.partners) {
         for (let k of Object.keys(repo_manifest.attachments)) {
           for (let item of repo_manifest.attachments[k]) {
