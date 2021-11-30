@@ -10140,12 +10140,3 @@ label.panel-block:hover {
   color: #363636;
 }
 /*# sourceMappingURL=bulmaswatch.min.css.map */
-
-.input,
-.taginput .taginput-container.is-focusable,
-.textarea {
-  border-style: solid;
-  border-width: 3px;
-  border-color: #2196f3;
-  height: 37px;
-}
