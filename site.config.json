@@ -52,9 +52,10 @@
   },
   "zenodo_config": {
     "enabled": true,
-    "client_id": "0Zb8YkwXBqt2zelL9WyorERRzJufdTJMgxxuibmQ",
+    "sandbox_client_id": "0Zb8YkwXBqt2zelL9WyorERRzJufdTJMgxxuibmQ",
+    "production_client_id": "nO6VNWAiRjklxcVx0roedRnQncQTyEMRkTDzg6kd",
     "community": "bioimage-io",
-    "use_sandbox": true
+    "use_sandbox": false
   },
   "attachment_table": {
     "columns": [

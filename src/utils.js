@@ -404,7 +404,11 @@ export class ZenodoClient {
     });
     console.log("Get items from URL: ", resourceItems, url);
     const items = resourceItems.filter(item => !!item);
-    items.total = results.aggregations.access_right.buckets[0].doc_count;
+    if (results.aggregations.access_right.buckets.length > 0) {
+      items.total = results.aggregations.access_right.buckets[0].doc_count;
+    } else {
+      items.total = 0;
+    }
     return items;
   }
 
