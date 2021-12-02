@@ -108,26 +108,27 @@
       "outline_color": "rgb(36 0 236)",
       "tag_categories": {
         "modality": [
-          "electron microscopy", 
-          "cryo electron microscopy"
-          "fluorescence light microscopy",
-          "labelfree light microscopy"
-          "super-resolution microscopy", 
-          "X-ray microscopy", 
-          "force microscopy",
-          "high-content imaging",
-          "whole-slide imaging"],
+          "electron-microscopy", 
+          "cryo-electron-microscopy"
+          "fluorescence-light-microscopy",
+          "transmission-light-microscopy"
+          "super-resolution-microscopy", 
+          "X-ray-microscopy", 
+          "force-microscopy",
+          "high-content-imaging",
+          "whole-slide-imaging", 
+          "other"],
         "dims": [
-          "2D", "3D", "2D+t", "3D+t"],
+          "2D", "3D", "2D-t", "3D-t"],
         
         "content": [
           "cells",
           "nuclei",
-          "extracellular vesicles",
+          "extracellular-vesicles",
           "tissue",
           "plant",
           "vasculature",
-          "cell membrane",
+          "cell-membrane",
           "brain",
           "whole-organism"
         ],
