@@ -665,8 +665,17 @@ export default {
         {
           label: "Authors",
           type: "author",
+          options: ["name", "orcid", "affiliation"],
           value: this.rdf.authors,
           help: "The authors who contributed to this resource item"
+        },
+        {
+          label: "Maintainers",
+          type: "author",
+          options: ["name", "email", "github_user"],
+          value: this.rdf.maintainers,
+          help:
+            "The maintainers who maintain this resource item. Importantly, the first maintainer will be contacted for the approval process to the BioImage.IO"
         },
         // {
         //   label: "Source",
@@ -711,9 +720,9 @@ export default {
           type: "tags",
           value: this.rdf.tags,
           help:
-            "Tags should contain only lower case letters with no space, numbers, or the following characters: +*#;./%@",
+            "Tags should contain only lower case letters with numbers, or the following characters: +*#;./%@, but no space",
           placeholder:
-            "Add a tag and press ENTER to confirm (lower case, no space, numbers, or any of +*#;./%@)",
+            "Add a tag and press ENTER to confirm (lower case, numbers, or any of +*#;./%@, but no space)",
           options: this.allTags.map(tag =>
             tag.toLowerCase().replace(/ /g, "-")
           ),

@@ -19,7 +19,7 @@
           <b-input
             @input="commitValue"
             type="text"
-            placeholder="Full Name"
+            placeholder="Full Name (required)"
             v-model="author.name"
             maxlength="1000"
           >
@@ -27,6 +27,7 @@
           <b-input
             @input="commitValue"
             type="text"
+            v-if="item.options.includes('affiliation')"
             placeholder="Affiliation (optional)"
             v-model="author.affiliation"
             maxlength="100"
@@ -35,8 +36,27 @@
           <b-input
             @input="commitValue"
             type="text"
+            v-if="item.options.includes('orcid')"
             placeholder="ORCID (optional)"
             v-model="author.orcid"
+            maxlength="1000"
+          >
+          </b-input>
+          <b-input
+            @input="commitValue"
+            type="text"
+            v-if="item.options.includes('github_user')"
+            placeholder="Github User (required)"
+            v-model="author.github_user"
+            maxlength="100"
+          >
+          </b-input>
+          <b-input
+            @input="commitValue"
+            type="text"
+            v-if="item.options.includes('email')"
+            placeholder="Email (optional)"
+            v-model="author.email"
             maxlength="1000"
           >
           </b-input>
