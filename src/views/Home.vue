@@ -401,6 +401,7 @@ function normalizeItem(self, item) {
   if (item.license) {
     item.allLabels.push(item.license);
   }
+  item.allLabels.push(item.id);
   if (item.applications) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
