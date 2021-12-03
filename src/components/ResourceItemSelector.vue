@@ -37,7 +37,7 @@
         </b-taginput>
         <b-dropdown aria-role="list" position="is-bottom-left">
           <button class="button tags-button" slot="trigger">
-            <span>Tags</span>
+            <span>Tags & Filters</span>
             <b-icon icon="menu-down"></b-icon>
           </button>
 
@@ -385,6 +385,11 @@ export default {
   width: 500px;
   max-width: calc(100% - 110px);
   margin-left: 10px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #2196f3;
+  height: 42px;
+  margin-top: -3px;
 }
 .display-mode-btn {
   top: 1px;

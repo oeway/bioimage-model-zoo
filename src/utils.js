@@ -2,7 +2,7 @@ import axios from "axios";
 import yaml from "js-yaml";
 import spdxLicenseList from "spdx-license-list/full";
 
-export const MAX_RDF_VERSION = "0.3.2";
+export const MAX_RDF_VERSION = "0.5.0";
 
 export function randId() {
   return Math.random()
@@ -402,9 +402,17 @@ export class ZenodoClient {
         return null;
       }
     });
-    console.log("Get items from URL: ", resourceItems, url);
+    console.log(
+      "Get items from URL: ",
+      resourceItems.map(item => item.id),
+      url
+    );
     const items = resourceItems.filter(item => !!item);
-    items.total = results.aggregations.access_right.buckets[0].doc_count;
+    if (results.aggregations.access_right.buckets.length > 0) {
+      items.total = results.aggregations.access_right.buckets[0].doc_count;
+    } else {
+      items.total = 0;
+    }
     return items;
   }
 

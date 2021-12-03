@@ -1,35 +1,39 @@
 
 # Tutorial for contributing models
+**Note: only PyTorch and TensorFlow models are supported at the moment. We are working on alternative model formats such as ONNX.**
 
-1. Check the programming language and libraries used to train your model. For the moment, we only support TensorFlow and PyTorch.
-2. Check that the version of these libraries are compatible with the consumer software.
-3. Export your trained model (architecture and weights) to the [BioImage.IO Model Resource Description File Specification](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#weight-formats).
+1. Check that the (1) that your model is supported by the BioImage Model Zoo and (2) it is compatible with at least one of the consumer software. Check it [here](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md).
 
+2. Create a model specification file according to the [BioImage.IO Model Resource Description File Specification](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/model_spec_latest.md).
+   - Each field on the file can be either mandatory or optional. You can use [our template](https://github.com/bioimage-io/bioimage-io-models/pull/55/files#diff-f6c64be5b9d764d0964654908b2ed4495fccc7624e58e9360bfdc6cef169edbe) to fill in the required information. 
+   - [Here is an example](https://github.com/bioimage-io/pytorch-bioimage-io/blob/master/specs/models/unet2d_nuclei_broad/UNet2DNucleiBroad.model.yaml) of a filled configuration YAML file. In the Bioimage Model Zoo web page you will also find different examples. 
 
-4. Create a model file according to the [BioImage.IO Model Resource Description File Specification](/bioimageio_model_spec).
-   Each field on the file can be either mandatory or optional. You can use [our template](https://github.com/bioimage-io/bioimage-io-models/pull/55/files#diff-f6c64be5b9d764d0964654908b2ed4495fccc7624e58e9360bfdc6cef169edbe) to fill in the required information. 
-   [Here is an example](https://github.com/bioimage-io/pytorch-bioimage-io/blob/master/specs/models/unet2d_nuclei_broad/UNet2DNucleiBroad.model.yaml) of a filled configuration YAML file. In the Bioimage Model Zoo web page you will also find different examples. 
+3. In the BioImage Model Zoo web plage, click on `+Upload` and follow the steps:
+
+   1) Log in to Zenodo and give access to the BioEngine Application. You will see an automatic message once you are logged in. If not, refresh the page.
+   This step needs to be done just for the first time you upload a model. 
+   2) Upload the model RDF specification file.
    
-5. Rename the BioImage.IO model file as `rdf.yaml`. 
-6. Create a folder that contains the exported model (step 3), the `rdf.yaml`, the example inputs and outputs, and any other file that is required by your `rdf.yaml`, or your model to run in a consumer software. Zip the content of this folder and publish it in a public repository (Zenodo, GitHub releases). This BioImage model is the one that the user will download.
-
-7. Fork the [Central GitHub repository](https://github.com/bioimage-io/bioimage-io-models) to your GitHub user account.
-
-8. In the forked repository, go to `Actions` (top bar) and enable them, so the continuous integration (CI) checker can also run in your repository and check that the files you uploaded are correct:
+   <img src="contribute_models/upload_1.png" align="center" width="1000"/>
    
-    <img src="contribute_models/enable_actions.png" align="center" width="1000"/>
-
-9. Create a folder inside `models` with a unique name. For example `mymodel-dataXYZ`(try to choose a name that refers to the model name and makes some reference to the data used to train it). Place the `rdf.yaml` inside your folder `mymodel-dataXYZ`. You can also place the covers for your model card inside this folder. Note that you will need to refer to them inside the yaml with a relative path, i.e. `covers: [./my_cover.jpg]`.
-	<img src="contribute_models/dummy_model_folder.png" align="center" width="700"/>
+   3) Complete the missing fields. Check out how to get most of your model documentation
     
-10. Open the file `manifest.bioimage.io.yaml` and edit it. You need to add a unique `id`, a relative URL to your model yaml and the link to download the bioimage model (.zip) as follows:
-    ```yaml
-    model:
-     - id: mymodel-dataXYZ-2021
-       source: models/mymodel-dataXYZ/model.yaml      
-       download_url: https://zenodo.org/record/4155785/files/mymodel-dataXYZ-2021v1.zip
-    ```
-11. Make a pull request!!
+   <img src="contribute_models/upload_2.png" align="center" width="1000"/>
+   
+   <img src="contribute_models/upload_3.png" align="center" width="1000"/>
+   
+
+
+## How to get most of your model documentation
+### Model Tags
+
+The tags in the model RDF are used to search for each model in the BioImage Model Zoo. The more informative tags you write, the easier it will be for a potential user to find your model. Example:
+
+**My model description**: An encoder-decoder trained for denoising of point-scanning super-resolution microsocpy images of HeLa cells microtubules
+
+**Tags**: `denoising`, `PSSR`, `microtubules`, `encoder-decoder`, `deblurring`, `fluorescence`, `2D`, `HeLa cells`, `deepimagej`, `ilastik`, `image restoration`, `trained-model` etc.
+
+### Model links
 
 ## Considerations for the model description file (format_version>=0.3.0)
 When following the BioImage.IO Model Resource Description File Specification provided at https://github.com/bioimage-io/spec-bioimage-io, it is important that you pay special attention to the following:
