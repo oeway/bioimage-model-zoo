@@ -107,33 +107,48 @@
       "description": "List AI models",
       "outline_color": "rgb(36 0 236)",
       "tag_categories": {
-        "modality": ["widefield", "confocal", "SR", "EM", "TEM", "cryoEM"],
+        "modality": [
+          "electron-microscopy", 
+          "cryo-electron-microscopy",
+          "fluorescence-light-microscopy",
+          "transmission-light-microscopy",
+          "super-resolution-microscopy", 
+          "X-ray-microscopy", 
+          "force-microscopy",
+          "high-content-imaging",
+          "whole-slide-imaging", 
+          "other"],
+        "dims": [
+          "2D", "3D", "2D-t", "3D-t"],
+        
         "content": [
-          "extracellular vesicles",
-          "platynereis",
-          "arabidopsis",
-          "platynereis",
+          "cells",
+          "nuclei",
+          "extracellular-vesicles",
+          "tissue",
+          "plant",
           "vasculature",
-          "plant tissue",
-          "cell membrane",
-          "brain"
+          "cell-membrane",
+          "brain",
+          "whole-organism"
         ],
         "framework": ["Tensorflow", "PyTorch", "Tensorflow.js"],
-        "software": ["Ilastik", "ImageJ", "Fiji", "ImJoy", "DeepImageJ", "n2v"],
+        "software": ["ilastik", "ImageJ", "Fiji", "ImJoy", "DeepImageJ", "n2v"],
         "network": [
           "UNet",
-          "UNet2D",
-          "UNet3D",
           "DenseNet",
           "ResNet",
           "Inception",
           "Shufflenet"
         ],
         "task": [
-          "segmentation",
-          "nucleus-segmentation",
-          "classification",
+          "semantic-segmentation",
+          "instance-segmentation",
+          "object-detection",
+          "image-classification",
           "denoising",
+          "image-restoration",
+          "image-reconstruction",
           "in-silico-labeling"
         ]
       }
