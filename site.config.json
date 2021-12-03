@@ -109,9 +109,9 @@
       "tag_categories": {
         "modality": [
           "electron-microscopy", 
-          "cryo-electron-microscopy"
+          "cryo-electron-microscopy",
           "fluorescence-light-microscopy",
-          "transmission-light-microscopy"
+          "transmission-light-microscopy",
           "super-resolution-microscopy", 
           "X-ray-microscopy", 
           "force-microscopy",
