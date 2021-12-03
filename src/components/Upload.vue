@@ -768,7 +768,7 @@ export default {
             // TODO: fix attachments.files for the packager
             this.showLoader(true);
             try {
-              const rdf = JSON.parse(JSON.stringify(this.rdf));
+              const rdf = yaml.load(yaml.dump(this.rdf));
               delete rdf._metadata;
               if (rdf?.config?._deposit) delete rdf.config._deposit;
               if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
@@ -783,9 +783,6 @@ export default {
               }
               // eslint-disable-next-line no-useless-catch
             } catch (e) {
-              alert(
-                "Failed to run the validator, could you maybe try it with Chrome or Firefox browser in a desktop computer?"
-              );
               throw e;
             } finally {
               this.showLoader(false);
@@ -851,7 +848,7 @@ export default {
       }
 
       // TODO: fix attachments.files for the packager
-      const rdf = JSON.parse(JSON.stringify(this.rdf));
+      const rdf = yaml.load(yaml.dump(this.rdf));
       delete rdf._metadata;
       if (rdf?.config?._deposit) delete rdf.config._deposit;
       if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
