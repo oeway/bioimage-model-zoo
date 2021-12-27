@@ -38,7 +38,7 @@
     },
     { "label": "Deploys By Netlify",
       "tooltip": "This site is powered by Netlify",
-      "logo": "https://www.netlify.com/img/global/badges/netlify-color-dark.svg", 
+      "logo": "https://www.netlify.com/img/global/badges/netlify-color-accent.svg", 
       "url": "https://www.netlify.com"
     }
   ],
