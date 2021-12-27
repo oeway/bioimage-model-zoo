@@ -35,6 +35,11 @@
       "tooltip": "Send us a message",
       "logo": "/static/img/contact.png", 
       "url": "https://oeway.typeform.com/to/K3j2tJt7"
+    },
+    { "label": "Deploys By Netlify",
+      "tooltip": "This site is powered by Netlify",
+      "logo": "https://www.netlify.com/img/global/badges/netlify-color-dark.svg", 
+      "url": "https://www.netlify.com"
     }
   ],
   "rdf_root_repo": "bioimage-io/bioimage.io",
