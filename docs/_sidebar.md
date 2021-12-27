@@ -15,3 +15,4 @@
   - [How-tos Guide](/community_partners/how-tos_guide)
   - [BioImage.IO Manifest File](/community_partners/manifest-format.md)
 * [User Agreement](/user_agreement.md)
+* [Code of Conduct](/CODE_OF_CONDUCT.md)
