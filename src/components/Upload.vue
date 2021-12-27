@@ -358,6 +358,25 @@
         </b-notification>
 
         <b-notification
+          v-if="notifyCIStatus"
+          ref="ci_status"
+          has-icon
+          aria-close-label="Close notification"
+        >
+          <h3>
+            {{ notifyCIStatus }}
+          </h3>
+          <b-button
+            v-if="notifyCIFailed"
+            style="text-transform:none;"
+            class="button is-fullwidth"
+            @click="notifyBot()"
+            expanded
+            >Try Again</b-button
+          >
+        </b-notification>
+
+        <b-notification
           v-if="uploadMode === 'update'"
           has-icon
           type="is-info"
@@ -487,6 +506,8 @@ export default {
       stepIndex: 0,
       publishedUrl: null,
       publishedDOI: null,
+      notifyCIStatus: null,
+      notifyCIFailed: false,
       requestedJoinCommunity: true,
       rdfType: "model",
       zipPackage: null,
@@ -890,6 +911,38 @@ export default {
         await this.client.getCredential(true);
       this.stepIndex = 2;
     },
+    notifyBot() {
+      // debug url: `https://bioimage-6b0000.netlify.live/.netlify/functions/bioimageiobot?action=notify&source=https://zenodo.org/api/files/3f422e1b-a64e-40d3-89d1-29038d2f405d/rdf.yaml`
+      const url = `https://bioimage.netlify.app/.netlify/functions/bioimageiobot?action=notify&source=${this.client.baseURL}/record/${this.depositId}/files/rdf.yaml`;
+      this.notifyCIStatus =
+        "⌛ Trying to notify bioimage-bot for the new item...";
+      this.notifyCIFailed = false;
+      const ciLoader = this.$buefy.loading.open({
+        container: this.$refs.ci_status
+      });
+      // trigger CI with the bioimageio bot endpoint
+      fetch(url)
+        .then(async resp => {
+          if (resp.status === 200) {
+            this.notifyCIStatus =
+              "🎉 bioimage-bot has successfully detected the item: " +
+              (await resp.json())["message"];
+            this.notifyCIFailed = false;
+          } else {
+            this.notifyCIFailed = true;
+            this.notifyCIStatus =
+              "😬 bioimage-bot failed to detected the new item, please report the issue to the admin team of bioimage.io: " +
+              (await resp.text());
+          }
+        })
+        .catch(e => {
+          this.notifyCIStatus = `😬 Failed to reach to the bioimageio-bot, please report the issue to the admin team of bioimage.io: ${e}`;
+          this.notifyCIFailed = true;
+        })
+        .finally(() => {
+          ciLoader.close();
+        });
+    },
     async publishDeposition() {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
@@ -899,6 +952,7 @@ export default {
         console.log("Published", result);
         this.publishedDOI = result.doi;
         this.publishedUrl = `${this.$store.state.zenodoBaseURL}/record/${this.depositId}`;
+        this.notifyBot();
       } catch (e) {
         console.error(e);
         alert(`Failed to publish: ${e}`);
@@ -1102,6 +1156,8 @@ export default {
         this.uploadStatus = `Successfully uploaded ${zipFiles.length} files.`;
         this.uploaded = true;
         this.similarDeposits = null;
+        this.notifyCIStatus = null;
+        this.notifyCIFailed = null;
         this.stepIndex = 3;
       } catch (e) {
         console.error(e);

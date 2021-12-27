@@ -4,6 +4,12 @@ const request = require('request');
 const yaml = require('js-yaml');
 const workflowId = "auto_update_main.yaml"
 
+const cors_headers = {
+    'Access-Control-Allow-Origin': 'https://bioimage.io',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST'
+};
+  
 function dispatch_workflow(workflowId, token) {
     return new Promise((resolve, reject) => {
         const options = {
@@ -94,19 +100,19 @@ exports.handler = async function(event, context) {
     const source = event.queryStringParameters.source
     const action = event.queryStringParameters.action
     if(!action){
-        return { statusCode: 500, body: "Please specify an action"}
+        return { statusCode: 500, headers: cors_headers, body: "Please specify an action"}
     }
     if(action === 'notify'){
          // const resource_id = event.queryStringParameters.id
         const { GITHUB_TOKEN } = process.env;
         if(!GITHUB_TOKEN){
-            return { statusCode: 500, body: "server function is not configured properly (requires GITHUB_TOKEN env variable)"}
+            return { statusCode: 500, headers: cors_headers, body: "server function is not configured properly (requires GITHUB_TOKEN env variable)"}
         }
         if(!source){
-            return { statusCode: 403, body: "Please provide a RDF source URL in the query string"}
+            return { statusCode: 403, headers: cors_headers, body: "Please provide a RDF source URL in the query string"}
         }
         if(!source.startsWith("http")){
-            return { statusCode: 403, body: "Invalid RDF source url, it must be a valid URL"}
+            return { statusCode: 403, headers: cors_headers, body: "Invalid RDF source url, it must be a valid URL"}
         }
         const sourceContent = await get(source)
         if(source.split("?")[0].endsWith(".yaml")){
@@ -116,11 +122,11 @@ exports.handler = async function(event, context) {
                 // TODO: check if the resource is worth to to run a workflow
             }
             catch(e){
-                return { statusCode: 403, body: `Failed to parse the source file: ${e}`}
+                return { statusCode: 403, headers: cors_headers, body: `Failed to parse the source file: ${e}`}
             }
         }
         else{
-            return { statusCode: 403, body: "Invalid RDF source file type, only yaml is supported for now"}
+            return { statusCode: 403, headers: cors_headers, body: "Invalid RDF source file type, only yaml is supported for now"}
         }
         // check if the workflow is already waiting in the queue
         // if(await check_waiting_workflow("generate auto-update PRs", GITHUB_TOKEN) > 0){
@@ -132,12 +138,14 @@ exports.handler = async function(event, context) {
         await dispatch_workflow(workflowId, GITHUB_TOKEN)
         return {
             statusCode: 200,
-            body: JSON.stringify({source, success: true, new_workflow: true, message: "A new workflow run is dispatched."})
+            headers: cors_headers,
+            body: JSON.stringify({source, success: true, new_workflow: true, message: "A new workflow run has dispatched."})
         };
     }
     else{
         return {
             statusCode: 403,
+            headers: cors_headers,
             body: `Unsupported action: ${action}`
         };
     }
