@@ -19,7 +19,7 @@ for (let cat of siteConfig.resource_categories) {
       allTags = allTags.concat(tagCates[cat]);
     }
 }
-allTags = allTags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+allTags = allTags.map(tag => tag.toLowerCase());
 
 const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
   ? "https://sandbox.zenodo.org"
@@ -134,7 +134,7 @@ export const store = new Vuex.Store({
       item.config._rdf_file = item.config._rdf_file || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (item.type === "application" && item?.source?.endsWith(".imjoy.html"))
         state.allApps[item.id] = item;
-      item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+      item.tags = item.tags.map(tag => tag.toLowerCase());
       item.tags.map(tag => {
         if (!state.allTags.includes(tag)) {
           state.allTags.push(tag);
@@ -157,7 +157,7 @@ export const store = new Vuex.Store({
         item.links = item.links.map(link => link.toLowerCase());
         item.links = [...new Set(item.links)];
         item.tags = item.tags || [];
-        item.tags = item.tags.map(tag => tag.toLowerCase().replace(/ /g, "-"));
+        item.tags = item.tags.map(tag => tag.toLowerCase());
         item.links = [...new Set(item.links)];
         if (transform) return transform(item);
         else return item;

@@ -792,7 +792,7 @@ export default {
           if (item.allLabels)
             item.allLabels.forEach(label => {
               if (fullLabelList.indexOf(label) === -1) {
-                fullLabelList.push(label.toLowerCase().replace(/ /g, "-"));
+                fullLabelList.push(label.toLowerCase());
               }
             });
         }
