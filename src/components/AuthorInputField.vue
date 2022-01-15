@@ -110,7 +110,7 @@ export default {
     if (this.value && !Array.isArray(this.value)) this.value = [this.value];
     this.value = this.value || [];
     // set the name to github user if not given
-    this.value.forEach(v => v.name = v.name || v.github_user)
+    this.value.forEach(v => (v.name = v.name || v.github_user));
     this.value = this.value.filter(v => v.name && v.name != "");
     this.commitValue();
 
