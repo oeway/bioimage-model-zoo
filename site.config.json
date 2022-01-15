@@ -107,9 +107,9 @@
   "excluded_tags": ["bioimage.io", "bioimage.io:model", "bioimage.io:application", "bioimage.io:workflow", "bioimage.io:notebook", "bioimage.io:dataset", "zenodo"],
   "resource_categories": [
     {
-      "name": "Models",
+      "name": "models",
       "type": "model",
-      "description": "List AI models",
+      "description": "list ai models",
       "outline_color": "rgb(36 0 236)",
       "tag_categories": {
         "modality": [
@@ -118,13 +118,13 @@
           "fluorescence-light-microscopy",
           "transmission-light-microscopy",
           "super-resolution-microscopy", 
-          "X-ray-microscopy", 
+          "x-ray-microscopy", 
           "force-microscopy",
           "high-content-imaging",
           "whole-slide-imaging", 
           "other"],
         "dims": [
-          "2D", "3D", "2D-t", "3D-t"],
+          "2d", "3d", "2d-t", "3d-t"],
         
         "content": [
           "cells",
@@ -138,14 +138,14 @@
           "brain",
           "whole-organism"
         ],
-        "framework": ["Tensorflow", "PyTorch", "Tensorflow.js"],
-        "software": ["ilastik", "ImageJ", "Fiji", "ImJoy", "DeepImageJ", "n2v"],
+        "framework": ["tensorflow", "pytorch", "tensorflow.js"],
+        "software": ["ilastik", "imagej", "fiji", "imjoy", "deepimagej", "n2v"],
         "network": [
-          "UNet",
-          "DenseNet",
-          "ResNet",
-          "Inception",
-          "Shufflenet"
+          "unet",
+          "densenet",
+          "resnet",
+          "inception",
+          "shufflenet"
         ],
         "task": [
           "semantic-segmentation",
@@ -160,17 +160,17 @@
       }
     },
     {
-      "name": "Applications",
+      "name": "applications",
       "type": "application",
       "outline_color": "rgb(83 230 7)",
       "common_tags": ["software", "notebook", "bioengine", "workflow", "macro"],
-      "description": "List software, web apps, notebooks and utility tools"
+      "description": "list software, web apps, notebooks and utility tools"
     },
     {
-      "name": "Datasets",
+      "name": "datasets",
       "type": "dataset",
       "outline_color": "rgb(236 0 185)",
-      "description": "List datasets"
+      "description": "list datasets"
     }
   ]
 }

@@ -100,12 +100,10 @@ export const store = new Vuex.Store({
           siteConfig.partners.push(c);
         }
       }
-      if (repo_manifest.attachments && siteConfig.partners) {
-        for (let k of Object.keys(repo_manifest.attachments)) {
-          for (let item of repo_manifest.attachments[k]) {
-            item.repo = repo;
-            context.commit("addResourceItem", item);
-          }
+      if (repo_manifest.collection && siteConfig.partners) {
+        for (let item of repo_manifest.collection) {
+          item.repo = repo;
+          context.commit("addResourceItem", item);
         }
       }
       context.commit("normalizeItems", transform);
