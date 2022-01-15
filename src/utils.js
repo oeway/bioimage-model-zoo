@@ -302,7 +302,7 @@ export class ZenodoClient {
         this.credential = JSON.parse(lastCredential);
         // check if it's still valid
         this.getCredential();
-        if (this.lastUserId !== this.credential.user_id) {
+        if (this.credential && this.lastUserId !== this.credential.user_id) {
           this.lastUserId = this.credential.user_id;
           localStorage.setItem(this.userIdKey, this.lastUserId);
         }
