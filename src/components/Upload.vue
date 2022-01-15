@@ -638,6 +638,10 @@ export default {
       this.rdf.links = this.rdf.links || [];
       files = files || this.files || [];
       const types = this.siteConfig.resource_categories.map(cat => cat.type);
+      this.rdf.tags = this.rdf.tags || [];
+      this.rdf.tags = this.rdf.tags.map(tag =>
+        tag.toLowerCase().replace(/ /g, "-")
+      );
       this.jsonFields = this.transformFields([
         {
           label: "Type",
