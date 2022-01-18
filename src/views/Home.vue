@@ -497,11 +497,18 @@ function normalizeItem(self, item) {
           runAppForAllItems(self, self.allApps[item.id], self.resourceItems);
         }
       });
-    } else if (item.tags.includes("colab") && item.source.endsWith(".ipynb")) {
+    } else if (
+      item.tags.includes("colab") &&
+      item.source &&
+      item.source.endsWith(".ipynb")
+    ) {
       // convert github raw url to colab url
       item.config = item.config || {};
 
-      if (item.source.startsWith("https://raw.githubusercontent.com/")) {
+      if (
+        item.source &&
+        item.source.startsWith("https://raw.githubusercontent.com/")
+      ) {
         const b = item.source.split("/");
         item.config._colab_url = `https://colab.research.google.com/github/${
           b[3]
