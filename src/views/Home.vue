@@ -329,6 +329,7 @@
 </template>
 
 <script>
+import yaml from "js-yaml";
 import { mapState } from "vuex";
 import spdxLicenseList from "spdx-license-list/full";
 import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
@@ -346,7 +347,7 @@ const DEFAULT_ICONS = {
   model: "hubspot"
 };
 import { setupDevMenu, runAppForItem, runAppForAllItems } from "../bioEngine";
-import { concatAndResolveUrl, debounce, getFullRdfFromDeposit } from "../utils";
+import { concatAndResolveUrl, debounce } from "../utils";
 
 function titleCase(str) {
   return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
@@ -363,12 +364,18 @@ const isTouchDevice = (function() {
 })();
 
 async function updateFullRDF(item) {
-  if (item.config._deposit) {
-    const newRDF = await getFullRdfFromDeposit(item.config._deposit, true);
-    for (let k of Object.keys(newRDF)) {
-      if (k !== "config") {
-        item[k] = newRDF[k];
+  if (item.rdf_source) {
+    const response = await fetch(item.rdf_source);
+    if (response.ok) {
+      const yamlStr = await response.text();
+      const newRDF = yaml.load(yamlStr);
+      for (let k of Object.keys(newRDF)) {
+        if (k !== "config") {
+          item[k] = newRDF[k];
+        }
       }
+    } else {
+      throw new Error(`Oops, failed to fetch RDF file.`);
     }
   }
 }
@@ -424,8 +431,8 @@ function normalizeItem(self, item) {
   );
   item.apps = [];
 
-  if (item.config._deposit) {
-    if (item.config._deposit.owners.includes(self.userId)) {
+  if (item.owners) {
+    if (item.owners.includes(self.userId)) {
       item.apps.unshift({
         name: "Edit",
         icon: "pencil",
@@ -433,7 +440,7 @@ function normalizeItem(self, item) {
         run() {
           self.$router.push({
             name: "Update",
-            params: { updateDepositId: item.config._deposit.id }
+            params: { updateDepositId: item.id }
           });
         }
       });

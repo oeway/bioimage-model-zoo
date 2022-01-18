@@ -527,7 +527,10 @@ export default {
       });
       try {
         if (!this.client.credential) await this.login();
-        this.URI4Load = `${this.zenodoBaseURL}/record/${this.updateDepositId}`;
+        // example: updateDepositId=10.5281/zenodo.5850574
+        this.URI4Load = `${this.zenodoBaseURL}/record/${
+          this.updateDepositId.split("zenodo.")[1]
+        }`;
         await this.loadRdfFromURL(this.URI4Load);
       } catch (e) {
         alert("Failed to load resource: " + this.updateDepositId);

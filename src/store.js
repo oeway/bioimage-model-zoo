@@ -122,10 +122,10 @@ export const store = new Vuex.Store({
         typeof author === "string" ? { name: author } : author
       );
       item.config = item.config || {};
-      if (item.config._deposit) {
+      if (item.owners) {
         const userId = state.zenodoClient && state.zenodoClient.getUserId();
 
-        if (userId && item.config._deposit.owners.includes(userId)) {
+        if (userId && item.owners.includes(userId)) {
           if (!item.tags.includes("editable")) item.tags.push("editable");
         }
       }
