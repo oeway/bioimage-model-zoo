@@ -908,7 +908,6 @@ export default {
       }
 
       this.similarDeposits = await this.client.getResourceItems({
-        community: this.siteConfig.zenodo_config.community,
         sort: "bestmatch",
         query: this.rdf.name
       });
