@@ -392,7 +392,7 @@ function normalizeItem(self, item) {
   if (item.icon === "extension") item.icon = "puzzle";
 
   item.covers = item.covers.map(cover => {
-    if (!cover.startsWith("http")) {
+    if (!cover.startsWith("http") && item.root_url) {
       return encodeURI(concatAndResolveUrl(item.root_url, cover));
     } else {
       if (cover.includes(" ")) {
