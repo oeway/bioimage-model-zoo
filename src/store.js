@@ -129,8 +129,6 @@ export const store = new Vuex.Store({
           if (!item.tags.includes("editable")) item.tags.push("editable");
         }
       }
-      item.config._rdf_file =
-        item.config._rdf_file || item.rdf_source || item.source; // TODO: some resources current doesn't have a dedicated rdf_file
       if (
         item.type === "application" &&
         typeof item.source === "string" &&

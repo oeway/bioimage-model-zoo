@@ -28,7 +28,7 @@ function getAbsoluteUrl(baseUrl, c) {
 
 export async function getFullRdfFromDeposit(deposition, resolveUrl) {
   const rdf = depositionToRdf(deposition);
-  const response = await fetch(rdf.config._rdf_file);
+  const response = await fetch(rdf.rdf_source);
   if (response.ok) {
     const yamlStr = await response.text();
     const fullRdf = yaml.load(yamlStr);
@@ -101,11 +101,11 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       scheme: "url"
     });
   }
-  if (rdf.config._rdf_file) {
+  if (rdf.rdf_source) {
     // rdf.yaml or model.yaml
-    let rdf_file = rdf.config._rdf_file.startsWith("http")
-      ? rdf.config._rdf_file
-      : new URL(rdf.config._rdf_file, baseUrl).href;
+    let rdf_file = rdf.rdf_source.startsWith("http")
+      ? rdf.rdf_source
+      : new URL(rdf.rdf_source, baseUrl).href;
     // When we update an existing deposit, make sure we save the relative link
     if (rdf_file.startsWith("http") && rdf_file.includes("api/files")) {
       rdf_file = rdf_file.split("/");
@@ -119,7 +119,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       resource_type: "other",
       scheme: "url"
     });
-  } else throw new Error("`_rdf_file` key is not found in the RDF config");
+  } else throw new Error("`rdf_source` key is not found in the RDF");
 
   if (rdf.documentation) {
     if (rdf.documentation.includes("access_token="))
@@ -262,13 +262,12 @@ export function depositionToRdf(deposition) {
         : metadata.license.id, // sometimes it doesn't contain id
     documentation,
     covers,
-    source: rdfFile, //TODO: fix for other RDF types
     links,
+    rdf_source: rdfFile,
     config: {
       _doi: deposition.doi,
       _conceptdoi: deposition.conceptdoi,
-      _deposit: deposition,
-      _rdf_file: rdfFile
+      _deposit: deposition
     }
   };
 }

@@ -585,7 +585,7 @@ export default {
           throw new Error("Invalid rdf file: type key is not found");
         }
         rdf.config = rdf.config || {};
-        rdf.config._rdf_file = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
+        rdf.rdf_source = "./" + configFile.name; // assuming we will add the rdf.yaml/model.yaml to the zip
         if (rdf.type === "model") {
           rdf.links = rdf.links || [];
           rdf.links.push("imjoy/BioImageIO-Packager");
@@ -648,7 +648,7 @@ export default {
       });
       const rdf = yaml.load(rdfYaml);
       rdf.config = rdf.config || {};
-      rdf.config._rdf_file = "./" + file.name;
+      rdf.rdf_source = "./" + file.name;
       // make sure we reset the table
       this.jsonFields = null;
       setTimeout(() => {
@@ -799,7 +799,6 @@ export default {
               const rdf = yaml.load(yaml.dump(this.rdf));
               delete rdf._metadata;
               if (rdf?.config?._deposit) delete rdf.config._deposit;
-              if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
               console.log("RDF: ", rdf);
               const validator = await window.api.getPlugin(
                 "https://gist.githubusercontent.com/oeway/39505145f67253f4d0bf2c3bfcdc224c/raw/BIO-RDF-Validator.imjoy.html"
@@ -879,7 +878,6 @@ export default {
       const rdf = yaml.load(yaml.dump(this.rdf));
       delete rdf._metadata;
       if (rdf?.config?._deposit) delete rdf.config._deposit;
-      if (rdf?.config?._rdf_file) delete rdf.config._rdf_file;
       console.log("RDF: ", rdf);
 
       this.rdfYaml = yaml.dump(rdf);
