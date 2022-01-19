@@ -369,7 +369,7 @@ async function updateFullRDF(item) {
     if (response.ok) {
       const yamlStr = await response.text();
       const newRDF = yaml.load(yamlStr);
-      if(!newRDF.source){
+      if (!newRDF.source) {
         newRDF.source = newRDF.rdf_source || item.rdf_source;
       }
       for (let k of Object.keys(newRDF)) {
