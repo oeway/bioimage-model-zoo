@@ -369,10 +369,11 @@ async function updateFullRDF(item) {
     if (response.ok) {
       const yamlStr = await response.text();
       const newRDF = yaml.load(yamlStr);
+      if(!newRDF.source){
+        newRDF.source = newRDF.rdf_source || item.rdf_source;
+      }
       for (let k of Object.keys(newRDF)) {
-        if (k !== "config") {
-          item[k] = newRDF[k];
-        }
+        item[k] = newRDF[k];
       }
     } else {
       throw new Error(`Oops, failed to fetch RDF file.`);
