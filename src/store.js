@@ -44,7 +44,8 @@ export const store = new Vuex.Store({
     zenodoBaseURL,
     siteConfig,
     showNavbar: true,
-    devPlugins: []
+    devPlugins: [],
+    bioEngineReady: false
   },
   actions: {
     async toggleNavbar(context, enable) {
@@ -85,6 +86,10 @@ export const store = new Vuex.Store({
       }
     },
     async fetchResourceItems(context, { manifest_url, repo, transform }) {
+      if (context.state.loadedUrl === manifest_url) {
+        return;
+      }
+
       const response = await fetch(manifest_url + "?" + randId());
       const repo_manifest = JSON.parse(await response.text());
       if (
@@ -163,6 +168,9 @@ export const store = new Vuex.Store({
         if (transform) return transform(item);
         else return item;
       });
+    },
+    setBioEngineReady(state, isReady) {
+      state.bioEngineReady = !!isReady;
     }
   }
 });

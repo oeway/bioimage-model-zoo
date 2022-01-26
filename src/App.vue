@@ -77,7 +77,14 @@ export default {
     })
   },
   mounted() {
-    setupBioEngine();
+    setupBioEngine()
+      .then(() => {
+        this.$store.commit("setBioEngineReady", true);
+      })
+      .catch(e => {
+        console.error(e);
+        this.$store.commit("setBioEngineReady", false);
+      });
   }
 };
 </script>

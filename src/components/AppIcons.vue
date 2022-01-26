@@ -14,6 +14,7 @@
           target="_blank"
           @click="!app.url && app.run && app.run()"
           class="is-small action-btn"
+          :disabled="disabled"
         >
           <b-icon v-if="!app.icon" icon="puzzle" size="is-small"> </b-icon>
           <img
@@ -38,6 +39,10 @@ export default {
       default: null
     },
     enableHover: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     }

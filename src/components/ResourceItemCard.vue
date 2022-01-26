@@ -53,6 +53,7 @@
             <app-icons
               :apps="resourceItem.apps"
               :enableHover="!isTouchDevice"
+              :disabled="!bioEngineReady"
             ></app-icons>
           </div>
           <!-- <span class="authors" :title="affil(resourceItem.authors)">
@@ -115,6 +116,10 @@ export default {
     resourceItem: {
       type: Object,
       default: null
+    },
+    bioEngineReady: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
