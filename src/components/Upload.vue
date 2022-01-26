@@ -1093,6 +1093,7 @@ export default {
         }
         this.rdf.config = this.rdf.config || {};
         this.rdf.config._deposit = depositionInfo;
+        this.rdf.rdf_source = this.rdf.rdf_source || "rdf.yaml";
         const metadata = rdfToMetadata(this.rdf, baseUrl, docstring);
         // this will send a email request to the admin of bioimgae-io team
         if (this.requestedJoinCommunity) {
