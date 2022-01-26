@@ -801,7 +801,7 @@ export default {
               if (rdf?.config?._deposit) delete rdf.config._deposit;
               console.log("RDF: ", rdf);
               const validator = await window.api.getPlugin(
-                "https://gist.githubusercontent.com/oeway/39505145f67253f4d0bf2c3bfcdc224c/raw/BIO-RDF-Validator.imjoy.html"
+                "https://raw.githubusercontent.com/bioimage-io/spec-bioimage-io/main/scripts/bio-rdf-validator.imjoy.html"
               );
               const results = await validator.validate(rdf);
               if (!results.error) return "Validation passed!";
