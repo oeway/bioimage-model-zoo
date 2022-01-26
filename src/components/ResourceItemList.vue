@@ -14,6 +14,7 @@
             @show-info="showResourceItemInfo"
             @select-tag="$emit('select-tag', $event)"
             :resourceItem="item"
+            :bioEngineReady="bioEngineReady"
           ></resource-item-card>
         </div>
         <span
@@ -99,6 +100,7 @@
             width="30"
             field="apps"
             sortable
+            :disabled="!bioEngineReady"
           >
             <app-icons :apps="props.row.apps"></app-icons>
           </b-table-column>
@@ -157,6 +159,10 @@ export default {
     displayMode: {
       type: String,
       default: "card"
+    },
+    bioEngineReady: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

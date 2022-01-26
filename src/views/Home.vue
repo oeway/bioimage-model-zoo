@@ -154,6 +154,7 @@
       v-if="selectedItems"
       :allItems="selectedItems"
       :displayMode="screenWidth > 700 ? displayMode : 'card'"
+      :bioEngineReady="bioEngineReady"
     />
     <br />
 
@@ -373,7 +374,7 @@ async function updateFullRDF(item) {
         newRDF.source = newRDF.rdf_source || item.rdf_source;
       }
       for (let k of Object.keys(newRDF)) {
-        item[k] = newRDF[k];
+        if (k !== "rdf_source") item[k] = newRDF[k];
       }
     } else {
       throw new Error(`Oops, failed to fetch RDF file.`);
@@ -830,7 +831,8 @@ export default {
       allApps: state => state.allApps,
       zenodoClient: state => state.zenodoClient,
       siteConfig: state => state.siteConfig,
-      resourceItems: state => state.resourceItems
+      resourceItems: state => state.resourceItems,
+      bioEngineReady: state => state.bioEngineReady
     })
   },
   beforeDestroy() {
