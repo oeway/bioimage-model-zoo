@@ -334,7 +334,7 @@
           </p>
           <p v-if="requestedJoinCommunity">
             To be listed as part of the verified bioimage.io community list, a
-            notification will be sent to the admin team aand we will review
+            notification will be sent to the admin team and we will review
             request soon.
           </p>
         </b-notification>
