@@ -11,11 +11,8 @@
         aria-close-label="Close notification"
         role="alert"
       >
-        We are currently upgrading the website, to access all the previous
-        models, go to
-        <a href="https://deploy-preview-199--bioimage.netlify.app/#/"
-          >https://deploy-preview-199--bioimage.netlify.app/</a
-        >.
+        We are currently upgrading the website, more models will be available
+        soon!
       </b-notification>
       <div class="hero-body" style="position: relative;">
         <img
