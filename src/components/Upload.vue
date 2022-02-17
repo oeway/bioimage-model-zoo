@@ -767,6 +767,13 @@ export default {
           isRequired: false
         },
         {
+          label: "Source",
+          placeholder: "source",
+          value: this.rdf.source,
+          isRequired: false,
+          help: "The source url of your deposit (optional)"
+        },
+        {
           label: "Links",
           type: "tags",
           value: this.rdf.links,
