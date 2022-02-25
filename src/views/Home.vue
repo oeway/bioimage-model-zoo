@@ -533,7 +533,7 @@ function normalizeItem(self, item) {
   if (item.links) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter(
-        item => (version_id ? id === link_key.toLowerCase() : id.includes(link_key.toLowerCase()))
+        item => (is_version_id ? id === link_key.toLowerCase() : id.includes(link_key.toLowerCase()))
       );
       for (let lit of linked.slice(0, 1)) {
         item.apps.unshift({
