@@ -2,7 +2,7 @@
 // for example: https://bioimage.netlify.app/.netlify/functions/bioimageiobot?action=notify&source=https://zenodo.org/api/files/3f422e1b-a64e-40d3-89d1-29038d2f405d/rdf.yaml
 const request = require('request');
 const yaml = require('js-yaml');
-const workflowId = "auto_update_main.yaml"
+const workflowId = "update_collection.yaml"
 
 const cors_headers = {
     'Access-Control-Allow-Origin': 'https://bioimage.io',
