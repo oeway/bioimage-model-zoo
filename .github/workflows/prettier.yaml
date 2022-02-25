@@ -17,9 +17,10 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
 
+      - run: ls
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
           # This part is also where you can pass other options, for example:
-          prettier_options: "--write \"{src,tests}/**/**\""
+          prettier_options: --write {src,tests}/**/**
 #          only_changed: True
