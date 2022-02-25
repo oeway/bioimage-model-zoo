@@ -23,41 +23,41 @@ export default {
   props: {
     baseUrl: {
       type: String,
-      default: ""
+      default: "",
     },
     content: {
       type: String,
-      default: null
+      default: null,
     },
     url: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       docs: null,
-      loading: false
+      loading: false,
     };
   },
   created() {
     //open link in a new tab
     const renderer = new marked.Renderer();
-    renderer.link = function(href, title, text) {
+    renderer.link = function (href, title, text) {
       var link = marked.Renderer.prototype.link.call(this, href, title, text);
       return link.replace("<a", "<a target='_blank' ");
     };
-    renderer.image = function(href, title, text) {
+    renderer.image = function (href, title, text) {
       var link = marked.Renderer.prototype.image.call(this, href, title, text);
       return link.replace("/./", "/");
     };
     marked.setOptions({
       renderer: renderer,
-      highlight: function(code) {
+      highlight: function (code) {
         return hljs.highlightAuto(code).value;
-      }
+      },
     });
-    DOMPurify.addHook("afterSanitizeAttributes", function(node) {
+    DOMPurify.addHook("afterSanitizeAttributes", function (node) {
       // set all elements owning target to target=_blank
       if ("target" in node) {
         node.setAttribute("target", "_blank");
@@ -67,27 +67,27 @@ export default {
     });
   },
   watch: {
-    content: function(newContent) {
+    content: function (newContent) {
       this.docs = DOMPurify.sanitize(
         replaceAllRelByAbs(marked(newContent), this.baseUrl)
       );
       this.loading = false;
     },
-    baseUrl: function(newBaseUrl) {
+    baseUrl: function (newBaseUrl) {
       this.baseUrl = newBaseUrl;
 
       this.docs = DOMPurify.sanitize(
         replaceAllRelByAbs(marked(this.content), this.baseUrl)
       );
     },
-    url: function(newUrl) {
+    url: function (newUrl) {
       if (!newUrl) return;
       this.showDocsUrl(newUrl);
-    }
+    },
   },
   mounted() {
     marked.setOptions({
-      baseUrl: this.baseUrl
+      baseUrl: this.baseUrl,
     });
     if (this.content)
       this.docs = DOMPurify.sanitize(
@@ -126,8 +126,8 @@ export default {
       } finally {
         this.loading = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped></style>

@@ -23,7 +23,7 @@
         </b-carousel>
         <img
           v-else
-          style="background-color: black;width: 100%;height:160px;"
+          style="background-color: black; width: 100%; height: 160px"
           class="cover-image"
         />
       </div>
@@ -35,14 +35,14 @@
           >
             <img
               v-if="icon.type === 'img'"
-              style="border-radius: 4px; background: #ffffffd0;"
+              style="border-radius: 4px; background: #ffffffd0"
               class="item-icon"
               :src="icon.src"
             />
             <img
               v-else-if="icon.type === 'animal'"
               class="item-icon"
-              style="border-radius: 50%;background: #167cf0b8;"
+              style="border-radius: 50%; background: #167cf0b8"
               :src="'/static/anonymousAnimals/' + icon.src + '.png'"
             />
             <b-icon v-else class="item-icon" :icon="icon.src" />
@@ -66,13 +66,13 @@
           <p class="resource-item-description" v-if="resourceItem.description">
             {{
               resourceItem.description.slice(0, 64) +
-                (resourceItem.description.length > 64 ? "..." : "")
+              (resourceItem.description.length > 64 ? "..." : "")
             }}
           </p>
-          <span style="margin-top:3px;display: block;">
+          <span style="margin-top: 3px; display: block">
             <span v-for="t in resourceItem.tags.slice(0, 4)" :key="t">
               <b-tag
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 rounded
                 @click.native="selectTag(t)"
                 >{{ t }}</b-tag
@@ -80,7 +80,7 @@
             </span>
             <span v-if="resourceItem.tags.length > 4">
               <b-tag
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 rounded
                 @click.native="showResourceItemInfo"
                 >...</b-tag
@@ -101,7 +101,7 @@ import AppIcons from "./AppIcons";
 import { anonymousAnimals } from "../utils";
 import DevMenu from "./DevMenu.vue";
 
-const isTouchDevice = (function() {
+const isTouchDevice = (function () {
   try {
     document.createEvent("TouchEvent");
     return true;
@@ -115,29 +115,29 @@ export default {
   props: {
     resourceItem: {
       type: Object,
-      default: null
+      default: null,
     },
     bioEngineReady: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      isTouchDevice: isTouchDevice
+      isTouchDevice: isTouchDevice,
     };
   },
   components: {
     badges: Badges,
     "app-icons": AppIcons,
-    "dev-menu": DevMenu
+    "dev-menu": DevMenu,
   },
   computed: {
-    boxShadow: function() {
+    boxShadow: function () {
       const color = this.colorMap[this.resourceItem.type] || "rgba(0,0,0,.2)";
       return `0 3px 1px -2px ${color}, 0 2px 2px 0 ${color}, 0 1px 5px 0 rgba(0,0,0,.12)`;
     },
-    icon: function() {
+    icon: function () {
       if (this.resourceItem.icon) {
         if (this.resourceItem.icon.startsWith("http")) {
           return { type: "img", src: this.resourceItem.icon };
@@ -145,7 +145,7 @@ export default {
         if (anonymousAnimals.indexOf(this.resourceItem.icon) >= 0) {
           return {
             type: "animal",
-            src: this.resourceItem.icon
+            src: this.resourceItem.icon,
           };
         } else {
           return { type: "material", src: this.resourceItem.icon };
@@ -159,13 +159,13 @@ export default {
         const selectedIcon = anonymousAnimals[sum % anonymousAnimals.length];
         return {
           type: "animal",
-          src: selectedIcon
+          src: selectedIcon,
         };
       }
     },
     ...mapState({
-      siteConfig: state => state.siteConfig
-    })
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   created() {
     this.colorMap = {};
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     etAl(authors) {
-      authors = authors.map(author => {
+      authors = authors.map((author) => {
         return author.name.split(";")[0];
       });
       if (authors.length < 3) {
@@ -185,7 +185,7 @@ export default {
       }
     },
     affil(authors) {
-      const affliations = authors.map(author => {
+      const affliations = authors.map((author) => {
         return author.affiliation;
       });
       return Array.from(new Set(affliations)).join("; ");
@@ -195,8 +195,8 @@ export default {
     },
     selectTag(tag) {
       this.$emit("select-tag", tag);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

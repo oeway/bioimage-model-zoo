@@ -26,9 +26,9 @@ export default {
   props: ["resourceItem"],
   computed: {
     ...mapState({
-      devPlugins: state => state.devPlugins,
-      resourceItems: state => state.resourceItems
-    })
+      devPlugins: (state) => state.devPlugins,
+      resourceItems: (state) => state.resourceItems,
+    }),
   },
   methods: {
     async runPlugin(plugin) {
@@ -37,18 +37,18 @@ export default {
           config: {
             referer: window.location.href,
             mode: "one",
-            type: "bioengine"
+            type: "bioengine",
           },
-          data: this.resourceItem
+          data: this.resourceItem,
         });
       } else {
         await plugin.api.run({
           config: {
             referer: window.location.href,
             mode: "all",
-            type: "bioengine"
+            type: "bioengine",
           },
-          data: this.resourceItems
+          data: this.resourceItems,
         });
       }
     },
@@ -56,7 +56,7 @@ export default {
       if (enable)
         this.loadingComponent = this.$buefy.loading.open({
           canCancel: true,
-          container: this.$el
+          container: this.$el,
         });
       else {
         if (this.loadingComponent) {
@@ -64,8 +64,8 @@ export default {
           this.loadingComponent = null;
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

@@ -4,7 +4,7 @@
       {{ item.label }}
       <span
         class="helpLabel has-text-grey-light is-size-7 is-italic"
-        style="margin-left: .5rem;font-weight: 400;"
+        style="margin-left: 0.5rem; font-weight: 400"
         >{{ item.help }}</span
       >
       <sup
@@ -42,7 +42,7 @@
           </b-input>
           <b-button
             v-if="value.length > 1"
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button"
             icon-left="delete"
             @click="removeCitation(citation)"
@@ -50,9 +50,9 @@
           <b-button
             v-if="
               i === value.length - 1 &&
-                !(!citation.text || citation.text === '')
+              !(!citation.text || citation.text === '')
             "
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button"
             icon-left="plus"
             @click="addNewCitation"
@@ -71,16 +71,16 @@ export default {
   props: {
     error: {
       type: String,
-      default: null
+      default: null,
     },
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     value: undefined,
-    filteredTags: []
+    filteredTags: [],
   }),
   mounted() {
     this.filteredTags = this.item.options;
@@ -94,7 +94,7 @@ export default {
       this.value.push({
         text: "",
         doi: "",
-        url: ""
+        url: "",
       });
     }
     this.commitValue();
@@ -120,8 +120,8 @@ export default {
         this.value.splice(index, 1);
       }
       this.commitValue();
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

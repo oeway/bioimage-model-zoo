@@ -35,9 +35,9 @@ export default {
   props: {
     badges: {
       type: Array,
-      default: null
-    }
-  }
+      default: null,
+    },
+  },
 };
 </script>
 <style scoped>

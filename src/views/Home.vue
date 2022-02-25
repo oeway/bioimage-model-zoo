@@ -3,7 +3,7 @@
     <!-- Header -->
     <section
       class="hero is-link is-fullheight is-fullheight-with-navbar"
-      style="max-height: 1024px!important;height:100%;min-height:640px;"
+      style="max-height: 1024px !important; height: 100%; min-height: 640px"
     >
       <b-notification
         type="is-warning"
@@ -14,7 +14,7 @@
         We are currently upgrading the website, more models will be available
         soon!
       </b-notification>
-      <div class="hero-body" style="position: relative;">
+      <div class="hero-body" style="position: relative">
         <img
           class="background-img"
           v-if="selectedPartner"
@@ -23,14 +23,14 @@
         <img class="background-img" v-else :src="siteConfig.background_image" />
         <partners-component
           v-if="partners"
-          style="position: absolute;bottom: 0px;"
+          style="position: absolute; bottom: 0px"
           :partners="partners"
           @switchPartner="switchPartner"
         ></partners-component>
 
         <div
           class="container"
-          style="margin-bottom: 100px;"
+          style="margin-bottom: 100px"
           v-if="selectedPartner"
         >
           <h1 class="title is-1">
@@ -51,20 +51,20 @@
           <b-button
             v-if="selectedPartner.about_url"
             rounded
-            style="text-transform:none;"
+            style="text-transform: none"
             @click="showAboutPartner(selectedPartner)"
           >
             <span class="explore-btn">About</span></b-button
           >
           &nbsp;
-          <b-button rounded style="text-transform:none;" @click="enter">
+          <b-button rounded style="text-transform: none" @click="enter">
             <span class="explore-btn">{{
               selectedPartner.explore_button_text
             }}</span></b-button
           >
         </div>
 
-        <div class="container" style="margin-bottom: 100px;" v-else>
+        <div class="container" style="margin-bottom: 100px" v-else>
           <h1 class="title is-1">
             {{ siteConfig.splash_title }}
           </h1>
@@ -80,7 +80,7 @@
             </li>
           </ul>
           <br />
-          <b-button rounded style="text-transform:none;" @click="enter">
+          <b-button rounded style="text-transform: none" @click="enter">
             <span class="explore-btn">{{
               siteConfig.explore_button_text
             }}</span></b-button
@@ -91,19 +91,19 @@
 
     <span ref="search_anchor"></span>
     <br />
-    <section style="margin-top: -30px;opacity: 0.6;">
+    <section style="margin-top: -30px; opacity: 0.6">
       <b-progress :value="progress"></b-progress>
     </section>
     <br />
     <div
       class="container"
       v-if="resourceCategories.length > 1"
-      style="text-align:center;"
+      style="text-align: center"
     >
       <b-tooltip label="List all items" position="is-bottom">
         <div
           class="item-lists is-link"
-          style="width:30px; margin-left: -16px;border-bottom-color: gray;"
+          style="width: 30px; margin-left: -16px; border-bottom-color: gray"
           @click="
             selectedCategory = null;
             updateQueryTags();
@@ -166,7 +166,7 @@
           <b-tooltip :label="item.tooltip" position="is-top"
             ><a :href="item.url" target="_blank">
               <figure>
-                <img :src="item.logo" style="max-height: 55px;" />
+                <img :src="item.logo" style="max-height: 55px" />
                 <figcaption class="hide-on-small-screen">
                   {{ item.label }}
                 </figcaption>
@@ -188,7 +188,7 @@
       :minWidth="200"
       :minHeight="150"
       :fullscreen="dialogWindowConfig.fullscreen"
-      style="max-width: 100%; max-height:100%;z-index: 9999;"
+      style="max-width: 100%; max-height: 100%; z-index: 9999"
       draggable=".drag-handle"
       :scrollable="true"
     >
@@ -198,11 +198,11 @@
         :class="{ 'drag-handle': !isTouchDevice }"
         class="dialog-header"
       >
-        <div style="position: absolute; left:2px; margin-top: -1px;">
+        <div style="position: absolute; left: 2px; margin-top: -1px">
           <button
             @click="closeDialogWindow(selectedDialogWindow)"
             class="noselect dialog-control-button"
-            style="background:#ff0000c4;"
+            style="background: #ff0000c4"
           >
             x
           </button>
@@ -210,7 +210,7 @@
             v-if="screenWidth > 700"
             @click="minimizeDialogWindow()"
             class="noselect dialog-control-button"
-            style="background:#00cdff61;"
+            style="background: #00cdff61"
           >
             -
           </button>
@@ -218,7 +218,7 @@
             v-if="screenWidth > 700"
             @click="maximizeDialogWindow()"
             class="noselect dialog-control-button"
-            style="background:#00cdff61;"
+            style="background: #00cdff61"
           >
             {{ dialogWindowConfig.fullscreen ? "=" : "+" }}
           </button>
@@ -229,12 +229,16 @@
 
         <b-dropdown
           aria-role="list"
-          style="position:absolute;right:1px;"
+          style="position: absolute; right: 1px"
           position="is-bottom-left"
         >
           <button
             class="button"
-            style="background: rgba(0, 205, 255, 0.38);color:white;width:34px;"
+            style="
+              background: rgba(0, 205, 255, 0.38);
+              color: white;
+              width: 34px;
+            "
             slot="trigger"
           >
             <b-icon icon="dots-horizontal"></b-icon>
@@ -253,12 +257,12 @@
         <div
           :key="wdialog.window_id"
           v-show="wdialog === selectedDialogWindow"
-          style="height: calc(100% - 18px);"
+          style="height: calc(100% - 18px)"
         >
           <div
             :id="wdialog.window_id"
             class="noselect"
-            style="width: 100%;height: 100%;"
+            style="width: 100%; height: 100%"
           ></div>
         </div>
       </template>
@@ -270,7 +274,7 @@
       :minHeight="150"
       :height="600"
       :width="800"
-      style="max-width:100%;max-height:100%;"
+      style="max-width: 100%; max-height: 100%"
       :fullscreen="infoDialogFullscreen"
       draggable=".drag-handle"
       :scrollable="true"
@@ -280,11 +284,11 @@
         :class="{ 'drag-handle': !isTouchDevice }"
         class="dialog-header"
       >
-        <div style="position: absolute; left:2px; margin-top: -1px;">
+        <div style="position: absolute; left: 2px; margin-top: -1px">
           <button
             @click="closeInfoWindow()"
             class="noselect dialog-control-button"
-            style="background:#ff0000c4;"
+            style="background: #ff0000c4"
           >
             x
           </button>
@@ -292,7 +296,7 @@
             v-if="screenWidth > 700"
             @click="maximizeInfoWindow()"
             class="noselect dialog-control-button"
-            style="background:#00cdff61;"
+            style="background: #00cdff61"
           >
             {{ infoDialogFullscreen ? "=" : "+" }}
           </button>
@@ -342,17 +346,17 @@ const DEFAULT_ICONS = {
   notebook: "notebook-outline",
   dataset: "database",
   application: "puzzle",
-  model: "hubspot"
+  model: "hubspot",
 };
 import { setupDevMenu, runAppForItem, runAppForAllItems } from "../bioEngine";
 import { concatAndResolveUrl, debounce } from "../utils";
 
 function titleCase(str) {
-  return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function(t) {
+  return str.replace(/_/g, " ").replace(/(^|\s)\S/g, function (t) {
     return t.toUpperCase();
   });
 }
-const isTouchDevice = (function() {
+const isTouchDevice = (function () {
   try {
     document.createEvent("TouchEvent");
     return true;
@@ -389,7 +393,7 @@ function normalizeItem(self, item) {
   }
   if (item.icon === "extension") item.icon = "puzzle";
 
-  item.covers = item.covers.map(cover => {
+  item.covers = item.covers.map((cover) => {
     if (!cover.startsWith("http") && item.root_url) {
       return encodeURI(concatAndResolveUrl(item.root_url, cover));
     } else {
@@ -412,21 +416,21 @@ function normalizeItem(self, item) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
   if (item.tags) {
-    item.tags = item.tags.filter(tag => {
+    item.tags = item.tags.filter((tag) => {
       return (
         typeof tag === "string" && !self.siteConfig.excluded_tags.includes(tag)
       );
     });
     item.allLabels = item.allLabels.concat(
       item.tags
-        .filter(tag => typeof tag === "string")
-        .map(tag => tag.toLowerCase())
+        .filter((tag) => typeof tag === "string")
+        .map((tag) => tag.toLowerCase())
     );
   }
 
   // make it lower case and remove duplicates
   item.allLabels = Array.from(
-    new Set(item.allLabels.map(label => label.toLowerCase()))
+    new Set(item.allLabels.map((label) => label.toLowerCase()))
   );
   item.apps = [];
 
@@ -439,9 +443,9 @@ function normalizeItem(self, item) {
         run() {
           self.$router.push({
             name: "Update",
-            params: { updateDepositId: item.id }
+            params: { updateDepositId: item.id },
           });
-        }
+        },
       });
     }
   }
@@ -458,9 +462,9 @@ function normalizeItem(self, item) {
         hasIcon: true,
         icon: "share",
         message: `Here is the URL for sharing ${item.name}: <br> <code>${window.location.href}</code>`,
-        confirmText: "OK"
+        confirmText: "OK",
       });
-    }
+    },
   });
 
   if (item.config && item.rdf_source)
@@ -470,21 +474,21 @@ function normalizeItem(self, item) {
       show_on_hover: true,
       run() {
         self.showSource(item);
-      }
+      },
     });
   if (item.download_url)
     item.apps.unshift({
       name: "Download",
       icon: "download",
       url: item.download_url,
-      show_on_hover: true
+      show_on_hover: true,
     });
   if (item.git_repo)
     item.apps.unshift({
       name: "Git Repository",
       icon: "github",
       url: item.git_repo,
-      show_on_hover: true
+      show_on_hover: true,
     });
 
   if (item.type === "application") {
@@ -494,7 +498,7 @@ function normalizeItem(self, item) {
         icon: "play",
         run() {
           runAppForAllItems(self, self.allApps[item.id], self.resourceItems);
-        }
+        },
       });
     } else if (
       item.tags.includes("colab") &&
@@ -517,7 +521,7 @@ function normalizeItem(self, item) {
           icon: "play",
           run() {
             window.open(item.config._colab_url);
-          }
+          },
         });
       } else {
         console.warn(
@@ -559,7 +563,7 @@ function normalizeItem(self, item) {
   item.badges = item.badges || [];
   item.attachments = item.attachments || {};
   const linkedItems = self.resourceItems.filter(
-    m => m.links && m.links.includes(item.id)
+    (m) => m.links && m.links.includes(item.id)
   );
   for (let it of linkedItems) {
     if (item.attachments[it.type]) item.attachments[it.type].push(it);
@@ -575,7 +579,7 @@ function normalizeItem(self, item) {
         ext_type: "is-primary",
         run() {
           self.showAttachmentsDialog(item, att_name);
-        }
+        },
       });
     }
   }
@@ -585,7 +589,7 @@ function normalizeItem(self, item) {
       label: "license",
       ext: item.license,
       ext_type: "is-info",
-      url: spdxLicenseList[item.license] && spdxLicenseList[item.license].url
+      url: spdxLicenseList[item.license] && spdxLicenseList[item.license].url,
     });
   }
 
@@ -596,7 +600,7 @@ function normalizeItem(self, item) {
       ext: item.stats.downloads,
       run() {
         self.showStatsDialog(item);
-      }
+      },
     });
 
   if (item.config && item.config._conceptdoi) {
@@ -606,7 +610,7 @@ function normalizeItem(self, item) {
       label_short: self.zenodoClient.isSandbox ? "Zenodo" : "DOI",
       url: self.zenodoClient.isSandbox
         ? `${item.config._deposit.links.html}`
-        : `https://doi.org/${item.config._conceptdoi}`
+        : `https://doi.org/${item.config._conceptdoi}`,
     });
   }
   if (item.type === "model" && item.co2) {
@@ -618,7 +622,7 @@ function normalizeItem(self, item) {
         alert(
           `SAVE THE EARTH: The carbon footprint for training this model is around ${item.co2} lbs, reusing existing models can help save the earth from climate change.`
         );
-      }
+      },
     });
   }
   if (item.error) {
@@ -633,7 +637,7 @@ function normalizeItem(self, item) {
             "This model failed the specification checks, here are the errors: \n" +
               JSON.stringify(item.error.spec, null, "  ")
           );
-        }
+        },
       });
     } else {
       item.badges.unshift({
@@ -643,7 +647,7 @@ function normalizeItem(self, item) {
         ext_type: "is-success",
         run() {
           alert("🎉 This model passed the specification checks!");
-        }
+        },
       });
     }
   }
@@ -660,7 +664,7 @@ export default {
     "comment-box": CommentBox,
     "attachments-component": AttachmentsComponent,
     "markdown-component": MarkdownComponent,
-    "partners-component": PartnersComponent
+    "partners-component": PartnersComponent,
   },
   data() {
     return {
@@ -675,7 +679,7 @@ export default {
         width: "800px",
         height: "670px",
         draggable: true,
-        fullscreen: false
+        fullscreen: false,
       },
       dialogWindows: [],
       selectedWindowsStack: [],
@@ -691,10 +695,10 @@ export default {
       selectedCategory: null,
       displayMode: "card",
       currentTags: [],
-      selectedPartner: null
+      selectedPartner: null,
     };
   },
-  mounted: async function() {
+  mounted: async function () {
     this.resourceId = this.resourceId && this.resourceId.toLowerCase();
     window.addEventListener("resize", this.updateSize);
     window.dispatchEvent(new Event("resize"));
@@ -741,12 +745,12 @@ export default {
         manifest_url,
         transform(item) {
           return normalizeItem(self, item);
-        }
+        },
       });
 
       const tp = this.selectedCategory && this.selectedCategory.type;
       this.selectedItems = tp
-        ? this.resourceItems.filter(m => m.type === tp)
+        ? this.resourceItems.filter((m) => m.type === tp)
         : this.resourceItems;
 
       // get id from component props
@@ -754,7 +758,7 @@ export default {
         if (this.resourceId.startsWith("zenodo:")) {
           const zenodoId = parseInt(this.resourceId.split(":")[1]);
           const matchedItem = this.resourceItems.filter(
-            item =>
+            (item) =>
               item.config &&
               item.config._deposit &&
               (item.config._deposit.id === zenodoId ||
@@ -782,36 +786,36 @@ export default {
     userId() {
       return this.zenodoClient && this.zenodoClient.getUserId();
     },
-    partners: function() {
+    partners: function () {
       return (
         this.siteConfig.partners &&
         this.siteConfig.partners.concat([
           {
             isJoinButton: true,
             name: "Join Community Partners",
-            icon: "/static/img/plus-sign.png"
-          }
+            icon: "/static/img/plus-sign.png",
+          },
         ])
       );
     },
-    resourceCategories: function() {
+    resourceCategories: function () {
       if (this.selectedPartner)
-        return this.siteConfig.resource_categories.filter(list =>
+        return this.siteConfig.resource_categories.filter((list) =>
           this.selectedPartner.resource_types.includes(list.type)
         );
       else return this.siteConfig.resource_categories;
     },
-    fullLabelList: function() {
+    fullLabelList: function () {
       const fullLabelList = [];
       if (this.resourceItems) {
         const tp = this.selectedCategory && this.selectedCategory.type;
         const items = tp
-          ? this.resourceItems.filter(m => m.type === tp)
+          ? this.resourceItems.filter((m) => m.type === tp)
           : this.resourceItems;
         for (let item of items) {
           // TODO: why item.allLabels can be empty sometimes?
           if (item.allLabels)
-            item.allLabels.forEach(label => {
+            item.allLabels.forEach((label) => {
               if (fullLabelList.indexOf(label) === -1) {
                 fullLabelList.push(label.toLowerCase());
               }
@@ -821,7 +825,7 @@ export default {
       fullLabelList.sort((a, b) => (a < b ? -1 : 1));
       return Array.from(new Set(fullLabelList));
     },
-    tagCategories: function() {
+    tagCategories: function () {
       if (this.selectedCategory) {
         return this.selectedCategory && this.selectedCategory.tag_categories;
       } else {
@@ -833,12 +837,12 @@ export default {
       }
     },
     ...mapState({
-      allApps: state => state.allApps,
-      zenodoClient: state => state.zenodoClient,
-      siteConfig: state => state.siteConfig,
-      resourceItems: state => state.resourceItems,
-      bioEngineReady: state => state.bioEngineReady
-    })
+      allApps: (state) => state.allApps,
+      zenodoClient: (state) => state.zenodoClient,
+      siteConfig: (state) => state.siteConfig,
+      resourceItems: (state) => state.resourceItems,
+      bioEngineReady: (state) => state.bioEngineReady,
+    }),
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateSize);
@@ -1020,13 +1024,13 @@ export default {
         this.$buefy.dialog.alert({
           title: "About " + partner.name,
           message: partner.description,
-          confirmText: "OK"
+          confirmText: "OK",
         });
       } else {
         this.$buefy.dialog.alert({
           title: "Oops, no details about " + partner.name,
           message: "This partner is did not provide any details!",
-          confirmText: "OK"
+          confirmText: "OK",
         });
       }
     },
@@ -1049,7 +1053,7 @@ export default {
           hasIcon: true,
           icon: "code-tags",
           message: item.rdf_source,
-          confirmText: "OK"
+          confirmText: "OK",
         });
       }
     },
@@ -1123,7 +1127,7 @@ export default {
       }
       if (this.$route.query.id) {
         const m = this.resourceItems.filter(
-          item => item.id === this.$route.query.id
+          (item) => item.id === this.$route.query.id
         )[0];
         if (m) {
           this.showResourceItemInfo(m);
@@ -1152,7 +1156,7 @@ export default {
         if (this.$route.query.type === "all") this.selectedCategory = null;
         else
           this.selectedCategory = this.resourceCategories.filter(
-            item => item.type === this.$route.query.type
+            (item) => item.type === this.$route.query.type
           )[0];
 
         hasQuery = true;
@@ -1161,7 +1165,7 @@ export default {
       if (this.$route.query.partner) {
         if (this.siteConfig.partners) {
           this.selectedPartner = this.siteConfig.partners.filter(
-            p => p.id === this.$route.query.partner
+            (p) => p.id === this.$route.query.partner
           )[0];
           if (this.selectedPartner) {
             this.$nextTick(() => {
@@ -1191,24 +1195,24 @@ export default {
       duration = duration || 5000;
       const data = {
         message: message.slice(0, 200),
-        onAction: function() {},
+        onAction: function () {},
         actionText: "Close",
         duration: duration,
-        queue: false
+        queue: false,
       };
       this.$buefy.snackbar.open(data);
     },
     showWindowDialog() {},
     closeWindowDialog() {},
     getLabelCount(label) {
-      return this.filteredModels.filter(models =>
+      return this.filteredModels.filter((models) =>
         models.allLabels.includes(label)
       ).length;
     },
     getModelsCount() {
       return this.filteredModels.length;
-    }
-  }
+    },
+  },
 };
 </script>
 

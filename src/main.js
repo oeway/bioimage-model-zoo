@@ -15,10 +15,10 @@ import { messages } from "vee-validate/dist/locale/en.json";
 // for vue-form-json
 Vue.component("ValidationProvider", ValidationProvider);
 
-Object.keys(rules).forEach(rule => {
+Object.keys(rules).forEach((rule) => {
   extend(rule, {
     ...rules[rule],
-    message: messages[rule]
+    message: messages[rule],
   });
 });
 
@@ -30,6 +30,6 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
-  render: h => h(App),
-  store
+  render: (h) => h(App),
+  store,
 }).$mount("#app");

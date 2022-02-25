@@ -51,17 +51,17 @@ export async function setupBioEngine() {
       menu_style: {},
       window_style: {
         width: "100%",
-        height: "100%"
+        height: "100%",
       },
       main_container: null,
       menu_container: "imjoy-menu",
       window_manager_container: devMode ? "window-container" : null,
-      imjoy_api: {} // override some imjoy API functions here
+      imjoy_api: {}, // override some imjoy API functions here
     })
-    .then(async app => {
+    .then(async (app) => {
       // get the api object from the root plugin
       const api = app.imjoy.api;
-      app.$on("window-size-pos-changing", changing => {
+      app.$on("window-size-pos-changing", (changing) => {
         const iframes = document.querySelectorAll(".reveal iframe");
         for (let iframe of iframes) {
           iframe.style.pointerEvents = changing ? "none" : "all";
@@ -76,7 +76,7 @@ export async function setupBioEngine() {
             "https://github.com/imjoy-team/imjoy-plugins/blob/master/repository/ImageAnnotator.imjoy.html"
           );
           if (uri) app.loadPlugin(uri);
-        }
+        },
       });
       // expose global variables
       window.api = api;
@@ -91,8 +91,7 @@ export async function setupBioEngine() {
       // });
       app.imjoy.pm
         .reloadPluginRecursively({
-          uri:
-            "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
+          uri: "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html",
         })
         .then(() => {
           // debugger
@@ -102,10 +101,9 @@ export async function setupBioEngine() {
       app.imjoy.pm
         .reloadPluginRecursively({
           // uri: "http://localhost:9090/Jupyter-Engine-Manager.imjoy.html"
-          uri:
-            "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html"
+          uri: "https://imjoy-team.github.io/jupyter-engine-manager/Jupyter-Engine-Manager.imjoy.html",
         })
-        .then(enginePlugin => {
+        .then((enginePlugin) => {
           const engine = urlParams.get("engine");
           const spec = urlParams.get("spec");
           if (engine) {
@@ -113,12 +111,12 @@ export async function setupBioEngine() {
               .createEngine({
                 name: "MyCustomEngine",
                 nbUrl: engine,
-                url: engine.split("?")[0]
+                url: engine.split("?")[0],
               })
               .then(() => {
                 console.log("Jupyter Engine connected!");
               })
-              .catch(e => {
+              .catch((e) => {
                 console.error("Failed to connect to Jupyter Engine", e);
               });
           } else {
@@ -126,12 +124,12 @@ export async function setupBioEngine() {
               .createEngine({
                 name: "MyBinder Engine",
                 url: "https://mybinder.org",
-                spec: spec || "oeway/imjoy-binder-image/master"
+                spec: spec || "oeway/imjoy-binder-image/master",
               })
               .then(() => {
                 console.log("Binder Engine connected!");
               })
-              .catch(e => {
+              .catch((e) => {
                 console.error("Failed to connect to MyBinder Engine", e);
               });
           }
@@ -140,10 +138,10 @@ export async function setupBioEngine() {
         label: "ℹ️ Github",
         callback() {
           window.open("https://github.com/bioimage-io/bioimage.io");
-        }
+        },
       });
     })
-    .catch(e => {
+    .catch((e) => {
       console.error(e);
       rejectImJoy();
     });
@@ -157,13 +155,13 @@ export async function setupDevMenu(updateDevMenu) {
   await imjoyReady;
   const app = window.app;
   app.loadPlugin("https://if.imjoy.io").then(() => {
-    app.imjoy.event_bus.on("plugin_loaded", plugin => {
+    app.imjoy.event_bus.on("plugin_loaded", (plugin) => {
       updateDevMenu("add", plugin);
     });
-    app.imjoy.event_bus.on("plugin_unloaded", plugin => {
+    app.imjoy.event_bus.on("plugin_unloaded", (plugin) => {
       updateDevMenu("remove", plugin);
     });
-    app.imjoy.event_bus.on("add_window", w => {
+    app.imjoy.event_bus.on("add_window", (w) => {
       window.scrollTo(0, 0);
       setTimeout(() => {
         if (!w.dialog) {
@@ -187,7 +185,7 @@ export async function runAppForAllItems(context, config, allItems) {
     const plugin = await window.api.getPlugin({ src: config.source });
     await plugin.run({
       config: { referer: window.location.href, mode: "all", type: "bioengine" },
-      data: allItems
+      data: allItems,
     });
     context.showLoader(false);
   } catch (e) {
@@ -209,7 +207,7 @@ export async function runAppForItem(context, config, item) {
     const plugin = await window.api.getPlugin({ src: config.source });
     await plugin.run({
       config: { referer: window.location.href, mode: "one", type: "bioengine" },
-      data: item
+      data: item,
     });
   } catch (e) {
     console.error(e);

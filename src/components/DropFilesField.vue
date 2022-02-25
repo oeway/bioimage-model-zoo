@@ -32,7 +32,7 @@
                 >
                   {{
                     file.name.slice(0, 20) +
-                      (file.name.length > 20 ? "..." : "")
+                    (file.name.length > 20 ? "..." : "")
                   }}
                   <button
                     class="delete is-small"
@@ -64,15 +64,15 @@ export default {
   props: {
     error: {
       type: String,
-      default: null
+      default: null,
     },
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
-    value: undefined
+    value: undefined,
   }),
   created() {
     this.value = this.item.value;
@@ -97,7 +97,7 @@ export default {
       if (!str) return str;
       if (typeof str === "object") str = str.toString();
       return str.length > length ? str.substring(0, length) + "..." : str;
-    }
-  }
+    },
+  },
 };
 </script>

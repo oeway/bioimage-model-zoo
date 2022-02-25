@@ -5,7 +5,7 @@
       height: !client.credential ? 'calc(100vh - 70px)' : '',
       'background-image': !client.credential
         ? 'url(' + siteConfig.background_image + ')'
-        : null
+        : null,
     }"
   >
     <b-notification
@@ -23,7 +23,7 @@
       storage of your data.
     </b-notification>
     <b-steps
-      style="margin-top: 20px;"
+      style="margin-top: 20px"
       position="left"
       :has-navigation="false"
       v-model="stepIndex"
@@ -37,7 +37,7 @@
           expanded
         >
           <b-button
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-fullwidth is-primary"
             @click="login()"
             expanded
@@ -52,7 +52,7 @@
           expanded
         >
           <b-button
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-small"
             @click="client.logout()"
             icon-left="logout"
@@ -89,7 +89,7 @@
           label="Option 2: Input RDF fields manually"
         >
           <b-button
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-fullwidth"
             @click="initializeRdfForm()"
             expanded
@@ -111,7 +111,7 @@
 
         <b-button
           v-if="client.credential"
-          style="text-transform:none;"
+          style="text-transform: none"
           class="button is-fullwidth"
           @click="loadRdfFromURL(URI4Load)"
           expanded
@@ -120,7 +120,7 @@
       </b-step-item>
 
       <b-step-item label="Edit" icon="pencil" :disabled="!rdfYaml">
-        <section style="padding: 20px;">
+        <section style="padding: 20px">
           <form-json
             v-if="jsonFields && jsonFields.length > 0"
             :btnReset="{ value: 'Reset' }"
@@ -159,7 +159,7 @@
       <b-step-item label="Review & Upload" icon="upload">
         <b-field
           label="RDF content"
-          style="height: 260px; overflow: auto;"
+          style="height: 260px; overflow: auto"
           v-if="rdfYaml"
         >
           <markdown
@@ -196,7 +196,7 @@
         <div class="column">
           <b-button
             v-if="zipPackage || editedFiles"
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-fullwidth"
             @click="exportPackage()"
             expanded
@@ -228,7 +228,9 @@
             <p>
               Authors:
               {{
-                item.authors.map(author => author.name.split(";")[0]).join(",")
+                item.authors
+                  .map((author) => author.name.split(";")[0])
+                  .join(",")
               }}
             </p>
             <p>Uploaded: {{ item.config._deposit.updated }}</p>
@@ -237,8 +239,8 @@
               <b-button
                 v-if="
                   userId &&
-                    item.config._deposit &&
-                    item.config._deposit.owners.includes(userId)
+                  item.config._deposit &&
+                  item.config._deposit.owners.includes(userId)
                 "
                 @click="createOrUpdateDeposit(item.config._deposit.id, false)"
                 class="column button is-primary is-light is-fullwidth"
@@ -250,12 +252,12 @@
             </div>
           </b-notification>
           <b-button
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-fullwidth"
             @click="stepIndex = 1"
             expanded
             :class="{
-              'is-primary': sameNameDeposits && sameNameDeposits.length > 0
+              'is-primary': sameNameDeposits && sameNameDeposits.length > 0,
             }"
             icon-left="arrow-left"
             >Go back to rename</b-button
@@ -268,8 +270,8 @@
             <a
               :href="
                 client.baseURL +
-                  '/communities/' +
-                  siteConfig.zenodo_config.community
+                '/communities/' +
+                siteConfig.zenodo_config.community
               "
               target="_blank"
               >bioimage.io community list</a
@@ -290,7 +292,7 @@
             <b-button
               :disabled="
                 uploadProgress ||
-                  (sameNameDeposits && sameNameDeposits.length > 0)
+                (sameNameDeposits && sameNameDeposits.length > 0)
               "
               @click="createOrUpdateDeposit()"
               class="button is-primary is-light is-fullwidth"
@@ -368,7 +370,7 @@
           </h3>
           <b-button
             v-if="notifyCIFailed"
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button is-fullwidth"
             @click="notifyBot()"
             expanded
@@ -401,7 +403,7 @@
       </b-step-item>
     </b-steps>
 
-    <section style="padding: 10px;"></section>
+    <section style="padding: 10px"></section>
   </div>
 </template>
 
@@ -416,7 +418,7 @@ import {
   rdfToMetadata,
   resolveDOI,
   getFullRdfFromDeposit,
-  compareVersions
+  compareVersions,
 } from "../utils";
 import JSZip from "jszip";
 import Markdown from "@/components/Markdown.vue";
@@ -444,7 +446,7 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     AuthorInputField,
     // eslint-disable-next-line vue/no-unused-components
-    CitationInputField
+    CitationInputField,
   },
   mounted() {
     this.dropFile = null;
@@ -453,7 +455,7 @@ export default {
 
     this.$root.$on("formSubmitted", this.formSubmitted);
     if (this.updateDepositId) {
-      this.startFromDepositURL().catch(e => {
+      this.startFromDepositURL().catch((e) => {
         alert(`Failed to load from deposit URL: ${e}`);
       });
     }
@@ -462,7 +464,7 @@ export default {
     sameNameDeposits() {
       return (
         this.similarDeposits &&
-        this.similarDeposits.filter(item => item.name === this.rdf.name)
+        this.similarDeposits.filter((item) => item.name === this.rdf.name)
       );
     },
     formatedModelYaml() {
@@ -483,15 +485,15 @@ export default {
       SelectButtonField,
       DropFilesField,
       AuthorInputField,
-      CitationInputField
+      CitationInputField,
     }),
     ...mapState({
-      allTags: state => state.allTags,
-      resourceItems: state => state.resourceItems,
-      client: state => state.zenodoClient,
-      zenodoBaseURL: state => state.zenodoBaseURL,
-      siteConfig: state => state.siteConfig
-    })
+      allTags: (state) => state.allTags,
+      resourceItems: (state) => state.resourceItems,
+      client: (state) => state.zenodoClient,
+      zenodoBaseURL: (state) => state.zenodoBaseURL,
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   data() {
     return {
@@ -517,13 +519,13 @@ export default {
       similarDeposits: null,
       depositId: null,
       newRDFFile: null,
-      uploadMode: null
+      uploadMode: null,
     };
   },
   methods: {
     async startFromDepositURL() {
       const loadingComponent = this.$buefy.loading.open({
-        container: this.$el
+        container: this.$el,
       });
       try {
         if (!this.client.credential) await this.login();
@@ -540,14 +542,14 @@ export default {
     },
     async fileSelected(file) {
       const loadingComponent = this.$buefy.loading.open({
-        container: this.$el
+        container: this.$el,
       });
       try {
         let configFile;
         if (file.name.endsWith(".yaml")) {
           this.rdfYaml = await new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = function (event) {
               resolve(event.target.result);
             };
             reader.onerror = reject;
@@ -622,13 +624,13 @@ export default {
           // load files
           this.initializeRdfForm(
             rdf,
-            depositionInfo.files.map(item => {
+            depositionInfo.files.map((item) => {
               return {
                 type: "remote",
                 name: item.filename || item.key, // depending on what api we use, it may be in two different format
                 size: item.filesize || item.size,
                 url: item.links.self,
-                checksum: item.checksum
+                checksum: item.checksum,
               };
             })
           );
@@ -640,7 +642,7 @@ export default {
     async updateFormWithLocalFile(file) {
       const rdfYaml = await new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           resolve(event.target.result);
         };
         reader.onerror = reject;
@@ -661,9 +663,9 @@ export default {
       delete this.rdf.id;
       this.rdf.links = this.rdf.links || [];
       files = files || this.files || [];
-      const types = this.siteConfig.resource_categories.map(cat => cat.type);
+      const types = this.siteConfig.resource_categories.map((cat) => cat.type);
       this.rdf.tags = this.rdf.tags || [];
-      this.rdf.tags = this.rdf.tags.map(tag =>
+      this.rdf.tags = this.rdf.tags.map((tag) =>
         tag.toLowerCase().replace(/ /g, "-")
       );
       this.jsonFields = this.transformFields([
@@ -671,39 +673,38 @@ export default {
           label: "Type",
           type: "select",
           placeholder: "Select resource type",
-          options: types.map(opt => {
+          options: types.map((opt) => {
             return {
               text: opt,
               value: opt,
-              selected: this.rdf.type === opt
+              selected: this.rdf.type === opt,
             };
-          })
+          }),
         },
         {
           label: "Name",
           placeholder: "name",
           value: this.rdf.name,
-          help: "The name of your deposit"
+          help: "The name of your deposit",
         },
         {
           label: "Description",
           placeholder: "description",
-          value: this.rdf.description
+          value: this.rdf.description,
         },
         {
           label: "Authors",
           type: "author",
           options: ["name", "orcid", "affiliation"],
           value: this.rdf.authors,
-          help: "The authors who contributed to this resource item"
+          help: "The authors who contributed to this resource item",
         },
         {
           label: "Maintainers",
           type: "author",
           options: ["name", "email", "github_user"],
           value: this.rdf.maintainers,
-          help:
-            "The maintainers who maintain this resource item. Importantly, the first maintainer will be contacted for the approval process to the BioImage.IO"
+          help: "The maintainers who maintain this resource item. Importantly, the first maintainer will be contacted for the approval process to the BioImage.IO",
         },
         // {
         //   label: "Source",
@@ -715,78 +716,77 @@ export default {
           label: "Version",
           placeholder: "Version in MAJOR.MINOR.PATCH format(e.g. 0.1.0)",
           isRequired: false,
-          value: this.rdf.version || "0.1.0"
+          value: this.rdf.version || "0.1.0",
         },
         {
           html: `<p class='label'>License<span
         class="helpLabel has-text-grey-light is-size-7 is-italic"
         style="margin-left: .5rem;font-weight: 400;"
-        >Choose the license that fits you most, we recommend to use <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a> (free to share and adapt under the condition of attribution). For other license options, please visit here <a target="_blank" href="https://spdx.org/licenses">https://spdx.org/licenses<a></span><sup class='has-text-grey-light is-size-7'> *</sup></p>`
+        >Choose the license that fits you most, we recommend to use <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a> (free to share and adapt under the condition of attribution). For other license options, please visit here <a target="_blank" href="https://spdx.org/licenses">https://spdx.org/licenses<a></span><sup class='has-text-grey-light is-size-7'> *</sup></p>`,
         },
         {
           label: "License",
           showLabel: false,
           type: "select",
           placeholder: "Select your license",
-          options: Object.keys(spdxLicenseList).map(opt => {
+          options: Object.keys(spdxLicenseList).map((opt) => {
             return {
               text: opt,
               value: opt,
-              selected: this.rdf.license === opt
+              selected: this.rdf.license === opt,
             };
           }),
-          help: "A short description in one sentence"
+          help: "A short description in one sentence",
         },
         {
           label: "Git repository",
           placeholder: "Git repository URL",
           value: this.rdf.git_repo,
-          isRequired: false
+          isRequired: false,
         },
         {
           label: "Tags",
           type: "tags",
           value: this.rdf.tags,
-          help:
-            "Tags should contain only lower case letters with numbers, or the following characters: +*#;./%@, but no space",
+          help: "Tags should contain only lower case letters with numbers, or the following characters: +*#;./%@, but no space",
           placeholder:
             "Add a tag and press ENTER to confirm (lower case, numbers, or any of +*#;./%@, but no space)",
-          options: this.allTags.map(tag =>
+          options: this.allTags.map((tag) =>
             tag.toLowerCase().replace(/ /g, "-")
           ),
           pattern: /^[-0-9a-z+*#;./%@:]*$/,
           allow_new: true,
           icon: "label",
-          isRequired: false
+          isRequired: false,
         },
         {
           label: "Citation",
           type: "citation",
           value: this.rdf.cite,
           help: "How this resource item should be cited",
-          isRequired: false
+          isRequired: false,
         },
         {
           label: "Links",
           type: "tags",
           value: this.rdf.links,
           placeholder: "Add a link (resource item ID)",
-          options: this.resourceItems.map(item => item.id),
+          options: this.resourceItems.map((item) => item.id),
           allow_new: true,
           icon: "vector-link",
-          isRequired: false
+          isRequired: false,
         },
         {
           label: "Files",
           type: "files",
           value: files,
-          isRequired: false
+          isRequired: false,
         },
         {
           html: `<p class='label'>Validation<span
         class="helpLabel has-text-grey-light is-size-7 is-italic"
         style="margin-left: .5rem;font-weight: 400;"
-        >Validate the RDF fields against the bioimageio RDF specification using the python module, see <a target="_blank" href="https://github.com/bioimage-io/spec-bioimage-io">Specifications for BioImage.IO</a>. <br>Note: It may take a while to load for the first time.<sup class='has-text-grey-light is-size-7'> *</sup></p>`
+        >Validate the RDF fields against the bioimageio RDF specification using the python module, see <a target="_blank" href="https://github.com/bioimage-io/spec-bioimage-io">Specifications for BioImage.IO</a>. <br>Note: It may take a while to load for the first time.<sup class='has-text-grey-light is-size-7'> *</sup></p>`,
         },
         {
           type: "button",
@@ -814,8 +814,8 @@ export default {
             } finally {
               this.showLoader(false);
             }
-          }
-        }
+          },
+        },
       ]);
       this.files = files;
     },
@@ -845,7 +845,7 @@ export default {
         tags: "Tags",
         links: "Links",
         cite: "Citation",
-        authors: "Authors"
+        authors: "Authors",
       };
       const values = result.values;
       for (let k in rdfNameMapping) {
@@ -870,7 +870,7 @@ export default {
         }
       } else {
         this.editedFiles = values["Files"].filter(
-          file => file.type !== "remote"
+          (file) => file.type !== "remote"
         );
       }
 
@@ -882,7 +882,7 @@ export default {
 
       this.rdfYaml = yaml.dump(rdf);
       const blob = new Blob([this.rdfYaml], {
-        type: "application/yaml"
+        type: "application/yaml",
       });
       let rdfFileName = "rdf.yaml";
       if (
@@ -897,17 +897,17 @@ export default {
       } else {
         const file = new File([blob], rdfFileName);
         this.editedFiles = this.editedFiles.filter(
-          item => item.name !== rdfFileName
+          (item) => item.name !== rdfFileName
         );
         this.editedFiles.push(file);
         this.zipPackage = new JSZip();
         this.editedFiles.push(file);
-        this.editedFiles.map(file => this.zipPackage.file(file.name, file));
+        this.editedFiles.map((file) => this.zipPackage.file(file.name, file));
       }
 
       this.similarDeposits = await this.client.getResourceItems({
         sort: "bestmatch",
-        query: this.rdf.name
+        query: this.rdf.name,
       });
       console.log("Similar deposits:", this.similarDeposits);
       // if there is any similar items, we can try to login first
@@ -922,11 +922,11 @@ export default {
         "⌛ Trying to notify bioimage-bot for the new item...";
       this.notifyCIFailed = false;
       const ciLoader = this.$buefy.loading.open({
-        container: this.$refs.ci_status
+        container: this.$refs.ci_status,
       });
       // trigger CI with the bioimageio bot endpoint
       fetch(url)
-        .then(async resp => {
+        .then(async (resp) => {
           if (resp.status === 200) {
             this.notifyCIStatus =
               "🎉 bioimage-bot has successfully detected the item: " +
@@ -939,7 +939,7 @@ export default {
               (await resp.text());
           }
         })
-        .catch(e => {
+        .catch((e) => {
           this.notifyCIStatus = `😬 Failed to reach to the bioimageio-bot, please report the issue to the admin team of bioimage.io: ${e}`;
           this.notifyCIFailed = true;
         })
@@ -949,7 +949,7 @@ export default {
     },
     async publishDeposition() {
       const loadingComponent = this.$buefy.loading.open({
-        container: this.$el
+        container: this.$el,
       });
       try {
         const result = await this.client.publish(this.depositId);
@@ -992,10 +992,10 @@ export default {
           type: "blob",
           compression: "DEFLATE",
           compressionOptions: {
-            level: 9
-          }
+            level: 9,
+          },
         },
-        mdata => {
+        (mdata) => {
           this.uploadProgress = mdata.percent;
           this.uploadStatus = "Zipping package...";
         }
@@ -1031,7 +1031,7 @@ export default {
         return;
       }
       const loadingComponent = this.$buefy.loading.open({
-        container: this.$el
+        container: this.$el,
       });
 
       try {
@@ -1083,9 +1083,8 @@ export default {
           !this.rdf.documentation.startsWith("http") &&
           this.rdf.documentation.endsWith(".md")
         ) {
-          const file = this.zipPackage.files[
-            this.rdf.documentation.replace("./", "")
-          ];
+          const file =
+            this.zipPackage.files[this.rdf.documentation.replace("./", "")];
           if (file) {
             docstring = await file.async("string"); // get markdown
             docstring = DOMPurify.sanitize(marked(docstring));
@@ -1098,7 +1097,7 @@ export default {
         // this will send a email request to the admin of bioimgae-io team
         if (this.requestedJoinCommunity) {
           metadata.communities.push({
-            identifier: this.siteConfig.zenodo_config.community
+            identifier: this.siteConfig.zenodo_config.community,
           });
         }
         metadata.prereserve_doi = true; // we will generate the doi and store it in the model yaml file
@@ -1148,7 +1147,7 @@ export default {
             depositionInfo,
             file,
             file.name,
-            size => {
+            (size) => {
               this.uploadProgress = Math.round((size / file.size) * 100);
               this.uploadStatus = `Uploading ${i + 1}/${zipFiles.length}(${
                 this.uploadProgress
@@ -1171,8 +1170,8 @@ export default {
         this.uploadProgress = 0;
         loadingComponent.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

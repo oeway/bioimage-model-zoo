@@ -34,16 +34,16 @@ export default {
   props: {
     error: {
       type: String,
-      default: null
+      default: null,
     },
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     value: undefined,
-    filteredTags: []
+    filteredTags: [],
   }),
   mounted() {
     this.filteredTags = this.item.options;
@@ -56,16 +56,13 @@ export default {
     getFilteredTags(text) {
       this.filteredTags =
         this.item.options &&
-        this.item.options.filter(option => {
+        this.item.options.filter((option) => {
           return (
-            option
-              .toString()
-              .toLowerCase()
-              .indexOf(text.toLowerCase()) >= 0
+            option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0
           );
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

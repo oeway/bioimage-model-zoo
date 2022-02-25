@@ -33,14 +33,14 @@ export default {
   props: {
     partners: {
       type: Array,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       icon_width: 140,
       selectedPartnerIndex: 0,
-      items2Show: window.innerWidth / 140
+      items2Show: window.innerWidth / 140,
     };
   },
   mounted() {
@@ -62,8 +62,8 @@ export default {
     },
     switchPartner(partner) {
       this.$emit("switchPartner", partner);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

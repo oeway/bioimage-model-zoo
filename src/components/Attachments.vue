@@ -2,8 +2,13 @@
   <div class="attachments">
     <template v-for="(att_val, name) in normalizedAttachments">
       <h2
-        style="font-size:1.5rem;font-weight: 600;margin-top: 24px;
-    margin-bottom: 16px; text-transform:capitalize;"
+        style="
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 24px;
+          margin-bottom: 16px;
+          text-transform: capitalize;
+        "
         :id="name"
         v-if="att_val"
         :key="name + '_title'"
@@ -38,10 +43,8 @@
               <span :class="col.class" v-else>
                 {{
                   props.row[col.field] &&
-                    props.row[col.field].slice(0, col.max_length) +
-                      (props.row[col.field].length > col.max_length
-                        ? "..."
-                        : "")
+                  props.row[col.field].slice(0, col.max_length) +
+                    (props.row[col.field].length > col.max_length ? "..." : "")
                 }}
               </span>
             </template>
@@ -64,19 +67,19 @@ export default {
   props: {
     attachments: {
       type: Object,
-      default: null
+      default: null,
     },
     focusTarget: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   components: {
-    "resource-item-card": ResourceItemCard
+    "resource-item-card": ResourceItemCard,
   },
   data() {
     return {
-      columns: []
+      columns: [],
     };
   },
   mounted() {
@@ -86,24 +89,24 @@ export default {
     }, 100);
   },
   watch: {
-    focusTarget: function(newTarget) {
+    focusTarget: function (newTarget) {
       this.focus(newTarget);
-    }
+    },
   },
   computed: {
-    availableColumns: function() {
-      return this.siteConfig.attachment_table.columns.filter(c =>
+    availableColumns: function () {
+      return this.siteConfig.attachment_table.columns.filter((c) =>
         this.columns.includes(c.field)
       );
     },
-    normalizedAttachments: function() {
+    normalizedAttachments: function () {
       const converted = {};
       if (this.attachments)
         for (let k of Object.keys(this.attachments)) {
           if (k === "files") continue;
           const items = this.attachments[k];
           if (Array.isArray(items)) {
-            converted[k] = items.map(item => {
+            converted[k] = items.map((item) => {
               if (typeof item !== "object") return { name: item };
               else return item;
             });
@@ -123,8 +126,8 @@ export default {
       return converted;
     },
     ...mapState({
-      siteConfig: state => state.siteConfig
-    })
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   methods: {
     focus(target) {
@@ -180,8 +183,8 @@ export default {
         console.warn("Failed to convert: ", obj);
         return [];
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped></style>

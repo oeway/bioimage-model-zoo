@@ -5,7 +5,7 @@
       <span
         v-if="item.help"
         class="helpLabel has-text-grey-light is-size-7 is-italic"
-        style="margin-left: 0.5rem; font-weight: 400;"
+        style="margin-left: 0.5rem; font-weight: 400"
       >
         {{ item.help }}
       </span>
@@ -49,16 +49,16 @@ export default {
   props: {
     error: {
       type: String,
-      default: null
+      default: null,
     },
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     value: undefined,
-    callbackError: null
+    callbackError: null,
   }),
   created() {
     this.value = this.item.value;
@@ -80,7 +80,7 @@ export default {
         .replace(/>/g, "&gt;");
       return json.replace(
         /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
-        function(match) {
+        function (match) {
           var cls = "number";
           if (/^"/.test(match)) {
             if (/:$/.test(match)) {
@@ -105,7 +105,7 @@ export default {
         this.callbackError = `${e}`;
       }
       this.$forceUpdate();
-    }
-  }
+    },
+  },
 };
 </script>

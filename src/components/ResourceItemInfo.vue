@@ -1,6 +1,6 @@
 <template>
   <div class="resource-item-info" v-if="resourceItem">
-    <section style="margin-bottom:10px;">
+    <section style="margin-bottom: 10px">
       <app-icons :apps="resourceItem.apps"></app-icons>
       &nbsp;&nbsp;<badges :badges="resourceItem.badges"></badges>
     </section>
@@ -14,7 +14,7 @@
       ></b-button>
     </section>
     <b-carousel
-      style="max-width: 1024px;"
+      style="max-width: 1024px"
       v-if="resourceItem.covers && resourceItem.covers.length > 0"
       :indicator="resourceItem.covers.length > 1"
       :arrow="resourceItem.covers.length > 1"
@@ -47,9 +47,9 @@
       </b-tooltip>
     </p>
     <br />
-    <span style="margin-top:3px;display: block;">
+    <span style="margin-top: 3px; display: block">
       <span v-for="t in resourceItem.tags" :key="t">
-        <b-tag style="cursor: pointer;" rounded>{{ t }}</b-tag>
+        <b-tag style="cursor: pointer" rounded>{{ t }}</b-tag>
       </span>
     </span>
     <br />
@@ -74,7 +74,7 @@
 
       <a
         v-if="resourceItem.docs && resourceItem.docs.length > maxDocsLetters"
-        style="color: #0366d6;"
+        style="color: #0366d6"
         @click="maxDocsLetters = resourceItem.docs.length"
         >+ click here to see the full documentation</a
       >
@@ -107,21 +107,21 @@ export default {
   props: {
     resourceItem: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   components: {
     markdown: Markdown,
     badges: Badges,
     attachments: Attachments,
     "app-icons": AppIcons,
-    "comment-box": CommentBox
+    "comment-box": CommentBox,
   },
   data() {
     return {
       maxDescriptionLetters: 100,
       maxDocsLetters: 500,
-      showSource: false
+      showSource: false,
     };
   },
 
@@ -138,7 +138,7 @@ export default {
       this.getDocs(this.resourceItem).then(focus);
   },
   computed: {
-    formatedCitation: function() {
+    formatedCitation: function () {
       let cites = this.resourceItem.cite;
       if (!cites || cites.length <= 0) return null;
       if (this.resourceItem.cite && !Array.isArray(this.resourceItem.cite)) {
@@ -148,7 +148,7 @@ export default {
       for (let c of cites) {
         if (typeof c === "string") {
           citations.push({
-            text: c
+            text: c,
           });
         } else {
           let url = c.url;
@@ -161,16 +161,16 @@ export default {
           citations.push({
             text: c.text,
             url,
-            url_text
+            url_text,
           });
         }
       }
       return citations;
     },
     ...mapState({
-      resourceItems: state => state.resourceItems,
-      siteConfig: state => state.siteConfig
-    })
+      resourceItems: (state) => state.resourceItems,
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   methods: {
     copyId(value) {
@@ -184,7 +184,7 @@ export default {
       const data = {
         message: "Copied to your clipboard!",
         duration: 1000,
-        queue: false
+        queue: false,
       };
       this.$buefy.snackbar.open(data);
     },
@@ -236,8 +236,8 @@ export default {
             .slice(0, 5)
             .join("\n").length;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

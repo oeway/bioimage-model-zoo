@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 // set default values for table_view
 siteConfig.table_view = siteConfig.table_view || {
-  columns: ["name", "authors", "badges", "apps"]
+  columns: ["name", "authors", "badges", "apps"],
 };
 
 let allTags = [];
@@ -19,7 +19,7 @@ for (let cat of siteConfig.resource_categories) {
       allTags = allTags.concat(tagCates[cat]);
     }
 }
-allTags = allTags.map(tag => tag.toLowerCase());
+allTags = allTags.map((tag) => tag.toLowerCase());
 
 const zenodoBaseURL = siteConfig.zenodo_config.use_sandbox
   ? "https://sandbox.zenodo.org"
@@ -45,7 +45,7 @@ export const store = new Vuex.Store({
     siteConfig,
     showNavbar: true,
     devPlugins: [],
-    bioEngineReady: false
+    bioEngineReady: false,
   },
   actions: {
     async toggleNavbar(context, enable) {
@@ -98,8 +98,8 @@ export const store = new Vuex.Store({
         siteConfig.partners
       ) {
         for (let c of repo_manifest.config.partners) {
-          const duplicates = siteConfig.partners.filter(p => p.id === c.id);
-          duplicates.forEach(p => {
+          const duplicates = siteConfig.partners.filter((p) => p.id === c.id);
+          duplicates.forEach((p) => {
             siteConfig.partners.splice(siteConfig.partners.indexOf(p), 1);
           });
           siteConfig.partners.push(c);
@@ -113,17 +113,17 @@ export const store = new Vuex.Store({
       }
       context.commit("normalizeItems", transform);
       context.state.loadedUrl = manifest_url;
-    }
+    },
   },
   mutations: {
     addResourceItem(state, item) {
       item.id = item.id || randId();
       item.id = item.id.toLowerCase();
       item.links = item.links || [];
-      item.links = item.links.map(link => link.toLowerCase());
+      item.links = item.links.map((link) => link.toLowerCase());
       item.authors = item.authors || [];
       item.tags = item.tags || [];
-      item.authors = item.authors.map(author =>
+      item.authors = item.authors.map((author) =>
         typeof author === "string" ? { name: author } : author
       );
       item.config = item.config || {};
@@ -140,8 +140,8 @@ export const store = new Vuex.Store({
         item.source.endsWith(".imjoy.html")
       )
         state.allApps[item.id] = item;
-      item.tags = item.tags.map(tag => tag.toLowerCase());
-      item.tags.map(tag => {
+      item.tags = item.tags.map((tag) => tag.toLowerCase());
+      item.tags.map((tag) => {
         if (!state.allTags.includes(tag)) {
           state.allTags.push(tag);
         }
@@ -154,16 +154,16 @@ export const store = new Vuex.Store({
       if (index >= 0) state.resourceItems.splice(index, 1);
     },
     normalizeItems(state, transform) {
-      state.resourceItems = state.resourceItems.map(item => {
+      state.resourceItems = state.resourceItems.map((item) => {
         // make sure the id and links are in lowercase
         item.id = item.id || randId();
         item.id = item.id.toLowerCase();
         item.links = item.links || [];
         item.tags = item.tags || [];
-        item.links = item.links.map(link => link.toLowerCase());
+        item.links = item.links.map((link) => link.toLowerCase());
         item.links = [...new Set(item.links)];
         item.tags = item.tags || [];
-        item.tags = item.tags.map(tag => tag.toLowerCase());
+        item.tags = item.tags.map((tag) => tag.toLowerCase());
         item.links = [...new Set(item.links)];
         if (transform) return transform(item);
         else return item;
@@ -171,6 +171,6 @@ export const store = new Vuex.Store({
     },
     setBioEngineReady(state, isReady) {
       state.bioEngineReady = !!isReady;
-    }
-  }
+    },
+  },
 });

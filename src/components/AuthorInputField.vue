@@ -4,7 +4,7 @@
       {{ item.label }}
       <span
         class="helpLabel has-text-grey-light is-size-7 is-italic"
-        style="margin-left: .5rem;font-weight: 400;"
+        style="margin-left: 0.5rem; font-weight: 400"
         >{{ item.help }}</span
       >
       <sup
@@ -63,7 +63,7 @@
 
           <b-button
             v-if="value.length > 1"
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button"
             icon-left="delete"
             @click="removeAuthor(author)"
@@ -72,7 +72,7 @@
             v-if="
               i === value.length - 1 && !(!author.name || author.name === '')
             "
-            style="text-transform:none;"
+            style="text-transform: none"
             class="button"
             icon-left="plus"
             @click="addNewAuthor"
@@ -91,16 +91,16 @@ export default {
   props: {
     error: {
       type: String,
-      default: null
+      default: null,
     },
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     value: undefined,
-    filteredTags: []
+    filteredTags: [],
   }),
   mounted() {
     this.filteredTags = this.item.options;
@@ -110,8 +110,8 @@ export default {
     if (this.value && !Array.isArray(this.value)) this.value = [this.value];
     this.value = this.value || [];
     // set the name to github user if not given
-    this.value.forEach(v => (v.name = v.name || v.github_user));
-    this.value = this.value.filter(v => v.name && v.name != "");
+    this.value.forEach((v) => (v.name = v.name || v.github_user));
+    this.value = this.value.filter((v) => v.name && v.name != "");
     this.commitValue();
 
     if (this.value.length <= 0) {
@@ -139,8 +139,8 @@ export default {
         this.value.splice(index, 1);
       }
       this.commitValue();
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

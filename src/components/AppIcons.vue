@@ -36,17 +36,17 @@ export default {
   props: {
     apps: {
       type: Array,
-      default: null
+      default: null,
     },
     enableHover: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 };
 </script>
 <style scoped>

@@ -5,7 +5,7 @@
       <div class="navbar-brand">
         <a href="#/">
           <img
-            style="width: 264px; margin-left:8px; margin-top: 6px;"
+            style="width: 264px; margin-left: 8px; margin-top: 6px"
             :src="siteConfig.site_logo"
           />
         </a>
@@ -67,25 +67,25 @@ export default {
   name: "App",
   data() {
     return {
-      showMenu: false
+      showMenu: false,
     };
   },
   computed: {
     ...mapState({
-      showNavbar: state => state.showNavbar,
-      siteConfig: state => state.siteConfig
-    })
+      showNavbar: (state) => state.showNavbar,
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   mounted() {
     setupBioEngine()
       .then(() => {
         this.$store.commit("setBioEngineReady", true);
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
         this.$store.commit("setBioEngineReady", false);
       });
-  }
+  },
 };
 </script>
 

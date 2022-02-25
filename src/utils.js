@@ -5,16 +5,14 @@ import spdxLicenseList from "spdx-license-list/full";
 export const MAX_RDF_VERSION = "0.5.0";
 
 export function randId() {
-  return Math.random()
-    .toString(36)
-    .substr(2, 10);
+  return Math.random().toString(36).substr(2, 10);
 }
 
 export async function resolveDOI(doi) {
   const response = await fetch("https://doi.org/api/handles/" + doi);
   if (response.ok) {
     const result = await response.json();
-    return result.values.filter(v => v.type === "URL")[0].data.value;
+    return result.values.filter((v) => v.type === "URL")[0].data.value;
   } else {
     throw new Error("Failed to resolve DOI:" + doi);
   }
@@ -45,7 +43,7 @@ export async function getFullRdfFromDeposit(deposition, resolveUrl) {
         fullRdf.documentation
       );
       if (fullRdf.covers) {
-        fullRdf.covers = fullRdf.covers.map(cover =>
+        fullRdf.covers = fullRdf.covers.map((cover) =>
           getAbsoluteUrl(deposition.links.bucket, cover)
         );
       }
@@ -76,7 +74,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
     throw new Error("`type` key is not defined in the RDF.");
   }
   rdf.covers = rdf.covers || [];
-  const covers = rdf.covers.map(c =>
+  const covers = rdf.covers.map((c) =>
     c.startsWith("http") ? c : new URL(c, baseUrl).href
   );
   const related_identifiers = [];
@@ -87,7 +85,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       relation: "hasPart", // is part of this upload
       identifier: c,
       resource_type: "image-figure",
-      scheme: "url"
+      scheme: "url",
     });
   }
   rdf.links = rdf.links || [];
@@ -98,7 +96,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       identifier: "https://bioimage.io/#/r/" + encodeURIComponent(link),
       relation: "references", // is referenced by this upload
       resource_type: "other",
-      scheme: "url"
+      scheme: "url",
     });
   }
   if (rdf.rdf_source) {
@@ -117,7 +115,7 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
       identifier: rdf_file,
       relation: "isCompiledBy", // compiled/created this upload
       resource_type: "other",
-      scheme: "url"
+      scheme: "url",
     });
   } else throw new Error("`rdf_source` key is not found in the RDF");
 
@@ -130,19 +128,19 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
         : new URL(rdf.documentation, baseUrl).href,
       relation: "isDocumentedBy", // is referenced by this upload
       resource_type: "publication-technicalnote",
-      scheme: "url"
+      scheme: "url",
     });
   }
 
   rdf.authors = rdf.authors || [];
-  const creators = rdf.authors.map(author => {
+  const creators = rdf.authors.map((author) => {
     if (typeof author === "string")
       return { name: author.split(";")[0], affiliation: "" };
     else
       return {
         name: author.name.split(";")[0],
         affiliation: author.affiliation,
-        orcid: author.orcid
+        orcid: author.orcid,
       };
   });
   const description =
@@ -162,14 +160,14 @@ export function rdfToMetadata(rdf, baseUrl, docstring) {
     keywords: keywords.concat(rdf.tags),
     notes: rdf.description + additionalNote,
     related_identifiers,
-    communities: []
+    communities: [],
   };
   return metadata;
 }
 
 export function depositionToRdf(deposition) {
   const metadata = deposition.metadata;
-  let type = metadata.keywords.filter(k => k.startsWith("bioimage.io:"))[0];
+  let type = metadata.keywords.filter((k) => k.startsWith("bioimage.io:"))[0];
   if (!type) {
     throw new Error(
       `deposit (${deposition.id}) does not contain a bioimage.io type keyword starts with "bioimage.io:<TYPE>"`
@@ -252,7 +250,7 @@ export function depositionToRdf(deposition) {
     type,
     authors: metadata.creators,
     tags: metadata.keywords
-      .filter(k => k !== "bioimage.io" || !k.startsWith("bioimage.io:"))
+      .filter((k) => k !== "bioimage.io" || !k.startsWith("bioimage.io:"))
       .concat(["zenodo"]),
     description,
     stats: deposition.stats,
@@ -267,8 +265,8 @@ export function depositionToRdf(deposition) {
     config: {
       _doi: deposition.doi,
       _conceptdoi: deposition.conceptdoi,
-      _deposit: deposition
-    }
+      _deposit: deposition,
+    },
   };
 }
 
@@ -351,7 +349,7 @@ export class ZenodoClient {
     keywords,
     query,
     sort,
-    size
+    size,
   }) {
     page = page || 1;
     type = type || "all";
@@ -363,7 +361,7 @@ export class ZenodoClient {
     const additionalKeywords =
       typeKeywords +
       (keywords.length > 0
-        ? "&" + keywords.map(kw => "keywords=" + kw).join("&")
+        ? "&" + keywords.map((kw) => "keywords=" + kw).join("&")
         : "") +
       (query ? "&q=" + query : "");
     const url =
@@ -384,7 +382,7 @@ export class ZenodoClient {
             keywords,
             query,
             sort,
-            size
+            size,
           })
             .then(resolve)
             .catch(reject);
@@ -393,7 +391,7 @@ export class ZenodoClient {
     }
 
     const hits = results.hits.hits;
-    const resourceItems = hits.map(item => {
+    const resourceItems = hits.map((item) => {
       try {
         return depositionToRdf(item);
       } catch (e) {
@@ -403,10 +401,10 @@ export class ZenodoClient {
     });
     console.log(
       "Get items from URL: ",
-      resourceItems.map(item => item.id),
+      resourceItems.map((item) => item.id),
       url
     );
-    const items = resourceItems.filter(item => !!item);
+    const items = resourceItems.filter((item) => !!item);
     if (results.aggregations.access_right.buckets.length > 0) {
       items.total = results.aggregations.access_right.buckets[0].doc_count;
     } else {
@@ -438,7 +436,7 @@ export class ZenodoClient {
       }
 
       let countDown = 120;
-      const timer = setInterval(function() {
+      const timer = setInterval(function () {
         if (loginWindow.closed) {
           clearInterval(timer);
           resolve();
@@ -485,7 +483,7 @@ export class ZenodoClient {
       this.credential = null;
       let countDown = 120;
       let loggedIn = false;
-      const timer = setInterval(function() {
+      const timer = setInterval(function () {
         if (loggedIn) {
           clearInterval(timer);
           return;
@@ -503,7 +501,7 @@ export class ZenodoClient {
           }
         }
       }, 1000);
-      const handleLogin = event => {
+      const handleLogin = (event) => {
         if (loginWindow === event.source) {
           // run only once
           window.removeEventListener("message", handleLogin);
@@ -655,7 +653,7 @@ export class ZenodoClient {
 
     const options = {
       headers: { "Content-Type": file.type },
-      onUploadProgress: progressEvent => {
+      onUploadProgress: (progressEvent) => {
         if (progressCallback) progressCallback(progressEvent.loaded);
         else {
           const progress = Math.round(
@@ -669,7 +667,7 @@ export class ZenodoClient {
               "% uploaded."
           );
         }
-      }
+      },
     };
     let response;
     try {
@@ -817,15 +815,15 @@ export const anonymousAnimals = [
   "Walrus",
   "Skunk",
   "Lemur",
-  "Hedgehog"
+  "Hedgehog",
 ];
 
 export function debounce(func, wait, immediate) {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
-    var later = function() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -899,7 +897,7 @@ export function replaceAllRelByAbs(html, base_url) {
     " ": "(?:\\s|&nbsp;?|&#0*32" + entityEnd + "|&#x0*20" + entityEnd + ")",
     "(": "(?:\\(|&#0*40" + entityEnd + "|&#x0*28" + entityEnd + ")",
     ")": "(?:\\)|&#0*41" + entityEnd + "|&#x0*29" + entityEnd + ")",
-    ".": "(?:\\.|&#0*46" + entityEnd + "|&#x0*2e" + entityEnd + ")"
+    ".": "(?:\\.|&#0*46" + entityEnd + "|&#x0*2e" + entityEnd + ")",
   };
   /* Placeholders to filter obfuscations */
   var charMap = {};
@@ -1001,11 +999,8 @@ export function replaceAllRelByAbs(html, base_url) {
         ")",
       "gi"
     );
-    html = html.replace(selector, function(match) {
-      return match
-        .replace(re1, by)
-        .replace(re2, by)
-        .replace(re3, by);
+    html = html.replace(selector, function (match) {
+      return match.replace(re1, by).replace(re2, by).replace(re3, by);
     });
   }
   /* 
@@ -1040,21 +1035,15 @@ export function replaceAllRelByAbs(html, base_url) {
           (end ? "?)(" + end + ")" : ")()"),
         flags
       );
-      handleAttr = function(match, g1, g2) {
-        return (
-          g1 +
-          g2
-            .replace(at1, by2)
-            .replace(at2, by2)
-            .replace(at3, by2)
-        );
+      handleAttr = function (match, g1, g2) {
+        return g1 + g2.replace(at1, by2).replace(at2, by2).replace(at3, by2);
       };
     } else {
-      handleAttr = function(match, g1, g2) {
+      handleAttr = function (match, g1, g2) {
         return g1 + g2.replace(at1, by2).replace(at2, by2);
       };
     }
-    html = html.replace(selector, function(match) {
+    html = html.replace(selector, function (match) {
       return match.replace(re1, handleAttr).replace(re2, handleAttr);
     });
   }

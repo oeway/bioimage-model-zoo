@@ -13,7 +13,7 @@
     </section>
 
     <br />
-    <section style="text-align: center;">
+    <section style="text-align: center">
       <b-button
         @click="openUrl(siteConfig.contact_form_url)"
         v-if="siteConfig.contact_form_url"
@@ -26,7 +26,7 @@
       >
     </section>
     <br />
-    <section style="text-align: center;">
+    <section style="text-align: center">
       <b-button
         @click="openUrl('/docs#/contribute_models/README')"
         v-if="siteConfig.contribute_url"
@@ -57,7 +57,7 @@
         <b-tooltip :label="item.tooltip" position="is-top"
           ><a :href="item.url" target="_blank">
             <figure>
-              <img :src="item.logo" style="max-height: 55px;" />
+              <img :src="item.logo" style="max-height: 55px" />
               <figcaption class="hide-on-small-screen">
                 {{ item.label }}
               </figcaption>
@@ -90,22 +90,22 @@ export default {
   name: "About",
   computed: {
     ...mapState({
-      siteConfig: state => state.siteConfig
-    })
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   components: {
-    markdown: Markdown
+    markdown: Markdown,
   },
   data() {
     return {
-      version
+      version,
     };
   },
   methods: {
     openUrl(url) {
       window.open(url);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

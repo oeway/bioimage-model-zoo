@@ -15,17 +15,17 @@ export default {
   props: {
     title: {
       type: String,
-      default: null
+      default: null,
     },
     label: {
       type: String,
-      default: "comment"
-    }
+      default: "comment",
+    },
   },
   computed: {
     ...mapState({
-      siteConfig: state => state.siteConfig
-    })
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   mounted() {
     if (this.siteConfig.enable_comment) {
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
     };
   },
   methods: {
@@ -76,8 +76,8 @@ export default {
       const redirectUrl = `${window.location.pathname}?${params.toString()}`;
       window.history.replaceState(null, "", redirectUrl);
       this.$el.appendChild(utteranc);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped></style>

@@ -18,7 +18,7 @@
           ></resource-item-card>
         </div>
         <span
-          style="text-align: center;"
+          style="text-align: center"
           class="column"
           v-if="allItems && allItems.length === 0"
           >The list is empty.</span
@@ -44,7 +44,7 @@
             <p>
               {{
                 props.row.description.slice(0, 100) +
-                  (props.row.description.length > 100 ? "..." : "")
+                (props.row.description.length > 100 ? "..." : "")
               }}
             </p>
           </b-table-column>
@@ -142,51 +142,51 @@ const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 Vue.component("label-selector", {
   props: ["all-labels"],
-  template: document.getElementById("label-selector")
+  template: document.getElementById("label-selector"),
 });
 
 export default {
   name: "ResourceItemList",
   components: {
     "resource-item-card": ResourceItemCard,
-    "app-icons": AppIcons
+    "app-icons": AppIcons,
   },
   props: {
     allItems: {
       type: Array,
-      default: null
+      default: null,
     },
     displayMode: {
       type: String,
-      default: "card"
+      default: "card",
     },
     bioEngineReady: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    totalItems: function() {
+    totalItems: function () {
       return this.allItems ? this.allItems.length : 0;
     },
-    filteredItems: function() {
-      const covered = this.allItems.filter(item => item.cover_image);
+    filteredItems: function () {
+      const covered = this.allItems.filter((item) => item.cover_image);
       const items = covered.concat(
-        this.allItems.filter(item => !item.cover_image)
+        this.allItems.filter((item) => !item.cover_image)
       );
-      return items.filter(item =>
-        this.filters.every(label => item.allLabels.includes(label))
+      return items.filter((item) =>
+        this.filters.every((label) => item.allLabels.includes(label))
       );
     },
     ...mapState({
-      siteConfig: state => state.siteConfig
-    })
+      siteConfig: (state) => state.siteConfig,
+    }),
   },
   data() {
     return {
       isSafari: isSafari,
       currentPage: 1,
-      itemsPerPage: 16
+      itemsPerPage: 16,
     };
   },
   mounted() {},
@@ -194,8 +194,8 @@ export default {
   methods: {
     showResourceItemInfo(minfo) {
       this.$emit("show-resource-item-info", minfo);
-    }
-  }
+    },
+  },
 };
 </script>
 
