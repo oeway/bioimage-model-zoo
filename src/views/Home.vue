@@ -528,8 +528,12 @@ function normalizeItem(self, item) {
       }
     }
   }
+
   const id = item.id.toLowerCase();
-  const is_version_id = (id.match(/\//g) || []).length === 2; // 10.5281/zenodo.<resource nr>/<version nr> or <partner_id>/<resource id>/latest
+
+  // 10.5281/zenodo.<resource nr>/<version nr> or <partner_id>/<resource id>/latest
+  const is_version_id = (id.match(/\//g) || []).length === 2;
+
   if (item.links) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter((item) =>
