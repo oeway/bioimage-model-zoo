@@ -528,13 +528,16 @@ function normalizeItem(self, item) {
       }
     }
   }
-  const id = item.id.toLowerCase();
-  const is_version_id = (id.match(/\//g) || []).length === 2;  // 10.5281/zenodo.<resource nr>/<version nr> or <partner_id>/<resource id>/latest
+
   if (item.links) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter(
-        item => (is_version_id ? id === link_key.toLowerCase() : id.includes(link_key.toLowerCase()))
+        (item) =>
+          (link_key.match(/\//g) || []).length === 2  // e.g 10.5281/zenodo.<resource nr>/<version nr> or <partner_id>/<resource id>/latest
+            ? item.id.toLowerCase() === link_key.toLowerCase()  // exact version id
+            : item.id.toLowerCase().includes(link_key.toLowerCase())  // resource id matches version id; select latest (first) below
       );
+
       for (let lit of linked.slice(0, 1)) {
         item.apps.unshift({
           name: lit.name,
