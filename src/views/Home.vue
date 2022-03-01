@@ -371,7 +371,7 @@ async function updateFullRDF(item) {
         newRDF.source = newRDF.rdf_source || item.rdf_source;
       }
       for (let k of Object.keys(newRDF)) {
-        if (k !== "rdf_source") item[k] = newRDF[k];
+        if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
       }
     } else {
       throw new Error(`Oops, failed to fetch RDF file.`);
@@ -532,13 +532,10 @@ function normalizeItem(self, item) {
   if (item.links) {
     for (let link_key of item.links) {
       const linked = self.resourceItems.filter(
-        (item) =>
-          (link_key.match(/\//g) || []).length === 2  // e.g 10.5281/zenodo.<resource nr>/<version nr> or <partner_id>/<resource id>/latest
-            ? item.id.toLowerCase() === link_key.toLowerCase()  // exact version id
-            : item.id.toLowerCase().includes(link_key.toLowerCase())  // resource id matches version id; select latest (first) below
+        item => item.id.toLowerCase() === link_key.toLowerCase()
       );
 
-      for (let lit of linked.slice(0, 1)) {
+      for (let lit of linked) {
         item.apps.unshift({
           name: lit.name,
           icon: lit.icon || DEFAULT_ICONS[lit.type],
