@@ -371,7 +371,7 @@ async function updateFullRDF(item) {
         newRDF.source = newRDF.rdf_source || item.rdf_source;
       }
       for (let k of Object.keys(newRDF)) {
-        if (k !== "rdf_source") item[k] = newRDF[k];
+        if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
       }
     } else {
       throw new Error(`Oops, failed to fetch RDF file.`);
