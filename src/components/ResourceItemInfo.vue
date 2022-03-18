@@ -36,14 +36,14 @@
       class="authors"
       v-if="resourceItem.authors && resourceItem.authors.length > 0"
     >
-      {{ resourceItem.authors.length > 1 ? "Authors: " : "Author: " }}
+      {{ resourceItem.authors.length > 1 ? "Contributors: " : "Contributor: " }}
       <b-tooltip
         v-for="author in resourceItem.authors"
         :key="author.name"
         :label="author.affiliation"
         position="is-bottom"
       >
-        <span class="authors">{{ author.name }}</span>
+        <span class="authors">{{ author.name || author }}</span>
       </b-tooltip>
     </p>
     <br />
