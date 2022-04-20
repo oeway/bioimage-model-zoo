@@ -5,7 +5,7 @@
       &nbsp;&nbsp;<badges :badges="resourceItem.badges"></badges>
     </section>
     <section>
-      <pre class="resource-id">ID:</pre>
+      <pre class="resource-id">🆔</pre>
       <pre ref="resourceId" class="resource-id">{{ resourceItem.id }}</pre>
 
       <b-button
