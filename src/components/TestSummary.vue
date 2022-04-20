@@ -1,0 +1,55 @@
+<template>
+  <div class="test-summary">
+    <h2>Test Summary</h2>
+    <div
+      v-for="(tests, consumer) in summary.tests"
+      :key="consumer"
+      class="container"
+    >
+      <h3>{{ consumer }}</h3>
+      <ul>
+        <li v-for="(test, k) in tests" :key="k" style="list-style: none;">
+          {{ test.status == "passed" ? "✅" : "❌" }}
+          <span style="margin-left: 5px;">{{ test.name }}</span>
+          <b-button
+            class="button is-small"
+            style="margin-left: 10px; color: blue; height: 22px;"
+            @click="toggleSummary(test)"
+            >{{ test.expand ? "-" : "+" }}</b-button
+          >
+          <div v-show="test.expand">
+            <pre v-if="test.status">Status: {{ test.status }}</pre>
+            <pre v-if="test.error">Error: {{ test.error }}</pre>
+            <pre v-if="test.traceback">Traceback: 
+              <p v-for="(line, lk) in test.traceback" :key="lk">{{line}}</p>
+            </pre>
+            <pre v-if="test.wanings">Warnings: {{ test.wanings }}</pre>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "TestSummary",
+  props: {
+    summary: {
+      type: Object,
+      default: null
+    }
+  },
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {
+    toggleSummary(test) {
+      test.expand = !test.expand;
+      this.$forceUpdate();
+    }
+  }
+};
+</script>
+<style scoped></style>

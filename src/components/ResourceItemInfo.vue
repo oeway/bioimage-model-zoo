@@ -100,6 +100,10 @@
       >
 
       <br />
+      <test-summary
+        v-if="resourceItem.test_summary"
+        :summary="resourceItem.test_summary"
+      ></test-summary>
       <h3 v-if="formatedCitation" id="citation">How to cite</h3>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
@@ -114,13 +118,25 @@
 </template>
 
 <script>
+import yaml from "js-yaml";
 import { mapState } from "vuex";
 import Badges from "@/components/Badges.vue";
 import AppIcons from "@/components/AppIcons.vue";
 import Attachments from "@/components/Attachments.vue";
 import Markdown from "@/components/Markdown.vue";
+import TestSummary from "@/components/TestSummary.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import { randId, concatAndResolveUrl } from "../utils";
+
+async function fetchTestSummary(url) {
+  const response = await fetch(url);
+  if (response.ok) {
+    const yamlStr = await response.text();
+    return yaml.load(yamlStr);
+  } else {
+    throw new Error(`Oops, failed to fetch test summary.`);
+  }
+}
 
 export default {
   name: "ResourceItemInfo",
@@ -132,6 +148,7 @@ export default {
   },
   components: {
     markdown: Markdown,
+    "test-summary": TestSummary,
     badges: Badges,
     attachments: Attachments,
     "app-icons": AppIcons,
@@ -156,6 +173,17 @@ export default {
     };
     if (this.resourceItem.documentation)
       this.getDocs(this.resourceItem).then(focus);
+    if (!this.resourceItem.test_summary) {
+      // replace the trailing file name "rdf.yaml" into "test_summary.yaml"
+      const url = this.resourceItem.source.replace(
+        /rdf\.yaml$/,
+        "test_summary.yaml"
+      );
+      fetchTestSummary(url).then(summary => {
+        this.resourceItem.test_summary = summary;
+        this.$forceUpdate();
+      });
+    }
   },
   computed: {
     formatedCitation: function() {
