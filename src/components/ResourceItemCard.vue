@@ -39,6 +39,9 @@
               class="item-icon"
               :src="icon.src"
             />
+            <span v-else-if="icon.type === 'emoji'" class="icon">
+              {{ icon.src }}
+            </span>
             <img
               v-else-if="icon.type === 'animal'"
               class="item-icon"
@@ -98,7 +101,6 @@
 import { mapState } from "vuex";
 import Badges from "./Badges";
 import AppIcons from "./AppIcons";
-import { anonymousAnimals } from "../utils";
 import DevMenu from "./DevMenu.vue";
 
 const isTouchDevice = (function() {
@@ -142,24 +144,16 @@ export default {
         if (this.resourceItem.icon.startsWith("http")) {
           return { type: "img", src: this.resourceItem.icon };
         }
-        if (anonymousAnimals.indexOf(this.resourceItem.icon) >= 0) {
-          return {
-            type: "animal",
-            src: this.resourceItem.icon
-          };
-        } else {
-          return { type: "material", src: this.resourceItem.icon };
-        }
-      } else {
-        let sum = 0;
-        if (this.resourceItem.name)
-          for (let i = 0; i < this.resourceItem.name.length; i++) {
-            sum = sum + this.resourceItem.name.charCodeAt(i);
-          }
-        const selectedIcon = anonymousAnimals[sum % anonymousAnimals.length];
+        return { type: "material", src: this.resourceItem.icon };
+      } else if (this.resourceItem.nickname_icon) {
         return {
-          type: "animal",
-          src: selectedIcon
+          type: "emoji",
+          src: this.resourceItem.nickname_icon
+        };
+      } else {
+        return {
+          type: "emoji",
+          src: "🦒"
         };
       }
     },

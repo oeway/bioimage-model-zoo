@@ -7,10 +7,30 @@
     <section>
       <pre class="resource-id">ID:</pre>
       <pre ref="resourceId" class="resource-id">{{ resourceItem.id }}</pre>
+
       <b-button
         size="is-small"
         icon-left="content-copy"
-        @click="copyId(resourceItem.id)"
+        @click="copyText(resourceItem.id)"
+      ></b-button>
+
+      <pre
+        style="margin-left: 20px;"
+        class="resource-id"
+        v-if="resourceItem.nickname_icon"
+        >{{ resourceItem.nickname_icon }}</pre
+      >
+      <pre
+        ref="resourceNickname"
+        class="resource-id"
+        v-if="resourceItem.nickname"
+        >{{ resourceItem.nickname }}</pre
+      >
+
+      <b-button
+        size="is-small"
+        icon-left="content-copy"
+        @click="copyText(resourceItem.nickname)"
       ></b-button>
     </section>
     <b-carousel
@@ -173,7 +193,7 @@ export default {
     })
   },
   methods: {
-    copyId(value) {
+    copyText(value) {
       const tempInput = document.createElement("input");
       tempInput.style = "position: absolute; left: -1000px; top: -1000px";
       tempInput.value = value;
