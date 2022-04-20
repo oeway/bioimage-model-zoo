@@ -152,8 +152,7 @@ export default {
         };
       } else {
         return {
-          type: "emoji",
-          src: "🦒"
+          type: "none"
         };
       }
     },
