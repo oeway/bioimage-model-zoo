@@ -411,6 +411,10 @@ function normalizeItem(self, item) {
   if (item.applications) {
     item.allLabels = item.allLabels.concat(item.applications);
   }
+  // add nickname for search
+  if (item.nickname) {
+    item.allLabels.push(item.nickname);
+  }
   if (item.tags) {
     item.tags = item.tags.filter(tag => {
       return (
@@ -1128,6 +1132,16 @@ export default {
               this.$route.query.id +
               ". Possibly because it has not been approved yet."
           );
+        }
+      } else if (this.$route.query.nickname) {
+        const m = this.resourceItems.filter(
+          item => item.nickname === this.$route.query.nickname
+        )[0];
+        if (m) {
+          this.showResourceItemInfo(m);
+          hasQuery = true;
+        } else {
+          alert("Oops, resource item not found: " + this.$route.query.nickname);
         }
       }
       if (this.$route.query.tags) {
