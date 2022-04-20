@@ -30,6 +30,7 @@
       <b-button
         size="is-small"
         icon-left="content-copy"
+        v-if="resourceItem.nickname"
         @click="copyText(resourceItem.nickname)"
       ></b-button>
     </section>
