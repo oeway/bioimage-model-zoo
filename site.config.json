@@ -42,7 +42,7 @@
       "url": "https://www.netlify.com"
     }
   ],
-  "rdf_root_repo": "bioimage-io/bioimage.io",
+  "rdf_root_repo": "bioimage-io/collection-bioimage-io",
   "enable_comment": true,
   "splash_title": "BioImage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
