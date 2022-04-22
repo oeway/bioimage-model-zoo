@@ -5,9 +5,9 @@ Note that in order to contribute resources to the BioImage.IO Model Zoo you do n
 
 
 If you are eligible and willing to join as a community partner, please submit a request issue [here](https://github.com/bioimage-io/collection-bioimage-io/issues/new) with relevant information including the following:
-    1. Description of your software, organization, company or team.
-    2. Description of the resources that you plan to contribute. Please also include the url to your project repo.
-    3. Description of future plans on how your project will be maintained.
+1. Description of your software, organization, company or team.
+2. Description of the resources that you plan to contribute. Please also include the url to your project repo.
+3. Description of future plans on how your project will be maintained.
 
 The admin team of BioImage.IO will discuss the request and decide whether to approve or decline. We will mainly check whether the requirements for participation are met and are thrilled for the BioImage.IO community to grow.
 
