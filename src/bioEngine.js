@@ -202,16 +202,10 @@ export async function setupBioEngine() {
       //     imjoy.wm.windows.push(w);
       //   }
       // });
-      app.imjoy.pm
-        .reloadPluginRecursively({
-          uri:
-            "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
-        })
-        .then(() => {
-          // debugger
-          // p.setup()
-          // api.alert("done")
-        });
+      app.imjoy.pm.reloadPluginRecursively({
+        uri:
+          "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
+      });
       app.imjoy.pm
         .reloadPluginRecursively({
           // uri: "http://localhost:9090/Jupyter-Engine-Manager.imjoy.html"

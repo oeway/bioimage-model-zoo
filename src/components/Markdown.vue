@@ -39,6 +39,10 @@ export default {
     enableRunButtons: {
       type: Boolean,
       default: false
+    },
+    runButtonContext: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -84,7 +88,7 @@ export default {
     docs: function() {
       if (this.enableRunButtons) {
         setTimeout(() => {
-          initializeRunButtons(this.$el);
+          initializeRunButtons(this.$el, this.runButtonContext);
         }, 10);
       }
     },

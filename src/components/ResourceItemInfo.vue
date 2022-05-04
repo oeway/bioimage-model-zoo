@@ -90,6 +90,7 @@
       <markdown
         v-if="resourceItem.docs"
         :enable-run-buttons="true"
+        :run-button-context="runButtonContext"
         :baseUrl="resourceItem.baseUrl"
         :content="resourceItem.docs.slice(0, maxDocsLetters)"
       ></markdown>
@@ -188,6 +189,16 @@ export default {
     }
   },
   computed: {
+    runButtonContext: function() {
+      return {
+        config: {
+          referer: window.location.href,
+          mode: "one",
+          type: "bioengine"
+        },
+        data: this.resourceItem
+      };
+    },
     formatedCitation: function() {
       let cites = this.resourceItem.cite;
       if (!cites || cites.length <= 0) return null;

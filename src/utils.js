@@ -691,7 +691,6 @@ export class ZenodoClient {
         `Authentication information expired, please login to Zenodo and authorize ShareLoc.XYZ again.`
       );
       await this.login();
-      debugger;
       const url = `${bucketUrl}/${fileName}?access_token=${this.credential.access_token}`;
       response = await axios.put(url, file, options);
       // } else {

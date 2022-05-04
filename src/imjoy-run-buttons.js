@@ -132,10 +132,12 @@ async function runCode(mode, config, code) {
         });
         try {
           if (plugin.run) {
-            await plugin.run({
-              config: {},
-              data: {}
-            });
+            await plugin.run(
+              config.runButtonContext || {
+                config: {},
+                data: {}
+              }
+            );
           }
         } catch (e) {
           this.showMessage(e.toString());
@@ -200,10 +202,12 @@ async function runCode(mode, config, code) {
               return;
             }
             if (pluginInEditor && pluginInEditor.run) {
-              return await pluginInEditor.run({
-                config: {},
-                data: {}
-              });
+              return await pluginInEditor.run(
+                config.runButtonContext || {
+                  config: {},
+                  data: {}
+                }
+              );
             }
             if (stopped) {
               pluginInEditor = null;
@@ -295,7 +299,6 @@ function execute(preElm, mode) {
     preElm.pluginConfig.lang = preElm
       .querySelector("code")
       .classList[0].replace("language-", "");
-    debugger;
 
     const outputFullscreenElm = preElm.querySelector(".fullscreen-button");
     outputFullscreenElm.onclick = () => {
@@ -514,7 +517,7 @@ function execute(preElm, mode) {
   }
 }
 
-export function initializeRunButtons(rootElement) {
+export function initializeRunButtons(rootElement, runButtonContext) {
   var targetElms = Array.apply(null, rootElement.querySelectorAll("pre"));
 
   var template = [
@@ -568,6 +571,7 @@ export function initializeRunButtons(rootElement) {
             .join(":") || "{}"
         );
       }
+      elm.pluginConfig.runButtonContext = runButtonContext;
       elm.insertAdjacentHTML("beforeEnd", template);
 
       elm.querySelector(".docsify-loader").style.display = "none";
@@ -591,7 +595,7 @@ export function initializeRunButtons(rootElement) {
       }
       if (elm.pluginConfig.startup_mode) {
         const mode = elm.pluginConfig.startup_mode;
-        execute(elm, mode, true);
+        execute(elm, mode);
         delete elm.pluginConfig.startup_mode;
       }
     } catch (e) {
