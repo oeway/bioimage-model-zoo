@@ -89,6 +89,7 @@
     <div class="markdown-body">
       <markdown
         v-if="resourceItem.docs"
+        :enable-run-buttons="true"
         :baseUrl="resourceItem.baseUrl"
         :content="resourceItem.docs.slice(0, maxDocsLetters)"
       ></markdown>
@@ -105,7 +106,7 @@
         v-if="resourceItem.test_summary"
         :summary="resourceItem.test_summary"
       ></test-summary>
-      <h3 v-if="formatedCitation" id="citation">How to cite</h3>
+      <h2 v-if="formatedCitation" id="citation">How to cite</h2>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
           {{ c.text }}
