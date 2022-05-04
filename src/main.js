@@ -4,6 +4,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import Buefy from "buefy";
 import "./buefy.css";
+import "./imjoy-run-buttons.css";
 import { store } from "./store";
 import "./bulmaswatch.min.css";
 import vmodal from "vue-js-modal";
