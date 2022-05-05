@@ -15,8 +15,11 @@ import "../../node_modules/highlight.js/styles/github.css";
 import marked from "marked";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js";
+import { initializeRunButtons } from "../imjoy-run-buttons";
 
 import { replaceAllRelByAbs } from "../utils";
+
+const dompurifyConfig = { ADD_TAGS: ["#comment"], FORCE_BODY: true };
 
 export default {
   name: "Markdown",
@@ -31,6 +34,14 @@ export default {
     },
     url: {
       type: String,
+      default: null
+    },
+    enableRunButtons: {
+      type: Boolean,
+      default: false
+    },
+    runButtonContext: {
+      type: Object,
       default: null
     }
   },
@@ -69,15 +80,24 @@ export default {
   watch: {
     content: function(newContent) {
       this.docs = DOMPurify.sanitize(
-        replaceAllRelByAbs(marked(newContent), this.baseUrl)
+        replaceAllRelByAbs(marked(newContent), this.baseUrl),
+        dompurifyConfig
       );
       this.loading = false;
+    },
+    docs: function() {
+      if (this.enableRunButtons) {
+        setTimeout(() => {
+          initializeRunButtons(this.$el, this.runButtonContext);
+        }, 10);
+      }
     },
     baseUrl: function(newBaseUrl) {
       this.baseUrl = newBaseUrl;
 
       this.docs = DOMPurify.sanitize(
-        replaceAllRelByAbs(marked(this.content), this.baseUrl)
+        replaceAllRelByAbs(marked(this.content), this.baseUrl),
+        dompurifyConfig
       );
     },
     url: function(newUrl) {
@@ -91,7 +111,8 @@ export default {
     });
     if (this.content)
       this.docs = DOMPurify.sanitize(
-        replaceAllRelByAbs(marked(this.content), this.baseUrl)
+        replaceAllRelByAbs(marked(this.content), this.baseUrl),
+        dompurifyConfig
       );
     else if (this.url) {
       this.showDocsUrl(this.url);
@@ -110,12 +131,14 @@ export default {
             const baseUrl = temp.slice(0, temp.length - 1).join("/");
 
             this.docs = DOMPurify.sanitize(
-              replaceAllRelByAbs(marked(content), baseUrl)
+              replaceAllRelByAbs(marked(content), baseUrl),
+              dompurifyConfig
             );
             this.loading = false;
           } else {
             this.docs = DOMPurify.sanitize(
-              marked("```\n" + content + "\n```\n")
+              marked("```\n" + content + "\n```\n"),
+              dompurifyConfig
             );
           }
         } else {

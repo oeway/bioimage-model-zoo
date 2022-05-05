@@ -1,7 +1,16 @@
 <template>
   <div class="test-summary">
-    <h2>Test Summary</h2>
+    <h2>
+      Test Summary
+      <b-button
+        class="button is-small"
+        style="margin-left: 10px; color: blue;"
+        @click="toggleAll()"
+        >{{ showAll ? "-" : "+" }}</b-button
+      >
+    </h2>
     <div
+      v-show="showAll"
       v-for="(tests, consumer) in summary.tests"
       :key="consumer"
       class="container"
@@ -41,12 +50,18 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      showAll: false
+    };
   },
   mounted() {},
   methods: {
     toggleSummary(test) {
       test.expand = !test.expand;
+      this.$forceUpdate();
+    },
+    toggleAll() {
+      this.showAll = !this.showAll;
       this.$forceUpdate();
     }
   }

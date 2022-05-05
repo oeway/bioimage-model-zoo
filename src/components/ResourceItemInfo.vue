@@ -89,6 +89,8 @@
     <div class="markdown-body">
       <markdown
         v-if="resourceItem.docs"
+        :enable-run-buttons="true"
+        :run-button-context="runButtonContext"
         :baseUrl="resourceItem.baseUrl"
         :content="resourceItem.docs.slice(0, maxDocsLetters)"
       ></markdown>
@@ -105,7 +107,7 @@
         v-if="resourceItem.test_summary"
         :summary="resourceItem.test_summary"
       ></test-summary>
-      <h3 v-if="formatedCitation" id="citation">How to cite</h3>
+      <h2 v-if="formatedCitation" id="citation">How to cite</h2>
       <ul v-if="formatedCitation" class="citation">
         <li v-for="c in formatedCitation" :key="c.text">
           {{ c.text }}
@@ -187,6 +189,16 @@ export default {
     }
   },
   computed: {
+    runButtonContext: function() {
+      return {
+        config: {
+          referer: window.location.href,
+          mode: "one",
+          type: "bioengine"
+        },
+        data: this.resourceItem
+      };
+    },
     formatedCitation: function() {
       let cites = this.resourceItem.cite;
       if (!cites || cites.length <= 0) return null;

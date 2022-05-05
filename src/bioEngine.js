@@ -1,3 +1,5 @@
+import { randId } from "./utils";
+
 const cssPatch = `
 .window>.titlebar {
   cursor: move;
@@ -40,9 +42,108 @@ export async function setupBioEngine() {
       document.body.appendChild(container);
     }
   }
+
+  async function createWindow(_plugin, config) {
+    let output;
+    if (_plugin && _plugin.config.namespace) {
+      if (_plugin.config.namespace) {
+        const outputContainer = document.getElementById(
+          "output_" + _plugin.config.namespace
+        );
+        if (
+          !config.dialog &&
+          (!config.window_id || !document.getElementById(config.window_id))
+        ) {
+          output = document.createElement("div");
+          output.id = randId();
+          output.classList.add("imjoy-window");
+          outputContainer.style.height = "600px";
+          outputContainer.appendChild(output);
+          config.window_id = output.id;
+        }
+      }
+    }
+    let w;
+    // fallback to grid
+    if (
+      (config.type && config.type.startsWith("imjoy/")) ||
+      config.type === "joy"
+    ) {
+      const grid = await window.imjoy.pm.createWindow(_plugin, {
+        src: "https://grid.imjoy.io/#/app",
+        window_id: config.window_id,
+        namespace: config.namespace
+      });
+      w = await grid.createWindow(config);
+    } else {
+      // w = await window.imjoy.pm.createWindow(_plugin, config)
+      if (!config.window_manager_container) config.dialog = true;
+      w = window.imjoy.pm.createWindow(_plugin, config);
+    }
+
+    return w;
+  }
+
+  const imjoy_api = {
+    async getPlugin(_plugin, config, extra_config) {
+      // pass the namespace to the created plugin
+      extra_config = extra_config || {};
+      if (!config || !config.namespace)
+        extra_config.namespace =
+          extra_config.namespace || (_plugin && _plugin.config.namespace);
+      return await window.imjoy.pm.getPlugin(_plugin, config, extra_config);
+    },
+    async showStatus(_plugin, msg) {
+      if (_plugin && _plugin.config.namespace) {
+        if (_plugin.config.namespace) {
+          const statusElem = document.getElementById(
+            "status_" + _plugin.config.namespace
+          );
+          statusElem.innerHTML = `${msg.slice(0, 128)}`;
+          return;
+        }
+      }
+      window.app.showSnackbar(msg, 5);
+    },
+    async showProgress(_plugin, progress) {
+      if (_plugin && _plugin.config.namespace) {
+        if (_plugin.config.namespace) {
+          const progressElem = document.getElementById(
+            "progress_" + _plugin.config.namespace
+          );
+          if (progress < 1) progress = progress * 100;
+          if (progress > 100) progress = 100;
+          progressElem.style.width = `${progress}%`;
+          return;
+        }
+      }
+      progress = progress || 0;
+      if (progress < 1) progress = progress * 100;
+      window.app.progress = progress;
+      window.app.$forceUpdate();
+    },
+    async showMessage(_plugin, msg, duration) {
+      duration = duration || 5;
+      if (_plugin && _plugin.config.namespace) {
+        if (_plugin.config.namespace) {
+          const statusElem = document.getElementById(
+            "status_" + _plugin.config.namespace
+          );
+          statusElem.innerHTML = `${msg.slice(0, 128)}`;
+        }
+      }
+      window.app.showSnackbar(msg, duration);
+    },
+    async showDialog(_plugin, config) {
+      config.dialog = true;
+      return await createWindow(_plugin, config);
+    },
+    createWindow
+  };
+
   window
     .loadImJoyBasicApp({
-      version: "0.13.81",
+      version: "0.14.3",
       process_url_query: true,
       show_window_title: false,
       show_progress_bar: true,
@@ -56,7 +157,7 @@ export async function setupBioEngine() {
       main_container: null,
       menu_container: "imjoy-menu",
       window_manager_container: devMode ? "window-container" : null,
-      imjoy_api: {} // override some imjoy API functions here
+      imjoy_api
     })
     .then(async app => {
       // get the api object from the root plugin
@@ -78,6 +179,18 @@ export async function setupBioEngine() {
           if (uri) app.loadPlugin(uri);
         }
       });
+      app.addMenuItem({
+        label: "🎢 Playground",
+        callback() {
+          api.createWindow({ src: "https://if.imjoy.io" });
+        }
+      });
+      app.addMenuItem({
+        label: "📓 Notebooks",
+        callback() {
+          api.createWindow({ src: "https://jupyter.imjoy.io" });
+        }
+      });
       // expose global variables
       window.api = api;
       window.imjoy = app.imjoy;
@@ -89,16 +202,10 @@ export async function setupBioEngine() {
       //     imjoy.wm.windows.push(w);
       //   }
       // });
-      app.imjoy.pm
-        .reloadPluginRecursively({
-          uri:
-            "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
-        })
-        .then(() => {
-          // debugger
-          // p.setup()
-          // api.alert("done")
-        });
+      app.imjoy.pm.reloadPluginRecursively({
+        uri:
+          "https://raw.githubusercontent.com/imjoy-team/imjoy-core-plugins/master/docs/WebPythonWorker.imjoy.html"
+      });
       app.imjoy.pm
         .reloadPluginRecursively({
           // uri: "http://localhost:9090/Jupyter-Engine-Manager.imjoy.html"
