@@ -1,6 +1,6 @@
 # Building BioEngine Apps
 
-We use BioEngine, a tailored version of [ImJoy](https://imjoy.io) to run these applications. Therefore, you can basically run ImJoy plugins with the BioEngine specific api. 
+We use BioEngine, a tailored version of [ImJoy](https://imjoy.io) to run models applications. Therefore, you can basically run ImJoy plugins with the BioEngine specific api. 
 
 Depending on different types of application, for web application, please refer to [here](https://github.com/imjoy-team/imjoy-core#use-your-web-application-inside-imjoy) for integrating the `imjoy-rpc` with your web app. Once done you can simply set `source` in the [`Resource Description File`](/bioimageio_rdf_spec) to your web app url.
 
