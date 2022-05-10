@@ -767,6 +767,15 @@ export default {
           isRequired: false
         },
         {
+          label: "Training data",
+          type: "training_data",
+          value: this.rdf.training_data,
+          // options: ["id"],
+          options: this.resourceItems.filter(item => item.type === "dataset").map(item => item.id),
+          help: "Dataset used for training",
+          isRequired: false
+        },
+        {
           label: "Links",
           type: "tags",
           value: this.rdf.links,
@@ -845,6 +854,7 @@ export default {
         tags: "Tags",
         links: "Links",
         cite: "Citation",
+        training_data: "Training Data",
         authors: "Authors"
       };
       const values = result.values;
