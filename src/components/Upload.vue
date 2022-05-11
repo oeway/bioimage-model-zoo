@@ -846,7 +846,7 @@ export default {
         links: "Links",
         cite: "Citation",
         authors: "Authors",
-        maintainers: "Maintainers",
+        maintainers: "Maintainers"
       };
       const values = result.values;
       for (let k in rdfNameMapping) {
