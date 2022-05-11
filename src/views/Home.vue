@@ -539,8 +539,6 @@ function normalizeItem(self, item) {
     }
   }
 
-
-
   item.badges = item.badges || [];
   item.attachments = item.attachments || {};
   const linkedItems = self.resourceItems.filter(
