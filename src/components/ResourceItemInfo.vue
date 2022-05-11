@@ -103,6 +103,13 @@
       >
 
       <br />
+      <div v-if="resourceItem.training_data_item">
+        <h2>Training Data</h2>
+        <resource-item-card
+          @show-info="showResourceItemInfo(resourceItem.training_data_item)"
+          :resourceItem="resourceItem.training_data_item"
+        ></resource-item-card>
+      </div>
       <test-summary
         v-if="resourceItem.test_summary"
         :summary="resourceItem.test_summary"
@@ -130,6 +137,7 @@ import Markdown from "@/components/Markdown.vue";
 import TestSummary from "@/components/TestSummary.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import { randId, concatAndResolveUrl } from "../utils";
+import ResourceItemCard from "./ResourceItemCard";
 
 async function fetchTestSummary(url) {
   const response = await fetch(url);
@@ -147,6 +155,10 @@ export default {
     resourceItem: {
       type: Object,
       default: null
+    },
+    showResourceItemInfo: {
+      type: Function,
+      default: null
     }
   },
   components: {
@@ -155,7 +167,8 @@ export default {
     badges: Badges,
     attachments: Attachments,
     "app-icons": AppIcons,
-    "comment-box": CommentBox
+    "comment-box": CommentBox,
+    "resource-item-card": ResourceItemCard
   },
   data() {
     return {
