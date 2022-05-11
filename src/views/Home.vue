@@ -516,24 +516,26 @@ function normalizeItem(self, item) {
     }
   }
 
-  if (item.links) {
-    for (let link_key of item.links) {
-      const linked = self.resourceItems.filter(
-        item => item.id.toLowerCase() === link_key.toLowerCase()
-      );
+  item.links = item.links || [];
+  if (item.training_data) {
+    item.links.push(item.training_data.id);
+  }
+  for (let link_key of item.links) {
+    const linked = self.resourceItems.filter(
+      item => item.id.toLowerCase() === link_key.toLowerCase()
+    );
 
-      for (let lit of linked) {
-        item.apps.unshift({
-          name: lit.name,
-          icon: lit.icon || DEFAULT_ICONS[lit.type],
-          async run() {
-            if (self.allApps[link_key]) {
-              await self.updateFullRDF(item);
-              await runAppForItem(self, self.allApps[link_key], item);
-            } else self.showResourceItemInfo(lit);
-          }
-        });
-      }
+    for (let lit of linked) {
+      item.apps.unshift({
+        name: lit.name,
+        icon: lit.icon || DEFAULT_ICONS[lit.type],
+        async run() {
+          if (self.allApps[link_key]) {
+            await self.updateFullRDF(item);
+            await runAppForItem(self, self.allApps[link_key], item);
+          } else self.showResourceItemInfo(lit);
+        }
+      });
     }
   }
 

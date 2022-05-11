@@ -111,7 +111,10 @@
         ></resource-item-card>
       </div>
       <test-summary
-        v-if="resourceItem.test_summary"
+        v-if="
+          resourceItem.test_summary &&
+            Object.keys(resourceItem.test_summary).length > 0
+        "
         :summary="resourceItem.test_summary"
       ></test-summary>
       <h2 v-if="formatedCitation" id="citation">How to cite</h2>
