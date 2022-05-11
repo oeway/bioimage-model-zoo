@@ -1106,7 +1106,6 @@ export default {
           depositionInfo,
           metadata
         );
-
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
         this.rdf.id = this.prereserveDOI.doi; //doi and recid
