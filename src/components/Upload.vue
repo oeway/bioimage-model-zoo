@@ -845,7 +845,8 @@ export default {
         tags: "Tags",
         links: "Links",
         cite: "Citation",
-        authors: "Authors"
+        authors: "Authors",
+        maintainers: "Maintainers",
       };
       const values = result.values;
       for (let k in rdfNameMapping) {
@@ -1106,7 +1107,6 @@ export default {
           depositionInfo,
           metadata
         );
-
         // transform the RDF here
         this.prereserveDOI = depositionInfo.metadata.prereserve_doi;
         this.rdf.id = this.prereserveDOI.doi; //doi and recid
