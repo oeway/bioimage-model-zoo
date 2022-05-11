@@ -321,7 +321,6 @@
       <resource-item-info
         v-else-if="showInfoDialogMode === 'model' && selectedResourceItem"
         :resource-item="selectedResourceItem"
-        :show-resource-item-info="showResourceItemInfo"
       ></resource-item-info>
     </modal>
   </div>
@@ -361,6 +360,24 @@ const isTouchDevice = (function() {
     return false;
   }
 })();
+
+async function updateFullRDF(item) {
+  if (item.rdf_source) {
+    const response = await fetch(item.rdf_source);
+    if (response.ok) {
+      const yamlStr = await response.text();
+      const newRDF = yaml.load(yamlStr);
+      if (!newRDF.source) {
+        newRDF.source = newRDF.rdf_source || item.rdf_source;
+      }
+      for (let k of Object.keys(newRDF)) {
+        if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
+      }
+    } else {
+      throw new Error(`Oops, failed to fetch RDF file.`);
+    }
+  }
+}
 
 function normalizeItem(self, item) {
   item = Object.assign({}, item); // make a copy
@@ -528,7 +545,7 @@ function normalizeItem(self, item) {
           icon: lit.icon || DEFAULT_ICONS[lit.type],
           async run() {
             if (self.allApps[link_key]) {
-              await self.updateFullRDF(item);
+              await updateFullRDF(item);
               await runAppForItem(self, self.allApps[link_key], item);
             } else self.showResourceItemInfo(lit);
           }
@@ -869,44 +886,10 @@ export default {
       if (this.screenWidth < 700) this.infoDialogFullscreen = true;
       this.$modal.show("info-dialog");
     },
-    async updateFullRDF(item) {
-      if (item.rdf_source) {
-        const response = await fetch(item.rdf_source);
-        if (response.ok) {
-          const yamlStr = await response.text();
-          const newRDF = yaml.load(yamlStr);
-          if (!newRDF.source) {
-            newRDF.source = newRDF.rdf_source || item.rdf_source;
-          }
-          for (let k of Object.keys(newRDF)) {
-            if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
-          }
-
-          item.links = item.links || [];
-          // add training data
-          if (item.training_data) {
-            if (!item.links.includes(item.training_data.id)) {
-              item.links.push(item.training_data.id);
-            }
-
-            item.training_data_item = this.resourceItems.filter(
-              m => m.id === item.training_data.id
-            )[0];
-            if (!item.training_data_item) {
-              console.error(
-                `Training data not found: ${item.training_data.id}`
-              );
-            }
-          }
-        } else {
-          throw new Error(`Oops, failed to fetch RDF file.`);
-        }
-      }
-    },
     async showStatsDialog(item) {
       this.infoDialogTitle = "Statistics for " + item.name;
       this.showInfoDialogMode = "markdown";
-      await this.updateFullRDF(item);
+      await updateFullRDF(item);
       this.infoCommentBoxTitle = null;
       if (!item.stats) this.infoMarkdownContent = `No stats info available.`;
       else {
@@ -923,7 +906,7 @@ export default {
       this.$modal.show("info-dialog");
     },
     async showAttachmentsDialog(item, focus) {
-      await this.updateFullRDF(item);
+      await updateFullRDF(item);
       this.infoDialogTitle = focus
         ? item.name + ": " + focus
         : item.name + ": Attachments";
@@ -1070,7 +1053,7 @@ export default {
     },
     async showResourceItemInfo(mInfo, focus) {
       this.showInfoDialogMode = "model";
-      await this.updateFullRDF(mInfo);
+      await updateFullRDF(mInfo);
       mInfo._focus = focus;
       this.selectedResourceItem = mInfo;
       this.infoDialogTitle = this.selectedResourceItem.name;
