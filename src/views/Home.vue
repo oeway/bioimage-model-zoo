@@ -516,7 +516,7 @@ function normalizeItem(self, item) {
     }
   }
 
-  item.links = item.links || []
+  item.links = item.links || [];
   for (let link_key of item.links) {
     const linked = self.resourceItems.filter(
       item => item.id.toLowerCase() === link_key.toLowerCase()
@@ -536,8 +536,8 @@ function normalizeItem(self, item) {
     }
   }
 
-  if(item.training_data){
-    item.links.push(item.training_data.id)
+  if (item.training_data) {
+    item.links.push(item.training_data.id);
   }
 
   item.badges = item.badges || [];
