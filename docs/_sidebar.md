@@ -13,6 +13,6 @@
   - [Model Runner](/consumer_software/model_runner.md)
 * [Community Partners](/community_partners/README.md)
   - [How-tos Guide](/community_partners/how-tos_guide)
-  - [BioImage.IO Manifest File](/community_partners/manifest-format.md)
+  - [BioImage.IO Partner Collection](/community_partners/partner_collection.md)
 * [User Agreement](/user_agreement.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
