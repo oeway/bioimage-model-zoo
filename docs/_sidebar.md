@@ -12,7 +12,7 @@
   - [Explanations](/consumer_software/explanations)
   - [Model Runner](/consumer_software/model_runner.md)
 * [Community Partners](/community_partners/README.md)
-  - [How-tos Guide](/community_partners/how-tos_guide)
+  - [How to join](/community_partners/how_to_join.md)
   - [BioImage.IO Partner Collection](/community_partners/partner_collection.md)
 * [User Agreement](/user_agreement.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
