@@ -24,4 +24,4 @@ Ready to follow the [Tutorial](/contribute_models/tutorials.md)?
 
 ## Contributing other resource types
 
-To contribute a notebook, application or dataset, please use the generic [Resource Description File Format](https://github.com/bioimage-io/spec-bioimage-io/blob/main/README.md).
+To contribute a notebook, application or dataset, please use the generic [Resource Description File Format](https://github.com/bioimage-io/spec-bioimage-io/blob/main/README.md#resource-description-file-specification).
