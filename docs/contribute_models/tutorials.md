@@ -1,10 +1,10 @@
 
 # Tutorial for contributing models
 
-1. Create a model resource description file (RDF) according to the [BioImage.IO Model Resource Description File Specification](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/model_spec_latest.md).
+1. Create a model resource description file (RDF) according to the [BioImage.IO Model Resource Description File Specification](https://bioimage.io/docs/#/bioimageio_model_spec).
    - Each field on the file is either mandatory or optional. You can use [our template](https://github.com/bioimage-io/bioimage-io-models/pull/55/files#diff-f6c64be5b9d764d0964654908b2ed4495fccc7624e58e9360bfdc6cef169edbe) to fill in the required information. 
    - [Here is an example](https://github.com/bioimage-io/pytorch-bioimage-io/blob/master/specs/models/unet2d_nuclei_broad/UNet2DNucleiBroad.model.yaml) of a valid model RDF. In the Bioimage Model Zoo web page you will also find different examples. 
-   - You can validate your model RDF with the `bioimageio validate` command as described [here](https://github.com/bioimage-io/spec-bioimage-io#validate).
+   - You can validate your model RDF with the `bioimageio validate` command as described [here](https://bioimage.io/docs/#/bioimageio_spec?id=validate).
 
 2. On bioimage.io, click on `+Upload` and follow the steps:
 
