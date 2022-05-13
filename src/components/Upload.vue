@@ -705,12 +705,6 @@ export default {
           help:
             "The maintainers who maintain this resource item. Importantly, the first maintainer will be contacted for the approval process to the BioImage.IO"
         },
-        // {
-        //   label: "Source",
-        //   placeholder: "A doi or URL to the source of the item",
-        //   isRequired: false,
-        //   value: this.rdf.version
-        // },
         {
           label: "Version",
           placeholder: "Version in MAJOR.MINOR.PATCH format(e.g. 0.1.0)",
@@ -765,6 +759,13 @@ export default {
           value: this.rdf.cite,
           help: "How this resource item should be cited",
           isRequired: false
+        },
+        {
+          label: "Source",
+          placeholder: "source",
+          value: this.rdf.source,
+          isRequired: false,
+          help: "The source url of your deposit (optional)"
         },
         {
           label: "Links",
@@ -840,7 +841,7 @@ export default {
         description: "Description",
         version: "Version",
         license: "License",
-        // source: "Source",
+        source: "Source",
         git_repo: "Git Repository",
         tags: "Tags",
         links: "Links",
