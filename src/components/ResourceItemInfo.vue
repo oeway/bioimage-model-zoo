@@ -166,7 +166,7 @@ class ImJoyPlugin():
 
 api.export(ImJoyPlugin())
 \`\`\`
-`
+`;
 
 export default {
   name: "ResourceItemInfo",
@@ -298,15 +298,15 @@ export default {
         if (response.status == 200) {
           const raw_docs = await response.text();
           let baseUrl;
-          if (!this.resourceItem.documentation.startsWith("http")) {
+          if (!resourceItem.documentation.startsWith("http")) {
             const temp = (
-              this.resourceItem.root_url +
+              resourceItem.root_url +
               "/" +
-              this.resourceItem.documentation
+              resourceItem.documentation
             ).split("/");
             baseUrl = temp.slice(0, temp.length - 1).join("/");
           } else {
-            const temp = this.resourceItem.documentation.split("/");
+            const temp = resourceItem.documentation.split("/");
             baseUrl = temp.slice(0, temp.length - 1).join("/");
           }
           if (resourceItem.documentation.endsWith(".md")) {
@@ -323,12 +323,10 @@ export default {
         resourceItem.docs = null;
         this.$forceUpdate();
       } finally {
-        if (this.resourceItem.docs){
-          console.log(this.resourceItem)
-          debugger
-          if(this.resourceItem.type === 'model')
-            this.resourceItem.docs = this.resourceItem.docs + `\n${bioengineTemplate}`
-          this.maxDocsLetters = this.resourceItem.docs
+        if (resourceItem.docs) {
+          // if(resourceItem.type === 'model')
+          //   resourceItem.docs = resourceItem.docs + `\n${bioengineTemplate}`
+          this.maxDocsLetters = resourceItem.docs
             .split("\n")
             .slice(0, 5)
             .join("\n").length;

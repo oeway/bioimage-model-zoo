@@ -520,8 +520,8 @@ function normalizeItem(self, item) {
   if (item.training_data) {
     item.links.push(item.training_data.id);
   }
-  if(item.type==="model"){
-    item.links.push("imjoy/genericbioengineapp")
+  if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
+    item.links.push("imjoy/genericbioengineapp");
   }
   for (let link_key of item.links) {
     const linked = self.resourceItems.filter(
