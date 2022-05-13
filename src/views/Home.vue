@@ -575,14 +575,11 @@ function normalizeItem(self, item) {
     });
   }
 
-  if (item.stats && item.stats.downloads !== undefined)
+  if (item.download_count)
     item.badges.unshift({
       label: "downloads",
       label_type: "is-dark",
-      ext: item.stats.downloads,
-      run() {
-        self.showStatsDialog(item);
-      }
+      ext: item.download_count,
     });
 
   if (item.config && item.config._conceptdoi) {
