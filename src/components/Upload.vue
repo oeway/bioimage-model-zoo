@@ -879,6 +879,8 @@ export default {
       const rdf = yaml.load(yaml.dump(this.rdf));
       delete rdf._metadata;
       if (rdf?.config?._deposit) delete rdf.config._deposit;
+      if (rdf?.config?._doi) delete rdf.config._doi;
+
       console.log("RDF: ", rdf);
 
       this.rdfYaml = yaml.dump(rdf);
