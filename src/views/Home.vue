@@ -579,7 +579,7 @@ function normalizeItem(self, item) {
     item.badges.unshift({
       label: "downloads",
       label_type: "is-dark",
-      ext: item.download_count,
+      ext: item.download_count
     });
 
   if (item.config && item.config._conceptdoi) {
