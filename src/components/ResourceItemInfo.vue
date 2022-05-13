@@ -152,21 +152,21 @@ async function fetchTestSummary(url) {
   }
 }
 
-const bioengineTemplate = `
-<!-- ImJoyPlugin: { "type": "web-python"} -->
-\`\`\`python
-from imjoy import api
+// const bioengineTemplate = `
+// <!-- ImJoyPlugin: { "type": "web-python"} -->
+// \`\`\`python
+// from imjoy import api
 
-class ImJoyPlugin():
-    async def setup(self):
-        pass
-    async def run(ctx):
-        runner = await api.loadPlugin("https://raw.githubusercontent.com/imjoy-team/bioimage-io-models/master/src/generic-bioengine-app.imjoy.html")
-        await runner.run(ctx)
+// class ImJoyPlugin():
+//     async def setup(self):
+//         pass
+//     async def run(ctx):
+//         runner = await api.loadPlugin("https://raw.githubusercontent.com/imjoy-team/bioimage-io-models/master/src/generic-bioengine-app.imjoy.html")
+//         await runner.run(ctx)
 
-api.export(ImJoyPlugin())
-\`\`\`
-`;
+// api.export(ImJoyPlugin())
+// \`\`\`
+// `;
 
 export default {
   name: "ResourceItemInfo",
