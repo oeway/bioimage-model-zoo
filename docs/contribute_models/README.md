@@ -10,7 +10,7 @@
 
  <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
 
-Model contribution means that you will upload a fully-documented trained model to a public repository using the Upload [BioEngine App](/bioengine_apps/README.md). Uploading your model to the Bioimage Model Zoo ensures that:
+Model contribution means that you will upload a fully-documented trained model to a public repository using the Upload [BioEngine App](/bioengine/README.md). Uploading your model to the Bioimage Model Zoo ensures that:
 - The model is well documented.
 - It can be used by biologists through user-friendly tools. 
 - It is assigned a unique DOI identifier and a License.
