@@ -2,9 +2,9 @@
 
 ## Model contribution requirements:
 
-- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/model_spec_latest.md) with `format_version>= 0.4.5`. Here is an [example](https://github.com/bioimage-io/spec-bioimage-io/blob/main/example_specs/models/unet2d_keras_tf/rdf.yaml) of a model RDF file.
+- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec) with `format_version>= 0.4.5`. Here is an [example](https://github.com/bioimage-io/spec-bioimage-io/blob/main/example_specs/models/unet2d_keras_tf/rdf.yaml) of a model RDF file.
 - Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers).
-- **Special case**: Notebook contribution together with an example model.
+- **Special case**: [Notebook and datasets contribution](https://bioimage.io/docs/#/contribute_models/README?id=contributing-other-resource-types) together with an example model.
 
 ## Tutorial
 
