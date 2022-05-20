@@ -683,7 +683,7 @@ export default {
           label: "Name",
           placeholder: "name",
           value: this.rdf.name,
-          help: "The name of your deposit (note: / is not allowed in the name)",
+          help: "The name of your deposit (note: / is not allowed in the name)"
         },
         {
           label: "Description",
@@ -853,9 +853,9 @@ export default {
       for (let k in rdfNameMapping) {
         this.rdf[k] = values[rdfNameMapping[k]];
       }
-      if(this.rdf.name.includes("/")){
+      if (this.rdf.name.includes("/")) {
         alert("RDF name should not contain '/'");
-        return
+        return;
       }
       // Fix files
       if (this.zipPackage) {

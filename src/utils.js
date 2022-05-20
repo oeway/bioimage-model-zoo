@@ -363,7 +363,8 @@ export class ZenodoClient {
     const additionalKeywords =
       typeKeywords +
       (keywords.length > 0
-        ? "&" + keywords.map(kw => "keywords=" + encodeURIComponent(kw)).join("&")
+        ? "&" +
+          keywords.map(kw => "keywords=" + encodeURIComponent(kw)).join("&")
         : "") +
       (query ? "&q=" + query : "");
     const url =
@@ -372,13 +373,13 @@ export class ZenodoClient {
       }&sort=${sort}&page=${page}&size=${size}` + additionalKeywords; //&all_versions
     const response = await fetch(url);
     const results = JSON.parse(await response.text());
-    if(results && results.status === 400){
-      alert(results.message)
+    if (results && results.status === 400) {
+      alert(results.message);
       return;
     }
     // retry in 1s
     if (!results || !results.hits) {
-      alert("Failed to find similar items, please try it again.")
+      alert("Failed to find similar items, please try it again.");
       console.warn("Hitting rate limit, retrying in 1s");
       // return new Promise((resolve, reject) => {
       //   setTimeout(() => {
