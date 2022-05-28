@@ -362,7 +362,7 @@ const isTouchDevice = (function() {
   }
 })();
 
-function normalizeItem(self, item) {
+function normalizeItem(self, item, bioEngineConfigs) {
   item = Object.assign({}, item); // make a copy
   item.covers = item.covers || [];
   item.authors = item.authors || [];
@@ -588,20 +588,27 @@ function normalizeItem(self, item) {
   }
 
   if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
-    if (!item.links.includes("imjoy/genericbioengineapp"))
-      item.links.push("imjoy/genericbioengineapp");
-    item.apps.unshift({
-      name: "Test Run",
-      icon: "play",
-      async run() {
-        await self.updateFullRDF(item);
-        await runAppForItem(
-          self,
-          self.allApps["imjoy/genericbioengineapp"],
-          item
-        );
-      }
-    });
+    if (bioEngineConfigs[item.id]) {
+      if (!item.links.includes("imjoy/genericbioengineapp"))
+        item.links.push("imjoy/genericbioengineapp");
+      item.apps.unshift({
+        name: "Test Run",
+        icon: "play",
+        async run() {
+          await self.updateFullRDF(item);
+          // pass the bioengine config
+          if (bioEngineConfigs[item.id]?.config?.bioengine) {
+            item.config = item.config || {};
+            item.config.bioengine = bioEngineConfigs[item.id].bioengine;
+          }
+          await runAppForItem(
+            self,
+            self.allApps["imjoy/genericbioengineapp"],
+            item
+          );
+        }
+      });
+    }
   }
 
   if (item.license) {
@@ -757,11 +764,19 @@ export default {
       }
 
       const self = this;
+      const response = await fetch(
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/main/manifest.bioengine.yaml"
+      );
+      const yamlStr = await response.text();
+      const bioEngineManifest = yaml.load(yamlStr);
+      const bioEngineConfigs = {};
+      for (let conf of bioEngineManifest.collection)
+        if (conf.id) bioEngineConfigs[conf.id] = conf;
       await this.$store.dispatch("fetchResourceItems", {
         repo,
         manifest_url,
         transform(item) {
-          return normalizeItem(self, item);
+          return normalizeItem(self, item, bioEngineConfigs);
         }
       });
 
