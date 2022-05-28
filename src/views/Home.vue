@@ -520,10 +520,14 @@ function normalizeItem(self, item) {
   if (item.training_data) {
     item.links.push(item.training_data.id);
   }
-  if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
-    item.links.push("imjoy/genericbioengineapp");
-  }
   for (let link_key of item.links) {
+    // skip default links
+    if (
+      ["imjoy/bioimageio-packager", "imjoy/genericbioengineapp"].includes(
+        link_key
+      )
+    )
+      continue;
     const linked = self.resourceItems.filter(
       item => item.id.toLowerCase() === link_key.toLowerCase()
     );
@@ -564,6 +568,40 @@ function normalizeItem(self, item) {
         }
       });
     }
+  }
+
+  if (item.type === "model") {
+    if (!item.links.includes("imjoy/bioimageio-packager"))
+      item.links.push("imjoy/bioimageio-packager");
+    item.apps.unshift({
+      name: "Download",
+      icon: "download",
+      async run() {
+        await self.updateFullRDF(item);
+        await runAppForItem(
+          self,
+          self.allApps["imjoy/bioimageio-packager"],
+          item
+        );
+      }
+    });
+  }
+
+  if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
+    if (!item.links.includes("imjoy/genericbioengineapp"))
+      item.links.push("imjoy/genericbioengineapp");
+    item.apps.unshift({
+      name: "Test Run",
+      icon: "play",
+      async run() {
+        await self.updateFullRDF(item);
+        await runAppForItem(
+          self,
+          self.allApps["imjoy/genericbioengineapp"],
+          item
+        );
+      }
+    });
   }
 
   if (item.license) {
