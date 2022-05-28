@@ -362,7 +362,7 @@ const isTouchDevice = (function() {
   }
 })();
 
-function normalizeItem(self, item) {
+function normalizeItem(self, item, bioEngineConfigs) {
   item = Object.assign({}, item); // make a copy
   item.covers = item.covers || [];
   item.authors = item.authors || [];
@@ -520,10 +520,14 @@ function normalizeItem(self, item) {
   if (item.training_data) {
     item.links.push(item.training_data.id);
   }
-  if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
-    item.links.push("imjoy/genericbioengineapp");
-  }
   for (let link_key of item.links) {
+    // skip default links
+    if (
+      ["imjoy/bioimageio-packager", "imjoy/genericbioengineapp"].includes(
+        link_key
+      )
+    )
+      continue;
     const linked = self.resourceItems.filter(
       item => item.id.toLowerCase() === link_key.toLowerCase()
     );
@@ -561,6 +565,47 @@ function normalizeItem(self, item) {
         ext_type: "is-primary",
         run() {
           self.showAttachmentsDialog(item, att_name);
+        }
+      });
+    }
+  }
+
+  if (item.type === "model") {
+    if (!item.links.includes("imjoy/bioimageio-packager"))
+      item.links.push("imjoy/bioimageio-packager");
+    item.apps.unshift({
+      name: "Download",
+      icon: "download",
+      async run() {
+        await self.updateFullRDF(item);
+        await runAppForItem(
+          self,
+          self.allApps["imjoy/bioimageio-packager"],
+          item
+        );
+      }
+    });
+  }
+
+  if (item.type === "model" && item.id.startsWith("10.5281/zenodo.")) {
+    if (bioEngineConfigs[item.id]) {
+      if (!item.links.includes("imjoy/genericbioengineapp"))
+        item.links.push("imjoy/genericbioengineapp");
+      item.apps.unshift({
+        name: "Test Run",
+        icon: "play",
+        async run() {
+          await self.updateFullRDF(item);
+          // pass the bioengine config
+          if (bioEngineConfigs[item.id]?.config?.bioengine) {
+            item.config = item.config || {};
+            item.config.bioengine = bioEngineConfigs[item.id].bioengine;
+          }
+          await runAppForItem(
+            self,
+            self.allApps["imjoy/genericbioengineapp"],
+            item
+          );
         }
       });
     }
@@ -719,11 +764,19 @@ export default {
       }
 
       const self = this;
+      const response = await fetch(
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/main/manifest.bioengine.yaml"
+      );
+      const yamlStr = await response.text();
+      const bioEngineManifest = yaml.load(yamlStr);
+      const bioEngineConfigs = {};
+      for (let conf of bioEngineManifest.collection)
+        if (conf.id) bioEngineConfigs[conf.id] = conf;
       await this.$store.dispatch("fetchResourceItems", {
         repo,
         manifest_url,
         transform(item) {
-          return normalizeItem(self, item);
+          return normalizeItem(self, item, bioEngineConfigs);
         }
       });
 
