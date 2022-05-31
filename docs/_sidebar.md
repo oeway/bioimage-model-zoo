@@ -12,7 +12,6 @@
   - [Explanations](/contribute_models/explanations.md)
 * [Consumer Software](/consumer_software/README.md)
   - [Tutorials](/consumer_software/tutorials.md)
-  - [Explanations](/consumer_software/explanations.md)
   - [Model Runner](/consumer_software/model_runner.md)
 * [Community Partners](/community_partners/README.md)
   - [How to join](/community_partners/how_to_join.md)
