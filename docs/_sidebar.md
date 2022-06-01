@@ -7,6 +7,7 @@
   - [Tutorials](/bioengine/tutorials.md)
 * [Contribute Models](/contribute_models/README.md)
   - [Tutorials](/contribute_models/tutorials.md)
+  - [Model Resource Description File (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec)
 * [Consumer Software](/consumer_software/README.md)
   - [Tutorials](/consumer_software/tutorials.md)
   - [Model Runner](/consumer_software/model_runner.md)
