@@ -6,7 +6,7 @@
 - Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers).
 - **Special case**: [Notebook and datasets contribution](https://bioimage.io/docs/#/contribute_models/README?id=contributing-other-resource-types) together with an example model.
 
-## Tutorial
+## Short description of model contribution
 
  <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
 
