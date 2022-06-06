@@ -5,15 +5,6 @@
       class="hero is-link is-fullheight is-fullheight-with-navbar"
       style="max-height: 1024px!important;height:100%;min-height:640px;"
     >
-      <b-notification
-        type="is-warning"
-        has-icon
-        aria-close-label="Close notification"
-        role="alert"
-      >
-        We are currently upgrading the website, more models will be available
-        soon!
-      </b-notification>
       <div class="hero-body" style="position: relative;">
         <img
           class="background-img"
