@@ -756,10 +756,9 @@ export default {
 
       const self = this;
       const response = await fetch(
-        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/main/manifest.bioengine.yaml"
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
       );
-      const yamlStr = await response.text();
-      const bioEngineManifest = yaml.load(yamlStr);
+      const bioEngineManifest = await response.json();
       const bioEngineConfigs = {};
       for (let conf of bioEngineManifest.collection)
         if (conf.id) bioEngineConfigs[conf.id] = conf;
