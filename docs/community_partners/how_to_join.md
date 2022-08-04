@@ -9,13 +9,13 @@ If you are eligible and willing to join as a community partner, please submit a 
 2. Description of the resources that you plan to contribute. Please also include the url to your project repo.
 3. Description of future plans on how your project will be maintained.
 
-The admin team of BioImage.IO will discuss the request and decide whether to approve or decline. We will mainly check whether the requirements for participation are met and are thrilled for the BioImage.IO community to grow.
+The admin team of BioImage.IO will discuss the request and decide whether to approve or decline. We will mainly check whether the project are beneficial for the users of BioImage.IO and the requirements for participation are met.
 
 Upon approval, we will guide you to follow these steps in order to incorporate your contribution to BioImage.IO:
 
-1. Firstly, please create or chosse a GitHub repo for hosting your resource collection that you would like to contribute. We recommend to create a dedicated repository in your organization for this purpose. As an example you might want to take a look at the [ilastik collection](https://github.com/ilastik/bioimage-io-resources/blob/main/collection.yaml).
-1. Add a [colleciton RDF](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/collection_spec_latest.md) in your chosen repository, which lists all resources you would like to contribute.
-1. Setup CI service for testing your collection RDF. Please refer to "How to setup CI service for a community partners' repo".
+1. Firstly, please create or choose a GitHub repo for hosting your resource collection that you would like to contribute. We recommend to create a dedicated repository in your organization for this purpose. As an example you might want to take a look at the [ilastik collection](https://github.com/ilastik/bioimage-io-resources/blob/main/collection.yaml).
+1. Add a [colleciton RDF](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/collection_spec_latest.md) in your chosen repository, which lists all resources you would like to contribute. For this, you will also need to prepare the icons of your software or project.
+1. Setup CI service for testing your collection RDF. Please refer to [how to setup CI service](/community_partners/how_to_join?id=how-to-setup-ci-service-for-a-community-partners39-repo).
 1. Make a PR (or an issue) in the BioImage.IO Collection repo to link your collection to the [collection_rdf_template.yaml:config:partners](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml). We only require the link to your collection RDF here and need to agree on a partner id for you.
 
 
