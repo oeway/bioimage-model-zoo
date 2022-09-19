@@ -14,11 +14,11 @@ Model contribution means that you will upload a fully-documented trained model t
 - The model is well documented.
 - It can be used by biologists through user-friendly tools. 
 - It is assigned a unique DOI identifier and a License.
-- The model is public and can be used by anyone under the chiosen licensing conditions.
+- The model is public and can be used by anyone under the chosen licensing conditions.
 
 The model package contains the trained weights together with the architecture, example inputs and outputs, and the configuration specification file that describes your model technically in such a way that at least one of the consumer software can load and run the model. All this information is embedded in a specific file called [`Model Resource Description File` (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec).
 
-Once the model is uploaded to Zenodo, it will be assessed by a Continuos Integration (CI) workflow to check for its usability in at least one of the consumer software. Once it passes, it will be displayed in the BioImage Model Zoo. 
+Once the model is uploaded to Zenodo, it will be assessed by a Continuos Integration (CI) workflow to check for its technical correctness. Additionally a bioimage.io maintainer will review the model in a [generated pull request (PR)](https://github.com/bioimage-io/collection-bioimage-io/pulls/bioimageiobot). Once the model passes all checks and has the approval of a maintainer, it will be added to the BioImage.IO collection and displayed on bioimage.io. 
 
 Ready to follow the [Tutorial](/contribute_models/tutorials.md)?
 
