@@ -9,7 +9,7 @@ A BioImage.IO model is a zip file containing all the items, technical descriptio
 
 ## Model contribution requirements:
 
-- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec) with `format_version>= 0.4.5`. Here is an [example](https://github.com/bioimage-io/spec-bioimage-io/blob/main/example_specs/models/unet2d_keras_tf/rdf.yaml) of a model RDF file.
+- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec) with `format_version>= 0.4.5`. Examples can be found in the BioImage Model Zoo. Click in the `<>` symbol of any model card to see and example of the `rdf.yaml`file.
 - Any contributed model should run on at least one [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers).
 - **Special case**: [Notebook and datasets contribution](https://bioimage.io/docs/#/contribute_models/README?id=contributing-other-resource-types) together with an example model.
 
