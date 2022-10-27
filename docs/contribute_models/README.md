@@ -1,5 +1,12 @@
 # Contribute Models
 
+A BioImage.IO model is a zip file containing all the items, technical description and metadata of the model, together with the trained architecture of the model. Briefly, a common model is a zip file with at least, the following items:
+* Trained model in the correct format (check the Resource Description File Specifications to know which packages and formats are supported)
+* Example input image (Numpy array)
+* Example output item (Numpy array)
+* Resource description file specifications (`rdf.yaml`)
+* An example cover image for visual representation of the model in the zoo.
+
 ## Model contribution requirements:
 
 - Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec) with `format_version>= 0.4.5`. Here is an [example](https://github.com/bioimage-io/spec-bioimage-io/blob/main/example_specs/models/unet2d_keras_tf/rdf.yaml) of a model RDF file.
