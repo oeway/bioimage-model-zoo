@@ -24,3 +24,4 @@
   - [BioImage.IO Partner Collection](/community_partners/partner_collection.md)
 * [User Agreement](/user_agreement.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
+* [Governance](/bioimageio_steering.md)
