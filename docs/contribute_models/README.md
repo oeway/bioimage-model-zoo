@@ -31,11 +31,11 @@ Two options:
       - Static validation of the model format using the [bioimageio.core python library](https://github.com/bioimage-io/core-bioimage-io-python) library (*e.g.*, in the terminal, `python bioimageio validate /../rdf.yaml`).
       - Dynamic validation of the model's deployment (*e.g.*, in the terminal, `python test_model --weights tensorflow_saved_model_bundle --device cpu /.../rdf.yaml`). It tests that the model generates the expected output.
       
-### 2. Upload the model to the BioImage Model Zoo
+### 2. Upload the model to the BioImage Model Zoo [VIDEO TUTORIAL](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6)
+
+**SEE A VIDEO TUTORIAL [HERE](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6)**
          
    <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
-   
-   **SEE A VIDEO TUTORIAL [HERE](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6)**
 
    In [BioImage.IO](https://bioimage.io/), click on `+Upload` and follow the steps:
 
