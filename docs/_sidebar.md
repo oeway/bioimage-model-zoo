@@ -25,3 +25,4 @@
 * [User Agreement](/user_agreement.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
 * [Governance](/bioimageio_steering.md)
+* [BioImageIO team guidelines](https://github.com/bioimage-io/bioimage.io/wiki)
