@@ -34,6 +34,8 @@ Two options:
 ### 2. Upload the model to the BioImage Model Zoo
          
    <img src="contribute_models/contribute_model.png" align="center" width="1000"/>
+   
+   **SEE A VIDEO TUTORIAL [HERE](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6)**
 
    In [BioImage.IO](https://bioimage.io/), click on `+Upload` and follow the steps:
 
