@@ -362,6 +362,10 @@ function normalizeItem(self, item, bioEngineConfigs) {
     item.covers = [item.covers];
   }
   if (item.icon === "extension") item.icon = "puzzle";
+  if (item.type === "dataset") {
+    if(!item.download_url && item.source)
+    item.download_url = item.source;
+  }
 
   item.covers = item.covers.map(cover => {
     if (!cover.startsWith("http") && item.root_url) {
