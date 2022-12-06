@@ -47,7 +47,7 @@
   "splash_title": "BioImage Model Zoo",
   "splash_subtitle": "Advanced AI models in one-click",
   "splash_feature_list": [
-    "Integrate with Fiji, Ilastik, ImJoy and more",
+    "Integrated with Fiji, ilastik, ImJoy and more",
     "Try model instantly with BioEngine",
     "Contribute your models via Github",
     "Link models to datasets and applications"
