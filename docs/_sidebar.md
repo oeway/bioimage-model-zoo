@@ -16,6 +16,9 @@
   - [Supported preprocessing](https://bioimage.io/docs/#/bioimageio_preprocessing_spec)
   - [Supported postprocessing](https://bioimage.io/docs/#/bioimageio_postprocessing_spec)
 * [Other contributions](/contribute_others/README.md)
+* Resources for developers
+  - [Python BioImageIO core package](https://bioimage.io/docs/#/pythoncorepackage)
+  - [Java BioImageIO library](https://bioimage.io/docs/#/javacorepackage)
 * [Consumer Software](/consumer_software/README.md)
   - [Tutorials](/consumer_software/tutorials.md)
   - [Model Runner](/consumer_software/model_runner.md)
