@@ -325,7 +325,6 @@ import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import AttachmentsComponent from "@/components/Attachments.vue";
-// import PartnersComponent from "@/components/Partners.vue";
 import PartnersComponent from "@/components/PartnersNew.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import MarkdownComponent from "@/components/Markdown.vue";
