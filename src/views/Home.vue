@@ -12,12 +12,6 @@
           :src="selectedPartner.background_image"
         />
         <img class="background-img" v-else :src="siteConfig.background_image" />
-        <partners-component
-          v-if="partners"
-          style="position: absolute;bottom: 0px;"
-          :partners="partners"
-          @switchPartner="switchPartner"
-        ></partners-component>
 
         <div
           class="container"
@@ -78,11 +72,16 @@
           >
         </div>
       </div>
+      <partners-component
+        v-if="partners"
+        :partners="partners"
+        @switchPartner="switchPartner"
+      ></partners-component>
     </section>
 
-    <span ref="search_anchor"></span>
-    <br />
-    <section style="margin-top: -30px;opacity: 0.6;">
+    <!-- <span ref="search_anchor"></span>
+    <br /> -->
+    <section style="opacity: 0.6;">
       <b-progress :value="progress"></b-progress>
     </section>
     <br />
@@ -326,7 +325,8 @@ import ResourceItemSelector from "@/components/ResourceItemSelector.vue";
 import ResourceItemList from "@/components/ResourceItemList.vue";
 import ResourceItemInfo from "@/components/ResourceItemInfo.vue";
 import AttachmentsComponent from "@/components/Attachments.vue";
-import PartnersComponent from "@/components/Partners.vue";
+// import PartnersComponent from "@/components/Partners.vue";
+import PartnersComponent from "@/components/PartnersNew.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import MarkdownComponent from "@/components/Markdown.vue";
 
