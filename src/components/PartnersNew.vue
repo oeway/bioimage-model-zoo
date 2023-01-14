@@ -2,8 +2,13 @@
   <div class="partners-component">
     <h2>Community Partners</h2>
     <div class="partners-list">
-      <div v-for="p in partners" :key="p.name" class='partners-list-item' @click='switchPartner(p)'>
-        <img :src="p.logo || p.icon" :alt="p.name">
+      <div
+        v-for="p in partners"
+        :key="p.name"
+        class="partners-list-item"
+        @click="switchPartner(p)"
+      >
+        <img :src="p.logo || p.icon" :alt="p.name" />
         <p>{{ p.name }}</p>
       </div>
     </div>
