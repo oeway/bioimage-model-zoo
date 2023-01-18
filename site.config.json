@@ -23,22 +23,22 @@
   "footer": [
     { "label": "Bug Report",
       "tooltip": "Send a bug report on Github",
-      "logo": "/static/img/bug-icon.png", 
+      "logo": "/static/img/bug-icon.png",
       "url": "https://github.com/bioimage-io/bioimage.io/issues"
     },
     { "label": "Source Code",
       "tooltip": "Github Repository",
-      "logo": "/static/img/github.png", 
+      "logo": "/static/img/github.png",
       "url": "https://github.com/bioimage-io/bioimage.io"
     },
     { "label": "Contact Us",
       "tooltip": "Send us a message",
-      "logo": "/static/img/contact.png", 
+      "logo": "/static/img/contact.png",
       "url": "https://oeway.typeform.com/to/K3j2tJt7"
     },
     { "label": "Deploys By Netlify",
       "tooltip": "This site is powered by Netlify",
-      "logo": "https://www.netlify.com/img/global/badges/netlify-color-accent.svg", 
+      "logo": "https://www.netlify.com/img/global/badges/netlify-color-accent.svg",
       "url": "https://www.netlify.com"
     }
   ],
@@ -113,19 +113,19 @@
       "outline_color": "rgb(36 0 236)",
       "tag_categories": {
         "modality": [
-          "electron-microscopy", 
+          "electron-microscopy",
           "cryo-electron-microscopy",
           "fluorescence-light-microscopy",
           "transmission-light-microscopy",
-          "super-resolution-microscopy", 
-          "x-ray-microscopy", 
+          "super-resolution-microscopy",
+          "x-ray-microscopy",
           "force-microscopy",
           "high-content-imaging",
-          "whole-slide-imaging", 
+          "whole-slide-imaging",
           "other"],
         "dims": [
           "2d", "3d", "2d-t", "3d-t"],
-        
+
         "content": [
           "cells",
           "nuclei",
@@ -139,7 +139,7 @@
           "whole-organism"
         ],
         "framework": ["tensorflow", "pytorch", "tensorflow.js"],
-        "software": ["ilastik", "imagej", "fiji", "imjoy", "deepimagej", "n2v"],
+        "software": ["ilastik", "imagej", "fiji", "imjoy", "deepimagej", "napari"],
         "network": [
           "unet",
           "densenet",
