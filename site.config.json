@@ -140,6 +140,15 @@
         ],
         "framework": ["tensorflow", "pytorch", "tensorflow.js"],
         "software": ["ilastik", "imagej", "fiji", "imjoy", "deepimagej", "napari"],
+        "method": [
+          "unet",
+          "stardist",
+          "cellpose",
+          "yolo",
+          "care",
+          "n2v",
+          "denoiseg"
+        ],
         "network": [
           "unet",
           "densenet",
