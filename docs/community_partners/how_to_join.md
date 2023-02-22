@@ -18,6 +18,11 @@ Upon approval, we will guide you to follow these steps in order to incorporate y
 1. Setup CI service for testing your collection RDF. Please refer to [how to setup CI service](/community_partners/how_to_join?id=how-to-setup-ci-service-for-a-community-partners39-repo).
 1. Make a PR (or an issue) in the BioImage.IO Collection repo to link your collection to the [collection_rdf_template.yaml:config:partners](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml). We only require the link to your collection RDF here and need to agree on a partner id for you.
 
+## How to register a software or application
+
+A community partner can have one or multiple associated software, you can register them in the collection RDF file of your repository (see the previous section about creating a collection respository). A software is categorized as "Application" in the BioImage Model Zoo. The first thing to do is to create an application file in the [ImJoy plugin file format](https://imjoy.io/docs/#/development?id=plugin-file-format). This basically allows you define a landing page for your software with executable features such as download or test run buttons for your software. The most common use case is to create a landing page for your software. Each software will have an unique id, typically in the format of `<community partner id>/<software name>`. Every model can add links (manually when upload or automatically via the CI) to the software. For each model, the user can click the link on top of the model card, and the landing page will be loaded. Through the ImJoy plugin machanism, the context infomration contains the current model infomration will be injected to the landing page, it's up to the developer who made the software app to decided how to use those information.
+
+To see an example, you can find the [source for the ilastik app](https://github.com/ilastik/bioimage-io-resources/blob/main/src/ilastik-app.imjoy.html) and also the corresponding entry in the collection file [here](https://github.com/ilastik/bioimage-io-resources/blob/2d2f1b12b185b1b880bfb679ed2aa981bf88d1ed/collection.yaml#L45-L59).
 
 ## How to setup CI service for a community partners' repo
 
