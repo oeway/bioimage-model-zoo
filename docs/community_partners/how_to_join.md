@@ -35,3 +35,4 @@ There are at least three steps are recommended:
  3. If possible, test every models added to the repo
 
 As a start, you can use [.github/workflows/compile-manifest.yml](https://github.com/deepimagej/models/blob/master/.github/workflows/compile-manifest.yml) as your template.
+

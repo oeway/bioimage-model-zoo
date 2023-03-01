@@ -24,6 +24,7 @@
   - [Model Runner](/consumer_software/model_runner.md)
 * [Community Partners](/community_partners/README.md)
   - [How to join](/community_partners/how_to_join.md)
+  - [User Analytics](/community_partners/user_analytics.md)
   - [BioImage.IO Partner Collection](/community_partners/partner_collection.md)
 * [Terms of Service](/terms_of_service.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
