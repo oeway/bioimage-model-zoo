@@ -24,16 +24,21 @@
         v-if="siteConfig.subscribe_url"
         >Subscribe</b-button
       >
+      <b-button
+        @click="openUrl('/docs/#/terms_of_service')"
+        v-if="siteConfig.contact_form_url"
+        >Terms of Service</b-button
+      >
     </section>
     <br />
     <section style="text-align: center;">
       <b-button
-        @click="openUrl('/docs#/contribute_models/README')"
+        @click="openUrl('/docs/#/contribute_models/README')"
         v-if="siteConfig.contribute_url"
         >Contribute Models</b-button
       >
       <b-button
-        @click="openUrl('/docs#/community_partners/README')"
+        @click="openUrl('/docs/#/community_partners/README')"
         v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
       >
