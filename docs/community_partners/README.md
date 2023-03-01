@@ -29,3 +29,8 @@ Community partners can host their own Github repository for storing models and o
 ![bioimage-io-community-partners](bioimage-io-community-partners.png)
 
 
+## Report User Analytics
+
+Community partners can use our user analytics service to report resource downloads and access to statistics.
+
+See [User Analytics](/community_partners/user_analytics.md) for more details.
