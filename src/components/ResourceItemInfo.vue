@@ -110,6 +110,13 @@
           :resourceItem="resourceItem.training_data_item"
         ></resource-item-card>
       </div>
+      <h2>
+        Test Summary
+      </h2>
+      This {{ resourceItem.type }} can be used in:
+      <app-icons :onlyLinked="true" :apps="resourceItem.apps"></app-icons>
+      <br />
+      <br />
       <test-summary
         v-if="
           resourceItem.test_summary &&

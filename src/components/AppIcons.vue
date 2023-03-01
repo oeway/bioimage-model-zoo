@@ -2,6 +2,7 @@
   <div v-if="apps" class="app-icons">
     <template v-for="app in apps">
       <b-tooltip
+        v-show="!onlyLinked || app.isLinkedApp"
         :class="{ 'hover-show': app.show_on_hover && enableHover }"
         :key="app.name"
         :label="app.name"
@@ -43,6 +44,10 @@ export default {
       default: false
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    onlyLinked: {
       type: Boolean,
       default: false
     }

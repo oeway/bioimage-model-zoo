@@ -1,14 +1,19 @@
 <template>
   <div class="test-summary">
-    <h2>
-      Test Summary
-      <b-button
-        class="button is-small"
-        style="margin-left: 10px; color: blue;"
-        @click="toggleAll()"
-        >{{ showAll ? "-" : "+" }}</b-button
-      >
-    </h2>
+    It has been tested with:
+    <code
+      v-for="(tests, consumer) in summary.tests"
+      :key="consumer"
+      style="margin: 2px;"
+    >
+      {{ consumer + " " }}
+    </code>
+    <a
+      class="button is-small"
+      style="margin-left: 10px; color: blue;"
+      @click="toggleAll()"
+      >{{ showAll ? "- hide details" : "+ more details" }}</a
+    >
     <div
       v-show="showAll"
       v-for="(tests, consumer) in summary.tests"
