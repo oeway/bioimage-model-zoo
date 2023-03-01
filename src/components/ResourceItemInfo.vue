@@ -113,10 +113,12 @@
       <h2>
         Test Summary
       </h2>
-      This {{ resourceItem.type }} can be used in:
-      <app-icons :onlyLinked="true" :apps="resourceItem.apps"></app-icons>
-      <br />
-      <br />
+      <span v-if="resourceItem.type == 'model'">
+        This {{ resourceItem.type }} can be used in:
+        <app-icons :onlyLinked="true" :apps="resourceItem.apps"></app-icons>
+        <br />
+        <br />
+      </span>
       <test-summary
         v-if="
           resourceItem.test_summary &&
