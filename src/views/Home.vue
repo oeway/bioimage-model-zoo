@@ -530,6 +530,7 @@ function normalizeItem(self, item, bioEngineConfigs) {
       item.apps.unshift({
         name: lit.name,
         icon: lit.icon || DEFAULT_ICONS[lit.type],
+        isLinkedApp: self.allApps[link_key],
         async run() {
           if (self.allApps[link_key]) {
             await self.updateFullRDF(item);
