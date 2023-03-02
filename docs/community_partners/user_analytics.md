@@ -25,10 +25,14 @@ In the above URL, you need to provide the following parameters:
 ## Obtain resource usage statistics
 You can get the user statistics from via the HTTP API, for example:
  * To get the global statistics of the whole website: `https://bioimage.matomo.cloud/?module=API&method=Live.getCounters&idSite=1&lastMinutes=30&format=JSON&token_auth=anonymous`
- * To get the number of downloads: `https://bioimage.matomo.cloud/?module=API&method=Actions.getDownloads&idSite=1&period=day&date=yesterday&format=JSON&token_auth=anonymous`
- * To get the number of downloads for a specific resource (via DOI): ```https://bioimage.matomo.cloud/?module=API&method=Actions.getDownload&downloadUrl=https://doi.org/`[MODEL DOI]`&idSite=1&period=day&date=yesterday&format=JSON&token_auth=anonymous```
+ * To get the number of downloads: `https://bioimage.matomo.cloud/?module=API&method=Actions.getDownloads&idSite=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous`
+ * To get the number of downloads for a specific resource (via DOI): ```https://bioimage.matomo.cloud/?module=API&method=Actions.getDownload&downloadUrl=https://doi.org/`[MODEL DOI]`&idSite=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous```. To see an example, click here: https://bioimage.matomo.cloud/?module=API&method=Actions.getDownload&downloadUrl=https://doi.org/test&idSite=1&idCustomReport=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous
 
  For more detailed API, see here: https://developer.matomo.org/api-reference/reporting-api
 
  
+Please note that the reports are not processed in realtime, this means you won't see the statistics for your reports immediately:
+ - In the report request, we need to configure the date properly. For example, we can change period to `year` and date to `2023-03-01` (see here: https://developer.matomo.org/api-reference/Piwik/Period)
+ - The report will only be generated every 15 minutes: https://matomo.org/faq/general/faq_41/ so we won't see the report immediately.
+
 
