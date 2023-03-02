@@ -13,7 +13,8 @@ The easiest way to report a model download is to send an http request to matomo.
 
 You need to construct an URL to report the download:
 
-https://bioimage.matomo.cloud/matomo.php?download=https://doi.org/`[MODEL DOI]`&idsite=1&rec=1&r=646242&h=13&m=35&s=20&url=http://bioimage.io/#/?id=`[MODEL DOI]`&uadata={"brands":[{"brand":"`[CONSUMER ID]`","version":"`[CONSUMER VERSION]`"}]}
+`https://bioimage.matomo.cloud/matomo.php?download=https://doi.org/[MODEL DOI]&idsite=1&rec=1&r=646242&h=13&m=35&s=20&url=http://bioimage.io/#/?id=[MODEL DOI]&uadata={"brands":[{"brand":"[CONSUMER ID]","version":"[CONSUMER VERSION]"}]}`
+
 
 In the above URL, you need to provide the following parameters:
  * `[MODEL DOI]`: The resource doi, it should be similar to `10.5281/zenodo.55555555`. Also note that Zenodo deposit has concept doi and version doi, we recommend to use the concept doi such that the downloads across versions can be aggregated.
