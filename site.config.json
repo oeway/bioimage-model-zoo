@@ -42,7 +42,7 @@
       "url": "https://oeway.typeform.com/to/K3j2tJt7"
     },
     { "label": "AI4Life",
-      "tooltip": "This project is funded by AI4Life",
+      "tooltip": "BioImage.IO is funeded by the European Commission through the AI4Life project",
       "logo": "/static/img/AI4Life-logo-giraffe.png", 
       "url": "https://ai4life.eurobioimaging.eu/"
     },
@@ -112,7 +112,7 @@
     "detailed_image": null,
     "detailed_body": "description"
   },
-  "footnote": "BioImage.IO -- a collaborative effort to bring AI models to the bioimaging community.",
+  "footnote": "BioImage.IO -- a collaborative effort to bring AI models to the bioimaging community. We receive funding support from the European Commission through the AI4Life project (https://ai4life.eurobioimaging.eu/)",
   "partners": [],
   "excluded_tags": ["bioimage.io", "bioimage.io:model", "bioimage.io:application", "bioimage.io:workflow", "bioimage.io:notebook", "bioimage.io:dataset", "zenodo"],
   "resource_categories": [

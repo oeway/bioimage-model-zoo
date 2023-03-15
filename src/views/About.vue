@@ -57,7 +57,7 @@
         v-for="item in siteConfig.footer"
         :key="item.label"
         class="column is-one-quarter"
-        style="text-align: center"
+        style="text-align: center; width: 16%;"
       >
         <b-tooltip :label="item.tooltip" position="is-top"
           ><a :href="item.url" target="_blank">
