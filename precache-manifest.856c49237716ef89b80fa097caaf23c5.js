@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "48b5ec88587affef5375",
+    "revision": "6f9dd02400722c382dcd",
     "url": "/css/about.b0f30252.css"
   },
   {
-    "revision": "e5102eda416e186686bf",
+    "revision": "f6378199171111c0ea0b",
     "url": "/css/app.9dce7153.css"
   },
   {
@@ -36,16 +36,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "de7f0c45f5131e9b8cd2e845049a2fa3",
+    "revision": "ed5808cca862087e775eb53098f0d6b7",
     "url": "/index.html"
   },
   {
-    "revision": "48b5ec88587affef5375",
-    "url": "/js/about.a7ca9695.js"
+    "revision": "6f9dd02400722c382dcd",
+    "url": "/js/about.91c20987.js"
   },
   {
-    "revision": "e5102eda416e186686bf",
-    "url": "/js/app.d609d2d5.js"
+    "revision": "f6378199171111c0ea0b",
+    "url": "/js/app.df1ca3d6.js"
   },
   {
     "revision": "54bf7731e5c60bbc8ada",
@@ -376,6 +376,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/icons/safari-pinned-tab.svg"
   },
   {
+    "revision": "ddcb047f6ee67ea6c0e8943f490a6ce0",
+    "url": "/static/img/AI4Life-logo-giraffe.png"
+  },
+  {
     "revision": "7ef6b603f28146be8c89b325d5b75741",
     "url": "/static/img/bioimage-io-banner.png"
   },
@@ -430,6 +434,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "f0d21da3f74ffbbcc644dafd7b957e57",
     "url": "/static/img/github.svg"
+  },
+  {
+    "revision": "80d7bc250735f37d2f4657cbdf4b9583",
+    "url": "/static/img/imagesc-logo.png"
   },
   {
     "revision": "a12d35d30ec0dcf10639bf24e3784aaf",
