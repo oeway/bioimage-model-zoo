@@ -18,7 +18,7 @@ The source code of BioImage.IO platform is released under MIT license. The conte
 If you find BioImage.IO helpful for your research please consider cite BioImage.IO: [TODO]
 
 ## Contact
-For questions or issues about BioimageModelZoo, please open a topic in the image.sc forum using the tag bmz. For specific technical issues or bugs, you can also open an issue on github.
+For questions or issues about BioImage Model Zoo, please open a topic in the image.sc forum using the tag @bioimageio. For specific technical issues or bugs, you can also open an issue on github.
 
 ## Code of Conduct
 All the developers, contributors and community members of the BioImage.IO are recommended to read our [Code of Conduct](https://bioimage.io/docs/#/CODE_OF_CONDUCT).
