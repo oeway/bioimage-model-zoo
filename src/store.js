@@ -102,7 +102,9 @@ export const store = new Vuex.Store({
           duplicates.forEach(p => {
             siteConfig.partners.splice(siteConfig.partners.indexOf(p), 1);
           });
-          siteConfig.partners.push(c);
+          if(!siteConfig.excluded_partners || !siteConfig.excluded_partners.includes(c)){
+            siteConfig.partners.push(c);
+          }
         }
       }
       if (repo_manifest.collection && siteConfig.partners) {
