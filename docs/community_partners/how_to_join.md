@@ -31,7 +31,7 @@ You basically need to add some testing scripts to your repo and  configure it us
 
 There are at least three steps are recommended:
  1. Run the [`compile_model_manifest.py`](https://github.com/bioimage-io/bioimage-io-models/blob/master/manifest.bioimage.io.yaml) script to make sure the manifest can be correctly compiled.
- 2. Verify the yaml files according to model spec with `https://github.com/bioimage-io/python-bioimage-io`.
+ 2. Verify the yaml files according to model spec with [.github.com/bioimage-io/python-bioimage-io](https://github.com/bioimage-io/python-bioimage-io).
  3. If possible, test every models added to the repo.
 
 As a start, you can use [.github/workflows/compile-manifest.yml](https://github.com/deepimagej/models/blob/master/.github/workflows/compile-manifest.yml) as your template.
