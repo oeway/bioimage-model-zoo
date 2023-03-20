@@ -2,7 +2,7 @@
 
 # Join as a community partner
 
-BioImage.IO is a community-driven open source innitiative, providing acceess to trained deep learning models and related resources contributed by the community members. To help us better disseminate and maintain the resources, we introduced the concepts of **community partner**. 
+BioImage.IO is a community-driven open source initiative, providing access to trained deep learning models and related resources contributed by the community members. To help us better disseminate and maintain the resources, we introduced the concepts of **community partner**. 
 
 ## What is a community partner?
 Usually, a community partner is an organization, a company, a research group, or a software team (of one or more) that can consume resources of the BioImage.Io model zoo. Additionally, most partners continuously and openly contribute resources of their own. The first community partners represent open source consumer software of BioImage.IO (e.g. ilastik, Fiji, deepImageJ, ZeroCostDL4Mic, StarDist).
@@ -17,7 +17,7 @@ By joining BioImage.IO as a community partner, you will be able to:
 The main responsibilities of a community partner are:
  - Use BioImage.IO as their only primary trained model repository
  - Review resources contributed by others that claim to be compatible with this community partner software
- - Maintain this community partner's models and other resources, and keep them up-to-date with the latest spec.
+ - Maintain this community partner's models and other resources, and keep them up-to-date with the latest spec
  
 ### Who should join as a community partner
  * A team behind a software which produces or consumes trained models compatible with the BioImage.IO spec
