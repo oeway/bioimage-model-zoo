@@ -3,13 +3,12 @@
 As BioImage.IO community partner may contribute test summaries. As defined in [bioimageio.core](https://github.com/bioimage-io/core-bioimage-io-python/blob/d435fcdb38c8b2152ac0d20f61ee498d88e7f1d0/bioimageio/core/common.py#L4) a test summary is a dictionary with the following keys:
  - name: str
  - source_name: str
- - bioimageio_core_version: str
- - bioimageio_spec_version: str
- - error: Union[None, str]
- - nested_errors: Optional[Dict[str, dict]]
- - source_name: str
  - status: Literal["passed", "failed"]
+ - error: Union[None, str]
  - traceback: Optional[List[str]]
+ - nested_errors: Optional[Dict[str, dict]]
+ - bioimageio_spec_version: str
+ - bioimageio_core_version: str
  - warnings: dict
 
 In the [BioImage.IO collection template](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml), where a community partner is registered, the location of `test_summaries` and how to trigger them can be specified as well.
