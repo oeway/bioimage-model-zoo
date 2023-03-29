@@ -104,7 +104,7 @@ export const store = new Vuex.Store({
           });
           if (
             !siteConfig.excluded_partners ||
-            !siteConfig.excluded_partners.includes(c)
+            !siteConfig.excluded_partners.includes(c.id)
           ) {
             siteConfig.partners.push(c);
           }
