@@ -26,10 +26,10 @@
       "logo": "/static/img/imagesc-logo.png", 
       "url": "https://forum.image.sc/tag/bioimageio"
     },
-    { "label": "Bug Report",
-      "tooltip": "Send a bug report on Github",
-      "logo": "/static/img/bug-icon.png", 
-      "url": "https://github.com/bioimage-io/bioimage.io/issues"
+    { "label": "Feedback Form",
+      "tooltip": "Give us some feedback through this Google Form",
+      "logo": "/static/img/feedback-icon.png", 
+      "url": "https://docs.google.com/forms/d/e/1FAIpQLSfhRaldWH-CSJvSxHzxpG1_HGnNzQ-evpMcaJMo1HaSuLaCMA/viewform?usp=sf_link"
     },
     { "label": "Source Code",
       "tooltip": "Github Repository",
