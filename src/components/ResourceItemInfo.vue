@@ -103,6 +103,16 @@
       >
 
       <br />
+      <h2>Try the model</h2>
+      <markdown
+        v-if="resourceItem.interfaceDocs"
+        :enable-run-buttons="true"
+        :run-button-context="runButtonContext"
+        :baseUrl="resourceItem.baseUrl"
+        :content="resourceItem.interfaceDocs"
+      ></markdown>
+
+      <br />
       <div v-if="resourceItem.training_data_item">
         <h2>Training Data</h2>
         <resource-item-card
@@ -228,6 +238,9 @@ export default {
         this.$forceUpdate();
       });
     }
+    this.getInterfaceDocs(this.resourceItem).then(() => {
+      this.$forceUpdate()
+    })
   },
   computed: {
     runButtonContext: function() {
@@ -341,6 +354,17 @@ export default {
             .join("\n").length;
         }
       }
+    },
+    async getInterfaceDocs(resourceItem) {
+      const url = "http://127.0.0.1:8000/docs/panel.md"
+      const resp = await fetch(url)
+      let raw_docs
+      if (resp.status == 200) {
+        raw_docs = await resp.text()
+      } else {
+        raw_docs = ""
+      }
+      resourceItem.interfaceDocs = raw_docs
     }
   }
 };
