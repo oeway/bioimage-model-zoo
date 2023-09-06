@@ -28,8 +28,8 @@ Two options:
          - Create the [BioImage.IO Model Resource Description File Specifications](https://bioimage.io/docs/#/bioimageio_model_spec) (`rdf.yaml` file).
          - Each field on the file is either mandatory or optional. In the Bioimage Model Zoo web page you can find different examples. 
    2. Check that the model is correctly created:
-      - Static validation of the model format using the [bioimageio.core python library](https://github.com/bioimage-io/core-bioimage-io-python) library (*e.g.*, in the terminal, `python bioimageio validate /../rdf.yaml`).
-      - Dynamic validation of the model's deployment (*e.g.*, in the terminal, `python test_model --weights tensorflow_saved_model_bundle --device cpu /.../rdf.yaml`). It tests that the model generates the expected output.
+      - Static validation of the model format using the [bioimageio.core python library](https://github.com/bioimage-io/core-bioimage-io-python) library (*e.g.*, in the terminal, `bioimageio validate /../rdf.yaml`).
+      - Dynamic validation of the model's deployment (*e.g.*, in the terminal, `bioimageio test-model --weights tensorflow_saved_model_bundle --device cpu /.../rdf.yaml`). It tests that the model generates the expected output.
       
 ### 2. Upload the model to the BioImage Model Zoo [VIDEO TUTORIAL](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6)
 
