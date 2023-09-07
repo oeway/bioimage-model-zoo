@@ -40,7 +40,7 @@ See [User Analytics](/community_partners/user_analytics.md) for more details.
 ## Meet our Community Partners
 Below is a list of our esteemed Community Partners who actively engage with the BioImage Model Zoo project, contributing their expertise, resources, and support to enhance the bioimage analysis community.
 
-<!-- ImJoyPlugin: {"type": "window"} -->
+<!-- ImJoyPlugin: {"type": "window", "hide_code_block": true, "startup_mode": "run"} -->
 ```html
 <config lang="json">
 {
