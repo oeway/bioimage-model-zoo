@@ -40,6 +40,141 @@ See [User Analytics](/community_partners/user_analytics.md) for more details.
 ## Meet our Community Partners
 Below is a list of our esteemed Community Partners who actively engage with the BioImage Model Zoo project, contributing their expertise, resources, and support to enhance the bioimage analysis community.
 
+<!-- ImJoyPlugin: {"type": "window"} -->
+```html
+<config lang="json">
+{
+  "name": "BioImageIO Community Partners",
+  "type": "window",
+  "tags": [],
+  "ui": "",
+  "version": "0.1.0",
+  "cover": "",
+  "description": "Create a table for the bioimage.io community partners",
+  "icon": "extension",
+  "inputs": null,
+  "outputs": null,
+  "api_version": "0.1.8",
+  "env": "",
+  "permissions": [],
+  "requirements": ["https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js", "https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js", "https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js", "https://cdn.tailwindcss.com"],
+  "dependencies": [],
+  "defaults": {"w": 20, "h": 10}
+}
+</config>
+
+<attachment name="react-src">
+// Main React App Component
+const App = () => {
+  const [partners, setPartners] = React.useState([]);
+
+  // Fetch JSON data from the URL
+  React.useEffect(() => {
+    fetch('https://raw.githubusercontent.com/bioimage-io/collection-bioimage-io/gh-pages/collection.json')
+      .then(response => response.json())
+      .then(data => {
+        if (data.config && data.config.partners) {
+          setPartners(data.config.partners);
+        } else {
+          setPartners([]);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  return (
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 text-gray-800 w-full">
+      <div className="p-8 bg-white shadow-md rounded-lg w-full h-full">
+        <h1 className="text-2xl font-bold mb-4">Community Partners</h1>
+        <table className="min-w-full bg-white w-full h-full">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th className="py-2">Community Partner</th>
+              <th className="py-2">Documentation</th>
+              <th className="py-2">Contact</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {partners.map((partner, index) => (
+              <tr key={index}>
+                <td className="py-2 px-4">{partner.name || 'N/A'}</td>
+                <td className="py-2 px-4">{partner.docs || 'N/A'}</td>
+                <td className="py-2 px-4">
+                  {partner.contact ? (
+                    partner.contact.map((contact, i) => (
+                      <div key={i}>
+                        <div>Name: {contact.name || 'N/A'}</div>
+                        <div>Github: {contact.github || 'N/A'}</div>
+                        <div>Email: {contact.email || 'N/A'}</div>
+                      </div>
+                    ))
+                  ) : (
+                    'N/A'
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// Render the App component
+ReactDOM.render(<App />, document.getElementById('root'));
+
+</attachment>
+<script lang="javascript">
+async function loadBabelScript(content) {
+  return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.type = 'text/babel';
+      script.setAttribute('data-presets', 'react');
+      script.textContent = content;
+      script.onerror = function() {
+        reject(new Error('Failed to load the Babel script.'));
+      };
+      document.head.appendChild(script);
+      setTimeout(()=>{
+        try{
+            Babel.transformScriptTags();
+            resolve('Babel script has been loaded!');
+         } catch (error) {
+          reject(error);
+        }
+      }, 0);
+  });
+}
+    
+class ImJoyPlugin {
+  async setup() {
+    await api.log('initialized')
+  }
+
+  async loadJsxScript(script){
+      await loadBabelScript(script);
+  }
+
+  async run(ctx) {
+    if(ctx.data && ctx.data.jsx_script)
+      await loadBabelScript(ctx.data.jsx_script);
+    else
+      await loadBabelScript(await api.getAttachment('react-src'));
+  }
+}
+
+api.export(new ImJoyPlugin())
+</script>
+
+<window lang="html">
+<div id="root"></div>
+</window>
+
+<style lang="css">
+</style>
+```
+
 
 | Tool Name      | WebPage                                   | Main Contact Person        | Institution                                 | Documentation                  |
 | -------------- | ----------------------------------------- | --------------------------- | ------------------------------------------- | ------------------------------ |
