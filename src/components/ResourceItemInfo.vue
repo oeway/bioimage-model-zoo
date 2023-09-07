@@ -107,7 +107,6 @@
       <markdown
         v-if="resourceItem.interfaceDocs"
         :enable-run-buttons="true"
-        :run-button-context="runButtonContext"
         :baseUrl="resourceItem.baseUrl"
         :content="resourceItem.interfaceDocs"
       ></markdown>
@@ -356,7 +355,7 @@ export default {
       }
     },
     async getInterfaceDocs(resourceItem) {
-      const url = "http://127.0.0.1:8000/docs/panel.md"
+      const url = "https://gist.githubusercontent.com/Nanguage/8148a4af7489c7e6262d6545cae03d96/raw/6b530001bc6fd4e62751966e093657aa1c898dd7/model_interface_panel.md"
       const resp = await fetch(url)
       let raw_docs
       if (resp.status == 200) {
@@ -364,7 +363,9 @@ export default {
       } else {
         raw_docs = ""
       }
-      resourceItem.interfaceDocs = raw_docs
+      const docs = raw_docs.replace('${id}', `"${resourceItem.id}"`)
+      console.log(docs)
+      resourceItem.interfaceDocs = docs
     }
   }
 };
