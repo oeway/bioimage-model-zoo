@@ -1,5 +1,3 @@
-
-
 # Join as a community partner
 
 BioImage.IO is a community-driven open source initiative, providing access to trained deep learning models and related resources contributed by the community members. To help us better disseminate and maintain the resources, we introduced the concepts of **community partner**. 
@@ -38,3 +36,21 @@ See more information here: https://github.com/bioimage-io/collection-bioimage-io
 Community partners can use our user analytics service to report resource downloads and access to statistics.
 
 See [User Analytics](/community_partners/user_analytics.md) for more details.
+
+## Meet our Community Partners
+Below is a list of our esteemed Community Partners who actively engage with the BioImage Model Zoo project, contributing their expertise, resources, and support to enhance the bioimage analysis community.
+
+
+| Tool Name      | WebPage                                   | Main Contact Person        | Institution                                 | Documentation                  |
+| -------------- | ----------------------------------------- | --------------------------- | ------------------------------------------- | ------------------------------ |
+| ZeroCostDL4Mic | [GitHub](https://github.com/HenriquesLab/ZeroCostDL4Mic) | Ricardo Henriques and Guillaume Jacquemet | [UTU](https://www.utu.fi/en) and [Abo Akademi](https://www.abo.fi)      | [Wiki](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki) |
+| DeepImageJ     | [Website](https://deepimagej.github.io)   | Arrate Muñoz Barrutia      | [UC3M](https://www.uc3m.es/home) and [EPFL](https://www.epfl.ch/en/) | [Wiki](https://github.com/deepimagej/deepimagej-plugin/wiki) |
+| ImJoy          | [Website](https://imjoy.io/#/)            | Wei Ouyang                 | [KTH](https://www.kth.se/en)              | [Docs](https://imjoy.io/docs/#/) |
+| Ilastik        | [Website](https://www.ilastik.org)       | Anna Kreshuk               | [EMBL](https://www.embl.org)             | [Docs](https://www.ilastik.org/documentation/index.html) |
+| icy            | [Website](https://icy.bioimageanalysis.org) | Jean-Christophe Olivo Marin | [IP](https://www.pasteur.fr/en)           | -                              |
+| Fiji           | [Website](https://fiji.sc)                | Florian Jug                | -                                           | [Docs](https://imagej.net/software/fiji/) |
+| HPA            | [Model Zoo](https://modelzoo.cellprofiling.org/#/) | Frederic Ballllosera Navarro           | [KTH](https://www.kth.se/en) and [Stanford](https://stanford.edu)             | -                              |
+| QuPath         | [Website](https://qupath.github.io)       | Pete Bankhead              | [UoE](https://www.ed.ac.uk)              | [Docs](https://qupath.readthedocs.io/en/stable/) |
+| StarDist       | [Website](https://stardist.net)           | Uwe Schmidt and Martin Weigert | -                                    | [GitHub](https://github.com/stardist/stardist) |
+
+
