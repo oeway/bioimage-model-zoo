@@ -355,16 +355,17 @@ export default {
       }
     },
     async getInterfaceDocs(resourceItem) {
-      const url = "https://gist.githubusercontent.com/Nanguage/8148a4af7489c7e6262d6545cae03d96/raw/6b530001bc6fd4e62751966e093657aa1c898dd7/model_interface_panel.md"
-      const resp = await fetch(url)
-      let raw_docs
-      if (resp.status == 200) {
-        raw_docs = await resp.text()
-      } else {
-        raw_docs = ""
-      }
-      const docs = raw_docs.replace('${id}', `"${resourceItem.id}"`)
-      console.log(docs)
+      // TODO: use window.location to get the current url
+      const url = 'http://localhost:8080/plugins/bioengine-test-run.imjoy.html'
+      const docs = `
+<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "editor_height": "200px"} -->
+\`\`\`js
+api.createWindow({src: "${url}", window_id: "test-run-form", data: {id: "${resourceItem.id}", input_window_id: "image_input_window", output_window_id: "image_output_window" }})
+\`\`\`
+<div id="test-run-form"></div>
+<div id="image_input_window"></div>
+<div id="image_output_window"></div>
+      `
       resourceItem.interfaceDocs = docs
     }
   }
