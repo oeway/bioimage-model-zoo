@@ -598,6 +598,17 @@ export function initializeRunButtons(rootElement, runButtonContext) {
         execute(elm, mode);
         delete elm.pluginConfig.startup_mode;
       }
+      const editBtn = elm.querySelector(".docsify-edit-button")
+      const runBtn = elm.querySelector(".docsify-run-button")
+      const loader = elm.querySelector(".docsify-loader")
+      if (elm.pluginConfig.minimal_ui) {
+        editBtn.style.display = "none"
+        showCodeBtn.style.display = "none"
+        runBtn.style.width = "99%"
+        loader.style.position = "absolute"
+        loader.style.left = "50%"
+        loader.style.transform = "translate(-50%, 0)"
+      }
     } catch (e) {
       console.error(e);
     }

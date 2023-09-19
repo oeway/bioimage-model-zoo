@@ -355,12 +355,19 @@ export default {
       }
     },
     async getInterfaceDocs(resourceItem) {
-      // TODO: use window.location to get the current url
-      const url = 'http://localhost:8080/plugins/bioengine-test-run.imjoy.html'
+      const url = window.location.origin + "/plugins/bioengine-test-run.imjoy.html"
       const docs = `
-<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "editor_height": "200px"} -->
+<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true} -->
 \`\`\`js
-api.createWindow({src: "${url}", window_id: "test-run-form", data: {id: "${resourceItem.id}", input_window_id: "image_input_window", output_window_id: "image_output_window" }})
+api.createWindow({
+  src: "${url}",
+  window_id: "test-run-form",
+  data: {
+    id: "${resourceItem.id}",
+    input_window_id: "image_input_window",
+    output_window_id: "image_output_window"
+  }}
+  )
 \`\`\`
 <div id="test-run-form"></div>
 <div id="image_input_window"></div>
