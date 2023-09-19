@@ -369,9 +369,40 @@ api.createWindow({
   }}
   )
 \`\`\`
+
+<style>
+#test-run-form:empty {
+  display: none;
+}
+#test-run-form {
+  height: 300px;
+}
+#image_output_window:empty {
+  display: none;
+}
+#image_input_window:empty {
+  display: none;
+}
+#image_output_window {
+  height: 300px;
+  flex: 1;
+}
+#image_input_window {
+  height: 300px;
+  flex: 1;
+  margin-right: 10px;
+}
+.image-windows {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+</style>
 <div id="test-run-form"></div>
-<div id="image_input_window"></div>
-<div id="image_output_window"></div>
+<div class="image-windows">
+  <div id="image_input_window"></div>
+  <div id="image_output_window"></div>
+</div>
       `
       resourceItem.interfaceDocs = docs
     }

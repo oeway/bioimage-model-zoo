@@ -121,7 +121,7 @@ class ImJoyPlugin {
                 setInfoPanel("Failed to run the model.")
             } else {
                 await self.updateImageShapePanel()
-                await core.show_image_vtk()
+                await core.show_image_vtk(this.output_window_id)
                 setInfoPanel("")
             }
         })
