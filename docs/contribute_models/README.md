@@ -9,7 +9,7 @@ A BioImage.IO model is a zip file containing all the items, technical descriptio
 
 In some cases, the model may need additional files.
 
-## Model contribution requirements:
+## Model contribution requirements
 
 - Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://bioimage.io/docs/#/bioimageio_model_spec) with `format_version>= 0.4.5`. 
 - The model is expected to be cross-compatible among the [consumer software](https://github.com/bioimage-io/spec-bioimage-io/blob/master/supported_formats_and_operations.md#consumers), and should always run on at least one.
