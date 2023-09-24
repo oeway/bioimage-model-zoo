@@ -30,15 +30,19 @@ The panel for upload the image file.
 class ImJoyPlugin {
     async setup() {
         console.log("setup")
-        this.setFileInputDisabled(true)
-        this.setButtonDisabled("url-load-button", true)
-        this.setButtonDisabled("submit-button", true)
-        this.setButtonDisabled("sample-input-button", true)
-        this.setButtonDisabled("sample-output-button", true)
-        this.setInfoPanel("Loading model RDF...")
+        this.setButtonsDisabled(true)
+        this.setInfoPanel("Initializing...")
         this.setWaiting(true)
         this.core_plugin = await api.loadPlugin(await api.getAttachment("bioengine-runner"))
         this.setupEvents()
+    }
+
+    setButtonsDisabled(disabled) {
+        this.setFileInputDisabled(disabled)
+        this.setButtonDisabled("url-load-button", disabled)
+        this.setButtonDisabled("submit-button", disabled)
+        this.setButtonDisabled("sample-input-button", disabled)
+        this.setButtonDisabled("sample-output-button", disabled)
     }
 
     setupEvents() {
@@ -87,7 +91,7 @@ class ImJoyPlugin {
                 return
             }
             setInfoPanel("Loading image...", true)
-            await viewImageByURL(url)
+            await viewImageByURL(url, "input")
             setInfoPanel("")
         })
     }
@@ -97,7 +101,7 @@ class ImJoyPlugin {
         sampleInputButton.addEventListener("click", async () => {
             const sampleInput = this.model_rdf.sample_inputs[0]
             setInfoPanel("Loading sample input...", true)
-            await this.viewImageByURL(sampleInput)
+            await this.viewImageByURL(sampleInput, "input")
             setInfoPanel("")
         })
     }
@@ -107,7 +111,7 @@ class ImJoyPlugin {
         sampleOutputButton.addEventListener("click", async () => {
             const sampleOutput = this.model_rdf.sample_outputs[0]
             setInfoPanel("Loading sample output...", true)
-            await this.viewImageByURL(sampleOutput)
+            await this.viewImageByURL(sampleOutput, "output")
             setInfoPanel("")
         })
     }
@@ -127,8 +131,8 @@ class ImJoyPlugin {
             if (ret === false) {
                 setInfoPanel("Failed to run the model.")
             } else {
-                await self.updateImageShapePanel()
-                await core.show_image_vtk(this.output_window_id)
+                await self.updateImageShapePanel("output")
+                await core.show_image_vtk(this.output_window_id, "output")
                 setInfoPanel("")
             }
         })
@@ -142,10 +146,14 @@ class ImJoyPlugin {
         await this.core_plugin.show_image_vtk(this.input_window_id)
     }
 
-    async viewImageByURL(url) {
-        await this.core_plugin.load_image_from_url(url)
-        await this.updateImageShapePanel()
-        await this.core_plugin.show_image_vtk(this.input_window_id)
+    async viewImageByURL(url, source="input") {
+        await this.core_plugin.load_image_from_url(url, source)
+        await this.updateImageShapePanel(source)
+        if (source === "output") {
+            await this.core_plugin.show_image_vtk(this.output_window_id, source)
+        } else {
+            await this.core_plugin.show_image_vtk(this.input_window_id, source)
+        }
     }
 
     set_default_url(sampleInput) {
@@ -159,10 +167,16 @@ class ImJoyPlugin {
         this.setWaiting(waiting)
     }
 
-    async updateImageShapePanel() {
-        const shape = await this.core_plugin.get_current_image_shape()
-        const imgShapePanel = document.getElementById("img-shape-panel")
-        imgShapePanel.textContent = `Current image shape: ${shape}`
+    async updateImageShapePanel(source="input") {
+        if (source === "input") {
+            const shape = await this.core_plugin.get_image_shape()
+            const imgShapePanel = document.getElementById("input-shape-panel")
+            imgShapePanel.textContent = `Input image shape: ${shape}`
+        } else {
+            const shape = await this.core_plugin.get_output_shape()
+            const imgShapePanel = document.getElementById("output-shape-panel")
+            imgShapePanel.textContent = `Output image shape: ${shape}`
+        }
     }
 
     setButtonDisabled(buttonId, disabled) {
@@ -213,11 +227,7 @@ class ImJoyPlugin {
         const sampleInput = rdf.sample_inputs[0]
         this.setInfoPanel("")
         this.setWaiting(false)
-        this.setFileInputDisabled(false)
-        this.setButtonDisabled("url-load-button", false)
-        this.setButtonDisabled("submit-button", false)
-        this.setButtonDisabled("sample-input-button", false)
-        this.setButtonDisabled("sample-output-button", false)
+        this.setButtonsDisabled(false)
         this.set_default_url(sampleInput)
     }
 }
@@ -261,7 +271,21 @@ api.export(new ImJoyPlugin())
         </div>
         <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
     </div>
-    <p class="mt-2 text-gray-500 text-sm" id="img-shape-panel"></p>
+
+    <div id="input-info">
+        <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
+        <button
+            id="input-download-button"
+            style="display: none"
+            >download</button>
+    </div>
+    <div id="output-info">
+        <p class="mt-2 text-gray-500 text-sm" id="output-shape-panel" style="display: inline-block"></p>
+        <button
+            id="output-download-button"
+            style="display: none"
+            >download</button>
+    </div>
 
     <div class="flex flex-row gap-4 mt-2">
       <button
@@ -415,17 +439,27 @@ class Plugin():
         )
         self.triton = await server.get_service("triton-client")
         self.image = None
+        self.output = None
 
-    def set_current_image(self, image):
+    def set_image(self, image):
         assert isinstance(image, np.ndarray)
         self.image = image
+    
+    def set_output(self, output):
+        assert isinstance(output, np.ndarray)
+        self.output = output
 
-    async def get_current_image_shape(self):
+    async def get_image_shape(self):
         assert self.image is not None
         return self.image.shape
 
-    async def show_image_vtk(self, window_id):
-        if self.image is None:
+    async def get_output_shape(self):
+        assert self.output is not None
+        return self.output.shape
+
+    async def show_image_vtk(self, window_id, source="input"):
+        image = self.image if source == "input" else self.output
+        if image is None:
             await api.alert("Please load an image first.")
             return
         self.vtk_viewer = await api.createWindow(
@@ -433,7 +467,6 @@ class Plugin():
             fullscreen=False,
             window_id=window_id,
         )
-        image = self.image
         self.vtk_viewer.setImage(image)
 
     async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
@@ -449,7 +482,7 @@ class Plugin():
         ret = await self.bioengine_execute(model_id, return_rdf=True)
         return ret["rdf"]
 
-    async def load_image_from_bytes(self, file_name, img_bytes):
+    async def load_image_from_bytes(self, file_name, img_bytes, to="input"):
         _file = io.BytesIO(img_bytes)
         _file.name = file_name
         if file_name.endswith(".tif") or file_name.endswith(".tiff"):
@@ -460,13 +493,16 @@ class Plugin():
             "Image loaded with shape: " + str(image.shape) +
             " and dtype: " + str(image.dtype)
         )
-        self.set_current_image(image)
+        if to == "input":
+            self.set_image(image)
+        else:
+            self.set_output(image)
 
-    async def load_image_from_url(self, url):
+    async def load_image_from_url(self, url, to="input"):
         file_name = url.split("?")[0].rstrip('/').split("/")[-1]
         await api.log(file_name)
         bytes_ = await fetch_file_content(url)
-        await self.load_image_from_bytes(file_name, bytes_)
+        await self.load_image_from_bytes(file_name, bytes_, to=to)
 
     async def run_model(
             self, model_id, rdf,
@@ -502,7 +538,7 @@ class Plugin():
         await api.showMessage(f"🎉Model execution completed! Got output tensor of shape {output.shape}")
         output_tensor_axes = rdf['outputs'][0]['axes']
         transformed_output = map_axes(output, output_tensor_axes, image_axes)
-        self.set_current_image(transformed_output)
+        self.set_output(transformed_output)
         return True
 
     async def run(self, ctx):

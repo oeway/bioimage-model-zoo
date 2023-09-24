@@ -376,7 +376,7 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 340px;
+  height: 360px;
 }
 #image_output_window:empty {
   display: none;
@@ -385,11 +385,11 @@ api.createWindow({
   display: none;
 }
 #image_output_window {
-  height: 300px;
+  height: 500px;
   flex: 1;
 }
 #image_input_window {
-  height: 300px;
+  height: 500px;
   flex: 1;
   margin-right: 10px;
 }
