@@ -449,6 +449,12 @@ function execute(preElm, mode) {
         showCodeBtn.style.display = "block";
       }
     }
+
+    if (preElm.pluginConfig.minimal_ui) {
+      showCodeBtn.style.display = "none";
+      const progressBar = preElm.querySelector(".docsify-progressbar");
+      progressBar.style.display = "none";
+    }
     document.addEventListener("fullscreenchange", function(e) {
       const fullScreenMode =
         document.fullScreen ||
@@ -606,8 +612,7 @@ export function initializeRunButtons(rootElement, runButtonContext) {
         showCodeBtn.style.display = "none";
         runBtn.style.width = "99%";
         loader.style.position = "absolute";
-        loader.style.left = "50%";
-        loader.style.transform = "translate(-50%, 0)";
+        loader.style.left = "49%";
       }
     } catch (e) {
       console.error(e);
