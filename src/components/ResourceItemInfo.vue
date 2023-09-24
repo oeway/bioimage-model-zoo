@@ -238,8 +238,8 @@ export default {
       });
     }
     this.getInterfaceDocs(this.resourceItem).then(() => {
-      this.$forceUpdate()
-    })
+      this.$forceUpdate();
+    });
   },
   computed: {
     runButtonContext: function() {
@@ -355,7 +355,8 @@ export default {
       }
     },
     async getInterfaceDocs(resourceItem) {
-      const url = window.location.origin + "/plugins/bioengine-test-run.imjoy.html"
+      const url =
+        window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
       const docs = `
 <!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true} -->
 \`\`\`js
@@ -403,8 +404,8 @@ api.createWindow({
   <div id="image_input_window"></div>
   <div id="image_output_window"></div>
 </div>
-      `
-      resourceItem.interfaceDocs = docs
+      `;
+      resourceItem.interfaceDocs = docs;
     }
   }
 };
