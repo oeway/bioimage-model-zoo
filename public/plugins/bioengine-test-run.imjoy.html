@@ -52,6 +52,8 @@ class ImJoyPlugin {
         this.listenSampleInputButton(setInfoPanel)
         this.listenSampleOutputButton(setInfoPanel)
         this.listenSubmitButton(setInfoPanel)
+        const downloadFile = this.downloadFile.bind(this)
+        this.listenDownloadButton(downloadFile)
     }
 
     listenFileSelection(setInfoPanel) {
@@ -138,6 +140,28 @@ class ImJoyPlugin {
         })
     }
 
+    listenDownloadButton(downloadFile) {
+        const inputDownloadButton = document.getElementById("input-download-button")
+        const outputDownloadButton = document.getElementById("output-download-button")
+        const core = this.core_plugin
+        const self = this
+        inputDownloadButton.addEventListener("click", async () => {
+            const bytes = await core.save_image_to_bytes("input")
+            const file_name = "input.tif"
+            downloadFile(bytes, file_name)
+        })
+        outputDownloadButton.addEventListener("click", async () => {
+            const bytes = await core.save_image_to_bytes("output")
+            const file_name = "output.tif"
+            downloadFile(bytes, file_name)
+        })
+    }
+
+    downloadFile(bytes, filename) {
+        const blob = new Blob([bytes], {type: "application/octet-stream"})
+        api.exportFile(blob, filename)
+    }
+
     async viewImageByBytes(fileName, bytes) {
         console.log(bytes)
         this.bytes_data = bytes
@@ -172,10 +196,14 @@ class ImJoyPlugin {
             const shape = await this.core_plugin.get_image_shape()
             const imgShapePanel = document.getElementById("input-shape-panel")
             imgShapePanel.textContent = `Input image shape: ${shape}`
+            const downloadButton = document.getElementById("input-download-button")
+            downloadButton.style.display = "inline-block"
         } else {
             const shape = await this.core_plugin.get_output_shape()
             const imgShapePanel = document.getElementById("output-shape-panel")
             imgShapePanel.textContent = `Output image shape: ${shape}`
+            const downloadButton = document.getElementById("output-download-button")
+            downloadButton.style.display = "inline-block"
         }
     }
 
@@ -276,6 +304,7 @@ api.export(new ImJoyPlugin())
         <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
         <button
             id="input-download-button"
+            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
             style="display: none"
             >download</button>
     </div>
@@ -283,6 +312,7 @@ api.export(new ImJoyPlugin())
         <p class="mt-2 text-gray-500 text-sm" id="output-shape-panel" style="display: inline-block"></p>
         <button
             id="output-download-button"
+            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
             style="display: none"
             >download</button>
     </div>
@@ -503,6 +533,18 @@ class Plugin():
         await api.log(file_name)
         bytes_ = await fetch_file_content(url)
         await self.load_image_from_bytes(file_name, bytes_, to=to)
+
+    async def save_image_to_bytes(self, source="input"):
+        image = self.image if source == "input" else self.output
+        if image is None:
+            await api.alert("Please load an image first.")
+            return
+        _file = io.BytesIO()
+        if image.ndim == 2:
+            imageio.imwrite(_file, image, format="tiff")
+        else:
+            imageio.volwrite(_file, image, format="tiff")
+        return _file.getvalue()
 
     async def run_model(
             self, model_id, rdf,
