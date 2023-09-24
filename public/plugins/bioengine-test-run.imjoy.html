@@ -252,11 +252,19 @@ class ImJoyPlugin {
         const rdf = await this.core_plugin.get_model_rdf(model_id)
         console.log(rdf)
         this.model_rdf = rdf
-        const sampleInput = rdf.sample_inputs[0]
+        if (rdf.sample_inputs) {
+            const sampleInput = rdf.sample_inputs[0]
+            this.set_default_url(sampleInput)
+        }
         this.setInfoPanel("")
         this.setWaiting(false)
         this.setButtonsDisabled(false)
-        this.set_default_url(sampleInput)
+        if (rdf.sample_inputs === undefined) {
+            this.setButtonDisabled("sample-input-button", true)
+        }
+        if (rdf.sample_outputs === undefined) {
+            this.setButtonDisabled("sample-output-button", true)
+        }
     }
 }
 
@@ -299,6 +307,8 @@ api.export(new ImJoyPlugin())
         </div>
         <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
     </div>
+
+    <p class="mt-2 text-gray-500 text-sm" id="expected-dim"></p>
 
     <div id="input-info">
         <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
@@ -477,6 +487,8 @@ class Plugin():
     
     def set_output(self, output):
         assert isinstance(output, np.ndarray)
+        if output.dtype is np.dtype('bool'):
+            output = output.astype(np.uint8)
         self.output = output
 
     async def get_image_shape(self):
