@@ -252,18 +252,27 @@ class ImJoyPlugin {
         const rdf = await this.core_plugin.get_model_rdf(model_id)
         console.log(rdf)
         this.model_rdf = rdf
-        if (rdf.sample_inputs) {
+        const has_sample_inputs = (rdf.sample_inputs !== undefined) && (rdf.sample_inputs.length > 0)
+        if (has_sample_inputs) {
             const sampleInput = rdf.sample_inputs[0]
             this.set_default_url(sampleInput)
         }
         this.setInfoPanel("")
         this.setWaiting(false)
         this.setButtonsDisabled(false)
-        if (rdf.sample_inputs === undefined) {
+        if (has_sample_inputs === false) {
             this.setButtonDisabled("sample-input-button", true)
         }
-        if (rdf.sample_outputs === undefined) {
+        const has_sample_outputs = (rdf.sample_outputs !== undefined) && (rdf.sample_outputs.length > 0)
+        if (has_sample_outputs === false) {
             this.setButtonDisabled("sample-output-button", true)
+        }
+        const has_inputs_def = (rdf.inputs !== undefined) && (rdf.inputs.length > 0)
+        if (has_inputs_def) {
+            const input_def = rdf.inputs[0]
+            const input_axes = input_def.axes
+            const expected_dim_panel = document.getElementById("expected-dim")
+            expected_dim_panel.textContent = `Expected input axes: ${input_axes}`
         }
     }
 }
@@ -558,6 +567,22 @@ class Plugin():
             imageio.volwrite(_file, image, format="tiff")
         return _file.getvalue()
 
+    async def shape_check(self, transformed, rdf):
+        if self.image is None:
+            await api.alert("Please load an image first.")
+            return False
+        shape_spec = rdf['inputs'][0]['shape']
+        if isinstance(shape_spec, list):
+            expected_shape = tuple(shape_spec)
+            if transformed.shape != expected_shape:
+                await api.alert(
+                    f"Transformed input image shape {transformed.shape} "
+                    f"does not match the expected shape {expected_shape}."
+                    f"Original image shape: {self.image.shape}"
+                )
+                return False
+        return True
+
     async def run_model(
             self, model_id, rdf,
             image_axes=None, weight_format=None):
@@ -579,14 +604,18 @@ class Plugin():
         img = transform_input(img, image_axes, input_tensor_axes)
         await api.log(f"Input image was transformed into shape {img.shape} to fit the model")
         await api.log("Data loaded, running model...")
+        if not (await self.shape_check(img, rdf)):
+            return False
         try:
             result = await self.bioengine_execute(
                 model_id, inputs=[img], weight_format=weight_format)
         except Exception as exp:
-            await api.alert(f"Failed to run the model ({model_id}) in the BioEngine, error: {exp}")
+            await api.alert(f"Failed to run, please check your input dimensions and axes. See the console for more details.")
+            await api.log(f"Failed to run the model ({model_id}) in the BioEngine, error: {exp}")
             return False
         if not result['success']:
-            await api.alert(f"Failed to run the model ({model_id}) in the BioEngine, error: {result['error']}")
+            await api.alert(f"Failed to run, please check your input dimensions and axes. See the console for more details.")
+            await api.log(f"Failed to run the model ({model_id}) in the BioEngine, error: {result['error']}")
             return False
         output = result['outputs'][0]
         await api.showMessage(f"🎉Model execution completed! Got output tensor of shape {output.shape}")

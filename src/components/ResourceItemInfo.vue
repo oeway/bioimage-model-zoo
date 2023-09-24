@@ -376,7 +376,7 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 360px;
+  height: 400px;
 }
 #image_output_window:empty {
   display: none;
