@@ -103,7 +103,6 @@
       >
 
       <br />
-      <h2>Try the model</h2>
       <markdown
         v-if="resourceItem.interfaceDocs"
         :enable-run-buttons="true"
@@ -358,7 +357,15 @@ export default {
       const url =
         window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
       const docs = `
-<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true} -->
+## Quick model testing with your own data</h1>
+Through clicking "Test the model" you are able to do a quick test with your own data.
+
+<details>
+  <summary>Read more here</summary>
+  TODO
+</details>
+
+<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
 \`\`\`js
 api.createWindow({
   src: "${url}",
