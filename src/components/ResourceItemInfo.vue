@@ -360,11 +360,6 @@ export default {
 ## Quick model testing with your own data</h1>
 Through clicking "Test the model" you are able to do a quick test with your own data.
 
-<details>
-  <summary>Read more here</summary>
-  TODO
-</details>
-
 <!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
 \`\`\`js
 api.createWindow({
