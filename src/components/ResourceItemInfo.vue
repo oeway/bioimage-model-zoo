@@ -103,6 +103,14 @@
       >
 
       <br />
+      <markdown
+        v-if="resourceItem.interfaceDocs"
+        :enable-run-buttons="true"
+        :baseUrl="resourceItem.baseUrl"
+        :content="resourceItem.interfaceDocs"
+      ></markdown>
+
+      <br />
       <div v-if="resourceItem.training_data_item">
         <h2>Training Data</h2>
         <resource-item-card
@@ -228,6 +236,9 @@ export default {
         this.$forceUpdate();
       });
     }
+    this.getInterfaceDocs(this.resourceItem).then(() => {
+      this.$forceUpdate();
+    });
   },
   computed: {
     runButtonContext: function() {
@@ -341,6 +352,62 @@ export default {
             .join("\n").length;
         }
       }
+    },
+    async getInterfaceDocs(resourceItem) {
+      const url =
+        window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
+      const docs = `
+## Quick model testing with your own data</h1>
+Through clicking "Test the model" you are able to do a quick test with your own data.
+
+<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
+\`\`\`js
+api.createWindow({
+  src: "${url}",
+  window_id: "test-run-form",
+  data: {
+    id: "${resourceItem.id}",
+    input_window_id: "image_input_window",
+    output_window_id: "image_output_window"
+  }}
+  )
+\`\`\`
+
+<style>
+#test-run-form:empty {
+  display: none;
+}
+#test-run-form {
+  height: 520px;
+}
+#image_output_window:empty {
+  display: none;
+}
+#image_input_window:empty {
+  display: none;
+}
+#image_output_window {
+  height: 500px;
+  flex: 1;
+}
+#image_input_window {
+  height: 500px;
+  flex: 1;
+  margin-right: 10px;
+}
+.image-windows {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+</style>
+<div id="test-run-form"></div>
+<div class="image-windows">
+  <div id="image_input_window"></div>
+  <div id="image_output_window"></div>
+</div>
+      `;
+      resourceItem.interfaceDocs = docs;
     }
   }
 };
