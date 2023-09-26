@@ -4,7 +4,7 @@ The panel for upload the image file.
 
 <config lang="json">
 {
-    "name": "mi-panel",
+    "name": "BioEngine Model Runner",
     "type": "window",
     "tags": [],
     "ui": "",
@@ -524,7 +524,7 @@ class Plugin():
             fullscreen=False,
             window_id=window_id,
         )
-        self.vtk_viewer.setImage(image)
+        await self.vtk_viewer.setImage(image)
 
     async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
         kwargs = {"model_id": model_id, "inputs": inputs, "return_rdf": return_rdf, "weight_format": weight_format}
