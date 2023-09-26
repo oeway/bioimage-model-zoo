@@ -358,7 +358,7 @@ export default {
         window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
       const docs = `
 ## Quick model testing with your own data</h1>
-Through clicking "Test the model" you are able to do a quick test with your own data.
+By clicking the \`Test the model\` button, you can test the model with your own data.
 
 <!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
 \`\`\`js
@@ -378,7 +378,7 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 520px;
+  height: 530px;
 }
 #image_output_window:empty {
   display: none;

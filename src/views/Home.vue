@@ -586,23 +586,6 @@ function normalizeItem(self, item, bioEngineConfigs) {
     if (bioEngineConfigs[item.id]) {
       if (!item.links.includes("imjoy/genericbioengineapp"))
         item.links.push("imjoy/genericbioengineapp");
-      item.apps.unshift({
-        name: "Test Run",
-        icon: "play",
-        async run() {
-          await self.updateFullRDF(item);
-          // pass the bioengine config
-          if (bioEngineConfigs[item.id]?.config?.bioengine) {
-            item.config = item.config || {};
-            item.config.bioengine = bioEngineConfigs[item.id].bioengine;
-          }
-          await runAppForItem(
-            self,
-            self.allApps["imjoy/genericbioengineapp"],
-            item
-          );
-        }
-      });
     }
   }
 
