@@ -618,6 +618,9 @@ export function initializeRunButtons(rootElement, runButtonContext) {
         loader.style.position = "absolute";
         loader.style.left = "49%";
       }
+      if (runBtn)
+          runBtn.innerHTML =
+            preElm.pluginConfig.run_button_text || i18n.runButtonText;
     } catch (e) {
       console.error(e);
     }
