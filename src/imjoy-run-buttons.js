@@ -428,7 +428,7 @@ function execute(preElm, mode) {
       runCode(mode, preElm.pluginConfig, code).finally(() => {
         loader.style.display = "none";
         const runBtn = preElm.querySelector(".docsify-run-button");
-        if (runBtn) runBtn.innerHTML = i18n.runButtonText;
+        if (runBtn) runBtn.innerHTML = preElm.pluginConfig.run_button_text || i18n.runButtonText;
         const outputElem = document.getElementById("output_" + id);
         if (outputElem && outputElem.children.length > 0)
           outputFullscreenElm.style.display = "inline-block";
@@ -438,7 +438,7 @@ function execute(preElm, mode) {
         runCode(mode, preElm.pluginConfig, code).finally(() => {
           loader.style.display = "none";
           const runBtn = preElm.querySelector(".docsify-run-button");
-          if (runBtn) runBtn.innerHTML = i18n.runButtonText;
+          if (runBtn) runBtn.innerHTML = preElm.pluginConfig.run_button_text || i18n.runButtonText;
         });
       });
     }

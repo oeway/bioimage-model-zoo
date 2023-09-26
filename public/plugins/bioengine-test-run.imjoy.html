@@ -243,7 +243,7 @@ class ImJoyPlugin {
 
     async run(ctx) {
         console.log("run", ctx)
-        const defaultModel = "10.5281/zenodo.5874741"
+        const defaultModel = "10.5281/zenodo.5869899"
         const model_id = ctx.data.id || defaultModel
         this.input_window_id = ctx.data.input_window_id
         this.output_window_id = ctx.data.output_window_id
@@ -282,7 +282,9 @@ api.export(new ImJoyPlugin())
 
 <window lang="html">
 <div class="m-1">
-    <p class="mt-2">Load an PNG, JPG or TIFF file:</p>
+    <p class="mt-2">Load an image file:</p>
+    <p class="mt-2 text-gray-500 text-sm"> Example formats: PNG, JPG or TIFF </p>
+    <p class="mt-2 text-gray-500 text-sm"> TODO: display expected tensor info </p>
     <div class="flex">
         <span id="file-chosen" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500">No file selected.</span>
         <label id="file-input-label" for="file-input" class="py-2 px-3 bg-blue-500 text-white rounded-r-md cursor-pointer w-20 text-center hover:bg-blue-600">
@@ -290,8 +292,11 @@ api.export(new ImJoyPlugin())
         </label>
         <input type="file" id="file-input" class="hidden" />
     </div>
+    
 
-    <p class="mt-2">Or load from an URL. The URL to OME-Zarr are supported:</p>
+    <p class="mt-2">or you may load the image from an URL.</p>
+    <p class="mt-2 text-gray-500 text-sm">A test image is provided for this model. Click the Load button to run the model on the provided test image or provide the url to your own test image.</p>
+    <p class="mt-2 text-gray-500 text-sm">The URL to OME-Zarr are supported.</p>
     <div class="flex">
         <input type="text" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500"
             placeholder="Target URL"
@@ -300,8 +305,18 @@ api.export(new ImJoyPlugin())
             class="px-4 py-2 bg-blue-500 text-white rounded-r-md w-20 hover:bg-blue-600"
             id="url-load-button">Load</button>
     </div>
+    <div id="input-info">
+        <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
+        <button
+            id="input-download-button"
+            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
+            style="display: none"
+            >download</button>
+    </div>
 
     <p class="mt-2">Input axes (optional, for example yxzc):</p>
+    <p class="mt-2 text-gray-500 text-sm" id="expected-dim"></p>
+    <p class="mt-2 text-gray-500 text-sm"> More documentation about expected axes in the documentation page.</p>
     <input type="text" class="w-2/3 px-4 py-2 border border-gray-300 rounded-md text-gray-500"
         placeholder="Input axes"
         id="input-axes-input" />
@@ -317,16 +332,7 @@ api.export(new ImJoyPlugin())
         <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
     </div>
 
-    <p class="mt-2 text-gray-500 text-sm" id="expected-dim"></p>
 
-    <div id="input-info">
-        <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
-        <button
-            id="input-download-button"
-            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
-            style="display: none"
-            >download</button>
-    </div>
     <div id="output-info">
         <p class="mt-2 text-gray-500 text-sm" id="output-shape-panel" style="display: inline-block"></p>
         <button
@@ -339,7 +345,7 @@ api.export(new ImJoyPlugin())
     <div class="flex flex-row gap-4 mt-2">
       <button
         class="px-4 py-2 bg-blue-500 text-white rounded-md w-25 hover:bg-blue-600"
-        id="submit-button">Submit</button>
+        id="submit-button">Run model</button>
       <button
         class="px-4 py-2 bg-cyan-300 text-white rounded-md w-30 hover:bg-cyan-400"
         id="sample-input-button">Sample input</button>
