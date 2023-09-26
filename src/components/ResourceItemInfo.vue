@@ -383,7 +383,7 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 400px;
+  height: 520px;
 }
 #image_output_window:empty {
   display: none;
