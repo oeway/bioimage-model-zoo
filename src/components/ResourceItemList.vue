@@ -104,12 +104,7 @@
           >
             <app-icons :apps="props.row.apps"></app-icons>
           </b-table-column>
-          <b-table-column
-            label="Created"
-            width="30"
-            field="created"
-            sortable
-          >
+          <b-table-column label="Created" width="30" field="created" sortable>
             <span>{{ props.row.created }}</span>
           </b-table-column>
         </template>

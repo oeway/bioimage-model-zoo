@@ -619,8 +619,8 @@ export function initializeRunButtons(rootElement, runButtonContext) {
         loader.style.left = "49%";
       }
       if (runBtn)
-          runBtn.innerHTML =
-            elm.pluginConfig.run_button_text || i18n.runButtonText;
+        runBtn.innerHTML =
+          elm.pluginConfig.run_button_text || i18n.runButtonText;
     } catch (e) {
       console.error(e);
     }
