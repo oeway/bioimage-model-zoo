@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/about.4629e5de.css"
   },
   {
-    "revision": "9d862b471a94890fde89",
-    "url": "/css/app.9dce7153.css"
+    "revision": "953095e1138fa4c82daa",
+    "url": "/css/app.f6a9798b.css"
   },
   {
     "revision": "54bf7731e5c60bbc8ada",
@@ -36,7 +36,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "d36353d51cd810efb103d6a1c80f8a21",
+    "revision": "23db4aff19def106167e4f1274132143",
     "url": "/index.html"
   },
   {
@@ -44,8 +44,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/about.e3513fe3.js"
   },
   {
-    "revision": "9d862b471a94890fde89",
-    "url": "/js/app.926cd9e6.js"
+    "revision": "953095e1138fa4c82daa",
+    "url": "/js/app.9a739033.js"
   },
   {
     "revision": "54bf7731e5c60bbc8ada",
@@ -54,6 +54,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "27aa1b48711c5cdb54292448e178af1d",
     "url": "/manifest.json"
+  },
+  {
+    "revision": "d43599e8582615ba5486e88daa357d8b",
+    "url": "/plugins/bioengine-test-run.imjoy.html"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
