@@ -527,8 +527,11 @@ class Plugin():
         )
         await vtk_viewer.setImage(image)
         if self.vtk_viewer:
-            await self.vtk_viewer.sync(vtk_viewer)
-            await vtk_viewer.sync(self.vtk_viewer)
+            try:
+                await self.vtk_viewer.sync(vtk_viewer)
+                await vtk_viewer.sync(self.vtk_viewer)
+            except Exception as exp:
+                await api.log(f"Failed to sync the vtk viewers: {exp}")
         
         self.vtk_viewer = vtk_viewer
 
