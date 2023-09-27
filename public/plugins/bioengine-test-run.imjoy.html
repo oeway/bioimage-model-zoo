@@ -495,6 +495,7 @@ class Plugin():
         self.triton = await server.get_service("triton-client")
         self.image = None
         self.output = None
+        self.vtk_viewer = None
 
     def set_image(self, image):
         assert isinstance(image, np.ndarray)
@@ -519,12 +520,17 @@ class Plugin():
         if image is None:
             await api.alert("Please load an image first.")
             return
-        self.vtk_viewer = await api.createWindow(
+        vtk_viewer = await api.createWindow(
             src="https://oeway.github.io/itk-vtk-viewer/",
             fullscreen=False,
             window_id=window_id,
         )
-        await self.vtk_viewer.setImage(image)
+        await vtk_viewer.setImage(image)
+        if self.vtk_viewer:
+            await self.vtk_viewer.sync(vtk_viewer)
+            await vtk_viewer.sync(self.vtk_viewer)
+        
+        self.vtk_viewer = vtk_viewer
 
     async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
         kwargs = {"model_id": model_id, "inputs": inputs, "return_rdf": return_rdf, "weight_format": weight_format}
