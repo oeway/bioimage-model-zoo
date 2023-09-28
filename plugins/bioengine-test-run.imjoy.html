@@ -257,6 +257,10 @@ class ImJoyPlugin {
             const sampleInput = rdf.sample_inputs[0]
             this.set_default_url(sampleInput)
         }
+        else{
+            const testInputs = rdf.test_inputs[0]
+            this.set_default_url(testInputs)
+        }
         this.setInfoPanel("")
         this.setWaiting(false)
         this.setButtonsDisabled(false)
@@ -553,6 +557,9 @@ class Plugin():
         _file.name = file_name
         if file_name.endswith(".tif") or file_name.endswith(".tiff"):
             image = imageio.volread(_file)
+        if file_name.endswith(".npy"):
+            image = np.load(_file)
+            image = image.squeeze()
         else:
             image = imageio.imread(_file)
         await api.log(
