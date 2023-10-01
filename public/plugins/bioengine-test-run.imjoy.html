@@ -101,7 +101,7 @@ class ImJoyPlugin {
     listenSampleInputButton(setInfoPanel) {
         const sampleInputButton = document.getElementById("sample-input-button")
         sampleInputButton.addEventListener("click", async () => {
-            const sampleInput = this.model_rdf.sample_inputs[0]
+            const sampleInput = this.model_rdf.test_inputs[0]
             setInfoPanel("Loading sample input...", true)
             await this.viewImageByURL(sampleInput, "input")
             setInfoPanel("")
@@ -111,7 +111,7 @@ class ImJoyPlugin {
     listenSampleOutputButton(setInfoPanel) {
         const sampleOutputButton = document.getElementById("sample-output-button")
         sampleOutputButton.addEventListener("click", async () => {
-            const sampleOutput = this.model_rdf.sample_outputs[0]
+            const sampleOutput = this.model_rdf.test_outputs[0]
             setInfoPanel("Loading sample output...", true)
             await this.viewImageByURL(sampleOutput, "output")
             setInfoPanel("")
@@ -253,26 +253,12 @@ class ImJoyPlugin {
         const rdf = await this.core_plugin.get_model_rdf(model_id)
         console.log(rdf)
         this.model_rdf = rdf
-        const has_sample_inputs = (rdf.sample_inputs !== undefined) && (rdf.sample_inputs.length > 0)
-        if (has_sample_inputs) {
-            const sampleInput = rdf.sample_inputs[0]
-            this.set_default_url(sampleInput)
-        }
-        else{
-            const testInputs = rdf.test_inputs[0]
-            this.set_default_url(testInputs)
-        }
+        const testInputs = rdf.test_inputs[0]
+        this.set_default_url(testInputs)
         await viewerPromise
         this.setInfoPanel("")
         this.setWaiting(false)
         this.setButtonsDisabled(false)
-        if (has_sample_inputs === false) {
-            this.setButtonDisabled("sample-input-button", true)
-        }
-        const has_sample_outputs = (rdf.sample_outputs !== undefined) && (rdf.sample_outputs.length > 0)
-        if (has_sample_outputs === false) {
-            this.setButtonDisabled("sample-output-button", true)
-        }
         const has_inputs_def = (rdf.inputs !== undefined) && (rdf.inputs.length > 0)
         if (has_inputs_def) {
             const input_def = rdf.inputs[0]
@@ -523,15 +509,14 @@ class Plugin():
         return self.output.shape
 
     async def load_viewer(self, window_id):
-        self.ij = await api.createWindow(src="https://ij.imjoy.io", name="ImageJ.JS", fullscreen=False, window_id=window_id)
+        self.ij = await api.createWindow(src="https://ij.imjoy.io/", name="ImageJ.JS", fullscreen=False, window_id=window_id)
 
     async def show_image_vtk(self, window_id, source="input"):
         image = self.image if source == "input" else self.output
         self.ij = await api.getWindow('ImageJ.JS')
         if not self.ij:
-            await self.load_viewer(window_id)
-        await api.showMessage(str(image.shape) + str(image.dtype))
-        await self.ij.viewImage(np.ascontiguousarray(image), {"name": "input-image" if source == "input" else "output-image"})
+            self.ij = await api.createWindow(src="https://ij.imjoy.io/", name="ImageJ.JS", fullscreen=False, window_id=window_id)
+        await self.ij.viewImage(image, {"name": "input-image" if source == "input" else "output-image"})
 
     async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
         kwargs = {"model_id": model_id, "inputs": inputs, "return_rdf": return_rdf, "weight_format": weight_format}
@@ -645,7 +630,17 @@ class Plugin():
         output = result['outputs'][0]
         await api.showMessage(f"🎉Model execution completed! Got output tensor of shape {output.shape}")
         output_tensor_axes = rdf['outputs'][0]['axes']
-        transformed_output = map_axes(output, output_tensor_axes, image_axes)
+        target_axes = output_tensor_axes
+        # make it as channel first
+        if "c" in target_axes:
+            target_axes = target_axes.replace("c", "")
+            target_axes = "c" + target_axes
+        if "z" in target_axes:
+            target_axes = target_axes.replace("z", "")
+            target_axes = "z" + target_axes
+        if "b" in target_axes:
+            target_axes = target_axes.replace("b", "")
+        transformed_output = map_axes(output, output_tensor_axes, target_axes)
         self.set_output(transformed_output)
         return True
 
