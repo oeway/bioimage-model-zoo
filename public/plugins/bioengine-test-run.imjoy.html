@@ -248,6 +248,7 @@ class ImJoyPlugin {
         this.input_window_id = ctx.data.input_window_id
         this.output_window_id = ctx.data.output_window_id
         this.model_id = model_id
+        const viewerPromise = this.core_plugin.load_viewer(this.input_window_id)
         // Load the model RDF
         const rdf = await this.core_plugin.get_model_rdf(model_id)
         console.log(rdf)
@@ -261,6 +262,7 @@ class ImJoyPlugin {
             const testInputs = rdf.test_inputs[0]
             this.set_default_url(testInputs)
         }
+        await viewerPromise
         this.setInfoPanel("")
         this.setWaiting(false)
         this.setButtonsDisabled(false)
@@ -325,7 +327,7 @@ api.export(new ImJoyPlugin())
         placeholder="Input axes"
         id="input-axes-input" />
 
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-5 flex items-center justify-center">
         <div id="info" class="mt-2 bg-white p-6 rounded shadow-lg">
             <div id="wait-animation" role="status" style="display: none">
                 <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -501,7 +503,6 @@ class Plugin():
         self.triton = await server.get_service("triton-client")
         self.image = None
         self.output = None
-        self.vtk_viewer = None
 
     def set_image(self, image):
         assert isinstance(image, np.ndarray)
@@ -521,25 +522,16 @@ class Plugin():
         assert self.output is not None
         return self.output.shape
 
+    async def load_viewer(self, window_id):
+        self.ij = await api.createWindow(src="https://ij.imjoy.io", name="ImageJ.JS", fullscreen=False, window_id=window_id)
+
     async def show_image_vtk(self, window_id, source="input"):
         image = self.image if source == "input" else self.output
-        if image is None:
-            await api.alert("Please load an image first.")
-            return
-        vtk_viewer = await api.createWindow(
-            src="https://oeway.github.io/itk-vtk-viewer/",
-            fullscreen=False,
-            window_id=window_id,
-        )
-        await vtk_viewer.setImage(image)
-        if self.vtk_viewer:
-            try:
-                await self.vtk_viewer.sync(vtk_viewer)
-                await vtk_viewer.sync(self.vtk_viewer)
-            except Exception as exp:
-                await api.log(f"Failed to sync the vtk viewers: {exp}")
-        
-        self.vtk_viewer = vtk_viewer
+        self.ij = await api.getWindow('ImageJ.JS')
+        if not self.ij:
+            await self.load_viewer(window_id)
+        await api.showMessage(str(image.shape) + str(image.dtype))
+        await self.ij.viewImage(np.ascontiguousarray(image), {"name": "input-image" if source == "input" else "output-image"})
 
     async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
         kwargs = {"model_id": model_id, "inputs": inputs, "return_rdf": return_rdf, "weight_format": weight_format}
@@ -621,6 +613,7 @@ class Plugin():
         if self.image is None:
             await api.alert("Please load an image first.")
             return False
+        self.image = await self.ij.getImage({"format": 'ndarray', "all": True})
         img = self.image
         input_spec = rdf['inputs'][0]
         input_tensor_axes = input_spec['axes']
