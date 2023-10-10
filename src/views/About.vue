@@ -44,7 +44,7 @@
       >
       <b-button
         @click="openUrl('https://github.com/bioimage-io/bioimage.io/issues/28')"
-        >Join Our BioImage.IO Weekly Meeting</b-button
+        >BioImage.IO Weekly Meeting</b-button
       >
     </section>
     <br />
