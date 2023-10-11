@@ -26,6 +26,7 @@
   - [How to join](/community_partners/how_to_join.md)
   - [User Analytics](/community_partners/user_analytics.md)
   - [BioImage.IO Partner Collection](/community_partners/partner_collection.md)
+* [FAQs](/faqs/README.md)
 * [Terms of Service](/terms_of_service.md)
 * [Code of Conduct](/CODE_OF_CONDUCT.md)
 * [Governance](/bioimageio_steering.md)
