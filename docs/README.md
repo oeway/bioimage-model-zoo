@@ -1,4 +1,6 @@
-# BioImage Model Zoo: Advanced AI models in one-click
+# Getting Started
+
+## BioImage Model Zoo: Advanced AI models in one-click
 
 The Bioimage Model Zoo is a community-driven AI model repository. The aim is to facilitate the adoption of AI methods among the bioimaging community by providing easy access to pretrained AI models. By establishing a common Model Resource Description File Specification, the model zoo serves as a distribution point for deep learning models trained to perform bioimage analysis tasks.
 
@@ -10,18 +12,39 @@ The model zoo is open for contributions from the community partners and external
 
 <img src="./bioimage_description.png" align="center" width="1000"/>
 
-# Reference publication
+Here there are some slides to ilustrate how the BioImage Model Zoo works. Press the **RUN** button to show the slides.
+<!-- ImJoyPlugin: {"type": "web-worker"} -->
+```js
+api.showDialog({src: "https://slides.imjoy.io/?slides=https://raw.githubusercontent.com/esgomezm/bioimage.io/main/docs/user_guide/welcome_slides.md"})
+```
+
+## Reference publication
 Wei Ouyang, Fynn Beuttenmueller, Estibaliz Gómez-de-Mariscal, Constantin Pape, Tom Burke, Carlos Garcia-López-de-Haro, Craig Russell, Lucía Moya-Sans, Cristina de-la-Torre-Gutiérrez, Deborah Schmidt, Dominik Kutra, Maksim Novikov, Martin Weigert, Uwe Schmidt, Peter Bankhead, Guillaume Jacquemet, Daniel Sage, Ricardo Henriques, Arrate Muñoz-Barrutia, Emma Lundberg, Florian Jug, Anna Kreshuk, **BioImage Model Zoo: A Community-Driven Resource for Accessible Deep Learning in BioImage Analysis**, bioRxiv 2022.06.07.495102, doi: [https://doi.org/10.1101/2022.06.07.495102](https://doi.org/10.1101/2022.06.07.495102)
 
 <img src="./bioimage-io-paper-figure-1.png" align="center" width="1000"/>
 
-# Glossary
-In the ever-evolving field of bioimage analysis, understanding the terminology is essential. Explore our glossary to familiarize yourself with key terms and concepts used throughout the BioImage Model Zoo project.
 
-| Term                                  | Definition                                                                                                                                                           |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Community Partner**                 | Usually, a community partner is an organization, a company, a research group, or a software team (of one or more) that can consume and/or produce resources of the BioImage Model Zoo. Additionally, most partners continuously and openly contribute resources of their own. The founders community partners represent open source consumer software of [BioImage.IO](http://BioImage.IO/) (e.g. [ilastik](https://www.ilastik.org), [Fiji](https://imagej.net/software/fiji/), [deepImageJ](https://deepimagej.github.io), [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic), [StarDist](https://github.com/stardist/stardist)). A Community Partner can either be a team behind a software which produces or consumes trained models compatible with the [BioImage.IO](http://bioimage.io/) spec or an organization, group, company or team (of one or more) who contributed and will keep contributing more models to BioImage Model Zoo. |
-| **Consumer**                          | Refers to an individual or user who engages with the project by utilizing the pre-existing models available on [BioImage.IO](http://bioimage.io/). Their primary role involves downloading these models and incorporating them into their workflow using compatible software or any specific manner that suits their needs. For example, a Life Scientist can be considered a consumer by accessing the[BioImage.io](http://bioimage.io/), selecting a Deep Learning model relevant to their research, and integrating it into their preferred software, such as deepImageJ or other compatible platforms. As a consumer, their focus lies in leveraging the existing models to enhance their bioimage analysis tasks, thereby benefiting from the diverse range of models provided by the BioImage Model Zoo. |
-| **Contributor**                       | A contributor can either be an individual person or a group, entity, or software. As an individual contributor, your primary objective is to actively contribute to the project by uploading models to BioImage Model Zoo. By doing so, you expand the range of available models, enriching the repository and fostering the growth of the bioimage analysis community. As a contributor, you play a crucial role in sharing your expertise and innovative models with the broader community, contributing to advancements in bioimage analysis. Similarly, a software contributor refers to a software application or system that actively participates in the project by uploading models to [BioImage.IO](http://bioimage.io/). These software contributors enhance the available models by providing new and diverse solutions, further expanding the capabilities of the BioImage Model Zoo. Whether you contribute as an individual or a software entity, your active involvement in uploading models to [BioImage.IO](http://bioimage.io/) is instrumental in supporting the project's objectives. By sharing your models, you contribute to the collective knowledge and empower researchers in the bioimage analysis field. |
-| **Consumer Software**                 | A consumer software refers to any software application or tool that utilizes the models from the BioImage Model Zoo repository. Consumer software is designed to interact with and make use of the pretrained AI models available in the BioImage Model Zoo. A consumer software is any software application or tool that utilize pretrained AI models for bioimage analysis tasks, either through integration, execution, or interaction with the models available in the BioImage Model Zoo. |
-| **Model Resource Description File Specifications (RDF YAML)** | The Model Resource Description File (RDF) specifications refer to a set of guidelines that define the structure and content of a YAML file used to describe the AI models with pretrained weights in a standardized format. The model RDF serves as a metadata file that provides essential information about the model, its properties, and its intended use. The RDF file contains both mandatory and optional fields that capture relevant details about the model, such as its architecture, input/output formats, preprocessing steps, and performance metrics. By following the Model RDF specifications, developers and researchers can create consistent and interoperable descriptions of their AI models, allowing seamless integration and sharing within the [BioImage.IO](http://bioimage.io/) ecosystem. |
+## How to participate in the BioImage Model Zoo
+Participation into the BioImage Model Zoo is opened to many different profiles. None of them exclude any other. Here are the options in which you can intereact with the BioImage Model Zoo:
+
+### As a User or Consumer of models, applications or datasets
+Act as a user in the BioImage Model Zoo refers to an individual or user who engages with the project by utilizing the pre-existing models available on [BioImage.IO](http://bioimage.io/). Their primary role involves downloading these models and incorporating them into their workflow using compatible software or any specific manner that suits their needs. For example, a Life Scientist can be considered a consumer by accessing the[BioImage.io](http://bioimage.io/), selecting a Deep Learning model relevant to their research, and integrating it into their preferred software, such as deepImageJ or other compatible platforms. As a consumer, their focus lies in leveraging the existing models to enhance their bioimage analysis tasks, thereby benefiting from the diverse range of models provided by the BioImage Model Zoo.
+
+### As a Contributor or developer of models, applications or datasets
+A contributor or developer can either be an individual person or a group, entity, or software. As an individual contributor, your primary objective is to actively contribute to the project by uploading models to BioImage Model Zoo. By doing so, you expand the range of available models, enriching the repository and fostering the growth of the bioimage analysis community. As a contributor, you play a crucial role in sharing your expertise and innovative models with the broader community, contributing to advancements in bioimage analysis. Similarly, a software contributor refers to a software application or system that actively participates in the project by uploading models to [BioImage.IO](http://bioimage.io/). These software contributors enhance the available models by providing new and diverse solutions, further expanding the capabilities of the BioImage Model Zoo. Whether you contribute as an individual or a software entity, your active involvement in uploading models to [BioImage.IO](http://bioimage.io/) is instrumental in supporting the project's objectives. By sharing your models, you contribute to the collective knowledge and empower researchers in the bioimage analysis field.
+
+### As a Community Partner
+Usually, a community partner is an organization, a company, a research group, or a software team (of one or more) that can consume and/or produce resources of the BioImage Model Zoo. Additionally, most partners continuously and openly contribute resources of their own. The founders community partners represent open source consumer software of [BioImage.IO](http://BioImage.IO/) (e.g. [ilastik](https://www.ilastik.org), [Fiji](https://imagej.net/software/fiji/), [deepImageJ](https://deepimagej.github.io), [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic), [StarDist](https://github.com/stardist/stardist)). A Community Partner can either be a team behind a software which produces or consumes trained models compatible with the [BioImage.IO](http://bioimage.io/) spec or an organization, group, company or team (of one or more) who contributed and will keep contributing more models to BioImage Model Zoo.
+
+## AI4Life and the BioImage Model Zoo
+AI4Life is a project closely aligned with the BioImage Model Zoo. It plays a significant role in supporting and enhancing the BioImage Model Zoo's mission and initiatives.
+To learn more about AI4Life, please visit the [AI4Life Help Desk](https://ai4life.eurobioimaging.eu/help/).
+Access training materials and videos on the Galaxy Training Network to enhance your understanding of AI4Life and the BioImage Model Zoo [here](https://training.galaxyproject.org/training-material/topics/ai4life/).
+
+## Commercial use of the BioImage Model Zoo
+Resources from the BioImage Model Zoo are free to use for commercial purposes. However, we kindly request that appropiate credits are provided when using these resources as a gesture of acknowledgment for the contributions of the model creators and the BioImage Model Zoo community. Please refer to the Reference publication section for more information.
+
+
+
+
+
