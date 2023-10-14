@@ -42,6 +42,10 @@
         v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
       >
+      <b-button
+        @click="openUrl('https://github.com/bioimage-io/bioimage.io/issues/28')"
+        >BioImage.IO Weekly Meeting</b-button
+      >
     </section>
     <br />
     <section class="hero" style="min-height: 100px">
