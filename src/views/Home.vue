@@ -1,5 +1,19 @@
 <template>
   <div class="home">
+    <b-notification
+      type="is-warning"
+      has-icon
+      aria-close-label="close"
+      role="alert"
+      style="margin-bottom: 0px;"
+    >
+      Dear BioImage Model Zoo Users, our website is currently undergoing
+      maintenance due to a significant API change in Zenodo
+      (https://zenodo.org), which we used for our model storage. This affects
+      model downloads and other features. Our developer team is actively working
+      on a fix to restore access as soon as possible. We apologize for any
+      inconvenience and appreciate your patience.
+    </b-notification>
     <!-- Header -->
     <section
       class="hero is-link is-fullheight is-fullheight-with-navbar"
