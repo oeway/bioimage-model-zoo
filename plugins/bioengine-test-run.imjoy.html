@@ -574,7 +574,8 @@ class Plugin():
             self.set_output(image)
 
     async def load_image_from_url(self, url, to="input"):
-        file_name = url.split("?")[0].rstrip('/').split("/")[-1]
+        base_url = url.split("?")[0].rstrip('/')
+        file_name = base_url.split("/")[-2] if base_url.endswith("/content") else base_url.split("/")[-1]
         await api.log(file_name)
         bytes_ = await fetch_file_content(url)
         await self.load_image_from_bytes(file_name, bytes_, to=to)

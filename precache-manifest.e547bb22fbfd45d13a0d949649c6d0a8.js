@@ -56,7 +56,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/manifest.json"
   },
   {
-    "revision": "299832c994e8e938780cef41d83fcca4",
+    "revision": "3168003bc83e2b1cb5a634333695d69d",
     "url": "/plugins/bioengine-test-run.imjoy.html"
   },
   {
