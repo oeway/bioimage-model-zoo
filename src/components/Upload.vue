@@ -9,6 +9,14 @@
     }"
   >
     <b-notification
+      type="is-warning"
+      has-icon
+      aria-close-label="Close notification"
+      role="alert"
+    >
+      Oops! The upload feature is currently broken due to API changes in Zenodo, we are working on a fix and will release it soon.
+    </b-notification>
+    <b-notification
       v-if="client.isSandbox"
       type="is-warning"
       has-icon
@@ -23,6 +31,7 @@
       storage of your data.
     </b-notification>
     <b-steps
+      v-show="false"
       style="margin-top: 20px;"
       position="left"
       :has-navigation="false"
