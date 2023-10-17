@@ -14,7 +14,9 @@
       aria-close-label="Close notification"
       role="alert"
     >
-      Oops! The upload feature is currently broken due to API changes in Zenodo, we are working on a fix and will release it soon.
+      Oops! The upload feature is currently broken due to a significant API
+      change in Zenodo (https://zenodo.org), we are working on a fix and will
+      release it soon.
     </b-notification>
     <b-notification
       v-if="client.isSandbox"
