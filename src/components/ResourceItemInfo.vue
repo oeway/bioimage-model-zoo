@@ -104,10 +104,10 @@
 
       <br />
       <markdown
-        v-if="resourceItem.interfaceDocs"
+        v-if="resourceItem.testRunDocs"
         :enable-run-buttons="true"
         :baseUrl="resourceItem.baseUrl"
-        :content="resourceItem.interfaceDocs"
+        :content="resourceItem.testRunDocs"
       ></markdown>
 
       <br />
@@ -236,7 +236,7 @@ export default {
         this.$forceUpdate();
       });
     }
-    this.getInterfaceDocs(this.resourceItem).then(() => {
+    this.gettestRunDocs(this.resourceItem).then(() => {
       this.$forceUpdate();
     });
   },
@@ -353,7 +353,15 @@ export default {
         }
       }
     },
-    async getInterfaceDocs(resourceItem) {
+    async gettestRunDocs(resourceItem) {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
+      );
+      const manifest = await response.json();
+      if (!manifest.collection.find(c => c.id === resourceItem.id)) {
+        resourceItem.testRunDocs = `## Model testing is not available for this model\n\nSee [conversion log](https://github.com/bioimage-io/bioengine-model-runner/blob/gh-pages/manifest.bioengine.yaml) for more details.`;
+        return;
+      }
       const url =
         window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
       const docs = `
@@ -407,7 +415,7 @@ api.createWindow({
   <div id="image_output_window"></div>
 </div>
       `;
-      resourceItem.interfaceDocs = docs;
+      resourceItem.testRunDocs = docs;
     }
   }
 };
