@@ -14,9 +14,18 @@
       aria-close-label="Close notification"
       role="alert"
     >
-      Oops! The upload feature is currently broken due to a significant API
-      change in Zenodo (https://zenodo.org), we are working on a fix and will
-      release it soon.
+      Due to a significant API change in Zenodo (https://zenodo.org), you can
+      only upload the model by login directly to
+      <a href="https://zenodo.org">Zenodo</a> by following the tutorial:
+      <br />
+      <b-button
+        @click="
+          openUrl(
+            'https://bioimage.io/docs/#/contribute_models/contribute_zenodo.md'
+          )
+        "
+        >Upload models via Zenodo</b-button
+      >
     </b-notification>
     <b-notification
       v-if="client.isSandbox"
@@ -532,6 +541,9 @@ export default {
     };
   },
   methods: {
+    openUrl(url) {
+      window.open(url);
+    },
     async startFromDepositURL() {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el
