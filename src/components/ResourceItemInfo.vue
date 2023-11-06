@@ -375,8 +375,7 @@ api.createWindow({
   window_id: "test-run-form",
   data: {
     id: "${resourceItem.id}",
-    input_window_id: "image_input_window",
-    output_window_id: "image_output_window"
+    window_id: "ij_window"
   }}
   )
 \`\`\`
@@ -410,10 +409,7 @@ api.createWindow({
 }
 </style>
 <div id="test-run-form"></div>
-<div class="image-windows">
-  <div id="image_input_window"></div>
-  <div id="image_output_window"></div>
-</div>
+<div id="ij-window"></div>
       `;
       resourceItem.testRunDocs = docs;
     }
