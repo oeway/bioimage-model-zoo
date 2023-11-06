@@ -557,9 +557,11 @@ class Plugin():
     async def load_image_from_bytes(self, file_name, img_bytes, to="input"):
         _file = io.BytesIO(img_bytes)
         _file.name = file_name
+        if file_name.endswith("/content"):
+            file_name = file_name[:-8]
         if file_name.endswith(".tif") or file_name.endswith(".tiff"):
             image = imageio.volread(_file)
-        if file_name.endswith(".npy"):
+        elif file_name.endswith(".npy"):
             image = np.load(_file)
             image = image.squeeze()
         else:
