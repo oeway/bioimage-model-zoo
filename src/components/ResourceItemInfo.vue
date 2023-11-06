@@ -375,7 +375,7 @@ api.createWindow({
   window_id: "test-run-form",
   data: {
     id: "${resourceItem.id}",
-    window_id: "ij_window"
+    window_id: "ij-window"
   }}
   )
 \`\`\`
@@ -387,25 +387,12 @@ api.createWindow({
 #test-run-form {
   height: 530px;
 }
-#image_output_window:empty {
+#ij-window:empty {
   display: none;
 }
-#image_input_window:empty {
-  display: none;
-}
-#image_output_window {
+#ij-window {
   height: 500px;
-  flex: 1;
-}
-#image_input_window {
-  height: 500px;
-  flex: 1;
-  margin-right: 10px;
-}
-.image-windows {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 10px;
+  border: 1px solid #ccc;
 }
 </style>
 <div id="test-run-form"></div>
