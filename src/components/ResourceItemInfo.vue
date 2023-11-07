@@ -385,7 +385,7 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 530px;
+  height: 80px;
 }
 #ij-window:empty {
   display: none;

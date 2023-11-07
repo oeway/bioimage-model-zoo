@@ -27,6 +27,46 @@ The panel for upload the image file.
 
 <script lang="javascript">
 
+function isChannelFirst(shape) {
+  if (shape.length === 5) {  // with batch dimension
+    shape = shape.slice(1); 
+  }
+  let minDim = shape.indexOf(Math.min(...shape)); // 找到最小维度的索引
+  if (minDim === 0) {  // easy case: channel first
+    return true;
+  } else if (minDim === shape.length - 1) {  // easy case: channel last
+    return false;
+  } else {  // hard case: can't figure it out, just guess channel first
+    return true;
+  }
+}
+
+function getDefaultImageAxes(shape, inputTensorAxes) {
+  let ndim = shape.length;
+  let hasZAxis = inputTensorAxes.includes('z'); // 使用includes检查'z'是否存在
+  let axes;
+  if (ndim === 2) {
+    axes = "yx";
+  } else if (ndim === 3 && hasZAxis) {
+    axes = "zyx";
+  } else if (ndim === 3) {
+    let channelFirst = isChannelFirst(shape);
+    axes = channelFirst ? "cyx" : "yxc";
+  } else if (ndim === 4 && hasZAxis) {
+    let channelFirst = isChannelFirst(shape);
+    axes = channelFirst ? "czyx" : "zyxc";
+  } else if (ndim === 4) {
+    let channelFirst = isChannelFirst(shape);
+    axes = channelFirst ? "bcyx" : "byxc";
+  } else if (ndim === 5) {
+    let channelFirst = isChannelFirst(shape);
+    axes = channelFirst ? "bczyx" : "bzyxc";
+  } else {
+    throw new Error(`Invalid number of image dimensions: ${ndim}`);
+  }
+  return axes;
+}
+
 class ImJoyPlugin {
     async setup() {
         console.log("setup")
@@ -37,8 +77,6 @@ class ImJoyPlugin {
     }
 
     setButtonsDisabled(disabled) {
-        this.setFileInputDisabled(disabled)
-        this.setButtonDisabled("url-load-button", disabled)
         this.setButtonDisabled("submit-button", disabled)
         this.setButtonDisabled("sample-input-button", disabled)
         this.setButtonDisabled("sample-output-button", disabled)
@@ -46,55 +84,9 @@ class ImJoyPlugin {
 
     setupEvents() {
         const setInfoPanel = this.setInfoPanel.bind(this)
-        this.listenFileSelection(setInfoPanel)
-        this.listenURLInput(setInfoPanel)
         this.listenSampleInputButton(setInfoPanel)
         this.listenSampleOutputButton(setInfoPanel)
         this.listenSubmitButton(setInfoPanel)
-        const downloadFile = this.downloadFile.bind(this)
-        this.listenDownloadButton(downloadFile)
-    }
-
-    listenFileSelection(setInfoPanel) {
-        const fileInput = document.getElementById("file-input")
-        const fileChosen = document.getElementById('file-chosen');
-        const viewImageByBytes = this.viewImageByBytes.bind(this)
-
-        fileInput.addEventListener("input", async () => {
-            setInfoPanel("Loading file...", true)
-            const file = fileInput.files[0]
-            fileChosen.textContent = file.name
-            if (!file) {
-                await api.alert("No file selected")
-                setInfoPanel("")
-                return
-            }
-            const reader = new FileReader()
-            reader.onload = async function() {
-                const content = this.result
-                await viewImageByBytes(file.name, content)
-                // set to empty so that the same file can be loaded again
-                fileInput.value = ''
-                setInfoPanel("")
-            }
-            reader.readAsArrayBuffer(file)
-        })
-    }
-
-    listenURLInput(setInfoPanel) {
-        const viewImageByURL = this.viewImageByURL.bind(this)
-        const urlInput = document.getElementById("url-input")
-        const urlLoadButton = document.getElementById("url-load-button")
-        urlLoadButton.addEventListener("click", async () => {
-            const url = urlInput.value
-            if (!url) {
-                await api.alert("No URL provided")
-                return
-            }
-            setInfoPanel("Loading image...", true)
-            await viewImageByURL(url, "input")
-            setInfoPanel("")
-        })
     }
 
     listenSampleInputButton(setInfoPanel) {
@@ -123,60 +115,32 @@ class ImJoyPlugin {
         const self = this
         const inputAxes = document.getElementById("input-axes-input")
         submitButton.addEventListener("click", async () => {
-            const input_axes = inputAxes.value || null
-            console.log("Input axes:", input_axes)
-            setInfoPanel("Running model...", true)
-            const ret = await core.run_model(
-                self.model_id, self.model_rdf, input_axes
-            )
-            if (ret === false) {
-                setInfoPanel("Failed to run the model.")
-            } else {
-                await self.updateImageShapePanel("output")
-                await core.show_image_vtk(this.output_window_id, "output")
-                setInfoPanel("")
-            }
+            this.runModel()
+            //const input_axes = inputAxes.value || null
+            //console.log("Input axes:", input_axes)
+            //setInfoPanel("Running model...", true)
+            //const ret = await core.run_model(
+            //    self.model_id, self.model_rdf, input_axes
+            //)
+            //if (ret === false) {
+            //    setInfoPanel("Failed to run the model.")
+            //} else {
+            //    await self.updateImageShapePanel("output")
+            //    await core.show_image_vtk(this.output_window_id, "output")
+            //    setInfoPanel("")
+            //}
         })
-    }
-
-    listenDownloadButton(downloadFile) {
-        const inputDownloadButton = document.getElementById("input-download-button")
-        const outputDownloadButton = document.getElementById("output-download-button")
-        const core = this.core_plugin
-        const self = this
-        inputDownloadButton.addEventListener("click", async () => {
-            const bytes = await core.save_image_to_bytes("input")
-            const file_name = "input.tif"
-            downloadFile(bytes, file_name)
-        })
-        outputDownloadButton.addEventListener("click", async () => {
-            const bytes = await core.save_image_to_bytes("output")
-            const file_name = "output.tif"
-            downloadFile(bytes, file_name)
-        })
-    }
-
-    downloadFile(bytes, filename) {
-        const blob = new Blob([bytes], {type: "application/octet-stream"})
-        api.exportFile(blob, filename)
-    }
-
-    async viewImageByBytes(fileName, bytes) {
-        console.log(bytes)
-        this.bytes_data = bytes
-        await this.core_plugin.load_image_from_bytes(fileName, bytes)
-        await this.updateImageShapePanel()
-        await this.core_plugin.show_image_vtk(this.input_window_id)
     }
 
     async viewImageByURL(url, source="input") {
-        await this.core_plugin.load_image_from_url(url, source)
-        await this.updateImageShapePanel(source)
-        if (source === "output") {
-            await this.core_plugin.show_image_vtk(this.output_window_id, source)
-        } else {
-            await this.core_plugin.show_image_vtk(this.input_window_id, source)
-        }
+        //await this.core_plugin.load_image_from_url(url, source)
+        //await this.updateImageShapePanel(source)
+        //if (source === "output") {
+        //    await this.core_plugin.show_image_vtk(this.output_window_id, source)
+        //} else {
+        //    await this.core_plugin.show_image_vtk(this.input_window_id, source)
+        //}
+        await this.ij.openUrl(url)
     }
 
     set_default_url(sampleInput) {
@@ -215,19 +179,6 @@ class ImJoyPlugin {
         } else {
             button.classList.remove("bg-gray-300")
             button.classList.remove("hover:bg-gray-300")
-        }
-    }
-
-    setFileInputDisabled(disabled) {
-        const fileInput = document.getElementById("file-input")
-        const label = document.getElementById("file-input-label")
-        fileInput.disabled = disabled
-        if (disabled) {
-            label.classList.add("bg-gray-300")
-            label.classList.add("hover:bg-gray-300")
-        } else {
-            label.classList.remove("bg-gray-300")
-            label.classList.remove("hover:bg-gray-300")
         }
     }
 
@@ -278,6 +229,24 @@ class ImJoyPlugin {
         return ret.result.rdf
     }
 
+    async runModel(imageAxes) {
+        const img = await this.ij.getImage()
+        inputSpec = this.rdf.inputs[0]
+        inputTensorAxes = inputSpec.axes
+        await api.log(`inputTensorAxes: ${inputTensorAxes}`)
+        if (imageAxes === null) {
+            const shape = img.shape
+            const imageAxes = getDefaultImageAxes(shape, inputTensorAxes)
+            await api.log(`Image axes were not provided. They were automatically determined to be ${imageAxes}`)
+        } else {
+            await api.log(`Image axes were provided as ${image_axes}`)
+        }
+        // reshape image to match the input axes
+        // submit the image to bioengine
+        // process the output
+        debugger
+    }
+
     async run(ctx) {
         console.log("run", ctx)
         const defaultModel = "10.5281/zenodo.5869899"
@@ -291,14 +260,6 @@ class ImJoyPlugin {
         console.log(rdf)
         this.model_rdf = rdf
         const has_sample_inputs = (rdf.sample_inputs !== undefined) && (rdf.sample_inputs.length > 0)
-        if (has_sample_inputs) {
-            const sampleInput = rdf.sample_inputs[0]
-            this.set_default_url(sampleInput)
-        }
-        else{
-            const testInputs = rdf.test_inputs[0]
-            this.set_default_url(testInputs)
-        }
         // Load ImageJ.JS
         await this.loadImageJ(this.window_id)
         this.setInfoPanel("")
@@ -326,29 +287,6 @@ api.export(new ImJoyPlugin())
 
 <window lang="html">
 <div class="m-1">
-    <p class="mt-2">Load an image file:</p>
-    <p class="mt-2 text-gray-500 text-sm"> Example formats: PNG, JPG or TIFF </p>
-    <p class="mt-2 text-gray-500 text-sm"> TODO: display expected tensor info </p>
-    <div class="flex">
-        <span id="file-chosen" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500">No file selected.</span>
-        <label id="file-input-label" for="file-input" class="py-2 px-3 bg-blue-500 text-white rounded-r-md cursor-pointer w-20 text-center hover:bg-blue-600">
-            Browse
-        </label>
-        <input type="file" id="file-input" class="hidden" />
-    </div>
-    
-
-    <p class="mt-2">or you may load the image from an URL.</p>
-    <p class="mt-2 text-gray-500 text-sm">A test image is provided for this model. Click the Load button to run the model on the provided test image or provide the url to your own test image.</p>
-    <p class="mt-2 text-gray-500 text-sm">The URL to OME-Zarr are supported.</p>
-    <div class="flex">
-        <input type="text" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500"
-            placeholder="Target URL"
-            id="url-input" />
-        <button
-            class="px-4 py-2 bg-blue-500 text-white rounded-r-md w-20 hover:bg-blue-600"
-            id="url-load-button">Load</button>
-    </div>
     <div id="input-info">
         <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
         <button
@@ -358,14 +296,7 @@ api.export(new ImJoyPlugin())
             >download</button>
     </div>
 
-    <p class="mt-2">Input axes (optional, for example yxzc):</p>
-    <p class="mt-2 text-gray-500 text-sm" id="expected-dim"></p>
-    <p class="mt-2 text-gray-500 text-sm"> More documentation about expected axes in the documentation page.</p>
-    <input type="text" class="w-2/3 px-4 py-2 border border-gray-300 rounded-md text-gray-500"
-        placeholder="Input axes"
-        id="input-axes-input" />
-
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-5 flex items-center justify-center">
         <div id="info" class="mt-2 bg-white p-6 rounded shadow-lg">
             <div id="wait-animation" role="status" style="display: none">
                 <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -376,16 +307,6 @@ api.export(new ImJoyPlugin())
             </div>
             <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
         </div>
-    </div>
-
-
-    <div id="output-info">
-        <p class="mt-2 text-gray-500 text-sm" id="output-shape-panel" style="display: inline-block"></p>
-        <button
-            id="output-download-button"
-            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
-            style="display: none"
-            >download</button>
     </div>
 
     <div class="flex flex-row gap-4 mt-2">
