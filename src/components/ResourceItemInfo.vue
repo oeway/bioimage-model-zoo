@@ -385,13 +385,13 @@ api.createWindow({
   display: none;
 }
 #test-run-form {
-  height: 80px;
+  height: 90px;
 }
 #ij-window:empty {
   display: none;
 }
 #ij-window {
-  height: 500px;
+  height: 800px;
   border: 1px solid #ccc;
 }
 </style>

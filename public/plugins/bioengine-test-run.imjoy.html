@@ -92,7 +92,7 @@ class ImJoyPlugin {
     listenSampleInputButton(setInfoPanel) {
         const sampleInputButton = document.getElementById("sample-input-button")
         sampleInputButton.addEventListener("click", async () => {
-            const sampleInput = this.model_rdf.sample_inputs[0]
+            const sampleInput = this.modelRdf.sample_inputs[0]
             setInfoPanel("Loading sample input...", true)
             await this.viewImageByURL(sampleInput, "input")
             setInfoPanel("")
@@ -102,7 +102,7 @@ class ImJoyPlugin {
     listenSampleOutputButton(setInfoPanel) {
         const sampleOutputButton = document.getElementById("sample-output-button")
         sampleOutputButton.addEventListener("click", async () => {
-            const sampleOutput = this.model_rdf.sample_outputs[0]
+            const sampleOutput = this.modelRdf.sample_outputs[0]
             setInfoPanel("Loading sample output...", true)
             await this.viewImageByURL(sampleOutput, "output")
             setInfoPanel("")
@@ -120,7 +120,7 @@ class ImJoyPlugin {
             //console.log("Input axes:", input_axes)
             //setInfoPanel("Running model...", true)
             //const ret = await core.run_model(
-            //    self.model_id, self.model_rdf, input_axes
+            //    self.model_id, self.modelRdf, input_axes
             //)
             //if (ret === false) {
             //    setInfoPanel("Failed to run the model.")
@@ -132,15 +132,21 @@ class ImJoyPlugin {
         })
     }
 
-    async viewImageByURL(url, source="input") {
-        //await this.core_plugin.load_image_from_url(url, source)
-        //await this.updateImageShapePanel(source)
-        //if (source === "output") {
-        //    await this.core_plugin.show_image_vtk(this.output_window_id, source)
-        //} else {
-        //    await this.core_plugin.show_image_vtk(this.input_window_id, source)
-        //}
-        await this.ij.openUrl(url)
+    async viewImageByURL(url) {
+        // url format: https://zenodo.org/api/records/6647674/files/sample_input_0.tif/content
+        await api.log(url)
+        const resp = await fetch(url)
+        const arrayBuffer = await resp.arrayBuffer()
+        let fileName;
+        if (url.endsWith("/content")) {
+            fileName = url.split("/")[url.split("/").length - 2]
+        } else {
+            fileName = url.split("/")[url.split("/").length - 1]
+        }
+        this.ij.viewImage(arrayBuffer, {"name": fileName}).catch((err) => {
+            console.error(err)
+            this.setInfoPanel("Failed to load the image.")
+        })
     }
 
     set_default_url(sampleInput) {
@@ -152,22 +158,6 @@ class ImJoyPlugin {
         const info = document.getElementById("info-panel")
         info.textContent = content
         this.setWaiting(waiting)
-    }
-
-    async updateImageShapePanel(source="input") {
-        if (source === "input") {
-            const shape = await this.core_plugin.get_image_shape()
-            const imgShapePanel = document.getElementById("input-shape-panel")
-            imgShapePanel.textContent = `Input image shape: ${shape}`
-            const downloadButton = document.getElementById("input-download-button")
-            downloadButton.style.display = "inline-block"
-        } else {
-            const shape = await this.core_plugin.get_output_shape()
-            const imgShapePanel = document.getElementById("output-shape-panel")
-            imgShapePanel.textContent = `Output image shape: ${shape}`
-            const downloadButton = document.getElementById("output-download-button")
-            downloadButton.style.display = "inline-block"
-        }
     }
 
     setButtonDisabled(buttonId, disabled) {
@@ -183,9 +173,9 @@ class ImJoyPlugin {
     }
 
     setWaiting(waiting) {
-        const waitAnimation = document.getElementById("overlay")
+        const waitAnimation = document.getElementById("wait-animation")
         if (waiting) {
-            waitAnimation.style.display = "flex"
+            waitAnimation.style.display = "inline-block"
         } else {
             waitAnimation.style.display = "none"
         }
@@ -231,20 +221,33 @@ class ImJoyPlugin {
 
     async runModel(imageAxes) {
         const img = await this.ij.getImage()
-        inputSpec = this.rdf.inputs[0]
-        inputTensorAxes = inputSpec.axes
+        const inputSpec = this.modelRdf.inputs[0]
+        const inputTensorAxes = inputSpec.axes
         await api.log(`inputTensorAxes: ${inputTensorAxes}`)
-        if (imageAxes === null) {
-            const shape = img.shape
-            const imageAxes = getDefaultImageAxes(shape, inputTensorAxes)
-            await api.log(`Image axes were not provided. They were automatically determined to be ${imageAxes}`)
+        let axes = imageAxes
+        if (!imageAxes) {
+            const shape = img._rshape
+            axes = getDefaultImageAxes(shape, inputTensorAxes)
+            await api.log(`Image axes were not provided. They were automatically determined to be ${axes}`)
         } else {
-            await api.log(`Image axes were provided as ${image_axes}`)
+            axes = imageAxes
+            await api.log(`Image axes were provided as ${axes}`)
         }
-        // reshape image to match the input axes
+        // reshape image to match the input spec's axes
+        await api.log(`Reshaping image to match the input spec's axes: ${inputSpec.axes}`)
+        if (inputSpec.axes === "bcyx") {
+            img._rshape = [1, img._rshape[2], img._rshape[0], img._rshape[1]]
+            img._rvalue = new Uint8Array(img._rvalue)
+            const resp = await this.bioengineExecute(this.model_id, [img])
+            const outImg = resp.result.outputs[0]
+            const s = outImg._rshape
+            outImg._rshape = [s[1], s[2], s[3]]
+            await this.ij.viewImage(outImg)
+        } else {
+            await api.alert("Unsupported input axes.")
+        }
         // submit the image to bioengine
         // process the output
-        debugger
     }
 
     async run(ctx) {
@@ -258,7 +261,7 @@ class ImJoyPlugin {
         // Load the model RDF
         const rdf = await this.getModelRDF(model_id)
         console.log(rdf)
-        this.model_rdf = rdf
+        this.modelRdf = rdf
         const has_sample_inputs = (rdf.sample_inputs !== undefined) && (rdf.sample_inputs.length > 0)
         // Load ImageJ.JS
         await this.loadImageJ(this.window_id)
@@ -287,28 +290,6 @@ api.export(new ImJoyPlugin())
 
 <window lang="html">
 <div class="m-1">
-    <div id="input-info">
-        <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
-        <button
-            id="input-download-button"
-            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
-            style="display: none"
-            >download</button>
-    </div>
-
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-5 flex items-center justify-center">
-        <div id="info" class="mt-2 bg-white p-6 rounded shadow-lg">
-            <div id="wait-animation" role="status" style="display: none">
-                <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                </svg>
-                <span class="sr-only">Loading...</span>
-            </div>
-            <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
-        </div>
-    </div>
-
     <div class="flex flex-row gap-4 mt-2">
       <button
         class="px-4 py-2 bg-blue-500 text-white rounded-md w-25 hover:bg-blue-600"
@@ -319,6 +300,17 @@ api.export(new ImJoyPlugin())
       <button
         class="px-4 py-2 bg-cyan-300 text-white rounded-md w-30 hover:bg-cyan-400"
         id="sample-output-button">Sample output</button>
+    </div>
+
+    <div id="info" class="mt-2">
+        <div id="wait-animation" role="status" style="display: none">
+            <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+        <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
     </div>
 </div>
 </window>
