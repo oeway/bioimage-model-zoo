@@ -202,7 +202,11 @@ function mapAxes(
 
 const processForShow = (img, specAxes) => {
   const njarr = toNumJS(img)
-  const newNjArr = mapAxes(njarr, specAxes, "zyx")
+  let targetAxes = 'zyx'
+  if (specAxes.includes('c')) {
+    targetAxes = 'cyx'
+  }
+  const newNjArr = mapAxes(njarr, specAxes, targetAxes)
   return toImJoyArr(newNjArr)
 }
 
@@ -298,6 +302,7 @@ export default {
       const outputSpec = this.rdf.outputs[0]
       await this.api.log("Spec output axes: " + outputSpec.axes)
       outImg = processForShow(outImg, outputSpec.axes)
+      await this.api.log("Output image shape after processing: " + outImg._rshape)
       await this.ij.viewImage(outImg, {"name": "output"}).catch((err) => {
         console.error(err)
         this.setInfoPanel("Failed to view the image.")
