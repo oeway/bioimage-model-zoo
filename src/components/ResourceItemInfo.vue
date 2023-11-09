@@ -103,12 +103,11 @@
       >
 
       <br />
-      <markdown
+      <TestRunForm
         v-if="resourceItem.testRunDocs"
-        :enable-run-buttons="true"
-        :baseUrl="resourceItem.baseUrl"
-        :content="resourceItem.testRunDocs"
-      ></markdown>
+        :resourceItem="resourceItem"
+        >
+      </TestRunForm>
 
       <br />
       <div v-if="resourceItem.training_data_item">
@@ -158,6 +157,7 @@ import TestSummary from "@/components/TestSummary.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import { randId, concatAndResolveUrl } from "../utils";
 import ResourceItemCard from "./ResourceItemCard";
+import TestRunForm from "./TestRun.vue";
 
 async function fetchTestSummary(url) {
   const response = await fetch(url);
@@ -204,8 +204,9 @@ export default {
     attachments: Attachments,
     "app-icons": AppIcons,
     "comment-box": CommentBox,
-    "resource-item-card": ResourceItemCard
-  },
+    "resource-item-card": ResourceItemCard,
+    TestRunForm
+},
   data() {
     return {
       maxDescriptionLetters: 100,

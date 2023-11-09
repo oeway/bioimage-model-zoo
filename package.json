@@ -11,6 +11,7 @@
     "format": "prettier --write \"{src,tests}/**/**\""
   },
   "dependencies": {
+    "@d4c/numjs": "^0.17.34",
     "@mdi/font": "^5.3.45",
     "axios": "^0.21.2",
     "buefy": "^0.8.0",
@@ -20,11 +21,13 @@
     "file-saver": "^2.0.5",
     "github-markdown-css": "^4.0.0",
     "highlight.js": "^10.1.1",
+    "imjoy-rpc": "^0.5.46",
     "js-yaml": "^4.1.0",
     "json-stringify-safe": "^5.0.1",
     "jszip": "^3.7.0",
     "marked": "^2.1.3",
     "mathjs": "^7.5.1",
+    "npyjs": "^0.5.0",
     "ol": "^6.3.1",
     "register-service-worker": "^1.7.1",
     "sortablejs": "^1.10.2",
