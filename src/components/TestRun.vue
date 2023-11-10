@@ -83,49 +83,45 @@
 import { hyphaWebsocketClient } from "imjoy-rpc";
 import nj from "@d4c/numjs";
 
-function isChannelFirst(shape) {
-  if (shape.length === 5) {
-    // with batch dimension
-    shape = shape.slice(1);
-  }
-  let minDim = shape.indexOf(Math.min(...shape)); // 找到最小维度的索引
-  if (minDim === 0) {
-    // easy case: channel first
-    return true;
-  } else if (minDim === shape.length - 1) {
-    // easy case: channel last
-    return false;
-  } else {
-    // hard case: can't figure it out, just guess channel first
-    return true;
-  }
+
+function inferImgAxes(shape, order="czb") {
+    /**
+     * Infer the axes of an image.
+     *
+     * @param {Array} shape Shape of the image.
+     * @returns {string} Axes string.
+     */
+    if (shape.length === 2) {
+        return 'yx';
+    } else if (shape.length <= 5) {
+        let minDimIdx = shape.indexOf(Math.min(...shape));
+        let lowDimShape = shape.slice(); // Clone the shape array
+        lowDimShape.splice(minDimIdx, 1); // Remove the smallest dimension
+        let lowDimAxes = inferImgAxes(lowDimShape, order.slice(1));
+        const insert = order[0];
+        return insertCharAtPosition(lowDimAxes, insert, minDimIdx);
+    } else {
+        throw new Error(`Image shape [${shape.join(', ')}] is not supported.`);
+    }
 }
 
-function getDefaultImageAxes(shape, inputTensorAxes) {
-  let ndim = shape.length;
-  let hasZAxis = inputTensorAxes.includes("z"); // 使用includes检查'z'是否存在
-  let axes;
-  if (ndim === 2) {
-    axes = "yx";
-  } else if (ndim === 3 && hasZAxis) {
-    axes = "zyx";
-  } else if (ndim === 3) {
-    let channelFirst = isChannelFirst(shape);
-    axes = channelFirst ? "cyx" : "yxc";
-  } else if (ndim === 4 && hasZAxis) {
-    let channelFirst = isChannelFirst(shape);
-    axes = channelFirst ? "czyx" : "zyxc";
-  } else if (ndim === 4) {
-    let channelFirst = isChannelFirst(shape);
-    axes = channelFirst ? "bcyx" : "byxc";
-  } else if (ndim === 5) {
-    let channelFirst = isChannelFirst(shape);
-    axes = channelFirst ? "bczyx" : "bzyxc";
-  } else {
-    throw new Error(`Invalid number of image dimensions: ${ndim}`);
+
+function inferImgAxesViaSpec(shape, specAxes) {
+  let order = "czb";
+  if (!specAxes.includes("c")) {
+    order = "zb";
+  } else if (!specAxes.includes("z")) {
+    order = "cb";
   }
-  return axes;
+  const imgAxes = inferImgAxes(shape, order);
+  return imgAxes;
 }
+
+
+function insertCharAtPosition(originalString, charToInsert, position) {
+    return originalString.substring(0, position) + charToInsert + originalString.substring(position);
+}
+
 
 const toNumJS = arr => {
   /**
@@ -202,7 +198,7 @@ function mapAxes(inputArray, inputAxes, outputAxes) {
   });
   let axes = inputAxes
     .split("")
-    .filter((name, idx) => !pickIdxes.includes(idx));
+    .filter((name, idx) => pickIdxes[idx] === null);
 
   let newArray = inputArray.pick(...pickIdxes);
 
@@ -225,15 +221,103 @@ function mapAxes(inputArray, inputAxes, outputAxes) {
   return newArray;
 }
 
-const processForShow = (img, specAxes) => {
-  const njarr = toNumJS(img);
-  let targetAxes = "zyx";
-  if (specAxes.includes("c")) {
-    targetAxes = "cyx";
+
+const splitBy = (njarr, by, specAxes) => {
+  const byIdx = specAxes.indexOf(by);
+  const byLen = njarr.shape[byIdx];
+  const splited = [];
+  for (let i = 0; i < byLen; i++) {
+    const pickIdx = [];
+    for (let j = 0; j < njarr.shape.length; j++) {
+      if (j === byIdx) {
+        pickIdx.push(i);
+      } else {
+        pickIdx.push(null);
+      }
+    }
+    const subArr = njarr.pick(...pickIdx);
+    splited.push(subArr);
   }
-  const newNjArr = mapAxes(njarr, specAxes, targetAxes);
-  return toImJoyArr(newNjArr);
-};
+  return splited
+}
+
+
+function splitForShow(njarr, specAxes) {
+  debugger
+  if (!specAxes.includes("x") || !specAxes.includes("y")) {
+    throw new Error("Unsupported axes: " + specAxes);
+  }
+  const hasC = specAxes.includes("c");
+  const lenC = njarr.shape[specAxes.indexOf("c")];
+  const hasZ = specAxes.includes("z");
+  const lenZ = njarr.shape[specAxes.indexOf("z")];
+  let newImgs = [];
+  if (specAxes.length === 2) {
+    newImgs.push(njarr);
+  } else if (specAxes.length === 3) {
+    if (hasC) {
+      if (lenC === 3) {
+        newImgs.push(mapAxes(njarr, specAxes, "yxc"));
+      } else if (lenC === 1) {
+        newImgs.push(mapAxes(njarr, specAxes, "yx"));
+      } else {
+        newImgs.push(mapAxes(njarr, specAxes, "cyx"));
+      }
+    } else if (hasZ) {
+      newImgs.push(mapAxes(njarr, specAxes, "zyx"));
+    } else {  // b, y, x
+      newImgs = splitBy(njarr, "b", specAxes);
+    }
+  } else if (specAxes.length === 4) {
+    if (hasC && hasZ) {
+      if (lenC == 3) {
+        newImgs.push(mapAxes(njarr, specAxes, "zyxc"));
+      } else if (lenC == 1) {
+        newImgs.push(mapAxes(njarr, specAxes, "zyx"));
+      } else if (lenZ == 1) {
+        newImgs.push(mapAxes(njarr, specAxes, "cyx"));
+      } else {
+        // split by c
+        splitBy(njarr, "c", specAxes).map((arrs) => {
+          const subAxes = specAxes.replace("c", "");
+          newImgs = newImgs.concat(splitForShow(arrs, subAxes))
+        })
+      }
+    } else {  // b,c,y,x or b,z,y,x
+      // split by b
+      splitBy(njarr, "b", specAxes).map((arrs) => {
+        const subAxes = specAxes.replace("b", "");
+        newImgs = newImgs.concat(splitForShow(arrs, subAxes))
+      })
+    }
+  } else if (specAxes.length === 5) {
+    // b,c,z,y,x
+    // split by b
+    splitBy(njarr, "b", specAxes).map((arrs) => {
+      const subAxes = specAxes.replace("b", "");
+      newImgs = newImgs.concat(splitForShow(arrs, subAxes))
+    })
+  } else {
+    throw new Error("Unsupported axes: " + specAxes);
+  }
+  return newImgs;
+}
+
+function processForShow(img, specAxes) {
+  /**
+    Process the image for showing.
+    ImageJ.JS only supports:
+      [height, width]
+      [height, width, 1]
+      [height, width, 3] (will show as RGB image)
+      [z-stack, height, width]
+      [z-stack, height, width, 1]
+      [z-stack, height, width, 3] (will show as a stack of RGB image)
+   */
+  const njarr = toNumJS(img);
+  const splitedArrs = splitForShow(njarr, specAxes);
+  return splitedArrs.map(arr => toImJoyArr(arr));
+}
 
 export default {
   name: "TestRunForm",
@@ -318,11 +402,9 @@ export default {
       const inputSpec = this.rdf.inputs[0];
       await this.api.log("Spec input axes: " + inputSpec.axes);
       let imgAxes;
-      imgAxes = getDefaultImageAxes(img._rshape, inputSpec.axes);
+      imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes);
       await this.api.log("Input image axes: " + imgAxes);
-      await this.api.log(
-        `Reshape image to match the input spec: ${inputSpec.shape}`
-      );
+      await this.api.log("Reshape image to match the input spec.");
       const njarr = toNumJS(img);
       const newNjArr = mapAxes(njarr, imgAxes, inputSpec.axes);
       const reshapedImg = toImJoyArr(newNjArr);
@@ -332,21 +414,25 @@ export default {
       if (!resp.result.success) {
         await this.api.alert("Failed to run the model.");
         this.setInfoPanel("Failed to run the model.");
+        this.buttonEnabledRun = true;
+        console.error(resp.result.error);
+        debugger
         return;
       }
       this.setInfoPanel("Success!");
-      let outImg = resp.result.outputs[0];
+      const outImg = resp.result.outputs[0];
       await this.api.log("Output image shape: " + outImg._rshape);
       const outputSpec = this.rdf.outputs[0];
       await this.api.log("Spec output axes: " + outputSpec.axes);
-      outImg = processForShow(outImg, outputSpec.axes);
-      await this.api.log(
-        "Output image shape after processing: " + outImg._rshape
-      );
-      await this.ij.viewImage(outImg, { name: "output" }).catch(err => {
-        console.error(err);
-        this.setInfoPanel("Failed to view the image.");
-      });
+      const imgsForShow = processForShow(outImg, outputSpec.axes);
+      for (let i = 0; i < imgsForShow.length; i++) {
+        const img = imgsForShow[i];
+        await this.api.log("Output image shape after processing: " + img._rshape);
+        await this.ij.viewImage(img, { name: "output" }).catch(err => {
+          console.error(err);
+          this.setInfoPanel("Failed to view the image.");
+        });
+      }
       this.buttonEnabledRun = true;
     },
 
@@ -388,6 +474,11 @@ export default {
     async viewImgFromUrl(url) {
       await this.api.log("View image from url: " + url);
       const resp = await fetch(url);
+      if (!resp.ok) {
+        this.setInfoPanel("Failed to load the image.");
+        console.error(resp);
+        return;
+      }
       const arrayBuffer = await resp.arrayBuffer();
       let fileName;
       if (url.endsWith("/content")) {
