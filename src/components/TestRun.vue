@@ -5,36 +5,40 @@
       By clicking the <code>Test the model</code> button, you can test the model
       with your own data.
     </p>
-    <button class="button is-primary" @click="this.turnOn">
+    <b-button v-if="!this.switch" class="is-primary" @click="this.turnOn">
       Test the model
-    </button>
+    </b-button>
     <div id="test-run-body" v-if="this.switch">
       <hr />
       <div id="buttons">
-        <button
-          class="button"
+        <b-button
+          :disabled="!this.buttonEnabledInput"
+          @click="this.loadSampleInput"
+        >
+          Load sample image
+        </b-button>
+        <b-button
+          class="is-primary"
           :disabled="!this.buttonEnabledRun"
           @click="this.runModel"
         >
           Run model
-        </button>
-        <button
-          class="button"
-          :disabled="!this.buttonEnabledInput"
-          @click="this.loadSampleInput"
-        >
-          Sample input
-        </button>
-        <button
-          class="button"
+        </b-button>
+        <b-button
           :disabled="!this.buttonEnabledOutput"
           @click="this.loadSampleOutput"
         >
-          Sample output
-        </button>
+          Show reference output
+        </b-button>
       </div>
       <div id="info">
         <div v-if="this.waiting" class="loader"></div>
+        <div v-else>
+          <span
+            >💡Tip: Drag and drop your own image file below to try out the
+            model. We support formats like .tiff, .png, and .jpg</span
+          >
+        </div>
         <div id="info-panel">{{ this.info }}</div>
       </div>
       <div id="ij-container"></div>
@@ -81,30 +85,29 @@
 
 <script>
 import { hyphaWebsocketClient } from "imjoy-rpc";
-import nj from "@d4c/numjs";
+import * as tf from "@tensorflow/tfjs-core";
+import "@tensorflow/tfjs-backend-cpu";
 
-
-function inferImgAxes(shape, order="czb") {
-    /**
-     * Infer the axes of an image.
-     *
-     * @param {Array} shape Shape of the image.
-     * @returns {string} Axes string.
-     */
-    if (shape.length === 2) {
-        return 'yx';
-    } else if (shape.length <= 5) {
-        let minDimIdx = shape.indexOf(Math.min(...shape));
-        let lowDimShape = shape.slice(); // Clone the shape array
-        lowDimShape.splice(minDimIdx, 1); // Remove the smallest dimension
-        let lowDimAxes = inferImgAxes(lowDimShape, order.slice(1));
-        const insert = order[0];
-        return insertCharAtPosition(lowDimAxes, insert, minDimIdx);
-    } else {
-        throw new Error(`Image shape [${shape.join(', ')}] is not supported.`);
-    }
+function inferImgAxes(shape, order = "czb") {
+  /**
+   * Infer the axes of an image.
+   *
+   * @param {Array} shape Shape of the image.
+   * @returns {string} Axes string.
+   */
+  if (shape.length === 2) {
+    return "yx";
+  } else if (shape.length <= 5) {
+    let minDimIdx = shape.indexOf(Math.min(...shape));
+    let lowDimShape = shape.slice(); // Clone the shape array
+    lowDimShape.splice(minDimIdx, 1); // Remove the smallest dimension
+    let lowDimAxes = inferImgAxes(lowDimShape, order.slice(1));
+    const insert = order[0];
+    return insertCharAtPosition(lowDimAxes, insert, minDimIdx);
+  } else {
+    throw new Error(`Image shape [${shape.join(", ")}] is not supported.`);
+  }
 }
-
 
 function inferImgAxesViaSpec(shape, specAxes) {
   let order = "czb";
@@ -117,13 +120,53 @@ function inferImgAxesViaSpec(shape, specAxes) {
   return imgAxes;
 }
 
-
 function insertCharAtPosition(originalString, charToInsert, position) {
-    return originalString.substring(0, position) + charToInsert + originalString.substring(position);
+  return (
+    originalString.substring(0, position) +
+    charToInsert +
+    originalString.substring(position)
+  );
 }
 
+function getConstructor(tpstr) {
+  let Constructor;
+  if (tpstr == "uint8") {
+    Constructor = Uint8Array;
+  } else if (tpstr == "int8") {
+    Constructor = Int8Array;
+  } else if (tpstr == "uint16") {
+    Constructor = Uint16Array;
+  } else if (tpstr == "int16") {
+    Constructor = Int16Array;
+  } else if (tpstr == "uint32") {
+    Constructor = Uint32Array;
+  } else if (tpstr == "int32") {
+    Constructor = Int32Array;
+  } else if (tpstr == "float32") {
+    Constructor = Float32Array;
+  } else if (tpstr == "float64") {
+    Constructor = Float64Array;
+  } else {
+    throw new Error("Unsupported dtype: " + tpstr);
+  }
+  return Constructor;
+}
 
-const toNumJS = arr => {
+//function multiplyArrayElements(arr) {
+//  return arr.reduce((product, number) => product * number, 1);
+//}
+
+//function reverseEndianness(arrayBuffer, bytesPerElement) {
+//  let uint8Array = new Uint8Array(arrayBuffer);
+//  for (let i = 0; i < uint8Array.length; i += bytesPerElement) {
+//    for (let j = i, k = i + bytesPerElement - 1; j < k; j++, k--) {
+//      [uint8Array[j], uint8Array[k]] = [uint8Array[k], uint8Array[j]];
+//    }
+//  }
+//  return arrayBuffer;
+//}
+
+function toTfJs(arr) {
   /**
 Int8Array	int8	int8
 Int16Array	int16	int16
@@ -134,47 +177,68 @@ Uint32Array	uint32	uint32
 Float32Array	float32	float32
 Float64Array	float64	float64
    */
-  let Constructor;
-  if (arr._rdtype == "uint8") {
-    Constructor = Uint8Array;
-  } else if (arr._rdtype == "uint16") {
-    Constructor = Uint16Array;
-  } else if (arr._rdtype == "uint32") {
-    Constructor = Uint32Array;
-  } else if (arr._rdtype == "int8") {
-    Constructor = Int8Array;
-  } else if (arr._rdtype == "int16") {
-    Constructor = Int16Array;
-  } else if (arr._rdtype == "int32") {
-    Constructor = Int32Array;
-  } else if (arr._rdtype == "float32") {
-    Constructor = Float32Array;
-  } else if (arr._rdtype == "float64") {
-    Constructor = Float64Array;
-  } else {
-    throw new Error(`Unsupported dtype: ${arr._rdtype}`);
-  }
   if (arr._rvalue instanceof ArrayBuffer) {
     arr._rvalue = new Uint8Array(arr._rvalue);
   }
   let buffer = new ArrayBuffer(arr._rvalue.length);
   let bufferView = new Uint8Array(buffer);
   bufferView.set(arr._rvalue);
-  let njarr = nj.array(new Constructor(buffer));
-  njarr = njarr.reshape(arr._rshape);
-  return njarr;
-};
+  const Constructor = getConstructor(arr._rdtype);
+  const tarr = new Constructor(buffer);
+  //const Constructor = getConstructor(arr._rdtype);
+  //const bLen =  multiplyArrayElements(arr._rshape) * Constructor.BYTES_PER_ELEMENT;
+  //const bytes = arr._rvalue.buffer.slice(0, bLen)
+  ////const reversedBytes = reverseEndianness(bytes, Constructor.BYTES_PER_ELEMENT);
+  ////const tarr = new Constructor(reversedBytes);
+  //const tarr = new Constructor(bytes)
+  const tensor = tf.tensor(Array.from(tarr), arr._rshape);
+  tensor._rdtype = arr._rdtype;
+  return tensor;
+}
 
-const toImJoyArr = njarr => {
-  const value = new Uint8Array(njarr.selection.data.buffer);
+function toImJoyArr(tensor) {
+  const data = tensor.dataSync();
+  const Constructor = getConstructor(tensor._rdtype);
+  const casted = new Constructor(data.length);
+  for (let i = 0; i < data.length; i++) {
+    casted[i] = data[i];
+  }
+  const value = new Uint8Array(casted.buffer);
   const ijarr = {
     _rtype: "ndarray",
-    _rdtype: njarr.dtype,
-    _rshape: njarr.shape,
+    _rdtype: tensor._rdtype,
+    _rshape: tensor.shape,
     _rvalue: value
   };
   return ijarr;
-};
+}
+
+function pick(tensor, idxes) {
+  const sliceBegin = [];
+  for (let i = 0; i < tensor.shape.length; i++) {
+    if (idxes[i] === null) {
+      sliceBegin.push(0);
+    } else {
+      sliceBegin.push(idxes[i]);
+    }
+  }
+  const sliceSize = [];
+  for (let i = 0; i < tensor.shape.length; i++) {
+    if (idxes[i] === null) {
+      sliceSize.push(tensor.shape[i]);
+    } else {
+      sliceSize.push(1);
+    }
+  }
+  const subTensor = tf.slice(tensor, sliceBegin, sliceSize);
+  const newShape = [];
+  for (let i = 0; i < tensor.shape.length; i++) {
+    if (idxes[i] === null) {
+      newShape.push(tensor.shape[i]);
+    }
+  }
+  return tf.reshape(subTensor, newShape);
+}
 
 function mapAxes(inputArray, inputAxes, outputAxes) {
   if (inputAxes.length !== inputArray.shape.length) {
@@ -196,15 +260,13 @@ function mapAxes(inputArray, inputAxes, outputAxes) {
       pickIdxes.push(null);
     }
   });
-  let axes = inputAxes
-    .split("")
-    .filter((name, idx) => pickIdxes[idx] === null);
+  let axes = inputAxes.split("").filter((name, idx) => pickIdxes[idx] === null);
 
-  let newArray = inputArray.pick(...pickIdxes);
+  let newArray = pick(inputArray, pickIdxes);
 
   outputAxes.split("").forEach(axName => {
     if (!inputAxes.includes(axName)) {
-      newArray = newArray.reshape(newArray.shape.concat([1]));
+      newArray = tf.reshape(newArray, newArray.shape.concat([1]));
       axes.push(axName);
     }
   });
@@ -216,87 +278,91 @@ function mapAxes(inputArray, inputAxes, outputAxes) {
     transposeIdxes.push(axIdx);
   }
 
-  newArray = newArray.transpose(...transposeIdxes);
+  newArray = tf.transpose(newArray, transposeIdxes);
+  newArray._rdtype = inputArray._rdtype;
 
   return newArray;
 }
 
-
-const splitBy = (njarr, by, specAxes) => {
+const splitBy = (tensor, by, specAxes) => {
   const byIdx = specAxes.indexOf(by);
-  const byLen = njarr.shape[byIdx];
+  const byLen = tensor.shape[byIdx];
   const splited = [];
   for (let i = 0; i < byLen; i++) {
     const pickIdx = [];
-    for (let j = 0; j < njarr.shape.length; j++) {
+    for (let j = 0; j < tensor.shape.length; j++) {
       if (j === byIdx) {
         pickIdx.push(i);
       } else {
         pickIdx.push(null);
       }
     }
-    const subArr = njarr.pick(...pickIdx);
+    const subArr = pick(tensor, pickIdx);
     splited.push(subArr);
   }
-  return splited
-}
+  return splited;
+};
 
-
-function splitForShow(njarr, specAxes) {
-  debugger
+function splitForShow(tensor, specAxes) {
   if (!specAxes.includes("x") || !specAxes.includes("y")) {
     throw new Error("Unsupported axes: " + specAxes);
   }
   const hasC = specAxes.includes("c");
-  const lenC = njarr.shape[specAxes.indexOf("c")];
+  const lenC = tensor.shape[specAxes.indexOf("c")];
   const hasZ = specAxes.includes("z");
-  const lenZ = njarr.shape[specAxes.indexOf("z")];
+  const lenZ = tensor.shape[specAxes.indexOf("z")];
   let newImgs = [];
   if (specAxes.length === 2) {
-    newImgs.push(njarr);
+    newImgs.push(tensor);
   } else if (specAxes.length === 3) {
     if (hasC) {
       if (lenC === 3) {
-        newImgs.push(mapAxes(njarr, specAxes, "yxc"));
+        if (tensor._rdtype === "uint8") {
+          newImgs.push(mapAxes(tensor, specAxes, "yxc"));
+        } else {
+          newImgs.push(mapAxes(tensor, specAxes, "cyx"));
+        }
       } else if (lenC === 1) {
-        newImgs.push(mapAxes(njarr, specAxes, "yx"));
+        newImgs.push(mapAxes(tensor, specAxes, "yx"));
       } else {
-        newImgs.push(mapAxes(njarr, specAxes, "cyx"));
+        newImgs.push(mapAxes(tensor, specAxes, "cyx"));
       }
     } else if (hasZ) {
-      newImgs.push(mapAxes(njarr, specAxes, "zyx"));
-    } else {  // b, y, x
-      newImgs = splitBy(njarr, "b", specAxes);
+      newImgs.push(mapAxes(tensor, specAxes, "zyx"));
+    } else {
+      // b, y, x
+      newImgs = splitBy(tensor, "b", specAxes);
     }
   } else if (specAxes.length === 4) {
     if (hasC && hasZ) {
       if (lenC == 3) {
-        newImgs.push(mapAxes(njarr, specAxes, "zyxc"));
+        newImgs.push(mapAxes(tensor, specAxes, "zyxc"));
       } else if (lenC == 1) {
-        newImgs.push(mapAxes(njarr, specAxes, "zyx"));
+        newImgs.push(mapAxes(tensor, specAxes, "zyx"));
       } else if (lenZ == 1) {
-        newImgs.push(mapAxes(njarr, specAxes, "cyx"));
+        newImgs.push(mapAxes(tensor, specAxes, "cyx"));
       } else {
         // split by c
-        splitBy(njarr, "c", specAxes).map((arrs) => {
+        splitBy(tensor, "c", specAxes).map(arrs => {
           const subAxes = specAxes.replace("c", "");
-          newImgs = newImgs.concat(splitForShow(arrs, subAxes))
-        })
+          newImgs = newImgs.concat(splitForShow(arrs, subAxes));
+        });
       }
-    } else {  // b,c,y,x or b,z,y,x
+    } else {
+      // b,c,y,x or b,z,y,x
       // split by b
-      splitBy(njarr, "b", specAxes).map((arrs) => {
+      splitBy(tensor, "b", specAxes).map(arrs => {
         const subAxes = specAxes.replace("b", "");
-        newImgs = newImgs.concat(splitForShow(arrs, subAxes))
-      })
+        newImgs = newImgs.concat(splitForShow(arrs, subAxes));
+      });
     }
   } else if (specAxes.length === 5) {
     // b,c,z,y,x
     // split by b
-    splitBy(njarr, "b", specAxes).map((arrs) => {
+    splitBy(tensor, "b", specAxes).map(arrs => {
       const subAxes = specAxes.replace("b", "");
-      newImgs = newImgs.concat(splitForShow(arrs, subAxes))
-    })
+      newImgs = newImgs.concat(splitForShow(arrs, subAxes));
+    });
   } else {
     throw new Error("Unsupported axes: " + specAxes);
   }
@@ -314,9 +380,12 @@ function processForShow(img, specAxes) {
       [z-stack, height, width, 1]
       [z-stack, height, width, 3] (will show as a stack of RGB image)
    */
-  const njarr = toNumJS(img);
-  const splitedArrs = splitForShow(njarr, specAxes);
-  return splitedArrs.map(arr => toImJoyArr(arr));
+  const tensor = toTfJs(img);
+  const splitedArrs = splitForShow(tensor, specAxes);
+  return splitedArrs.map(arr => {
+    arr._rdtype = tensor._rdtype;
+    return toImJoyArr(arr);
+  });
 }
 
 export default {
@@ -405,9 +474,9 @@ export default {
       imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes);
       await this.api.log("Input image axes: " + imgAxes);
       await this.api.log("Reshape image to match the input spec.");
-      const njarr = toNumJS(img);
-      const newNjArr = mapAxes(njarr, imgAxes, inputSpec.axes);
-      const reshapedImg = toImJoyArr(newNjArr);
+      const tensor = toTfJs(img);
+      const newTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
+      const reshapedImg = toImJoyArr(newTensor);
       const resp = await this.bioengineExecute(this.resourceItem.id, [
         reshapedImg
       ]);
@@ -416,7 +485,7 @@ export default {
         this.setInfoPanel("Failed to run the model.");
         this.buttonEnabledRun = true;
         console.error(resp.result.error);
-        debugger
+        debugger;
         return;
       }
       this.setInfoPanel("Success!");
@@ -427,11 +496,16 @@ export default {
       const imgsForShow = processForShow(outImg, outputSpec.axes);
       for (let i = 0; i < imgsForShow.length; i++) {
         const img = imgsForShow[i];
-        await this.api.log("Output image shape after processing: " + img._rshape);
-        await this.ij.viewImage(img, { name: "output" }).catch(err => {
+        await this.api.log(
+          "Output image shape after processing: " + img._rshape
+        );
+        try {
+          await this.ij.viewImage(img, { name: "output" });
+        } catch (err) {
           console.error(err);
           this.setInfoPanel("Failed to view the image.");
-        });
+        }
+        //        await this.ij.runMacro("run('Enhance Contrast', 'saturated=0.35');")
       }
       this.buttonEnabledRun = true;
     },
