@@ -103,10 +103,7 @@
       >
 
       <br />
-      <TestRunForm
-        v-if="resourceItem.testRunDocs"
-        :resourceItem="resourceItem"
-        >
+      <TestRunForm v-if="resourceItem.testRunDocs" :resourceItem="resourceItem">
       </TestRunForm>
 
       <br />
@@ -206,7 +203,7 @@ export default {
     "comment-box": CommentBox,
     "resource-item-card": ResourceItemCard,
     TestRunForm
-},
+  },
   data() {
     return {
       maxDescriptionLetters: 100,
