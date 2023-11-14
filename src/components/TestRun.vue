@@ -13,7 +13,7 @@
       <div id="buttons">
         <b-button
           :disabled="!this.buttonEnabledInput"
-          @click="this.loadSampleInput"
+          @click="this.loadTestInput"
         >
           Load sample image
         </b-button>
@@ -26,7 +26,7 @@
         </b-button>
         <b-button
           :disabled="!this.buttonEnabledOutput"
-          @click="this.loadSampleOutput"
+          @click="this.loadTestOutput"
         >
           Show reference output
         </b-button>
@@ -60,7 +60,6 @@
 #info-panel {
   display: inline-block;
   margin-left: 10px;
-  height: 10px;
   margin-bottom: 20px;
 }
 .loader {
@@ -87,8 +86,9 @@
 import { hyphaWebsocketClient } from "imjoy-rpc";
 import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-cpu";
+import npyjs from "npyjs";
 
-function inferImgAxes(shape, order = "czb") {
+function inferImgAxes(shape, order = "bcz") {
   /**
    * Infer the axes of an image.
    *
@@ -109,12 +109,16 @@ function inferImgAxes(shape, order = "czb") {
   }
 }
 
-function inferImgAxesViaSpec(shape, specAxes) {
-  let order = "czb";
-  if (!specAxes.includes("c")) {
-    order = "zb";
+function inferImgAxesViaSpec(shape, specAxes, fromIJ = false) {
+  let order = "bcz";
+  if (fromIJ) {
+    order = "cz";
+  } else if (!specAxes.includes("c")) {
+    order = "bz";
   } else if (!specAxes.includes("z")) {
-    order = "cb";
+    order = "bc";
+  } else if (!specAxes.includes("b")) {
+    order = "cz";
   }
   const imgAxes = inferImgAxes(shape, order);
   return imgAxes;
@@ -178,7 +182,7 @@ Float64Array	float64	float64
 //  return arrayBuffer;
 //}
 
-function toTfJs(arr) {
+function ImjoyToTfJs(arr) {
   if (arr._rvalue instanceof ArrayBuffer) {
     arr._rvalue = new Uint8Array(arr._rvalue);
   }
@@ -195,12 +199,6 @@ function toTfJs(arr) {
       }
     }
   }
-  //const Constructor = getConstructor(arr._rdtype);
-  //const bLen =  multiplyArrayElements(arr._rshape) * Constructor.BYTES_PER_ELEMENT;
-  //const bytes = arr._rvalue.buffer.slice(0, bLen)
-  ////const reversedBytes = reverseEndianness(bytes, Constructor.BYTES_PER_ELEMENT);
-  ////const tarr = new Constructor(reversedBytes);
-  //const tarr = new Constructor(bytes)
   const tensor = tf.tensor(Array.from(tarr), arr._rshape);
   tensor._rdtype = arr._rdtype;
   return tensor;
@@ -390,13 +388,19 @@ function processForShow(img, specAxes) {
       [z-stack, height, width, 1]
       [z-stack, height, width, 3] (will show as a stack of RGB image)
    */
-  const tensor = toTfJs(img);
+  const tensor = ImjoyToTfJs(img);
   const splitedArrs = splitForShow(tensor, specAxes);
   return splitedArrs.map(arr => {
     arr._rdtype = tensor._rdtype;
     return toImJoyArr(arr);
   });
 }
+
+
+function rdfHas(rdf, key) {
+  return rdf[key] !== undefined && rdf[key].length > 0;
+}
+
 
 export default {
   name: "TestRunForm",
@@ -429,16 +433,10 @@ export default {
       await this.loadImageJ();
       this.setInfoPanel("");
       this.buttonEnabledRun = true;
-      const hasSampleInput =
-        this.rdf.sample_inputs !== undefined &&
-        this.rdf.sample_inputs.length > 0;
-      if (hasSampleInput) {
+      if (rdfHas(this.rdf, "test_inputs") || rdfHas(this.rdf, "sample_inputs")) {
         this.buttonEnabledInput = true;
       }
-      const hasSampleOutput =
-        this.rdf.sample_outputs !== undefined &&
-        this.rdf.sample_outputs.length > 0;
-      if (hasSampleOutput) {
+      if (rdfHas(this.rdf, "test_outputs") || rdfHas(this.rdf, "sample_outputs")) {
         this.buttonEnabledOutput = true;
       }
     },
@@ -481,10 +479,10 @@ export default {
       const inputSpec = this.rdf.inputs[0];
       await this.api.log("Spec input axes: " + inputSpec.axes);
       let imgAxes;
-      imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes);
+      imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes, true);
       await this.api.log("Input image axes: " + imgAxes);
       await this.api.log("Reshape image to match the input spec.");
-      const tensor = toTfJs(img);
+      const tensor = ImjoyToTfJs(img);
       const newTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
       const reshapedImg = toImJoyArr(newTensor);
       const resp = await this.bioengineExecute(this.resourceItem.id, [
@@ -498,14 +496,19 @@ export default {
         debugger;
         return;
       }
-      this.setInfoPanel("Success!");
+      this.setInfoPanel("");
       const outImg = resp.result.outputs[0];
       await this.api.log("Output image shape: " + outImg._rshape);
       const outputSpec = this.rdf.outputs[0];
       await this.api.log("Spec output axes: " + outputSpec.axes);
       const imgsForShow = processForShow(outImg, outputSpec.axes);
-      for (let i = 0; i < imgsForShow.length; i++) {
-        const img = imgsForShow[i];
+      await this.showImgs(imgsForShow);
+      this.buttonEnabledRun = true;
+    },
+
+    async showImgs(imgs) {
+      for (let i = 0; i < imgs.length; i++) {
+        const img = imgs[i];
         await this.api.log(
           "Output image shape after processing: " + img._rshape
         );
@@ -517,7 +520,6 @@ export default {
         }
         //        await this.ij.runMacro("run('Enhance Contrast', 'saturated=0.35');")
       }
-      this.buttonEnabledRun = true;
     },
 
     async loadRdf() {
@@ -557,36 +559,78 @@ export default {
 
     async viewImgFromUrl(url) {
       await this.api.log("View image from url: " + url);
-      const resp = await fetch(url);
-      if (!resp.ok) {
-        this.setInfoPanel("Failed to load the image.");
-        console.error(resp);
-        return;
-      }
-      const arrayBuffer = await resp.arrayBuffer();
       let fileName;
       if (url.endsWith("/content")) {
         fileName = url.split("/")[url.split("/").length - 2];
       } else {
         fileName = url.split("/")[url.split("/").length - 1];
       }
-      this.ij.viewImage(arrayBuffer, { name: fileName }).catch(err => {
-        console.error(err);
-        this.setInfoPanel("Failed to view the image.");
-      });
+      if (fileName.endsWith(".npy")) {
+        let nj = new npyjs();
+        const res = await nj.load(url);
+        const value = new Uint8Array(
+          res.data.buffer.slice(res.data.byteOffset));
+        const imjArr = {
+          _rtype: "ndarray",
+          _rdtype: res.dtype,
+          _rshape: res.shape,
+          _rvalue: value,
+        };
+        const inputSpec = this.rdf.inputs[0];
+        const imgAxes = inferImgAxesViaSpec(
+          imjArr._rshape, inputSpec.axes);
+        const imgsForShow = processForShow(imjArr, imgAxes);
+        await this.showImgs(imgsForShow)
+      } else {
+        const resp = await fetch(url);
+        if (!resp.ok) {
+          this.setInfoPanel("Failed to load the image.");
+          console.error(resp);
+          return;
+        }
+        const arrayBuffer = await resp.arrayBuffer();
+        this.ij.viewImage(arrayBuffer, { name: fileName }).catch(err => {
+          console.error(err);
+          this.setInfoPanel("Failed to view the image.");
+        });
+      }
     },
 
-    async loadSampleInput() {
-      const url = this.rdf.sample_inputs[0];
-      this.setInfoPanel("Loading sample input...", true);
-      await this.viewImgFromUrl(url);
+    async loadTestInput() {
+      this.setInfoPanel("Loading test input...", true);
+      if (rdfHas(this.rdf, "test_inputs")) {
+        try {
+          await this.viewImgFromUrl(this.rdf.test_inputs[0]);
+        } catch (err) {
+          await this.api.log("Failed to load the test input.");
+          console.error(err);
+          await this.api.log("Loading sample input instead...");
+          await this.viewImgFromUrl(this.rdf.sample_inputs[0]);
+        }
+      } else if (rdfHas(this.rdf, "sample_inputs")) {
+        await this.viewImgFromUrl(this.rdf.sample_inputs[0]);
+      } else {
+        await this.api.alert("No test input found.");
+      }
       this.setInfoPanel("");
     },
 
-    async loadSampleOutput() {
-      const url = this.rdf.sample_outputs[0];
-      this.setInfoPanel("Loading sample output...", true);
-      await this.viewImgFromUrl(url);
+    async loadTestOutput() {
+      this.setInfoPanel("Loading test output...", true);
+      if (rdfHas(this.rdf, "test_outputs")) {
+        try {
+          await this.viewImgFromUrl(this.rdf.test_outputs[0]);
+        } catch (err) {
+          await this.api.log("Failed to load the test output.");
+          console.error(err);
+          await this.api.log("Loading sample output instead...");
+          await this.viewImgFromUrl(this.rdf.sample_outputs[0]);
+        }
+      } else if (rdfHas(this.rdf, "sample_outputs")) {
+        await this.viewImgFromUrl(this.rdf.sample_outputs[0]);
+      } else {
+        await this.api.alert("No test output found.");
+      }
       this.setInfoPanel("");
     }
   }
