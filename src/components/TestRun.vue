@@ -129,6 +129,16 @@ function insertCharAtPosition(originalString, charToInsert, position) {
 }
 
 function getConstructor(tpstr) {
+  /**
+Int8Array	int8	int8
+Int16Array	int16	int16
+Int32Array	int32	int32
+Uint8Array	uint8	uint8
+Uint16Array	uint16	uint16
+Uint32Array	uint32	uint32
+Float32Array	float32	float32
+Float64Array	float64	float64
+   */
   let Constructor;
   if (tpstr == "uint8") {
     Constructor = Uint8Array;
@@ -146,6 +156,8 @@ function getConstructor(tpstr) {
     Constructor = Float32Array;
   } else if (tpstr == "float64") {
     Constructor = Float64Array;
+  } else if (tpstr == "bool") {
+    Constructor = Uint8Array;
   } else {
     throw new Error("Unsupported dtype: " + tpstr);
   }
@@ -167,16 +179,6 @@ function getConstructor(tpstr) {
 //}
 
 function toTfJs(arr) {
-  /**
-Int8Array	int8	int8
-Int16Array	int16	int16
-Int32Array	int32	int32
-Uint8Array	uint8	uint8
-Uint16Array	uint16	uint16
-Uint32Array	uint32	uint32
-Float32Array	float32	float32
-Float64Array	float64	float64
-   */
   if (arr._rvalue instanceof ArrayBuffer) {
     arr._rvalue = new Uint8Array(arr._rvalue);
   }
@@ -184,7 +186,15 @@ Float64Array	float64	float64
   let bufferView = new Uint8Array(buffer);
   bufferView.set(arr._rvalue);
   const Constructor = getConstructor(arr._rdtype);
-  const tarr = new Constructor(buffer);
+  let tarr = new Constructor(buffer);
+  if (arr._rdtype === "bool") {
+    // convert 1 to 255
+    for (let i = 0; i < tarr.length; i++) {
+      if (tarr[i] === 1) {
+        tarr[i] = 255;
+      }
+    }
+  }
   //const Constructor = getConstructor(arr._rdtype);
   //const bLen =  multiplyArrayElements(arr._rshape) * Constructor.BYTES_PER_ELEMENT;
   //const bytes = arr._rvalue.buffer.slice(0, bLen)
