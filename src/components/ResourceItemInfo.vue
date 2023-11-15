@@ -103,8 +103,11 @@
       >
 
       <br />
-      <TestRunForm v-if="resourceItem.testRunDocs" :resourceItem="resourceItem">
-      </TestRunForm>
+      <test-run-form
+        v-if="resourceItem.testRunDocs"
+        :resourceItem="resourceItem"
+      >
+      </test-run-form>
 
       <br />
       <div v-if="resourceItem.training_data_item">
@@ -202,7 +205,7 @@ export default {
     "app-icons": AppIcons,
     "comment-box": CommentBox,
     "resource-item-card": ResourceItemCard,
-    TestRunForm
+    "test-run-form": TestRunForm
   },
   data() {
     return {

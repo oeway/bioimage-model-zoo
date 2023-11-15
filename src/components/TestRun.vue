@@ -396,11 +396,9 @@ function processForShow(img, specAxes) {
   });
 }
 
-
 function rdfHas(rdf, key) {
   return rdf[key] !== undefined && rdf[key].length > 0;
 }
-
 
 export default {
   name: "TestRunForm",
@@ -433,10 +431,16 @@ export default {
       await this.loadImageJ();
       this.setInfoPanel("");
       this.buttonEnabledRun = true;
-      if (rdfHas(this.rdf, "test_inputs") || rdfHas(this.rdf, "sample_inputs")) {
+      if (
+        rdfHas(this.rdf, "test_inputs") ||
+        rdfHas(this.rdf, "sample_inputs")
+      ) {
         this.buttonEnabledInput = true;
       }
-      if (rdfHas(this.rdf, "test_outputs") || rdfHas(this.rdf, "sample_outputs")) {
+      if (
+        rdfHas(this.rdf, "test_outputs") ||
+        rdfHas(this.rdf, "sample_outputs")
+      ) {
         this.buttonEnabledOutput = true;
       }
     },
@@ -569,18 +573,18 @@ export default {
         let nj = new npyjs();
         const res = await nj.load(url);
         const value = new Uint8Array(
-          res.data.buffer.slice(res.data.byteOffset));
+          res.data.buffer.slice(res.data.byteOffset)
+        );
         const imjArr = {
           _rtype: "ndarray",
           _rdtype: res.dtype,
           _rshape: res.shape,
-          _rvalue: value,
+          _rvalue: value
         };
         const inputSpec = this.rdf.inputs[0];
-        const imgAxes = inferImgAxesViaSpec(
-          imjArr._rshape, inputSpec.axes);
+        const imgAxes = inferImgAxesViaSpec(imjArr._rshape, inputSpec.axes);
         const imgsForShow = processForShow(imjArr, imgAxes);
-        await this.showImgs(imgsForShow)
+        await this.showImgs(imgsForShow);
       } else {
         const resp = await fetch(url);
         if (!resp.ok) {
