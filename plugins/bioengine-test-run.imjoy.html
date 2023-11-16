@@ -496,7 +496,7 @@ class Plugin():
     async def setup(self):
         api.log("Connector plugin is ready.")
         server = await connect_to_server(
-            {"name": "client", "server_url": "https://ai.imjoy.io", "method_timeout": 30}
+            {"name": "client", "server_url": "https://hypha.bioimage.io", "method_timeout": 30}
         )
         self.triton = await server.get_service("triton-client")
         self.image = None
