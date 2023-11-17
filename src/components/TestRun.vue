@@ -110,17 +110,32 @@ function inferImgAxes(shape, order = "bcz") {
 }
 
 function inferImgAxesViaSpec(shape, specAxes, fromIJ = false) {
-  let order = "bcz";
+  let imgAxes;
   if (fromIJ) {
-    order = "cz";
-  } else if (!specAxes.includes("c")) {
-    order = "bz";
-  } else if (!specAxes.includes("z")) {
-    order = "bc";
-  } else if (!specAxes.includes("b")) {
-    order = "cz";
+    if (shape.length === 2) {
+      imgAxes = "yx";
+    } else if (shape.length === 3) {
+      imgAxes = "yxc";
+    } else if (shape.length === 4) {
+      if (specAxes.includes("z")) {
+        imgAxes = "zyxc";
+      } else {
+        imgAxes = "cyxb";
+      }
+    } else {
+      throw new Error(`Image shape [${shape.join(", ")}] is not supported.`);
+    }
+  } else {
+    let order = "bcz";
+    if (!specAxes.includes("c")) {
+      order = "bz";
+    } else if (!specAxes.includes("z")) {
+      order = "bc";
+    } else if (!specAxes.includes("b")) {
+      order = "cz";
+    }
+    imgAxes = inferImgAxes(shape, order);
   }
-  const imgAxes = inferImgAxes(shape, order);
   return imgAxes;
 }
 
@@ -168,19 +183,15 @@ Float64Array	float64	float64
   return Constructor;
 }
 
-//function multiplyArrayElements(arr) {
-//  return arr.reduce((product, number) => product * number, 1);
-//}
-
-//function reverseEndianness(arrayBuffer, bytesPerElement) {
-//  let uint8Array = new Uint8Array(arrayBuffer);
-//  for (let i = 0; i < uint8Array.length; i += bytesPerElement) {
-//    for (let j = i, k = i + bytesPerElement - 1; j < k; j++, k--) {
-//      [uint8Array[j], uint8Array[k]] = [uint8Array[k], uint8Array[j]];
-//    }
-//  }
-//  return arrayBuffer;
-//}
+function reverseEndianness(arrayBuffer, bytesPerElement) {
+  let uint8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < uint8Array.length; i += bytesPerElement) {
+    for (let j = i, k = i + bytesPerElement - 1; j < k; j++, k--) {
+      [uint8Array[j], uint8Array[k]] = [uint8Array[k], uint8Array[j]];
+    }
+  }
+  return arrayBuffer;
+}
 
 function ImjoyToTfJs(arr) {
   if (arr._rvalue instanceof ArrayBuffer) {
@@ -191,6 +202,11 @@ function ImjoyToTfJs(arr) {
   bufferView.set(arr._rvalue);
   const Constructor = getConstructor(arr._rdtype);
   let tarr = new Constructor(buffer);
+  if (tarr.includes(NaN)) {
+    tarr = new Constructor(
+      reverseEndianness(buffer, Constructor.BYTES_PER_ELEMENT)
+    );
+  }
   if (arr._rdtype === "bool") {
     // convert 1 to 255
     for (let i = 0; i < tarr.length; i++) {
@@ -506,18 +522,18 @@ export default {
       const outputSpec = this.rdf.outputs[0];
       await this.api.log("Spec output axes: " + outputSpec.axes);
       const imgsForShow = processForShow(outImg, outputSpec.axes);
-      await this.showImgs(imgsForShow);
+      await this.showImgs(imgsForShow, "output");
       this.buttonEnabledRun = true;
     },
 
-    async showImgs(imgs) {
+    async showImgs(imgs, name = "output") {
       for (let i = 0; i < imgs.length; i++) {
         const img = imgs[i];
         await this.api.log(
           "Output image shape after processing: " + img._rshape
         );
         try {
-          await this.ij.viewImage(img, { name: "output" });
+          await this.ij.viewImage(img, { name: name });
         } catch (err) {
           console.error(err);
           this.setInfoPanel("Failed to view the image.");
@@ -584,7 +600,7 @@ export default {
         const inputSpec = this.rdf.inputs[0];
         const imgAxes = inferImgAxesViaSpec(imjArr._rshape, inputSpec.axes);
         const imgsForShow = processForShow(imjArr, imgAxes);
-        await this.showImgs(imgsForShow);
+        await this.showImgs(imgsForShow, "input");
       } else {
         const resp = await fetch(url);
         if (!resp.ok) {
