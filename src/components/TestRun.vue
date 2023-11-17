@@ -600,7 +600,7 @@ export default {
         const inputSpec = this.rdf.inputs[0];
         const imgAxes = inferImgAxesViaSpec(imjArr._rshape, inputSpec.axes);
         const imgsForShow = processForShow(imjArr, imgAxes);
-        await this.showImgs(imgsForShow, "input");
+        await this.showImgs(imgsForShow, fileName);
       } else {
         const resp = await fetch(url);
         if (!resp.ok) {
@@ -622,7 +622,9 @@ export default {
         try {
           await this.viewImgFromUrl(this.rdf.test_inputs[0]);
         } catch (err) {
-          await this.api.log("Failed to load the test input.");
+          await this.api.log(
+            "Failed to load the test input, see console for details."
+          );
           console.error(err);
           await this.api.log("Loading sample input instead...");
           await this.viewImgFromUrl(this.rdf.sample_inputs[0]);
