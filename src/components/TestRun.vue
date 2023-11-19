@@ -39,7 +39,7 @@
             model. We support formats like .tiff, .png, and .jpg</span
           >
         </div>
-        <div id="info-panel">{{ this.info }}</div>
+        <div id="info-panel" :style="{ color: infoColor }">{{ this.info }}</div>
       </div>
       <div id="ij-container"></div>
     </div>
@@ -220,12 +220,17 @@ function ImjoyToTfJs(arr) {
   return tensor;
 }
 
-function toImJoyArr(tensor) {
+function toImJoyArr(tensor, reverseEnd = false) {
   const data = tensor.dataSync();
   const Constructor = getConstructor(tensor._rdtype);
-  const casted = new Constructor(data.length);
+  let casted = new Constructor(data.length);
   for (let i = 0; i < data.length; i++) {
     casted[i] = data[i];
+  }
+  if (reverseEnd) {
+    casted = new Constructor(
+      reverseEndianness(casted.buffer, Constructor.BYTES_PER_ELEMENT)
+    );
   }
   const value = new Uint8Array(casted.buffer);
   const ijarr = {
@@ -427,6 +432,7 @@ export default {
   data: () => ({
     switch: false,
     waiting: false,
+    error: false,
     rdf: null,
     info: "",
     triton: null,
@@ -436,6 +442,15 @@ export default {
     buttonEnabledInput: false,
     buttonEnabledOutput: false
   }),
+  computed: {
+    infoColor() {
+      if (this.error) {
+        return "red";
+      } else {
+        return "black";
+      }
+    }
+  },
   methods: {
     async turnOn() {
       this.switch = true;
@@ -461,13 +476,10 @@ export default {
       }
     },
 
-    setInfoPanel(info, waiting = false) {
+    setInfoPanel(info, waiting = false, error = false) {
       this.info = info;
-      if (waiting) {
-        this.waiting = true;
-      } else {
-        this.waiting = false;
-      }
+      this.waiting = waiting;
+      this.error = error;
     },
 
     async bioengineExecute(
@@ -504,13 +516,13 @@ export default {
       await this.api.log("Reshape image to match the input spec.");
       const tensor = ImjoyToTfJs(img);
       const newTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
-      const reshapedImg = toImJoyArr(newTensor);
+      const reshapedImg = toImJoyArr(newTensor, true);
       const resp = await this.bioengineExecute(this.resourceItem.id, [
         reshapedImg
       ]);
       if (!resp.result.success) {
         await this.api.alert("Failed to run the model.");
-        this.setInfoPanel("Failed to run the model.");
+        this.setInfoPanel("Failed to run the model.", false, true);
         this.buttonEnabledRun = true;
         console.error(resp.result.error);
         debugger;
@@ -536,18 +548,27 @@ export default {
           await this.ij.viewImage(img, { name: name });
         } catch (err) {
           console.error(err);
-          this.setInfoPanel("Failed to view the image.");
+          this.setInfoPanel("Failed to view the image.", false, true);
         }
         //        await this.ij.runMacro("run('Enhance Contrast', 'saturated=0.35');")
       }
     },
 
     async loadRdf() {
-      const ret = await this.bioengineExecute(
-        this.resourceItem.id,
-        undefined,
-        true
-      );
+      let ret;
+      try {
+        ret = await this.bioengineExecute(
+          this.resourceItem.id,
+          undefined,
+          true
+        );
+      } catch (err) {
+        await this.api.alert(
+          "Failed to load the model, see console for details."
+        );
+        this.setInfoPanel("Failed to load the model.", false, true);
+        throw err;
+      }
       const rdf = ret.result.rdf;
       console.log(rdf);
       this.rdf = rdf;
