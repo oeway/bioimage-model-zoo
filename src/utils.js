@@ -1065,3 +1065,52 @@ export function replaceAllRelByAbs(html, base_url) {
   ); /*< style=" url(...) " > */
   return html;
 }
+
+export class Tile {
+  constructor(size, start, end) {
+    this.size = size;
+    this.start = start;
+    this.end = end;
+  }
+}
+
+export class Tiler {
+  constructor(id, imageShape, tileShape, overlap) {
+    this.id = id;
+    this.imageShape = imageShape; // e.g. [1000, 1000, 3]
+    this.tileShape = tileShape; // e.g. [256, 256, 3] or [256, 256, null]
+    this.overlap = overlap; // e.g. [0, 0, 0]
+  }
+
+  getTiles() {
+    const tiles = [];
+    const imageShape = this.imageShape;
+    const tileShape = this.tileShape;
+    for (let i = 0; i < tileShape.length; i++) {
+      tileShape[i] = tileShape[i] || imageShape[i];
+    }
+    const overlap = this.overlap;
+    const nDims = imageShape.length;
+    const nTilesInEachDim = [];
+    for (let i = 0; i < nDims; i++) {
+      const n = Math.ceil(
+        (imageShape[i] - overlap[i]) / (tileShape[i] - overlap[i])
+      );
+      nTilesInEachDim.push(n);
+    }
+    const nTiles = nTilesInEachDim.reduce((a, b) => a * b);
+    for (let i = 0; i < nTiles; i++) {
+      const start = [];
+      const end = [];
+      for (let j = 0; j < nDims; j++) {
+        const n = nTilesInEachDim[j];
+        start.push(
+          Math.floor(i / n) * (tileShape[j] - overlap[j]) +
+            (i % n) * tileShape[j]
+        );
+        end.push(start[j] + tileShape[j]);
+      }
+      tiles.push(new Tile(i, tileShape, start, end));
+    }
+  }
+}
