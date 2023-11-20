@@ -583,6 +583,26 @@ export default {
     },
 
     async loadImJoy() {
+      function waitForImjoy(timeout = 10000) {
+        return new Promise((resolve, reject) => {
+          const interval = setInterval(() => {
+            if (window.app && window.app.imjoy !== undefined) {
+              clearInterval(interval);
+              resolve(window.app.imjoy);
+            }
+          }, 100); // Check every 100 milliseconds
+
+          // Optional: Reject the promise after a timeout
+          setTimeout(() => {
+            clearInterval(interval);
+            reject(new Error("Timeout waiting for window.app.imjoy"));
+          }, timeout);
+        });
+      }
+
+      const imjoy = await waitForImjoy();
+      console.log("ImJoy is ready:", imjoy);
+
       const api = window.app.imjoy.api;
       this.api = api;
     },
