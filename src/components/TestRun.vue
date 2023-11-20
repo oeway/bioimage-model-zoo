@@ -521,7 +521,9 @@ export default {
         reshapedImg
       ]);
       if (!resp.result.success) {
-        await this.api.alert("Failed to run the model, see console for details.");
+        await this.api.alert(
+          "Failed to run the model, see console for details."
+        );
         this.setInfoPanel("Failed to run the model.", false, true);
         this.buttonEnabledRun = true;
         console.error(resp.result.error);
