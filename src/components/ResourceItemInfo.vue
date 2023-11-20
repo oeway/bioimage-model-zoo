@@ -104,7 +104,7 @@
 
       <br />
       <test-run-form
-        v-if="resourceItem.testRunDocs"
+        v-if="resourceItem.type == 'model'"
         :resourceItem="resourceItem"
       >
       </test-run-form>
@@ -237,9 +237,6 @@ export default {
         this.$forceUpdate();
       });
     }
-    this.gettestRunDocs(this.resourceItem).then(() => {
-      this.$forceUpdate();
-    });
   },
   computed: {
     runButtonContext: function() {
@@ -353,22 +350,6 @@ export default {
             .join("\n").length;
         }
       }
-    },
-    async gettestRunDocs(resourceItem) {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
-      );
-      const manifest = await response.json();
-      if (!manifest.collection.find(c => c.id === resourceItem.id)) {
-        resourceItem.testRunDocs = `## Model testing is not available for this model\n\nSee [conversion log](https://github.com/bioimage-io/bioengine-model-runner/blob/gh-pages/manifest.bioengine.yaml) for more details.`;
-        return;
-      }
-      const docs = `
-## Quick model testing with your own data</h1>
-By clicking the \`Test the model\` button, you can test the model with your own data.
-
-      `;
-      resourceItem.testRunDocs = docs;
     }
   }
 };

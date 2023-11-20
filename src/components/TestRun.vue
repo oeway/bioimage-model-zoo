@@ -194,9 +194,6 @@ function reverseEndianness(arrayBuffer, bytesPerElement) {
 }
 
 function ImjoyToTfJs(arr) {
-  if (arr._rvalue instanceof ArrayBuffer) {
-    arr._rvalue = new Uint8Array(arr._rvalue);
-  }
   let buffer = new ArrayBuffer(arr._rvalue.length);
   let bufferView = new Uint8Array(buffer);
   bufferView.set(arr._rvalue);
