@@ -87,6 +87,7 @@ import { hyphaWebsocketClient } from "imjoy-rpc";
 import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-cpu";
 import npyjs from "npyjs";
+import { getNpyDtype } from "../utils.js";
 
 function inferImgAxes(shape, order = "bcz") {
   /**
@@ -199,11 +200,6 @@ function ImjoyToTfJs(arr) {
   bufferView.set(arr._rvalue);
   const Constructor = getConstructor(arr._rdtype);
   let tarr = new Constructor(buffer);
-  if (tarr.includes(NaN)) {
-    tarr = new Constructor(
-      reverseEndianness(buffer, Constructor.BYTES_PER_ELEMENT)
-    );
-  }
   if (arr._rdtype === "bool") {
     // convert 1 to 255
     for (let i = 0; i < tarr.length; i++) {
@@ -437,7 +433,8 @@ export default {
     api: null,
     buttonEnabledRun: false,
     buttonEnabledInput: false,
-    buttonEnabledOutput: false
+    buttonEnabledOutput: false,
+    inputEndianness: null
   }),
   computed: {
     infoColor() {
@@ -513,7 +510,8 @@ export default {
       await this.api.log("Reshape image to match the input spec.");
       const tensor = ImjoyToTfJs(img);
       const newTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
-      const reshapedImg = toImJoyArr(newTensor, true);
+      const reverseEnd = this.inputEndianness === "<";
+      const reshapedImg = toImJoyArr(newTensor, reverseEnd);
       const resp = await this.bioengineExecute(this.resourceItem.id, [
         reshapedImg
       ]);
@@ -627,7 +625,11 @@ export default {
       }
       if (fileName.endsWith(".npy")) {
         let nj = new npyjs();
-        const res = await nj.load(url);
+        const npyBuffer = await fetch(url).then(res => res.arrayBuffer());
+        const npyDtype = getNpyDtype(npyBuffer);
+        this.inputEndianness = npyDtype[0];
+        await this.api.log("Input endianness: " + this.inputEndianness);
+        const res = await nj.load(npyBuffer);
         const value = new Uint8Array(
           res.data.buffer.slice(res.data.byteOffset)
         );

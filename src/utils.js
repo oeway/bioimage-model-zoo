@@ -1114,3 +1114,18 @@ export class Tiler {
     }
   }
 }
+
+export function getNpyDtype(buffer) {
+  const headerLength = new DataView(buffer.slice(8, 10)).getUint8(0);
+  const hcontents = new TextDecoder("utf-8").decode(
+    new Uint8Array(buffer.slice(10, 10 + headerLength))
+  );
+  const header = JSON.parse(
+    hcontents
+      .toLowerCase() // True -> true
+      .replace(/'/g, '"')
+      .replace("(", "[")
+      .replace(/,*\),*/g, "]")
+  );
+  return header.descr;
+}
