@@ -363,41 +363,10 @@ export default {
         resourceItem.testRunDocs = `## Model testing is not available for this model\n\nSee [conversion log](https://github.com/bioimage-io/bioengine-model-runner/blob/gh-pages/manifest.bioengine.yaml) for more details.`;
         return;
       }
-      const url =
-        window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
       const docs = `
 ## Quick model testing with your own data</h1>
 By clicking the \`Test the model\` button, you can test the model with your own data.
 
-<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
-\`\`\`js
-api.createWindow({
-  src: "${url}",
-  window_id: "test-run-form",
-  data: {
-    id: "${resourceItem.id}",
-    window_id: "ij-window"
-  }}
-  )
-\`\`\`
-
-<style>
-#test-run-form:empty {
-  display: none;
-}
-#test-run-form {
-  height: 90px;
-}
-#ij-window:empty {
-  display: none;
-}
-#ij-window {
-  height: 800px;
-  border: 1px solid #ccc;
-}
-</style>
-<div id="test-run-form"></div>
-<div id="ij-window"></div>
       `;
       resourceItem.testRunDocs = docs;
     }

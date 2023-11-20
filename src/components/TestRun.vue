@@ -48,7 +48,7 @@
 
 <style scoped>
 #ij-container {
-  height: 800px;
+  height: 600px;
   border: 1px solid #ccc;
 }
 #buttons {
@@ -521,7 +521,7 @@ export default {
         reshapedImg
       ]);
       if (!resp.result.success) {
-        await this.api.alert("Failed to run the model.");
+        await this.api.alert("Failed to run the model, see console for details.");
         this.setInfoPanel("Failed to run the model.", false, true);
         this.buttonEnabledRun = true;
         console.error(resp.result.error);
@@ -625,14 +625,14 @@ export default {
       } else {
         const resp = await fetch(url);
         if (!resp.ok) {
-          this.setInfoPanel("Failed to load the image.");
+          this.setInfoPanel("Failed to load the image.", false, true);
           console.error(resp);
           return;
         }
         const arrayBuffer = await resp.arrayBuffer();
         this.ij.viewImage(arrayBuffer, { name: fileName }).catch(err => {
           console.error(err);
-          this.setInfoPanel("Failed to view the image.");
+          this.setInfoPanel("Failed to view the image.", false, true);
         });
       }
     },
