@@ -104,10 +104,13 @@
 
       <br />
       <test-run-form
-        v-if="resourceItem.type == 'model'"
+        v-if="resourceItem.type == 'model' && modelAvailable"
         :resourceItem="resourceItem"
       >
       </test-run-form>
+      <div class="not-available" v-if="!modelAvailable">
+        This model is not available for testing.
+      </div>
 
       <br />
       <div v-if="resourceItem.training_data_item">
@@ -211,7 +214,8 @@ export default {
     return {
       maxDescriptionLetters: 100,
       maxDocsLetters: 500,
-      showSource: false
+      showSource: false,
+      modelAvailable: false
     };
   },
 
@@ -237,6 +241,7 @@ export default {
         this.$forceUpdate();
       });
     }
+    this.getManifestList();
   },
   computed: {
     runButtonContext: function() {
@@ -350,6 +355,13 @@ export default {
             .join("\n").length;
         }
       }
+    },
+    async getManifestList() {
+      const manifestUrl =
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json";
+      const list = await fetch(manifestUrl).then(r => r.json());
+      const aviableModels = list.collection.map(m => m.id);
+      this.modelAvailable = aviableModels.includes(this.resourceItem.id);
     }
   }
 };
@@ -393,5 +405,8 @@ export default {
   font-size: 1.1rem;
   display: inline-block;
   margin-right: 5px;
+}
+.not-available {
+  color: red;
 }
 </style>
