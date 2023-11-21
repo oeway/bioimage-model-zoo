@@ -212,6 +212,7 @@ export default {
       const reshapedTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
       const padder = new ImgPadder(inputSpec, 0);
       const [paddedTensor, padArr] = padder.pad(reshapedTensor);
+      await this.api.log("Padded image shape: " + paddedTensor.shape);
       let outImg;
       try {
         outImg = await this.runOneTensor(paddedTensor);
@@ -339,7 +340,8 @@ export default {
         };
         const inputSpec = this.rdf.inputs[0];
         const imgAxes = inferImgAxesViaSpec(imjArr._rshape, inputSpec.axes);
-        const imgsForShow = processForShow(imjArr, imgAxes);
+        const tensor = ImjoyToTfJs(imjArr);
+        const imgsForShow = processForShow(tensor, imgAxes);
         await this.showImgs(imgsForShow, fileName);
       } else {
         const resp = await fetch(url);
