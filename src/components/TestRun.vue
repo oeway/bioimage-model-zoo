@@ -275,7 +275,7 @@ export default {
 
     async loadTritonClient() {
       const server = await hyphaWebsocketClient.connectToServer({
-        server_url: "https://ai.imjoy.io",
+        server_url: "https://hypha.bioimage.io",
         method_timeout: 30,
         name: "client"
       });
