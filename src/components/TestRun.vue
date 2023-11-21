@@ -92,7 +92,8 @@ import {
   toImJoyArr,
   inferImgAxesViaSpec,
   getNpyEndianness,
-  processForShow
+  processForShow,
+  ImgPadder
 } from "../imgProcess";
 
 function rdfHas(rdf, key) {
@@ -184,6 +185,19 @@ export default {
       return ret;
     },
 
+    async runOneTensor(tensor) {
+      const reverseEnd = this.inputEndianness === "<";
+      const reshapedImg = toImJoyArr(tensor, reverseEnd);
+      const resp = await this.bioengineExecute(this.resourceItem.id, [
+        reshapedImg
+      ]);
+      if (!resp.result.success) {
+        throw new Error(resp.result.error);
+      }
+      const outImg = resp.result.outputs[0];
+      return outImg;
+    },
+
     async runModel() {
       this.setInfoPanel("Running the model...", true);
       this.buttonEnabledRun = false;
@@ -195,29 +209,30 @@ export default {
       await this.api.log("Input image axes: " + imgAxes);
       await this.api.log("Reshape image to match the input spec.");
       const tensor = ImjoyToTfJs(img);
-      const newTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
-      const reverseEnd = this.inputEndianness === "<";
-      const reshapedImg = toImJoyArr(newTensor, reverseEnd);
-      const resp = await this.bioengineExecute(this.resourceItem.id, [
-        reshapedImg
-      ]);
-      if (!resp.result.success) {
+      const reshapedTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
+      const padder = new ImgPadder(inputSpec, 0);
+      const [paddedTensor, padArr] = padder.pad(reshapedTensor);
+      let outImg;
+      try {
+        outImg = await this.runOneTensor(paddedTensor);
+      } catch (e) {
         await this.api.alert(
           "Failed to run the model, see console for details."
         );
         this.setInfoPanel("Failed to run the model.", false, true);
         this.buttonEnabledRun = true;
-        console.error(resp.result.error);
+        console.error(e);
         debugger;
         return;
       }
-      this.setInfoPanel("");
-      const outImg = resp.result.outputs[0];
-      await this.api.log("Output image shape: " + outImg._rshape);
       const outputSpec = this.rdf.outputs[0];
+      await this.api.log("Output image shape: " + outImg._rshape);
+      const outTensor = ImjoyToTfJs(outImg);
+      const cropedTensor = padder.crop(outTensor, padArr);
       await this.api.log("Spec output axes: " + outputSpec.axes);
-      const imgsForShow = processForShow(outImg, outputSpec.axes);
+      const imgsForShow = processForShow(cropedTensor, outputSpec.axes);
       await this.showImgs(imgsForShow, "output");
+      this.setInfoPanel("");
       this.buttonEnabledRun = true;
     },
 

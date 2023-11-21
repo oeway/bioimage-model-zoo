@@ -307,7 +307,7 @@ export function splitForShow(tensor, specAxes) {
   return newImgs;
 }
 
-export function processForShow(img, specAxes) {
+export function processForShow(tensor, specAxes) {
   /**
     Process the image for showing.
     ImageJ.JS only supports:
@@ -318,7 +318,6 @@ export function processForShow(img, specAxes) {
       [z-stack, height, width, 1]
       [z-stack, height, width, 3] (will show as a stack of RGB image)
    */
-  const tensor = ImjoyToTfJs(img);
   const splitedArrs = splitForShow(tensor, specAxes);
   return splitedArrs.map(arr => {
     arr._rdtype = tensor._rdtype;
@@ -356,51 +355,79 @@ export async function getNpyEndianness(url) {
   return npyDtype[0];
 }
 
-export class Tile {
-  constructor(size, start, end) {
-    this.size = size;
-    this.start = start;
-    this.end = end;
-  }
-}
-
-export class Tiler {
-  constructor(id, imageShape, tileShape, overlap) {
-    this.id = id;
-    this.imageShape = imageShape; // e.g. [1000, 1000, 3]
-    this.tileShape = tileShape; // e.g. [256, 256, 3] or [256, 256, null]
-    this.overlap = overlap; // e.g. [0, 0, 0]
+export class ImgPadder {
+  constructor(inputSpec, padValue = 0) {
+    this.inputSpec = inputSpec;
+    this.padValue = padValue;
   }
 
-  getTiles() {
-    const tiles = [];
-    const imageShape = this.imageShape;
-    const tileShape = this.tileShape;
-    for (let i = 0; i < tileShape.length; i++) {
-      tileShape[i] = tileShape[i] || imageShape[i];
-    }
-    const overlap = this.overlap;
-    const nDims = imageShape.length;
-    const nTilesInEachDim = [];
-    for (let i = 0; i < nDims; i++) {
-      const n = Math.ceil(
-        (imageShape[i] - overlap[i]) / (tileShape[i] - overlap[i])
-      );
-      nTilesInEachDim.push(n);
-    }
-    const nTiles = nTilesInEachDim.reduce((a, b) => a * b);
-    for (let i = 0; i < nTiles; i++) {
-      const start = [];
-      const end = [];
-      for (let j = 0; j < nDims; j++) {
-        const n = nTilesInEachDim[j];
-        start.push(
-          Math.floor(i / n) * (tileShape[j] - overlap[j]) +
-            (i % n) * tileShape[j]
-        );
-        end.push(start[j] + tileShape[j]);
+  getPaddedShape(shape) {
+    const specShape = this.inputSpec.shape;
+    let paddedShape = [];
+    if (specShape instanceof Array) {
+      // Explicit shape
+      paddedShape = specShape;
+    } else {
+      // Implicit shape
+      // infer from the min and step
+      const min = specShape.min;
+      const step = specShape.step;
+      for (let d = 0; d < shape.length; d++) {
+        if (step[d] === 0) {
+          paddedShape.push(shape[d]);
+        } else {
+          const pad = Math.max(
+            0,
+            Math.ceil((shape[d] - min[d]) / step[d]) * step[d]
+          );
+          paddedShape.push(pad + min[d]);
+        }
       }
-      tiles.push(new Tile(i, tileShape, start, end));
     }
+    return paddedShape;
+  }
+
+  pad(tensor, position = "center") {
+    const paddedShape = this.getPaddedShape(tensor.shape);
+    const pad = [];
+    for (let d = 0; d < tensor.shape.length; d++) {
+      if (paddedShape[d] < tensor.shape[d]) {
+        throw new Error(
+          `Invalid shape: ${tensor.shape} for ${this.inputSpec.shape}`
+        );
+      }
+      const diff = paddedShape[d] - tensor.shape[d];
+      if (position === "center") {
+        pad.push([Math.floor(diff / 2), Math.ceil(diff / 2)]);
+      } else if (position === "begin") {
+        pad.push([0, diff]);
+      } else if (position === "end") {
+        pad.push([diff, 0]);
+      } else {
+        throw new Error(`Invalid position: ${position}`);
+      }
+    }
+    const res = tf.pad(tensor, pad, this.padValue);
+    res._rdtype = tensor._rdtype;
+    return [res, pad];
+  }
+
+  crop(tensor, pad, halo = undefined) {
+    let res;
+    if (halo) {
+      res = tf.slice(
+        tensor,
+        pad.map((p, i) => p[0] + halo[i]),
+        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1] - halo[i] * 2)
+      );
+    } else {
+      res = tf.slice(
+        tensor,
+        pad.map(p => p[0]),
+        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1])
+      );
+    }
+    res._rdtype = tensor._rdtype;
+    return res;
   }
 }
