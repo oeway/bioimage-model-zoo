@@ -201,38 +201,40 @@ export default {
     async runModel() {
       this.setInfoPanel("Running the model...", true);
       this.buttonEnabledRun = false;
-      const img = await this.ij.getImage({ format: "ndarray", all: true });
       const inputSpec = this.rdf.inputs[0];
-      await this.api.log("Spec input axes: " + inputSpec.axes);
-      let imgAxes;
-      imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes, true);
-      await this.api.log("Input image axes: " + imgAxes);
-      await this.api.log("Reshape image to match the input spec.");
-      const tensor = ImjoyToTfJs(img);
-      const reshapedTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
-      const padder = new ImgPadder(inputSpec, 0);
-      const [paddedTensor, padArr] = padder.pad(reshapedTensor);
-      await this.api.log("Padded image shape: " + paddedTensor.shape);
-      let outImg;
+      const outputSpec = this.rdf.outputs[0];
       try {
-        outImg = await this.runOneTensor(paddedTensor);
+        const img = await this.ij.getImage({ format: "ndarray", all: true });
+        await this.api.log("Spec input axes: " + inputSpec.axes);
+        let imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes, true);
+        await this.api.log("Input image axes: " + imgAxes);
+        await this.api.log("Reshape image to match the input spec.");
+        const tensor = ImjoyToTfJs(img);
+        const reshapedTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
+        const padder = new ImgPadder(inputSpec, 0);
+        const [paddedTensor, padArr] = padder.pad(reshapedTensor);
+        await this.api.log("Padded image shape: " + paddedTensor.shape);
+        let outImg = await this.runOneTensor(paddedTensor);
+        await this.api.log("Output image shape: " + outImg._rshape);
+        const outTensor = ImjoyToTfJs(outImg);
+        const cropedTensor = padder.crop(outTensor, padArr);
+        await this.api.log("Spec output axes: " + outputSpec.axes);
+        const imgsForShow = processForShow(cropedTensor, outputSpec.axes);
+        await this.showImgs(imgsForShow, "output");
       } catch (e) {
         await this.api.alert(
           "Failed to run the model, see console for details."
         );
-        this.setInfoPanel("Failed to run the model.", false, true);
+        this.setInfoPanel(
+          "Failed to run the model, see console for details.",
+          false,
+          true
+        );
         this.buttonEnabledRun = true;
         console.error(e);
         debugger;
         return;
       }
-      const outputSpec = this.rdf.outputs[0];
-      await this.api.log("Output image shape: " + outImg._rshape);
-      const outTensor = ImjoyToTfJs(outImg);
-      const cropedTensor = padder.crop(outTensor, padArr);
-      await this.api.log("Spec output axes: " + outputSpec.axes);
-      const imgsForShow = processForShow(cropedTensor, outputSpec.axes);
-      await this.showImgs(imgsForShow, "output");
       this.setInfoPanel("");
       this.buttonEnabledRun = true;
     },
