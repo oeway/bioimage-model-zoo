@@ -1,0 +1,10 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"features": {
+        "node": {
+            "version": "12.13.0",
+            "nodeGypDependencies": true
+        }
+	},
+    "postCreateCommand": "npm install"
+}

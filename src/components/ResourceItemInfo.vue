@@ -103,6 +103,14 @@
       >
 
       <br />
+      <markdown
+        v-if="resourceItem.testRunDocs"
+        :enable-run-buttons="true"
+        :baseUrl="resourceItem.baseUrl"
+        :content="resourceItem.testRunDocs"
+      ></markdown>
+
+      <br />
       <div v-if="resourceItem.training_data_item">
         <h2>Training Data</h2>
         <resource-item-card
@@ -110,6 +118,15 @@
           :resourceItem="resourceItem.training_data_item"
         ></resource-item-card>
       </div>
+      <h2>
+        Test Summary
+      </h2>
+      <span v-if="resourceItem.type == 'model'">
+        This {{ resourceItem.type }} can be used in:
+        <app-icons :onlyLinked="true" :apps="resourceItem.apps"></app-icons>
+        <br />
+        <br />
+      </span>
       <test-summary
         v-if="
           resourceItem.test_summary &&
@@ -219,6 +236,9 @@ export default {
         this.$forceUpdate();
       });
     }
+    this.gettestRunDocs(this.resourceItem).then(() => {
+      this.$forceUpdate();
+    });
   },
   computed: {
     runButtonContext: function() {
@@ -332,6 +352,70 @@ export default {
             .join("\n").length;
         }
       }
+    },
+    async gettestRunDocs(resourceItem) {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
+      );
+      const manifest = await response.json();
+      if (!manifest.collection.find(c => c.id === resourceItem.id)) {
+        resourceItem.testRunDocs = `## Model testing is not available for this model\n\nSee [conversion log](https://github.com/bioimage-io/bioengine-model-runner/blob/gh-pages/manifest.bioengine.yaml) for more details.`;
+        return;
+      }
+      const url =
+        window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
+      const docs = `
+## Quick model testing with your own data</h1>
+By clicking the \`Test the model\` button, you can test the model with your own data.
+
+<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
+\`\`\`js
+api.createWindow({
+  src: "${url}",
+  window_id: "test-run-form",
+  data: {
+    id: "${resourceItem.id}",
+    input_window_id: "image_input_window",
+    output_window_id: "image_output_window"
+  }}
+  )
+\`\`\`
+
+<style>
+#test-run-form:empty {
+  display: none;
+}
+#test-run-form {
+  height: 530px;
+}
+#image_output_window:empty {
+  display: none;
+}
+#image_input_window:empty {
+  display: none;
+}
+#image_output_window {
+  height: 500px;
+  flex: 1;
+}
+#image_input_window {
+  height: 500px;
+  flex: 1;
+  margin-right: 10px;
+}
+.image-windows {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+</style>
+<div id="test-run-form"></div>
+<div class="image-windows">
+  <div id="image_input_window"></div>
+  <div id="image_output_window"></div>
+</div>
+      `;
+      resourceItem.testRunDocs = docs;
     }
   }
 };

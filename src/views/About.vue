@@ -24,18 +24,27 @@
         v-if="siteConfig.subscribe_url"
         >Subscribe</b-button
       >
+      <b-button
+        @click="openUrl('/docs/#/terms_of_service')"
+        v-if="siteConfig.contact_form_url"
+        >Terms of Service</b-button
+      >
     </section>
     <br />
     <section style="text-align: center;">
       <b-button
-        @click="openUrl('/docs#/contribute_models/README')"
+        @click="openUrl('/docs/#/contribute_models/README')"
         v-if="siteConfig.contribute_url"
         >Contribute Models</b-button
       >
       <b-button
-        @click="openUrl('/docs#/community_partners/README')"
+        @click="openUrl('/docs/#/community_partners/README')"
         v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
+      >
+      <b-button
+        @click="openUrl('https://github.com/bioimage-io/bioimage.io/issues/28')"
+        >BioImage.IO Weekly Meeting</b-button
       >
     </section>
     <br />
@@ -52,7 +61,7 @@
         v-for="item in siteConfig.footer"
         :key="item.label"
         class="column is-one-quarter"
-        style="text-align: center"
+        style="text-align: center; width: 16%;"
       >
         <b-tooltip :label="item.tooltip" position="is-top"
           ><a :href="item.url" target="_blank">

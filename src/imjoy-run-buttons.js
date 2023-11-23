@@ -428,7 +428,9 @@ function execute(preElm, mode) {
       runCode(mode, preElm.pluginConfig, code).finally(() => {
         loader.style.display = "none";
         const runBtn = preElm.querySelector(".docsify-run-button");
-        if (runBtn) runBtn.innerHTML = i18n.runButtonText;
+        if (runBtn)
+          runBtn.innerHTML =
+            preElm.pluginConfig.run_button_text || i18n.runButtonText;
         const outputElem = document.getElementById("output_" + id);
         if (outputElem && outputElem.children.length > 0)
           outputFullscreenElm.style.display = "inline-block";
@@ -438,7 +440,9 @@ function execute(preElm, mode) {
         runCode(mode, preElm.pluginConfig, code).finally(() => {
           loader.style.display = "none";
           const runBtn = preElm.querySelector(".docsify-run-button");
-          if (runBtn) runBtn.innerHTML = i18n.runButtonText;
+          if (runBtn)
+            runBtn.innerHTML =
+              preElm.pluginConfig.run_button_text || i18n.runButtonText;
         });
       });
     }
@@ -448,6 +452,12 @@ function execute(preElm, mode) {
       if (mode !== "edit") {
         showCodeBtn.style.display = "block";
       }
+    }
+
+    if (preElm.pluginConfig.minimal_ui) {
+      showCodeBtn.style.display = "none";
+      const progressBar = preElm.querySelector(".docsify-progressbar");
+      progressBar.style.display = "none";
     }
     document.addEventListener("fullscreenchange", function(e) {
       const fullScreenMode =
@@ -598,6 +608,19 @@ export function initializeRunButtons(rootElement, runButtonContext) {
         execute(elm, mode);
         delete elm.pluginConfig.startup_mode;
       }
+      const editBtn = elm.querySelector(".docsify-edit-button");
+      const runBtn = elm.querySelector(".docsify-run-button");
+      const loader = elm.querySelector(".docsify-loader");
+      if (elm.pluginConfig.minimal_ui) {
+        editBtn.style.display = "none";
+        showCodeBtn.style.display = "none";
+        runBtn.style.width = "99%";
+        loader.style.position = "absolute";
+        loader.style.left = "49%";
+      }
+      if (runBtn)
+        runBtn.innerHTML =
+          elm.pluginConfig.run_button_text || i18n.runButtonText;
     } catch (e) {
       console.error(e);
     }

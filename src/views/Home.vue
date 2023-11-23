@@ -152,7 +152,7 @@
           v-for="item in siteConfig.footer"
           :key="item.label"
           class="column is-one-quarter"
-          style="text-align: center"
+          style="text-align: center; width: 16%;"
         >
           <b-tooltip :label="item.tooltip" position="is-top"
             ><a :href="item.url" target="_blank">
@@ -530,6 +530,7 @@ function normalizeItem(self, item, bioEngineConfigs) {
       item.apps.unshift({
         name: lit.name,
         icon: lit.icon || DEFAULT_ICONS[lit.type],
+        isLinkedApp: self.allApps[link_key],
         async run() {
           if (self.allApps[link_key]) {
             await self.updateFullRDF(item);
@@ -585,23 +586,6 @@ function normalizeItem(self, item, bioEngineConfigs) {
     if (bioEngineConfigs[item.id]) {
       if (!item.links.includes("imjoy/genericbioengineapp"))
         item.links.push("imjoy/genericbioengineapp");
-      item.apps.unshift({
-        name: "Test Run",
-        icon: "play",
-        async run() {
-          await self.updateFullRDF(item);
-          // pass the bioengine config
-          if (bioEngineConfigs[item.id]?.config?.bioengine) {
-            item.config = item.config || {};
-            item.config.bioengine = bioEngineConfigs[item.id].bioengine;
-          }
-          await runAppForItem(
-            self,
-            self.allApps["imjoy/genericbioengineapp"],
-            item
-          );
-        }
-      });
     }
   }
 

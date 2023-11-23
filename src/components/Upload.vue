@@ -9,6 +9,25 @@
     }"
   >
     <b-notification
+      type="is-warning"
+      has-icon
+      aria-close-label="Close notification"
+      role="alert"
+    >
+      Due to a significant API change in Zenodo (https://zenodo.org), you can
+      only upload the model by login directly to
+      <a href="https://zenodo.org">Zenodo</a> by following the tutorial:
+      <br />
+      <b-button
+        @click="
+          openUrl(
+            'https://bioimage.io/docs/#/contribute_models/contribute_zenodo.md'
+          )
+        "
+        >Upload models via Zenodo</b-button
+      >
+    </b-notification>
+    <b-notification
       v-if="client.isSandbox"
       type="is-warning"
       has-icon
@@ -23,6 +42,7 @@
       storage of your data.
     </b-notification>
     <b-steps
+      v-show="false"
       style="margin-top: 20px;"
       position="left"
       :has-navigation="false"
@@ -521,6 +541,9 @@ export default {
     };
   },
   methods: {
+    openUrl(url) {
+      window.open(url);
+    },
     async startFromDepositURL() {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el

@@ -12,7 +12,7 @@
 
 **Note: deepImageJ supports PyTorch and Tensorflow 1 models**
 
-1. Install the [deepImageJ plugin](https://deepimagej.github.io/deepimagej/download.html) in ImageJ.
+1. Install the [deepImageJ plugin](https://deepimagej.github.io/download.html) in ImageJ.
 This will give you all the necessary Plugins to run bioimage.io models at the moment.
 
 2. Install a model from the [BioImage Model Zoo](https://bioimage.io/):

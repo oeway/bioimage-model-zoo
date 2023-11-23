@@ -1,0 +1,666 @@
+<docs lang="markdown">
+The panel for upload the image file.
+</docs>
+
+<config lang="json">
+{
+    "name": "BioEngine Model Runner",
+    "type": "window",
+    "tags": [],
+    "ui": "",
+    "version": "0.1.0",
+    "cover": "",
+    "description": "[TODO: describe this plugin with one sentence.]",
+    "icon": "extension",
+    "inputs": null,
+    "outputs": null,
+    "api_version": "0.1.8",
+    "env": "",
+    "permissions": [],
+    "requirements": [
+        "https://cdn.tailwindcss.com",
+        "https://cdn.jsdelivr.net/npm/imjoy-rpc@0.5.6/dist/hypha-rpc-websocket.min.js"
+    ],
+    "dependencies": []
+}
+</config>
+
+<script lang="javascript">
+
+class ImJoyPlugin {
+    async setup() {
+        console.log("setup")
+        this.setButtonsDisabled(true)
+        this.setInfoPanel("Initializing...")
+        this.setWaiting(true)
+        this.core_plugin = await api.loadPlugin(await api.getAttachment("bioengine-runner"))
+        this.setupEvents()
+    }
+
+    setButtonsDisabled(disabled) {
+        this.setFileInputDisabled(disabled)
+        this.setButtonDisabled("url-load-button", disabled)
+        this.setButtonDisabled("submit-button", disabled)
+        this.setButtonDisabled("sample-input-button", disabled)
+        this.setButtonDisabled("sample-output-button", disabled)
+    }
+
+    setupEvents() {
+        const setInfoPanel = this.setInfoPanel.bind(this)
+        this.listenFileSelection(setInfoPanel)
+        this.listenURLInput(setInfoPanel)
+        this.listenSampleInputButton(setInfoPanel)
+        this.listenSampleOutputButton(setInfoPanel)
+        this.listenSubmitButton(setInfoPanel)
+        const downloadFile = this.downloadFile.bind(this)
+        this.listenDownloadButton(downloadFile)
+    }
+
+    listenFileSelection(setInfoPanel) {
+        const fileInput = document.getElementById("file-input")
+        const fileChosen = document.getElementById('file-chosen');
+        const viewImageByBytes = this.viewImageByBytes.bind(this)
+
+        fileInput.addEventListener("input", async () => {
+            setInfoPanel("Loading file...", true)
+            const file = fileInput.files[0]
+            fileChosen.textContent = file.name
+            if (!file) {
+                await api.alert("No file selected")
+                setInfoPanel("")
+                return
+            }
+            const reader = new FileReader()
+            reader.onload = async function() {
+                const content = this.result
+                await viewImageByBytes(file.name, content)
+                // set to empty so that the same file can be loaded again
+                fileInput.value = ''
+                setInfoPanel("")
+            }
+            reader.readAsArrayBuffer(file)
+        })
+    }
+
+    listenURLInput(setInfoPanel) {
+        const viewImageByURL = this.viewImageByURL.bind(this)
+        const urlInput = document.getElementById("url-input")
+        const urlLoadButton = document.getElementById("url-load-button")
+        urlLoadButton.addEventListener("click", async () => {
+            const url = urlInput.value
+            if (!url) {
+                await api.alert("No URL provided")
+                return
+            }
+            setInfoPanel("Loading image...", true)
+            await viewImageByURL(url, "input")
+            setInfoPanel("")
+        })
+    }
+
+    listenSampleInputButton(setInfoPanel) {
+        const sampleInputButton = document.getElementById("sample-input-button")
+        sampleInputButton.addEventListener("click", async () => {
+            const sampleInput = this.model_rdf.sample_inputs[0]
+            setInfoPanel("Loading sample input...", true)
+            await this.viewImageByURL(sampleInput, "input")
+            setInfoPanel("")
+        })
+    }
+
+    listenSampleOutputButton(setInfoPanel) {
+        const sampleOutputButton = document.getElementById("sample-output-button")
+        sampleOutputButton.addEventListener("click", async () => {
+            const sampleOutput = this.model_rdf.sample_outputs[0]
+            setInfoPanel("Loading sample output...", true)
+            await this.viewImageByURL(sampleOutput, "output")
+            setInfoPanel("")
+        })
+    }
+
+    listenSubmitButton(setInfoPanel) {
+        const submitButton = document.getElementById("submit-button")
+        const core = this.core_plugin
+        const self = this
+        const inputAxes = document.getElementById("input-axes-input")
+        submitButton.addEventListener("click", async () => {
+            const input_axes = inputAxes.value || null
+            console.log("Input axes:", input_axes)
+            setInfoPanel("Running model...", true)
+            const ret = await core.run_model(
+                self.model_id, self.model_rdf, input_axes
+            )
+            if (ret === false) {
+                setInfoPanel("Failed to run the model.")
+            } else {
+                await self.updateImageShapePanel("output")
+                await core.show_image_vtk(this.output_window_id, "output")
+                setInfoPanel("")
+            }
+        })
+    }
+
+    listenDownloadButton(downloadFile) {
+        const inputDownloadButton = document.getElementById("input-download-button")
+        const outputDownloadButton = document.getElementById("output-download-button")
+        const core = this.core_plugin
+        const self = this
+        inputDownloadButton.addEventListener("click", async () => {
+            const bytes = await core.save_image_to_bytes("input")
+            const file_name = "input.tif"
+            downloadFile(bytes, file_name)
+        })
+        outputDownloadButton.addEventListener("click", async () => {
+            const bytes = await core.save_image_to_bytes("output")
+            const file_name = "output.tif"
+            downloadFile(bytes, file_name)
+        })
+    }
+
+    downloadFile(bytes, filename) {
+        const blob = new Blob([bytes], {type: "application/octet-stream"})
+        api.exportFile(blob, filename)
+    }
+
+    async viewImageByBytes(fileName, bytes) {
+        console.log(bytes)
+        this.bytes_data = bytes
+        await this.core_plugin.load_image_from_bytes(fileName, bytes)
+        await this.updateImageShapePanel()
+        await this.core_plugin.show_image_vtk(this.input_window_id)
+    }
+
+    async viewImageByURL(url, source="input") {
+        await this.core_plugin.load_image_from_url(url, source)
+        await this.updateImageShapePanel(source)
+        if (source === "output") {
+            await this.core_plugin.show_image_vtk(this.output_window_id, source)
+        } else {
+            await this.core_plugin.show_image_vtk(this.input_window_id, source)
+        }
+    }
+
+    set_default_url(sampleInput) {
+        const urlInput = document.getElementById("url-input")
+        urlInput.value = sampleInput
+    }
+
+    setInfoPanel(content, waiting = false) {
+        const info = document.getElementById("info-panel")
+        info.textContent = content
+        this.setWaiting(waiting)
+    }
+
+    async updateImageShapePanel(source="input") {
+        if (source === "input") {
+            const shape = await this.core_plugin.get_image_shape()
+            const imgShapePanel = document.getElementById("input-shape-panel")
+            imgShapePanel.textContent = `Input image shape: ${shape}`
+            const downloadButton = document.getElementById("input-download-button")
+            downloadButton.style.display = "inline-block"
+        } else {
+            const shape = await this.core_plugin.get_output_shape()
+            const imgShapePanel = document.getElementById("output-shape-panel")
+            imgShapePanel.textContent = `Output image shape: ${shape}`
+            const downloadButton = document.getElementById("output-download-button")
+            downloadButton.style.display = "inline-block"
+        }
+    }
+
+    setButtonDisabled(buttonId, disabled) {
+        const button = document.getElementById(buttonId)
+        button.disabled = disabled
+        if (disabled) {
+            button.classList.add("bg-gray-300")
+            button.classList.add("hover:bg-gray-300")
+        } else {
+            button.classList.remove("bg-gray-300")
+            button.classList.remove("hover:bg-gray-300")
+        }
+    }
+
+    setFileInputDisabled(disabled) {
+        const fileInput = document.getElementById("file-input")
+        const label = document.getElementById("file-input-label")
+        fileInput.disabled = disabled
+        if (disabled) {
+            label.classList.add("bg-gray-300")
+            label.classList.add("hover:bg-gray-300")
+        } else {
+            label.classList.remove("bg-gray-300")
+            label.classList.remove("hover:bg-gray-300")
+        }
+    }
+
+    setWaiting(waiting) {
+        const waitAnimation = document.getElementById("overlay")
+        if (waiting) {
+            waitAnimation.style.display = "flex"
+        } else {
+            waitAnimation.style.display = "none"
+        }
+    }
+
+    async run(ctx) {
+        console.log("run", ctx)
+        const defaultModel = "10.5281/zenodo.5869899"
+        const model_id = ctx.data.id || defaultModel
+        this.input_window_id = ctx.data.input_window_id
+        this.output_window_id = ctx.data.output_window_id
+        this.model_id = model_id
+        // Load the model RDF
+        const rdf = await this.core_plugin.get_model_rdf(model_id)
+        console.log(rdf)
+        this.model_rdf = rdf
+        const has_sample_inputs = (rdf.sample_inputs !== undefined) && (rdf.sample_inputs.length > 0)
+        if (has_sample_inputs) {
+            const sampleInput = rdf.sample_inputs[0]
+            this.set_default_url(sampleInput)
+        }
+        else{
+            const testInputs = rdf.test_inputs[0]
+            this.set_default_url(testInputs)
+        }
+        this.setInfoPanel("")
+        this.setWaiting(false)
+        this.setButtonsDisabled(false)
+        if (has_sample_inputs === false) {
+            this.setButtonDisabled("sample-input-button", true)
+        }
+        const has_sample_outputs = (rdf.sample_outputs !== undefined) && (rdf.sample_outputs.length > 0)
+        if (has_sample_outputs === false) {
+            this.setButtonDisabled("sample-output-button", true)
+        }
+        const has_inputs_def = (rdf.inputs !== undefined) && (rdf.inputs.length > 0)
+        if (has_inputs_def) {
+            const input_def = rdf.inputs[0]
+            const input_axes = input_def.axes
+            const expected_dim_panel = document.getElementById("expected-dim")
+            expected_dim_panel.textContent = `Expected input axes: ${input_axes}`
+        }
+    }
+}
+
+api.export(new ImJoyPlugin())
+</script>
+
+<window lang="html">
+<div class="m-1">
+    <p class="mt-2">Load an image file:</p>
+    <p class="mt-2 text-gray-500 text-sm"> Example formats: PNG, JPG or TIFF </p>
+    <p class="mt-2 text-gray-500 text-sm"> TODO: display expected tensor info </p>
+    <div class="flex">
+        <span id="file-chosen" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500">No file selected.</span>
+        <label id="file-input-label" for="file-input" class="py-2 px-3 bg-blue-500 text-white rounded-r-md cursor-pointer w-20 text-center hover:bg-blue-600">
+            Browse
+        </label>
+        <input type="file" id="file-input" class="hidden" />
+    </div>
+    
+
+    <p class="mt-2">or you may load the image from an URL.</p>
+    <p class="mt-2 text-gray-500 text-sm">A test image is provided for this model. Click the Load button to run the model on the provided test image or provide the url to your own test image.</p>
+    <p class="mt-2 text-gray-500 text-sm">The URL to OME-Zarr are supported.</p>
+    <div class="flex">
+        <input type="text" class="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md text-gray-500"
+            placeholder="Target URL"
+            id="url-input" />
+        <button
+            class="px-4 py-2 bg-blue-500 text-white rounded-r-md w-20 hover:bg-blue-600"
+            id="url-load-button">Load</button>
+    </div>
+    <div id="input-info">
+        <p class="mt-2 text-gray-500 text-sm" id="input-shape-panel" style="display: inline-block"></p>
+        <button
+            id="input-download-button"
+            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
+            style="display: none"
+            >download</button>
+    </div>
+
+    <p class="mt-2">Input axes (optional, for example yxzc):</p>
+    <p class="mt-2 text-gray-500 text-sm" id="expected-dim"></p>
+    <p class="mt-2 text-gray-500 text-sm"> More documentation about expected axes in the documentation page.</p>
+    <input type="text" class="w-2/3 px-4 py-2 border border-gray-300 rounded-md text-gray-500"
+        placeholder="Input axes"
+        id="input-axes-input" />
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div id="info" class="mt-2 bg-white p-6 rounded shadow-lg">
+            <div id="wait-animation" role="status" style="display: none">
+                <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p class="text-gray-500 text-sm" style="display: inline-block" id="info-panel"></p>
+        </div>
+    </div>
+
+
+    <div id="output-info">
+        <p class="mt-2 text-gray-500 text-sm" id="output-shape-panel" style="display: inline-block"></p>
+        <button
+            id="output-download-button"
+            class="px-1.5 py-0.1 bg-blue-500 text-white rounded-md w-30 hover:bg-blue-600"
+            style="display: none"
+            >download</button>
+    </div>
+
+    <div class="flex flex-row gap-4 mt-2">
+      <button
+        class="px-4 py-2 bg-blue-500 text-white rounded-md w-25 hover:bg-blue-600"
+        id="submit-button">Run model</button>
+      <button
+        class="px-4 py-2 bg-cyan-300 text-white rounded-md w-30 hover:bg-cyan-400"
+        id="sample-input-button">Sample input</button>
+      <button
+        class="px-4 py-2 bg-cyan-300 text-white rounded-md w-30 hover:bg-cyan-400"
+        id="sample-output-button">Sample output</button>
+    </div>
+</div>
+</window>
+
+<attachment name="bioengine-runner">
+<config lang="json">
+{
+    "name": "mi-core",
+    "type": "web-python",
+    "tags": [],
+    "flags": [],
+    "ui": "",
+    "version": "0.1.0",
+    "cover": "",
+    "description": "Connect to the bioengine server, and execute operations.",
+    "icon": "extension",
+    "inputs": null,
+    "outputs": null,
+    "api_version": "0.1.8",
+    "env": "",
+    "permissions": [],
+    "requirements": ["imageio", "xarray"],
+    "dependencies": []
+}
+</config>
+
+<script lang="python">
+import io
+import imageio
+import numpy as np
+from xarray import DataArray
+from imjoy import api
+from imjoy_rpc.hypha import connect_to_server
+try:
+    import pyodide
+    is_pyodide = True
+except ImportError:
+    is_pyodide = False
+
+
+async def fetch_file_content(url) -> bytes:
+    """Fetch file content from url, return bytes.
+    Compatible with both pyodide and native-python.
+
+    Reference:
+        https://github.com/imjoy-team/kaibu-utils/blob/ecc25337adb0c94e6345f09bba80aa0637ce9af0/kaibu_utils/__init__.py#L403-L425
+    """
+    await api.log("Fetch URL: " + url)
+    if is_pyodide:
+        from js import fetch
+        response = await fetch(url)
+        bytes_ = await response.arrayBuffer()
+        bytes_ = bytes_.to_py()
+    else:
+        import requests
+        bytes_ = requests.get(url)
+    await api.log("Fetched bytes: " + str(len(bytes_)))
+    return bytes_
+
+
+def is_channel_first(shape):
+    if len(shape) == 5:  # with batch dimension
+        shape = shape[1:]
+    min_dim = np.argmin(list(shape))
+    if min_dim == 0:  # easy case: channel first
+        return True
+    elif min_dim == len(shape) - 1:  # easy case: channel last
+        return False
+    else:  # hard case: can't figure it out, just guess channel first
+        return True
+
+
+def get_default_image_axes(shape, input_tensor_axes):
+    ndim = len(shape)
+    has_z_axis = "z" in input_tensor_axes
+    if ndim == 2:
+        axes = "yx"
+    elif ndim == 3 and has_z_axis:
+        axes = "zyx"
+    elif ndim == 3:
+        channel_first = is_channel_first(shape)
+        axes = "cyx" if channel_first else "yxc"
+    elif ndim == 4 and has_z_axis:
+        channel_first = is_channel_first(shape)
+        axes = "czyx" if channel_first else "zyxc"
+    elif ndim == 4:
+        channel_first = is_channel_first(shape)
+        axes = "bcyx" if channel_first else "byxc"
+    elif ndim == 5:
+        channel_first = is_channel_first(shape)
+        axes = "bczyx" if channel_first else "bzyxc"
+    else:
+        raise ValueError(f"Invalid number of image dimensions: {ndim}")
+    return axes
+
+
+def map_axes(
+    input_array,
+    input_axes,
+    output_axes,
+    # spatial axes: drop at middle coordnate, other axes (channel or batch): drop at 0 coordinate
+    drop_function=lambda ax_name, ax_len: ax_len // 2 if ax_name in "zyx" else 0
+):
+    assert len(input_axes) == input_array.ndim, f"Number of axes {len(input_axes)} and dimension of input {input_array.ndim} don't match"
+    shape = {ax_name: sh for ax_name, sh in zip(input_axes, input_array.shape)}
+    output = DataArray(input_array, dims=tuple(input_axes))
+    
+    # drop axes not part of the output
+    drop_axis_names = tuple(set(input_axes) - set(output_axes))
+    drop_axes = {ax_name: drop_function(ax_name, shape[ax_name]) for ax_name in drop_axis_names}
+    output = output[drop_axes]
+    
+    # expand axes missing from the input
+    missing_axes = tuple(set(output_axes) - set(input_axes))
+    output = output.expand_dims(dim=missing_axes)
+    
+    # transpose to the desired axis order
+    output = output.transpose(*tuple(output_axes))
+    
+    # return numpy array
+    return output.values
+
+
+def transform_input(image: np.ndarray, image_axes: str, output_axes: str):
+    """Transfor the input image into an output tensor with output_axes
+    
+    Args:
+        image: the input image
+        image_axes: the axes of the input image as simple string
+        output_axes: the axes of the output tensor that will be returned
+    """
+    return map_axes(image, image_axes, output_axes)
+
+
+class Plugin():
+    async def setup(self):
+        api.log("Connector plugin is ready.")
+        server = await connect_to_server(
+            {"name": "client", "server_url": "https://hypha.bioimage.io", "method_timeout": 30}
+        )
+        self.triton = await server.get_service("triton-client")
+        self.image = None
+        self.output = None
+        self.vtk_viewer = None
+
+    def set_image(self, image):
+        assert isinstance(image, np.ndarray)
+        self.image = image
+    
+    def set_output(self, output):
+        assert isinstance(output, np.ndarray)
+        if output.dtype is np.dtype('bool'):
+            output = output.astype(np.uint8)
+        self.output = output
+
+    async def get_image_shape(self):
+        assert self.image is not None
+        return self.image.shape
+
+    async def get_output_shape(self):
+        assert self.output is not None
+        return self.output.shape
+
+    async def show_image_vtk(self, window_id, source="input"):
+        image = self.image if source == "input" else self.output
+        if image is None:
+            await api.alert("Please load an image first.")
+            return
+        vtk_viewer = await api.createWindow(
+            src="https://oeway.github.io/itk-vtk-viewer/",
+            fullscreen=False,
+            window_id=window_id,
+        )
+        await vtk_viewer.setImage(image)
+        if self.vtk_viewer:
+            try:
+                await self.vtk_viewer.sync(vtk_viewer)
+                await vtk_viewer.sync(self.vtk_viewer)
+            except Exception as exp:
+                await api.log(f"Failed to sync the vtk viewers: {exp}")
+        
+        self.vtk_viewer = vtk_viewer
+
+    async def bioengine_execute(self, model_id, inputs=None, return_rdf=False, weight_format=None):
+        kwargs = {"model_id": model_id, "inputs": inputs, "return_rdf": return_rdf, "weight_format": weight_format}
+        ret = await self.triton.execute(
+            inputs=[kwargs],
+            model_name="bioengine-model-runner",
+            serialization="imjoy"
+        )
+        return ret["result"]
+
+    async def get_model_rdf(self, model_id):
+        ret = await self.bioengine_execute(model_id, return_rdf=True)
+        return ret["rdf"]
+
+    async def load_image_from_bytes(self, file_name, img_bytes, to="input"):
+        _file = io.BytesIO(img_bytes)
+        _file.name = file_name
+        if file_name.endswith(".tif") or file_name.endswith(".tiff"):
+            image = imageio.volread(_file)
+        if file_name.endswith(".npy"):
+            image = np.load(_file)
+            image = image.squeeze()
+        else:
+            image = imageio.imread(_file)
+        await api.log(
+            "Image loaded with shape: " + str(image.shape) +
+            " and dtype: " + str(image.dtype)
+        )
+        if to == "input":
+            self.set_image(image)
+        else:
+            self.set_output(image)
+
+    async def load_image_from_url(self, url, to="input"):
+        base_url = url.split("?")[0].rstrip('/')
+        file_name = base_url.split("/")[-2] if base_url.endswith("/content") else base_url.split("/")[-1]
+        await api.log(file_name)
+        bytes_ = await fetch_file_content(url)
+        await self.load_image_from_bytes(file_name, bytes_, to=to)
+
+    async def save_image_to_bytes(self, source="input"):
+        image = self.image if source == "input" else self.output
+        if image is None:
+            await api.alert("Please load an image first.")
+            return
+        _file = io.BytesIO()
+        if image.ndim == 2:
+            imageio.imwrite(_file, image, format="tiff")
+        else:
+            imageio.volwrite(_file, image, format="tiff")
+        return _file.getvalue()
+
+    async def shape_check(self, transformed, rdf):
+        if self.image is None:
+            await api.alert("Please load an image first.")
+            return False
+        shape_spec = rdf['inputs'][0]['shape']
+        expected_axes = rdf['inputs'][0]['axes']
+        if isinstance(shape_spec, list):
+            expected_shape = tuple(shape_spec)
+            if len(expected_shape) != len(transformed.shape):
+                await api.alert(
+                    f"Transformed input image dimension {len(expected_shape)}"
+                    f"does not match the expected dimension ({len(expected_shape)})."
+                )
+                return False
+            for idx in range(len(expected_shape)):
+                if expected_axes[idx] == "c":
+                    if transformed.shape[idx] != expected_shape[idx]:
+                        await api.alert(
+                            f"Transformed input image channels {transformed.shape[idx]}"
+                            f"does not match the expected channels ({expected_shape[idx]})."
+                        )
+                        return False
+        return True
+
+    async def run_model(
+            self, model_id, rdf,
+            image_axes=None, weight_format=None):
+        if self.image is None:
+            await api.alert("Please load an image first.")
+            return False
+        img = self.image
+        input_spec = rdf['inputs'][0]
+        input_tensor_axes = input_spec['axes']
+        await api.log("input_tensor_axes", input_tensor_axes)
+        if image_axes is None:
+            shape = img.shape
+            image_axes = get_default_image_axes(shape, input_tensor_axes)
+            await api.log(f"Image axes were not provided. They were automatically determined to be {image_axes}")
+        else:
+            await api.log(f"Image axes were provided as {image_axes}")
+        assert len(image_axes) == img.ndim
+        await api.log("Transforming input image...")
+        img = transform_input(img, image_axes, input_tensor_axes)
+        await api.log(f"Input image was transformed into shape {img.shape} to fit the model")
+        await api.log("Data loaded, running model...")
+        if not (await self.shape_check(img, rdf)):
+            return False
+        try:
+            result = await self.bioengine_execute(
+                model_id, inputs=[img], weight_format=weight_format)
+        except Exception as exp:
+            await api.alert(f"Failed to run, please check your input dimensions and axes. See the console for more details.")
+            await api.log(f"Failed to run the model ({model_id}) in the BioEngine, error: {exp}")
+            return False
+        if not result['success']:
+            await api.alert(f"Failed to run, please check your input dimensions and axes. See the console for more details.")
+            await api.log(f"Failed to run the model ({model_id}) in the BioEngine, error: {result['error']}")
+            return False
+        output = result['outputs'][0]
+        await api.showMessage(f"🎉Model execution completed! Got output tensor of shape {output.shape}")
+        output_tensor_axes = rdf['outputs'][0]['axes']
+        transformed_output = map_axes(output, output_tensor_axes, image_axes)
+        self.set_output(transformed_output)
+        return True
+
+    async def run(self, ctx):
+        pass
+
+
+api.export(Plugin())
+</script>
+</attachment>
