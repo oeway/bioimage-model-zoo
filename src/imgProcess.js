@@ -319,7 +319,17 @@ export function processForShow(tensor, specAxes) {
       [z-stack, height, width, 1]
       [z-stack, height, width, 3] (will show as a stack of RGB image)
    */
-  const splitedArrs = splitForShow(tensor, specAxes);
+  const isImg2Img = specAxes.includes("x") && specAxes.includes("y");
+  let splitedArrs;
+  if (isImg2Img) {
+    splitedArrs = splitForShow(tensor, specAxes);
+  } else {
+    if (specAxes.length > 2 && specAxes.includes("b")) {
+      splitedArrs = splitBy(tensor, "b", specAxes);
+    } else {
+      splitedArrs = [tensor];
+    }
+  }
   return splitedArrs.map(arr => {
     arr._rdtype = tensor._rdtype;
     return toImJoyArr(arr);
@@ -357,8 +367,9 @@ export async function getNpyEndianness(url) {
 }
 
 export class ImgPadder {
-  constructor(inputSpec, padValue = 0) {
+  constructor(inputSpec, outputSpec, padValue = 0) {
     this.inputSpec = inputSpec;
+    this.outputSpec = outputSpec;
     this.padValue = padValue;
   }
 
@@ -415,18 +426,27 @@ export class ImgPadder {
 
   crop(tensor, pad, halo = undefined) {
     let res;
-    if (halo) {
-      res = tf.slice(
-        tensor,
-        pad.map((p, i) => p[0] + halo[i]),
-        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1] - halo[i] * 2)
-      );
+    const isImg2Img =
+      this.outputSpec.axes.includes("x") && this.outputSpec.axes.includes("y");
+    if (isImg2Img) {
+      // img-to-img model
+      if (halo) {
+        res = tf.slice(
+          tensor,
+          pad.map((p, i) => p[0] + halo[i]),
+          tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1] - halo[i] * 2)
+        );
+      } else {
+        res = tf.slice(
+          tensor,
+          pad.map(p => p[0]),
+          tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1])
+        );
+      }
     } else {
-      res = tf.slice(
-        tensor,
-        pad.map(p => p[0]),
-        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1])
-      );
+      // other model, e.g. classification
+      // no crop
+      res = tensor;
     }
     res._rdtype = tensor._rdtype;
     return res;
@@ -443,8 +463,7 @@ export class ImgTile {
   }
 
   slice(tensor) {
-    const sizes = this.ends.map((e, i) => e - this.starts[i]);
-    this.data = tf.slice(tensor, this.starts, sizes);
+    this.data = tf.slice(tensor, this.starts, this.shape);
     this.data._rdtype = tensor._rdtype;
   }
 
@@ -476,6 +495,16 @@ export class ImgTile {
       }
       newData._rdtype = this.data._rdtype;
     }
+    const newTile = new ImgTile(newStarts, newEnds, this.indexes);
+    newTile.data = newData;
+    return newTile;
+  }
+
+  mergeMean(another) {
+    const newStarts = this.starts.slice();
+    const newEnds = this.ends.slice();
+    const newData = tf.add(this.data, another.data).div(2);
+    newData._rdtype = this.data._rdtype;
     const newTile = new ImgTile(newStarts, newEnds, this.indexes);
     newTile.data = newData;
     return newTile;
@@ -566,5 +595,19 @@ export class TileMerger {
     }
     const res = tiles[0];
     return res;
+  }
+}
+
+export class MeanTileMerger extends TileMerger {
+  constructor(imgShape) {
+    super(imgShape);
+  }
+
+  mergeTiles(tiles) {
+    const merged = tiles[0];
+    for (let i = 1; i < tiles.length; i++) {
+      merged.mergeMean(tiles[i]);
+    }
+    return merged;
   }
 }

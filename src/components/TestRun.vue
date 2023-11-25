@@ -95,7 +95,8 @@ import {
   ImgPadder,
   ImgTiler,
   ImgTile,
-  TileMerger
+  TileMerger,
+  MeanTileMerger
 } from "../imgProcess";
 
 function rdfHas(rdf, key) {
@@ -201,17 +202,18 @@ export default {
     },
 
     async runOneTensor(tensor, padder) {
+      await this.api.log("Input tile shape: " + tensor.shape);
       const [paddedTensor, padArr] = padder.pad(tensor);
-      await this.api.log("Padded image shape: " + paddedTensor.shape);
+      await this.api.log("Padded tile shape: " + paddedTensor.shape);
       let outImg = await this.submitTensor(paddedTensor);
-      await this.api.log("Output image shape: " + outImg._rshape);
+      await this.api.log("Output tile shape: " + outImg._rshape);
       const outTensor = ImjoyToTfJs(outImg);
       const cropedTensor = padder.crop(outTensor, padArr);
       return cropedTensor;
     },
 
     async runTiles(tensor, inputSpec, outputSpec, k = 4) {
-      const padder = new ImgPadder(inputSpec, 0);
+      const padder = new ImgPadder(inputSpec, outputSpec, 0);
       let tileSize;
       if (inputSpec.shape instanceof Array) {
         tileSize = inputSpec.shape;
@@ -229,17 +231,30 @@ export default {
         overlap = outputSpec.halo.map(h => h * 2);
       }
       const tiler = new ImgTiler(tensor.shape, tileSize, overlap);
+      const nTiles = tiler.getNTiles();
+      await this.api.log("Number of tiles in each dimension: " + nTiles);
       const inTiles = tiler.getTiles();
+      await this.api.log("Number of tiles: " + inTiles.length);
       const outTiles = [];
-      for (let tile of inTiles) {
+      for (let i = 0; i < inTiles.length; i++) {
+        const tile = inTiles[i];
+        console.log(tile);
         tile.slice(tensor);
         const outTensor = await this.runOneTensor(tile.data, padder);
-        const outTile = new ImgTile(tile.starts, tile.ends, tile.indexes);
+        const outTile = new ImgTile(tile.starts, tile.ends, this.indexes);
         outTile.data = outTensor;
         outTiles.push(outTile);
       }
-      const merger = new TileMerger(tensor.shape);
+      const isImg2Img =
+        outputSpec.axes.includes("x") && outputSpec.axes.includes("y");
+      let merger;
+      if (isImg2Img) {
+        merger = new TileMerger(tensor.shape);
+      } else {
+        merger = new MeanTileMerger(tensor.shape);
+      }
       const res = merger.mergeTiles(outTiles).data;
+      await this.api.log("Output image shape after merging: " + res.shape);
       return res;
     },
 
