@@ -241,7 +241,7 @@ export default {
         console.log(tile);
         tile.slice(tensor);
         const outTensor = await this.runOneTensor(tile.data, padder);
-        const outTile = new ImgTile(tile.starts, tile.ends, this.indexes);
+        const outTile = new ImgTile(tile.starts, tile.ends, tile.indexes);
         outTile.data = outTensor;
         outTiles.push(outTile);
       }
