@@ -84,7 +84,6 @@
 
 <script>
 import { hyphaWebsocketClient } from "imjoy-rpc";
-import "@tensorflow/tfjs-backend-cpu";
 import npyjs from "npyjs";
 import {
   ImjoyToTfJs,
@@ -93,7 +92,10 @@ import {
   inferImgAxesViaSpec,
   getNpyEndianness,
   processForShow,
-  ImgPadder
+  ImgPadder,
+  ImgTiler,
+  ImgTile,
+  TileMerger
 } from "../imgProcess";
 
 function rdfHas(rdf, key) {
@@ -185,7 +187,7 @@ export default {
       return ret;
     },
 
-    async runOneTensor(tensor) {
+    async submitTensor(tensor) {
       const reverseEnd = this.inputEndianness === "<";
       const reshapedImg = toImJoyArr(tensor, reverseEnd);
       const resp = await this.bioengineExecute(this.resourceItem.id, [
@@ -198,28 +200,69 @@ export default {
       return outImg;
     },
 
+    async runOneTensor(tensor, padder) {
+      const [paddedTensor, padArr] = padder.pad(tensor);
+      await this.api.log("Padded image shape: " + paddedTensor.shape);
+      let outImg = await this.submitTensor(paddedTensor);
+      await this.api.log("Output image shape: " + outImg._rshape);
+      const outTensor = ImjoyToTfJs(outImg);
+      const cropedTensor = padder.crop(outTensor, padArr);
+      return cropedTensor;
+    },
+
+    async runTiles(tensor, inputSpec, outputSpec, k = 4) {
+      const padder = new ImgPadder(inputSpec, 0);
+      let tileSize;
+      if (inputSpec.shape instanceof Array) {
+        tileSize = inputSpec.shape;
+      } else {
+        tileSize = inputSpec.shape.min.map((x, i) => {
+          if ("yx".includes(inputSpec.axes[i])) {
+            return x * k;
+          } else {
+            return x;
+          }
+        });
+      }
+      let overlap = undefined;
+      if (outputSpec.halo) {
+        overlap = outputSpec.halo.map(h => h * 2);
+      }
+      const tiler = new ImgTiler(tensor.shape, tileSize, overlap);
+      const inTiles = tiler.getTiles();
+      const outTiles = [];
+      for (let tile of inTiles) {
+        tile.slice(tensor);
+        const outTensor = await this.runOneTensor(tile.data, padder);
+        const outTile = new ImgTile(tile.starts, tile.ends, tile.indexes);
+        outTile.data = outTensor;
+        outTiles.push(outTile);
+      }
+      const merger = new TileMerger(tensor.shape);
+      const res = merger.mergeTiles(outTiles).data;
+      return res;
+    },
+
     async runModel() {
       this.setInfoPanel("Running the model...", true);
       this.buttonEnabledRun = false;
       const inputSpec = this.rdf.inputs[0];
       const outputSpec = this.rdf.outputs[0];
+      await this.api.log("Spec input axes: " + inputSpec.axes);
+      await this.api.log("Spec output axes: " + outputSpec.axes);
       try {
         const img = await this.ij.getImage({ format: "ndarray", all: true });
-        await this.api.log("Spec input axes: " + inputSpec.axes);
         let imgAxes = inferImgAxesViaSpec(img._rshape, inputSpec.axes, true);
         await this.api.log("Input image axes: " + imgAxes);
         await this.api.log("Reshape image to match the input spec.");
         const tensor = ImjoyToTfJs(img);
         const reshapedTensor = mapAxes(tensor, imgAxes, inputSpec.axes);
-        const padder = new ImgPadder(inputSpec, 0);
-        const [paddedTensor, padArr] = padder.pad(reshapedTensor);
-        await this.api.log("Padded image shape: " + paddedTensor.shape);
-        let outImg = await this.runOneTensor(paddedTensor);
-        await this.api.log("Output image shape: " + outImg._rshape);
-        const outTensor = ImjoyToTfJs(outImg);
-        const cropedTensor = padder.crop(outTensor, padArr);
-        await this.api.log("Spec output axes: " + outputSpec.axes);
-        const imgsForShow = processForShow(cropedTensor, outputSpec.axes);
+        const outTensor = await this.runTiles(
+          reshapedTensor,
+          inputSpec,
+          outputSpec
+        );
+        const imgsForShow = processForShow(outTensor, outputSpec.axes);
         await this.showImgs(imgsForShow, "output");
       } catch (e) {
         await this.api.alert(

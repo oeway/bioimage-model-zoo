@@ -3,6 +3,7 @@
  * Used in the test run form.
  */
 
+import "@tensorflow/tfjs-backend-cpu";
 import * as tf from "@tensorflow/tfjs-core";
 
 export function inferImgAxes(shape, order = "bcz") {
@@ -428,6 +429,142 @@ export class ImgPadder {
       );
     }
     res._rdtype = tensor._rdtype;
+    return res;
+  }
+}
+
+export class ImgTile {
+  constructor(starts, ends, indexes) {
+    this.starts = starts;
+    this.ends = ends;
+    this.indexes = indexes;
+    this.shape = ends.map((e, i) => e - this.starts[i]);
+    this.data = null;
+  }
+
+  slice(tensor) {
+    const sizes = this.ends.map((e, i) => e - this.starts[i]);
+    this.data = tf.slice(tensor, this.starts, sizes);
+    this.data._rdtype = tensor._rdtype;
+  }
+
+  merge(another, axis) {
+    const newStarts = this.starts.slice();
+    const newEnds = this.ends.slice();
+    newEnds[axis] = another.ends[axis];
+    const overlap = this.ends[axis] - another.starts[axis];
+    if (overlap < 0) {
+      throw new Error("Cannot merge tiles with negative overlap.");
+    }
+    let newData;
+    if (this.data === null || another.data === null) {
+      newData = null;
+    } else {
+      if (overlap === 0) {
+        newData = tf.concat([this.data, another.data], axis);
+      } else {
+        const size1 = this.data.shape.slice();
+        size1[axis] -= Math.ceil(overlap / 2);
+        const starts1 = size1.map(() => 0);
+        const firstPart = tf.slice(this.data, starts1, size1);
+        const size2 = another.data.shape.slice();
+        size2[axis] -= Math.floor(overlap / 2);
+        const starts2 = size2.map(() => 0);
+        starts2[axis] += Math.floor(overlap / 2);
+        const secondPart = tf.slice(another.data, starts2, size2);
+        newData = tf.concat([firstPart, secondPart], axis);
+      }
+      newData._rdtype = this.data._rdtype;
+    }
+    const newTile = new ImgTile(newStarts, newEnds, this.indexes);
+    newTile.data = newData;
+    return newTile;
+  }
+}
+
+const cartesian = (...a) =>
+  a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+
+export class ImgTiler {
+  constructor(imgShape, tileShape, overlap = undefined) {
+    this.imgShape = imgShape;
+    this.tileShape = tileShape;
+    if (overlap === undefined) {
+      overlap = tileShape.map(() => 0);
+    }
+    this.overlap = overlap;
+  }
+
+  getNTiles() {
+    const overlap = this.overlap;
+    const tileShape = this.tileShape;
+    const imgShape = this.imgShape;
+    const nTiles = tileShape.map((s, i) => {
+      const n = Math.ceil(imgShape[i] / (s - overlap[i]));
+      return n;
+    });
+    return nTiles;
+  }
+
+  getTiles() {
+    const overlap = this.overlap;
+    const tileShape = this.tileShape;
+    const imgShape = this.imgShape;
+    const nTiles = this.getNTiles();
+    const tileIndexes = cartesian(
+      ...nTiles.map(n => Array.from(Array(n).keys()))
+    );
+    const starts = tileIndexes.map(idx => {
+      return idx.map((i, j) => {
+        return i * (tileShape[j] - overlap[j]);
+      });
+    });
+    const ends = starts.map(s => {
+      return s.map((v, i) => {
+        return Math.min(v + tileShape[i], imgShape[i]);
+      });
+    });
+    const tiles = starts.map((s, i) => {
+      return new ImgTile(s, ends[i], tileIndexes[i]);
+    });
+    return tiles;
+  }
+}
+
+export class TileMerger {
+  constructor(imgShape) {
+    this.imgShape = imgShape;
+  }
+
+  mergeTiles(tiles) {
+    for (let d = 0; d < this.imgShape.length; d++) {
+      const newTiles = [];
+      const key = t => {
+        const res = [];
+        t.indexes.map((idx, j) => {
+          if (j !== d) {
+            res.push(idx);
+          }
+        });
+        return res.join("-");
+      };
+      const groups = Object.groupBy(tiles, key);
+      for (let k in groups) {
+        const v = groups[k];
+        v.sort((a, b) => a.indexes[d] - b.indexes[d]);
+        if (v.length > 1) {
+          let merged = v[0];
+          for (let i = 1; i < v.length; i++) {
+            merged = merged.merge(v[i], d);
+          }
+          newTiles.push(merged);
+        } else {
+          newTiles.push(v[0]);
+        }
+      }
+      tiles = newTiles;
+    }
+    const res = tiles[0];
     return res;
   }
 }
