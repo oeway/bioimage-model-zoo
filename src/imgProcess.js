@@ -5,6 +5,7 @@
 
 import "@tensorflow/tfjs-backend-cpu";
 import * as tf from "@tensorflow/tfjs-core";
+import lodash from "lodash";
 
 export function inferImgAxes(shape, order = "bcz") {
   /**
@@ -577,7 +578,7 @@ export class TileMerger {
         });
         return res.join("-");
       };
-      const groups = Object.groupBy(tiles, key);
+      const groups = lodash.groupBy(tiles, key);
       for (let k in groups) {
         const v = groups[k];
         v.sort((a, b) => a.indexes[d] - b.indexes[d]);
