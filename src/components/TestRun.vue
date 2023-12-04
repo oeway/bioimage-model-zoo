@@ -31,6 +31,61 @@
           Show reference output
         </b-button>
       </div>
+      <details>
+        <div class="overlay-container">
+          <div v-if="waiting" class="overlay"></div>
+          <h3>Settings for image tiling</h3>
+          <div style="display: flex; gap: 30px">
+            <div style="width: 30%">
+              <b-field v-if="'x' in inputMinShape" label="Tile size(X)">
+                <b-numberinput
+                  v-model="tileSizes.x"
+                  :min="inputMinShape.x"
+                  :max="inputMaxShape.x"
+                ></b-numberinput>
+              </b-field>
+              <b-field v-if="'y' in inputMinShape" label="Tile size(Y)">
+                <b-numberinput
+                  v-model="tileSizes.y"
+                  :min="inputMinShape.y"
+                  :max="inputMaxShape.y"
+                ></b-numberinput>
+              </b-field>
+              <b-field v-if="'z' in inputMinShape" label="Tile size(Z)">
+                <b-numberinput
+                  v-model="tileSizes.z"
+                  :min="inputMinShape.z"
+                  :max="inputMaxShape.z"
+                ></b-numberinput>
+              </b-field>
+            </div>
+            <div style="width: 30%">
+              <b-field v-if="'x' in inputMinShape" label="Tile overlap(X)">
+                <b-numberinput
+                  v-model="tileOverlap.x"
+                  :min="0"
+                  :max="inputMaxShape.x"
+                ></b-numberinput>
+              </b-field>
+              <b-field v-if="'y' in inputMinShape" label="Tile overlap(Y)">
+                <b-numberinput
+                  v-model="tileOverlap.y"
+                  :min="0"
+                  :max="inputMaxShape.y"
+                ></b-numberinput>
+              </b-field>
+              <b-field v-if="'z' in inputMinShape" label="Tile overlap(Z)">
+                <b-numberinput
+                  v-model="tileOverlap.z"
+                  :min="0"
+                  :max="inputMaxShape.z"
+                ></b-numberinput>
+              </b-field>
+            </div>
+          </div>
+        </div>
+        <summary>Advance options</summary>
+      </details>
       <div id="info">
         <div v-if="this.waiting" class="loader"></div>
         <div v-else>
@@ -80,6 +135,47 @@
     transform: rotate(360deg);
   }
 }
+
+details > summary:before,
+details[open] > summary:before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: -21px;
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='9' viewBox='0 0 14 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L7 7.5L13 1.5' stroke='%230039A6' stroke-width='2'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center center;
+  transition: 0.2s;
+}
+
+details[open] > summary:before {
+  transform: rotate(180deg);
+}
+
+summary {
+  user-select: none;
+}
+
+.overlay-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(61, 60, 60, 0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
 </style>
 
 <script>
@@ -123,7 +219,9 @@ export default {
     buttonEnabledRun: false,
     buttonEnabledInput: false,
     buttonEnabledOutput: false,
-    inputEndianness: null
+    inputEndianness: null,
+    tileSizes: { x: 0, y: 0, z: 0 },
+    tileOverlap: { x: 0, y: 0, z: 0 }
   }),
   computed: {
     infoColor() {
@@ -131,6 +229,52 @@ export default {
         return "red";
       } else {
         return "black";
+      }
+    },
+    fixedTileSize() {
+      if (this.rdf) {
+        return this.rdf.inputs[0].shape instanceof Array;
+      } else {
+        return false;
+      }
+    },
+    inputMinShape() {
+      if (this.rdf) {
+        const axes = this.rdf.inputs[0].axes; // something like "zyx"
+        let minShape; // something like [16, 64, 64]
+        const shape = this.rdf.inputs[0].shape;
+        if (shape instanceof Array) {
+          minShape = shape;
+        } else {
+          minShape = shape.min;
+        }
+        // return something like {x: 64, y: 64, z: 16}
+        const res = axes.split("").reduce((acc, cur, i) => {
+          acc[cur] = minShape[i];
+          return acc;
+        }, {});
+        return res;
+      } else {
+        return {};
+      }
+    },
+    inputMaxShape() {
+      if (this.rdf) {
+        const axes = this.rdf.inputs[0].axes; // something like "zyx"
+        let maxShape; // something like [16, 64, 64]
+        const shape = this.rdf.inputs[0].shape;
+        if (shape instanceof Array) {
+          maxShape = shape;
+        } else {
+          // array of undefined
+          maxShape = shape.min.map(() => undefined);
+        }
+        return axes.split("").reduce((acc, cur, i) => {
+          acc[cur] = maxShape[i];
+          return acc;
+        }, {});
+      } else {
+        return {};
       }
     }
   },
@@ -141,6 +285,8 @@ export default {
       await this.loadImJoy();
       await this.loadTritonClient();
       await this.loadRdf();
+      this.setDefaultTileSize();
+      this.setDefaultOverlap();
       await this.detectInputEndianness();
       this.setInfoPanel("Loading ImageJ.JS ...", true);
       await this.loadImageJ();
@@ -158,6 +304,33 @@ export default {
       ) {
         this.buttonEnabledOutput = true;
       }
+    },
+
+    setDefaultTileSize() {
+      const tileSizes = Object.assign({}, this.inputMinShape);
+      if (!this.fixedTileSize) {
+        const xyFactor = 4;
+        tileSizes.x = xyFactor * this.inputMinShape.x;
+        tileSizes.y = xyFactor * this.inputMinShape.y;
+      }
+      this.tileSizes = tileSizes;
+    },
+
+    setDefaultOverlap() {
+      const outputSpec = this.rdf.outputs[0];
+      const axes = outputSpec.axes;
+      let overlap = {};
+      if (outputSpec.halo) {
+        outputSpec.halo.forEach((h, i) => {
+          overlap[axes[i]] = h * 2;
+        });
+      } else {
+        overlap = axes.split("").reduce((acc, cur) => {
+          acc[cur] = 0;
+          return acc;
+        }, {});
+      }
+      this.tileOverlap = overlap;
     },
 
     setInfoPanel(info, waiting = false, error = false) {
@@ -212,24 +385,11 @@ export default {
       return cropedTensor;
     },
 
-    async runTiles(tensor, inputSpec, outputSpec, k = 4) {
+    async runTiles(tensor, inputSpec, outputSpec) {
       const padder = new ImgPadder(inputSpec, outputSpec, 0);
-      let tileSize;
-      if (inputSpec.shape instanceof Array) {
-        tileSize = inputSpec.shape;
-      } else {
-        tileSize = inputSpec.shape.min.map((x, i) => {
-          if ("yx".includes(inputSpec.axes[i])) {
-            return x * k;
-          } else {
-            return x;
-          }
-        });
-      }
-      let overlap = undefined;
-      if (outputSpec.halo) {
-        overlap = outputSpec.halo.map(h => h * 2);
-      }
+      const tileSize = inputSpec.axes.split("").map(a => this.tileSizes[a]);
+      const overlap = inputSpec.axes.split("").map(a => this.tileOverlap[a]);
+      console.log("tile size:", tileSize, "overlap:", overlap);
       const tiler = new ImgTiler(tensor.shape, tileSize, overlap);
       const nTiles = tiler.getNTiles();
       await this.api.log("Number of tiles in each dimension: " + nTiles);
