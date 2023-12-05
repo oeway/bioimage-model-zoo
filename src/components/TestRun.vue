@@ -317,15 +317,16 @@ export default {
     },
 
     setDefaultOverlap() {
+      const inputSpec = this.rdf.inputs[0];
       const outputSpec = this.rdf.outputs[0];
-      const axes = outputSpec.axes;
+      const axes = inputSpec.axes;
       let overlap = {};
       if (outputSpec.halo) {
-        outputSpec.halo.forEach((h, i) => {
-          if (axes[i] === "z") {
-            overlap[axes[i]] = 0;
+        axes.split("").map((a, i) => {
+          if (outputSpec.axes.includes(a) && a !== "z") {
+            overlap[a] = 2 * outputSpec.halo[i];
           } else {
-            overlap[axes[i]] = h * 2;
+            overlap[a] = 0;
           }
         });
       } else {
@@ -441,8 +442,15 @@ export default {
           inputSpec,
           outputSpec
         );
-        const imgsForShow = processForShow(outTensor, outputSpec.axes);
-        await this.showImgs(imgsForShow, "output");
+        const isImg2Img =
+          outputSpec.axes.includes("x") && outputSpec.axes.includes("y");
+        if (isImg2Img) {
+          const imgsForShow = processForShow(outTensor, outputSpec.axes);
+          await this.showImgs(imgsForShow, "output");
+        } else {
+          // classification model
+          await this.showTableFromTensor(outTensor, "output");
+        }
       } catch (e) {
         await this.api.alert(
           "Failed to run the model, see console for details."
@@ -541,7 +549,7 @@ export default {
       });
     },
 
-    async viewImgFromUrl(url) {
+    async viewFromUrl(url, type = "input") {
       await this.api.log("View image from url: " + url);
       let fileName;
       if (url.endsWith("/content")) {
@@ -565,6 +573,16 @@ export default {
         const inputSpec = this.rdf.inputs[0];
         const imgAxes = inferImgAxesViaSpec(imjArr._rshape, inputSpec.axes);
         const tensor = ImjoyToTfJs(imjArr);
+        if (type === "output") {
+          const outputSpec = this.rdf.outputs[0];
+          const isImg2Img =
+            outputSpec.axes.includes("x") && outputSpec.axes.includes("y");
+          if (!isImg2Img) {
+            //classification model
+            await this.showTableFromTensor(tensor, fileName);
+            return;
+          }
+        }
         const imgsForShow = processForShow(tensor, imgAxes);
         await this.showImgs(imgsForShow, fileName);
       } else {
@@ -582,6 +600,23 @@ export default {
       }
     },
 
+    async showTableFromTensor(tensor, tableName) {
+      const arrs = tensor.arraySync();
+      arrs.map(async arr => {
+        await this.showTable(arr, "Probability", tableName);
+      });
+    },
+
+    async showTable(column, columnName, tableName) {
+      const index = column.map((_, i) => i);
+      const macro = `
+Table.create("${tableName}")
+Table.setColumn("Index", newArray(${index.join(",")}))
+Table.setColumn("${columnName}", newArray(${column.join(",")}))
+      `;
+      this.ij.runMacro(macro);
+    },
+
     async detectInputEndianness() {
       const url = this.rdf.test_inputs[0];
       if (!url) {
@@ -596,17 +631,17 @@ export default {
       this.setInfoPanel("Loading test input...", true);
       if (rdfHas(this.rdf, "test_inputs")) {
         try {
-          await this.viewImgFromUrl(this.rdf.test_inputs[0]);
+          await this.viewFromUrl(this.rdf.test_inputs[0]);
         } catch (err) {
           await this.api.log(
             "Failed to load the test input, see console for details."
           );
           console.error(err);
           await this.api.log("Loading sample input instead...");
-          await this.viewImgFromUrl(this.rdf.sample_inputs[0]);
+          await this.viewFromUrl(this.rdf.sample_inputs[0]);
         }
       } else if (rdfHas(this.rdf, "sample_inputs")) {
-        await this.viewImgFromUrl(this.rdf.sample_inputs[0]);
+        await this.viewFromUrl(this.rdf.sample_inputs[0]);
       } else {
         await this.api.alert("No test input found.");
       }
@@ -617,15 +652,15 @@ export default {
       this.setInfoPanel("Loading test output...", true);
       if (rdfHas(this.rdf, "test_outputs")) {
         try {
-          await this.viewImgFromUrl(this.rdf.test_outputs[0]);
+          await this.viewFromUrl(this.rdf.test_outputs[0], "output");
         } catch (err) {
           await this.api.log("Failed to load the test output.");
           console.error(err);
           await this.api.log("Loading sample output instead...");
-          await this.viewImgFromUrl(this.rdf.sample_outputs[0]);
+          await this.viewFromUrl(this.rdf.sample_outputs[0], "output");
         }
       } else if (rdfHas(this.rdf, "sample_outputs")) {
-        await this.viewImgFromUrl(this.rdf.sample_outputs[0]);
+        await this.viewFromUrl(this.rdf.sample_outputs[0], "output");
       } else {
         await this.api.alert("No test output found.");
       }
