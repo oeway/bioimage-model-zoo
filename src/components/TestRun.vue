@@ -322,7 +322,11 @@ export default {
       let overlap = {};
       if (outputSpec.halo) {
         outputSpec.halo.forEach((h, i) => {
-          overlap[axes[i]] = h * 2;
+          if (axes[i] === "z") {
+            overlap[axes[i]] = 0;
+          } else {
+            overlap[axes[i]] = h * 2;
+          }
         });
       } else {
         overlap = axes.split("").reduce((acc, cur) => {
