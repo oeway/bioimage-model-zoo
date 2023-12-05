@@ -112,7 +112,7 @@
     "detailed_image": null,
     "detailed_body": "description"
   },
-  "footnote": "BioImage.IO -- a collaborative effort to bring AI models to the bioimaging community. We receive funding support from the European Commission through the AI4Life project (https://ai4life.eurobioimaging.eu/)",
+  "footnote": "BioImage.IO -- a collaborative effort to bring AI models to the bioimaging community. We receive funding support from the European Union through the AI4Life project (https://ai4life.eurobioimaging.eu/)",
   "partners": [],
   "excluded_partners": ["bioimageio"],
   "excluded_tags": ["bioimage.io", "bioimage.io:model", "bioimage.io:application", "bioimage.io:workflow", "bioimage.io:notebook", "bioimage.io:dataset", "zenodo"],
