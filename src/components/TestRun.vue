@@ -37,18 +37,14 @@
           <h3>Settings for image tiling</h3>
           <div style="display: flex; gap: 30px">
             <div style="width: 30%">
-              <b-field v-if="'x' in inputMinShape" label="Tile size(X)">
+              <b-field
+                v-if="'x' in inputMinShape && 'y' in inputMinShape"
+                label="Tile size(XY)"
+              >
                 <b-numberinput
                   v-model="tileSizes.x"
                   :min="inputMinShape.x"
                   :max="inputMaxShape.x"
-                ></b-numberinput>
-              </b-field>
-              <b-field v-if="'y' in inputMinShape" label="Tile size(Y)">
-                <b-numberinput
-                  v-model="tileSizes.y"
-                  :min="inputMinShape.y"
-                  :max="inputMaxShape.y"
                 ></b-numberinput>
               </b-field>
               <b-field v-if="'z' in inputMinShape" label="Tile size(Z)">
@@ -60,18 +56,14 @@
               </b-field>
             </div>
             <div style="width: 30%">
-              <b-field v-if="'x' in inputMinShape" label="Tile overlap(X)">
+              <b-field
+                v-if="'x' in inputMinShape && 'y' in inputMinShape"
+                label="Tile overlap(XY)"
+              >
                 <b-numberinput
                   v-model="tileOverlap.x"
                   :min="0"
                   :max="inputMaxShape.x"
-                ></b-numberinput>
-              </b-field>
-              <b-field v-if="'y' in inputMinShape" label="Tile overlap(Y)">
-                <b-numberinput
-                  v-model="tileOverlap.y"
-                  :min="0"
-                  :max="inputMaxShape.y"
                 ></b-numberinput>
               </b-field>
               <b-field v-if="'z' in inputMinShape" label="Tile overlap(Z)">
@@ -233,7 +225,16 @@ export default {
     },
     fixedTileSize() {
       if (this.rdf) {
-        return this.rdf.inputs[0].shape instanceof Array;
+        const inputSpec = this.rdf.inputs[0];
+        const dims = this.tritonConfig.input[0]["dims"];
+        if (dims !== undefined && !dims.includes(-1)) {
+          return dims;
+        }
+        if (inputSpec.shape instanceof Array) {
+          return inputSpec.shape;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
@@ -242,11 +243,10 @@ export default {
       if (this.rdf) {
         const axes = this.rdf.inputs[0].axes; // something like "zyx"
         let minShape; // something like [16, 64, 64]
-        const shape = this.rdf.inputs[0].shape;
-        if (shape instanceof Array) {
-          minShape = shape;
+        if (this.fixedTileSize === false) {
+          minShape = this.rdf.inputs[0].shape.min;
         } else {
-          minShape = shape.min;
+          minShape = this.fixedTileSize;
         }
         // return something like {x: 64, y: 64, z: 16}
         const res = axes.split("").reduce((acc, cur, i) => {
@@ -262,12 +262,11 @@ export default {
       if (this.rdf) {
         const axes = this.rdf.inputs[0].axes; // something like "zyx"
         let maxShape; // something like [16, 64, 64]
-        const shape = this.rdf.inputs[0].shape;
-        if (shape instanceof Array) {
-          maxShape = shape;
+        if (this.fixedTileSize !== false) {
+          maxShape = this.fixedTileSize;
         } else {
           // array of undefined
-          maxShape = shape.min.map(() => undefined);
+          maxShape = this.rdf.inputs[0].shape.min.map(() => undefined);
         }
         return axes.split("").reduce((acc, cur, i) => {
           acc[cur] = maxShape[i];
@@ -278,6 +277,27 @@ export default {
       }
     }
   },
+  watch: {
+    tileSizes: {
+      handler(oldObj, newObj) {
+        if (newObj.y !== newObj.x) {
+          this.tileSizes.y = newObj.x; // keep x and y the same
+        }
+        console.log(oldObj, newObj);
+      },
+      deep: true
+    },
+
+    tileOverlap: {
+      handler(oldObj, newObj) {
+        if (newObj.y !== newObj.x) {
+          this.tileOverlap.y = newObj.x; // keep x and y the same
+        }
+        console.log(oldObj, newObj);
+      },
+      deep: true
+    }
+  },
   methods: {
     async turnOn() {
       this.switch = true;
@@ -285,6 +305,7 @@ export default {
       await this.loadImJoy();
       await this.loadTritonClient();
       await this.loadRdf();
+      await this.loadTritonConfig();
       this.setDefaultTileSize();
       this.setDefaultOverlap();
       await this.detectInputEndianness();
@@ -308,10 +329,15 @@ export default {
 
     setDefaultTileSize() {
       const tileSizes = Object.assign({}, this.inputMinShape);
-      if (!this.fixedTileSize) {
+      const axes = this.rdf.inputs[0].axes;
+      if (this.fixedTileSize === false) {
         const xyFactor = 4;
         tileSizes.x = xyFactor * this.inputMinShape.x;
         tileSizes.y = xyFactor * this.inputMinShape.y;
+      } else {
+        axes.split("").map((a, i) => {
+          tileSizes[a] = this.fixedTileSize[i];
+        });
       }
       this.tileSizes = tileSizes;
     },
@@ -321,7 +347,7 @@ export default {
       const outputSpec = this.rdf.outputs[0];
       const axes = inputSpec.axes;
       let overlap = {};
-      if (outputSpec.halo) {
+      if (outputSpec.halo && this.fixedTileSize === false) {
         axes.split("").map((a, i) => {
           if (outputSpec.axes.includes(a) && a !== "z") {
             overlap[a] = 2 * outputSpec.halo[i];
@@ -386,12 +412,29 @@ export default {
       let outImg = await this.submitTensor(paddedTensor);
       await this.api.log("Output tile shape: " + outImg._rshape);
       const outTensor = ImjoyToTfJs(outImg);
-      const cropedTensor = padder.crop(outTensor, padArr);
-      return cropedTensor;
+      const isImg2Img =
+        this.rdf.outputs[0].axes.includes("x") &&
+        this.rdf.outputs[0].axes.includes("y");
+      let result = outTensor;
+      if (isImg2Img) {
+        const cropedTensor = padder.crop(outTensor, padArr);
+        result = cropedTensor;
+      }
+      return result;
     },
 
     async runTiles(tensor, inputSpec, outputSpec) {
-      const padder = new ImgPadder(inputSpec, outputSpec, 0);
+      let padder;
+      if (this.fixedTileSize === false) {
+        padder = new ImgPadder(
+          undefined,
+          inputSpec.shape.min,
+          inputSpec.shape.step,
+          0
+        );
+      } else {
+        padder = new ImgPadder(this.fixedTileSize, undefined, undefined, 0);
+      }
       const tileSize = inputSpec.axes.split("").map(a => this.tileSizes[a]);
       const overlap = inputSpec.axes.split("").map(a => this.tileOverlap[a]);
       console.log("tile size:", tileSize, "overlap:", overlap);
@@ -402,6 +445,10 @@ export default {
       await this.api.log("Number of tiles: " + inTiles.length);
       const outTiles = [];
       for (let i = 0; i < inTiles.length; i++) {
+        this.setInfoPanel(
+          `Running the model... (${i + 1}/${inTiles.length})`,
+          true
+        );
         const tile = inTiles[i];
         console.log(tile);
         tile.slice(tensor);
@@ -512,6 +559,13 @@ export default {
         name: "client"
       });
       this.triton = await server.get_service("triton-client");
+    },
+
+    async loadTritonConfig() {
+      const nickname = this.resourceItem.nickname;
+      const url = `https://ai.imjoy.io/triton/v2/models/${nickname}/config`;
+      const config = await fetch(url).then(res => res.json());
+      this.tritonConfig = config;
     },
 
     async loadImJoy() {
