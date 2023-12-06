@@ -368,23 +368,23 @@ export async function getNpyEndianness(url) {
 }
 
 export class ImgPadder {
-  constructor(inputSpec, outputSpec, padValue = 0) {
-    this.inputSpec = inputSpec;
-    this.outputSpec = outputSpec;
+  constructor(fixedPaddedShape, padMin, padStep, padValue = 0) {
+    this.fixedPaddedShape = fixedPaddedShape;
+    this.padMin = padMin;
+    this.padStep = padStep;
     this.padValue = padValue;
   }
 
   getPaddedShape(shape) {
-    const specShape = this.inputSpec.shape;
     let paddedShape = [];
-    if (specShape instanceof Array) {
+    if (this.fixedPaddedShape) {
       // Explicit shape
-      paddedShape = specShape;
+      paddedShape = this.fixedPaddedShape;
     } else {
       // Implicit shape
       // infer from the min and step
-      const min = specShape.min;
-      const step = specShape.step;
+      const min = this.padMin;
+      const step = this.padStep;
       for (let d = 0; d < shape.length; d++) {
         if (step[d] === 0) {
           paddedShape.push(shape[d]);
@@ -427,27 +427,18 @@ export class ImgPadder {
 
   crop(tensor, pad, halo = undefined) {
     let res;
-    const isImg2Img =
-      this.outputSpec.axes.includes("x") && this.outputSpec.axes.includes("y");
-    if (isImg2Img) {
-      // img-to-img model
-      if (halo) {
-        res = tf.slice(
-          tensor,
-          pad.map((p, i) => p[0] + halo[i]),
-          tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1] - halo[i] * 2)
-        );
-      } else {
-        res = tf.slice(
-          tensor,
-          pad.map(p => p[0]),
-          tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1])
-        );
-      }
+    if (halo) {
+      res = tf.slice(
+        tensor,
+        pad.map((p, i) => p[0] + halo[i]),
+        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1] - halo[i] * 2)
+      );
     } else {
-      // other model, e.g. classification
-      // no crop
-      res = tensor;
+      res = tf.slice(
+        tensor,
+        pad.map(p => p[0]),
+        tensor.shape.map((s, i) => s - pad[i][0] - pad[i][1])
+      );
     }
     res._rdtype = tensor._rdtype;
     return res;
