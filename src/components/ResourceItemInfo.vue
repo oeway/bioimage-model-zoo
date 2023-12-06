@@ -104,11 +104,14 @@
 
       <br />
       <test-run-form
-        v-if="resourceItem.type == 'model' && modelAvailable"
+        v-if="resourceItem.type === 'model' && modelAvailable"
         :resourceItem="resourceItem"
       >
       </test-run-form>
-      <div class="not-available" v-if="!modelAvailable">
+      <div
+        class="not-available"
+        v-if="resourceItem.type === 'model' && !modelAvailable"
+      >
         This model is not available for testing.
       </div>
 
