@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        <summary>Advance options</summary>
+        <summary>Advanced Options</summary>
       </details>
       <div id="info">
         <div v-if="this.waiting" class="loader"></div>
