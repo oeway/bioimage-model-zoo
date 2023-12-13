@@ -511,6 +511,9 @@ function normalizeItem(self, item, bioEngineConfigs) {
   }
 
   item.links = item.links || [];
+  if (item.id in bioEngineConfigs) {
+    item.links.push("imjoy/imjoy");
+  }
   if (item.training_data) {
     item.links.push(item.training_data.id);
   }
