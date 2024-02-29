@@ -27,6 +27,7 @@ const imjoyReady = new Promise((resolve, reject) => {
   resolveImJoy = resolve;
   rejectImJoy = reject;
 });
+
 export async function setupBioEngine() {
   const queryString = window.location.href.split("#")[1].split("?")[1];
   const urlParams = new URLSearchParams(queryString);
@@ -189,6 +190,13 @@ export async function setupBioEngine() {
         label: "📓 Notebooks",
         callback() {
           api.createWindow({ src: "https://jupyter.imjoy.io" });
+        }
+      });
+      app.addMenuItem({
+        label: "🤖 BioImage.IO Chatbot",
+        async callback() {
+          await api.createWindow({"src": "https://staging.chat.bioimage.io/public/apps/bioimageio-chatbot-client/chat", name: "BioImage.IO Chatbot"});
+          await app.loadPlugin("https://raw.githubusercontent.com/bioimage-io/bioimageio-chatbot/main/bioimageio_chatbot/static/bioimage-model-zoo-extension.imjoy.html");
         }
       });
       // expose global variables
