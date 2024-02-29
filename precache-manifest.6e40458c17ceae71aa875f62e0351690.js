@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "9dfbf9d8789f2a15601f3e0031a7bef7",
+    "revision": "986bd48f6b33b3e8d947075e62fef6cd",
     "url": "/chat/index.html"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/about.7fe7bb41.css"
   },
   {
-    "revision": "2d4e29fdee3641ede308",
+    "revision": "46e1a2afc61bdd85b637",
     "url": "/css/app.506dbc2e.css"
   },
   {
@@ -40,7 +40,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "c2f226b3c0a1ffb61bf486ff6db5a87f",
+    "revision": "663e7a80d7cfc9251b1bff4067d15494",
     "url": "/index.html"
   },
   {
@@ -48,8 +48,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/about.4e9986f2.js"
   },
   {
-    "revision": "2d4e29fdee3641ede308",
-    "url": "/js/app.d9fb33d5.js"
+    "revision": "46e1a2afc61bdd85b637",
+    "url": "/js/app.5948f9c1.js"
   },
   {
     "revision": "73bcd060214a008e0087",
