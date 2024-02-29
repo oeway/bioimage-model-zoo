@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>BioImage.IO Chatbot</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="ImJoy -- Deep Learning Made Easy!">
+    <meta name="author" content="Wei OUYANG">
+    <meta name="keywords" content="Bioimaging, image processing">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@weioyang" />
+    <meta name="twitter:creator" content="@weioyang" />
+    <meta name="twitter:image" content="https://imjoy.io/static/img/imjoy-card-plain.png" />
+    <meta property="og:url" content="https://imjoy.io" />
+    <meta property="og:title" content="ImJoy" />
+    <meta property="og:description" content="ImJoy -- Deep Learning Made Easy!" />
+    <meta property="og:image" content="https://imjoy.io/static/img/imjoy-card-plain.png" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="static/icons/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="static/icons/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-startup-image" href="/launch.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="msapplication-TileColor" content="#f5f9ff">
+    <meta name="msapplication-TileImage" content="static/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#f5f9ff">
+    <script src="https://lib.imjoy.io/imjoy-loader.js"></script>
+</head>
+
+<body style="width:100%;height:100vh;">
+    <div id="spinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <img src="static/img/loading.gif" alt="Loading..." />
+    </div>
+    <div id="window-container" style="height: 100vh"></div>
+    <script>
+        // Show the spinner
+        document.getElementById('spinner').style.display = 'block';
+
+        const chatbotExtensions = {}
+        const updateCallbacks = []
+
+        loadImJoyCore().then((imjoyCore) => {
+            const imjoy = new imjoyCore.ImJoy({
+                imjoy_api: {
+                    async registerChatbotExtension(plugin, config) {
+                        chatbotExtensions[config.name] = config
+                        // make a copy of the updateCallbacks
+                        const _updateCallbacks = [...updateCallbacks]
+                        for (const cb of _updateCallbacks) {
+                            cb(config) // TODO: we should remove callbacks that are not needed anymore
+                        }
+                    },
+                    getChatbotExtensions(plugin, updateCallback) {
+                        if (updateCallback) updateCallbacks.push(updateCallback)
+                        return chatbotExtensions
+                    },
+                },
+                //imjoy config
+            })
+            imjoy.start({ workspace: 'default' }).then(async () => {
+                const api = imjoy.api;
+                // get origin url
+                const url = new URL(window.location.href);
+                const origin = url.origin;
+                const currentUrlParams = new URLSearchParams(window.location.search);
+                const chatUrl = new URL('https://chat.bioimage.io/public/apps/bioimageio-chatbot-client/chat');
+                chatUrl.search = currentUrlParams.toString();
+
+                await api.createWindow({ src: chatUrl.toString(), name: "BioImageIO Chatbot", window_id: "window-container" });
+                await api.loadPlugin("https://raw.githubusercontent.com/bioimage-io/bioimageio-chatbot/main/bioimageio_chatbot/static/bioimage-model-zoo-extension.imjoy.html");
+
+                // Hide the spinner
+                document.getElementById('spinner').style.display = 'none';
+            })
+        })
+    </script>
+    <style>
+        #menu-container {
+            opacity: 0.4;
+        }
+
+        #menu-container:hover {
+            opacity: 1.0;
+        }
+
+        .window {
+            min-height: 200px;
+        }
+    </style>
+</body>
+
+</html>
