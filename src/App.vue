@@ -73,7 +73,7 @@ export default {
   computed: {
     ...mapState({
       showNavbar: state => state.showNavbar,
-      siteConfig: state => state.siteConfig
+      siteConfig: state => state.siteConfig,
     })
   },
   mounted() {
