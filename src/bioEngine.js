@@ -195,8 +195,14 @@ export async function setupBioEngine() {
       app.addMenuItem({
         label: "🤖 BioImage.IO Chatbot",
         async callback() {
-          await api.createWindow({"src": "https://staging.chat.bioimage.io/public/apps/bioimageio-chatbot-client/chat", name: "BioImage.IO Chatbot"});
-          await app.loadPlugin("https://raw.githubusercontent.com/bioimage-io/bioimageio-chatbot/main/bioimageio_chatbot/static/bioimage-model-zoo-extension.imjoy.html");
+          await api.createWindow({
+            src:
+              "https://staging.chat.bioimage.io/public/apps/bioimageio-chatbot-client/chat",
+            name: "BioImage.IO Chatbot"
+          });
+          await app.loadPlugin(
+            "https://raw.githubusercontent.com/bioimage-io/bioimageio-chatbot/main/bioimageio_chatbot/static/bioimage-model-zoo-extension.imjoy.html"
+          );
         }
       });
       // expose global variables
