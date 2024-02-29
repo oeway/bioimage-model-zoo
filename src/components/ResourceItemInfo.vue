@@ -103,12 +103,17 @@
       >
 
       <br />
-      <markdown
-        v-if="resourceItem.testRunDocs"
-        :enable-run-buttons="true"
-        :baseUrl="resourceItem.baseUrl"
-        :content="resourceItem.testRunDocs"
-      ></markdown>
+      <test-run-form
+        v-if="resourceItem.type === 'model' && modelAvailable"
+        :resourceItem="resourceItem"
+      >
+      </test-run-form>
+      <div
+        class="not-available"
+        v-if="resourceItem.type === 'model' && !modelAvailable"
+      >
+        This model is not available for testing.
+      </div>
 
       <br />
       <div v-if="resourceItem.training_data_item">
@@ -158,6 +163,7 @@ import TestSummary from "@/components/TestSummary.vue";
 import CommentBox from "@/components/CommentBox.vue";
 import { randId, concatAndResolveUrl } from "../utils";
 import ResourceItemCard from "./ResourceItemCard";
+import TestRunForm from "./TestRun.vue";
 
 async function fetchTestSummary(url) {
   const response = await fetch(url);
@@ -204,13 +210,15 @@ export default {
     attachments: Attachments,
     "app-icons": AppIcons,
     "comment-box": CommentBox,
-    "resource-item-card": ResourceItemCard
+    "resource-item-card": ResourceItemCard,
+    "test-run-form": TestRunForm
   },
   data() {
     return {
       maxDescriptionLetters: 100,
       maxDocsLetters: 500,
-      showSource: false
+      showSource: false,
+      modelAvailable: false
     };
   },
 
@@ -236,9 +244,7 @@ export default {
         this.$forceUpdate();
       });
     }
-    this.gettestRunDocs(this.resourceItem).then(() => {
-      this.$forceUpdate();
-    });
+    this.getManifestList();
   },
   computed: {
     runButtonContext: function() {
@@ -353,69 +359,12 @@ export default {
         }
       }
     },
-    async gettestRunDocs(resourceItem) {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
-      );
-      const manifest = await response.json();
-      if (!manifest.collection.find(c => c.id === resourceItem.id)) {
-        resourceItem.testRunDocs = `## Model testing is not available for this model\n\nSee [conversion log](https://github.com/bioimage-io/bioengine-model-runner/blob/gh-pages/manifest.bioengine.yaml) for more details.`;
-        return;
-      }
-      const url =
-        window.location.origin + "/plugins/bioengine-test-run.imjoy.html";
-      const docs = `
-## Quick model testing with your own data</h1>
-By clicking the \`Test the model\` button, you can test the model with your own data.
-
-<!-- ImJoyPlugin: {"type": "web-worker", "hide_code_block": true, "minimal_ui": true, "run_button_text": "Test the model"} -->
-\`\`\`js
-api.createWindow({
-  src: "${url}",
-  window_id: "test-run-form",
-  data: {
-    id: "${resourceItem.id}",
-    input_window_id: "image_input_window",
-    output_window_id: "image_output_window"
-  }}
-  )
-\`\`\`
-
-<style>
-#test-run-form:empty {
-  display: none;
-}
-#test-run-form {
-  height: 530px;
-}
-#image_output_window:empty {
-  display: none;
-}
-#image_input_window:empty {
-  display: none;
-}
-#image_output_window {
-  height: 500px;
-  flex: 1;
-}
-#image_input_window {
-  height: 500px;
-  flex: 1;
-  margin-right: 10px;
-}
-.image-windows {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-</style>
-<div id="test-run-form"></div>
-<div class="image-windows">
-  <div id="image_input_window"></div>
-  <div id="image_output_window"></div>
-</div>
-      `;
-      resourceItem.testRunDocs = docs;
+    async getManifestList() {
+      const manifestUrl =
+        "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json";
+      const list = await fetch(manifestUrl).then(r => r.json());
+      const aviableModels = list.collection.map(m => m.id);
+      this.modelAvailable = aviableModels.includes(this.resourceItem.id);
     }
   }
 };
@@ -459,5 +408,8 @@ api.createWindow({
   font-size: 1.1rem;
   display: inline-block;
   margin-right: 5px;
+}
+.not-available {
+  color: red;
 }
 </style>

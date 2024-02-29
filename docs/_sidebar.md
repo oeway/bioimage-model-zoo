@@ -15,6 +15,7 @@
   - [Supported weight formats](bioimageio_weights_spec)
   - [Supported preprocessing](bioimageio_preprocessing_spec)
   - [Supported postprocessing](bioimageio_postprocessing_spec)
+  - [Upload models through Zenodo](/contribute_models/contribute_zenodo.md)
 * [Other contributions](/contribute_others/README.md)
 * [Resources for developers](/resources_developers/README.md)
   - [Python BioImageIO core package](pythoncorepackage)
