@@ -196,8 +196,7 @@ export async function setupBioEngine() {
         label: "🤖 BioImage.IO Chatbot",
         async callback() {
           await api.createWindow({
-            src:
-              "https://bioimage.io/chat?disable-assistant-switch=true",
+            src: "https://bioimage.io/chat?disable-assistant-switch=true",
             name: "BioImage.IO Chatbot"
           });
           await app.loadPlugin(
