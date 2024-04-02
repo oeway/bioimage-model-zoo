@@ -4,15 +4,23 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "986bd48f6b33b3e8d947075e62fef6cd",
+    "revision": "c3d366115ae421cc777eb4a822672757",
     "url": "/chat/index.html"
+  },
+  {
+    "revision": "bfd753376138d53ab298e0b7b8de1c77",
+    "url": "/chat/pyodide-worker.js"
+  },
+  {
+    "revision": "479f7b5675e76dd9a1d57c8ec528a789",
+    "url": "/chat/worker-manager.js"
   },
   {
     "revision": "96509e61688322cf1d6f",
     "url": "/css/about.7fe7bb41.css"
   },
   {
-    "revision": "46e1a2afc61bdd85b637",
+    "revision": "a29234ae3f40ba940923",
     "url": "/css/app.506dbc2e.css"
   },
   {
@@ -40,7 +48,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "663e7a80d7cfc9251b1bff4067d15494",
+    "revision": "354e759f136fb677dd355917d7cd3bc4",
     "url": "/index.html"
   },
   {
@@ -48,8 +56,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/about.4e9986f2.js"
   },
   {
-    "revision": "46e1a2afc61bdd85b637",
-    "url": "/js/app.5948f9c1.js"
+    "revision": "a29234ae3f40ba940923",
+    "url": "/js/app.ca95257e.js"
   },
   {
     "revision": "73bcd060214a008e0087",
