@@ -355,7 +355,7 @@
                 style="flex-grow: 1; border: 1px solid #ced4da; border-radius: .25rem; height: 36px; padding: .375rem .75rem;"></textarea>
             </div>
           </div>
-          <button type="button" class="btn btn-primary mt-3 send-btn"><i class="fas fa-paper-plane"></i>Send</button>
+          <button type="button" id="send-btn" class="btn btn-primary mt-3"><i class="fas fa-paper-plane"></i>Send</button>
           <button type="button" class="btn btn-primary mt-3" id="mount-folder-btn">
             <i class="fas fa-folder"></i> Mount Files
           </button>
@@ -1047,7 +1047,7 @@ const servicePrompt = `
               // emulate a message to show the user that the folder has been mounted
               // set the input and press send
               $('#textMessageArea').val(`I just mounted my local data folder (original name: "${mountedFolder.name}") as /mnt.`);
-              $('.send-btn').click();
+              $('#send-btn').click();
             }
             finally{
               $('.spinner').remove();
@@ -1057,6 +1057,7 @@ const servicePrompt = `
           });
           $('.spinner').remove();
           $('#mount-folder-btn').show();
+          // empty termina first
           $('#terminal').terminal(async function(command, term) {
             if(command.trim() === ""){
               return;
@@ -1194,10 +1195,12 @@ const servicePrompt = `
 
       $('#mount-folder-btn').hide();
       async function initializeService() {
-        $('.message-holder').append(spinner);
+        $('#chat1 .chat-dialog-header').append(spinner);
         showConnectingStatus();
         
         try {
+          // disable send message
+          $('#send-btn').prop('disabled', true);
           // get service_id from query string
           const service_id = urlParams.get('service_id');
           const extension_services = urlParams.getAll('extension');
@@ -1343,6 +1346,8 @@ const servicePrompt = `
         }
         finally {
           $('.spinner').remove();
+          // enable send message
+          $('#send-btn').prop('disabled', false);
         }
       }
       // Reset the chat session and clear chat history
@@ -1424,7 +1429,9 @@ const servicePrompt = `
 
         // Get the text message
         const message = $('.message').val();
-
+        if(!message){
+          return;
+        }
         // Get the selected file
         const fileInput = document.getElementById('fileUpload');
         if(fileInput){
@@ -1529,6 +1536,8 @@ const servicePrompt = `
           if(envPrompt && envPrompt.length > 0){
             textMessage = envPrompt + textMessage
           }
+          // disable send message
+          $('#send-btn').prop('disabled', true);
           // Call the chat function with text and image data
           response = await svc.chat(textMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
           // const regex = /!\[.*?\]\(data:.+?\)/g;
@@ -1547,6 +1556,8 @@ const servicePrompt = `
           console.error(e);
         }
         finally {
+          // Enable the send message button
+          $('#send-btn').prop('disabled', false);
           // Remove spinner and set status back to 'Ready to chat' after finishing
           $('.spinner').remove();
           $(`#spinner-${currentMessageId}`).hide();
@@ -1688,7 +1699,7 @@ const servicePrompt = `
         }
       });
 
-      $('.send-btn').on('click', sendMessage);
+      $('#send-btn').on('click', sendMessage);
 
 
       $('#advanced-options-btn').click(function () {
