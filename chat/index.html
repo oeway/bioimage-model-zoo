@@ -767,13 +767,20 @@
           loadImJoyCore().then((imjoyCore)=>{
               const imjoy = new imjoyCore.ImJoy({
                   imjoy_api: {
-                    async registerExtension(plugin, config){
+                    async registerChatbotExtension(plugin, config){
                       return await _registerExtension(config)
                     }
                   },
               })
-              imjoy.start({workspace: 'default'}).then(()=>{
+              imjoy.start({workspace: 'default'}).then(async ()=>{
                 imjoyApi = imjoy.api;
+                if(assistantName === 'Melman'){
+                  console.log("Loading the Model Zoo extension...")
+                  const baseUrl = location.href.split('?')[0]
+                  const plugin = await imjoyApi.loadPlugin(`${baseUrl}/bioimage-model-zoo-extension.imjoy.html`)
+                  await plugin.setup();
+                  console.log("Model Zoo extension loaded.")
+                }
               })
           })
           
@@ -1533,30 +1540,59 @@ const servicePrompt = `
           }
         }
 
-        async function sendChat(){
+        window.generateResponse = async function(){
           if(envPrompt && envPrompt.length > 0){
             textMessage = envPrompt + textMessage
           }
+          $("#regenerate-btn-small").remove();
+          $("#" +currentMessageId).append(spinner);
           // disable send message
           $('#send-btn').prop('disabled', true);
-          // Call the chat function with text and image data
-          response = await svc.chat(textMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
-          // const regex = /!\[.*?\]\(data:.+?\)/g;
-          // const replacementText = '`image placeholder`';
-          // responseWithoutImage = response.replace(regex, replacementText);
-          console.log(response)
-          chat_history.push({ role: 'user', content: textMessage });
-          chat_history.push({ role: 'assistant', content: response.text });
-          showReadyStatus();
+          try{
+            // Call the chat function with text and image data
+            response = await svc.chat(textMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
+            // const regex = /!\[.*?\]\(data:.+?\)/g;
+            // const replacementText = '`image placeholder`';
+            // responseWithoutImage = response.replace(regex, replacementText);
+            console.log(response)
+            chat_history.push({ role: 'user', content: textMessage });
+            chat_history.push({ role: 'assistant', content: response.text });
+            // Convert the message to HTML using the marked library
+            const steps = response.steps;
+            let message = response.text && marked(response.text, { renderer: renderer }) || "";
+            if(steps && steps.length > 0){
+              let details = "<details> <summary>🔍More Details</summary>\n\n"
+              for(let step of steps){
+                details = details + `<div class="step">${step.name}</div>\n\n\`\`\`\n\n${JSON.stringify(step.details, null, 2)}\n\n\`\`\`\n\n`
+              }
+              details = details + "\n\n</details>"
+              details = marked(details, { renderer: renderer })
+              message = message + details
+            }
+            $(`#content-${currentMessageId}`).html(message);
+          }
+          catch(e){
+            throw e
+          }
+          finally{
+            $("#" +currentMessageId).append(`<button class="small-grey-button" style="color:gray" id="regenerate-btn-small" onclick="generateResponse()"><i class="fas fa-redo"></i></button>`);
+            // remove spinner
+            $('.spinner').remove();
+            showReadyStatus();
+          }
         }
 
         try {
-          await sendChat();
+          await window.generateResponse();
         }
         catch (e) {
           // generate an error message to simulate how Melman from Madagascar would respond to an error
           const message = marked("Oh no! I'm sorry, an unexpected error occurred. Please try again.", { renderer: renderer })
-          $(`#content-${currentMessageId}`).html(message + `<button class="btn btn-info" onclick="sendChat()"><i class="fas fa-sync-alt"></i>Regenerate</button>`);
+          $(`#content-${currentMessageId}`).html(message + `<button class="btn btn-info" id="regenerate-btn"><i class="fas fa-sync-alt"></i>Regenerate</button>`);
+          $('#regenerate-btn').click(async function(){
+            $(`#content-${currentMessageId}`).html("Regenerating response...");
+            await window.generateResponse();
+          })
           showErrorStatus(`The server failed to respond, please try again. ${e}`);
           console.error(e);
         }
@@ -1566,19 +1602,7 @@ const servicePrompt = `
           // Remove spinner and set status back to 'Ready to chat' after finishing
           $('.spinner').remove();
           $(`#spinner-${currentMessageId}`).hide();
-          // Convert the message to HTML using the marked library
-          const steps = response.steps;
-          let message = response.text && marked(response.text, { renderer: renderer }) || "";
-          if(steps && steps.length > 0){
-            let details = "<details> <summary>🔍More Details</summary>\n\n"
-            for(let step of steps){
-              details = details + `<div class="step">${step.name}</div>\n\n\`\`\`\n\n${JSON.stringify(step.details, null, 2)}\n\n\`\`\`\n\n`
-            }
-            details = details + "\n\n</details>"
-            details = marked(details, { renderer: renderer })
-            message = message + details
-          }
-          $(`#content-${currentMessageId}`).html(message);
+          
         }
       }
 
@@ -1626,6 +1650,8 @@ const servicePrompt = `
       // Function to show the status as 'Ready to chat'
       function showReadyStatus() {
         updateStatus('Ready to chat! Type your message and press enter!');
+        // enable send button
+        $('#send-btn').prop('disabled', false);
       }
 
       // Function to show the error message in the status

@@ -1,0 +1,187 @@
+<docs lang="markdown">
+[TODO: write documentation for this plugin.]
+</docs>
+
+<config lang="json">
+{
+    "name": "SearchBioImageModelZoo",
+    "type": "web-python",
+    "version": "0.1.0",
+    "description": "BioImage.IO Chatbot Extension for getting information about models, applications, datasets, etc. in the BioImage Model Zoo.",
+    "tags": [],
+    "ui": "",
+    "cover": "",
+    "inputs": null,
+    "outputs": null,
+    "flags": [],
+    "icon": "extension",
+    "api_version": "0.1.8",
+    "env": "",
+    "permissions": [],
+    "requirements": ["pydantic"],
+    "dependencies": []
+}
+</config>
+
+<script lang="python">
+import sys
+import io
+from imjoy import api
+from js import fetch
+from pydantic import BaseModel, Field
+from typing import Callable, Type, Optional
+from typing import List, Optional, Dict, Any
+
+class ResourceType(str):
+    MODEL = "model"
+    DATASET = "dataset"
+    APPLICATION = "application"
+
+def normalize_text(text: str) -> str:
+    return text.replace('_', ' ').lower()
+
+def matches_keywords(text: str, keywords: List[str]) -> bool:
+    normalized_text = normalize_text(text)
+    return any(keyword in normalized_text for keyword in keywords)
+
+def search_item(item: Dict[str, Any], keywords: List[str]) -> bool:
+    search_fields = [item.get('id', ''), item.get('nickname', ''), item.get('name', ''),
+        item.get('nickname_icon', ''), item.get('license', ''), item.get('description', '')
+    ] + [tag for tag in item.get('tags', [])]
+    search_fields += [author['name'] for author in item.get('authors', [])]
+    return any(matches_keywords(field, keywords) for field in search_fields)
+
+def search(keywords, type, top_k, resource_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    keywords = [normalize_text(keyword) for keyword in keywords]
+    filtered_items = []
+    for item in resource_items:
+        if type and item.get('type') != type:
+            continue
+        if search_item(item, keywords):
+            filtered_items.append(item)
+        if len(filtered_items) == top_k:
+            break
+    return filtered_items
+
+async def load_model_info():
+    response = await fetch("https://bioimage-io.github.io/collection-bioimage-io/collection.json")
+    model_info = await response.json()
+    model_info = model_info.to_py()
+    resource_items = model_info['collection']
+    return resource_items
+
+def execute_code(script, context=None):
+    if context is None:
+        context = {}
+
+    # Redirect stdout and stderr to capture their output
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    sys.stdout = io.StringIO()
+    sys.stderr = io.StringIO()
+
+    try:
+        # Create a copy of the context to avoid modifying the original
+        local_vars = context.copy()
+
+        # Execute the provided Python script with access to context variables
+        exec(script, local_vars)
+
+        # Capture the output from stdout and stderr
+        stdout_output = sys.stdout.getvalue()
+        stderr_output = sys.stderr.getvalue()
+
+        return {
+            "stdout": stdout_output,
+            "stderr": stderr_output,
+            # "context": local_vars  # Include context variables in the result
+        }
+    except Exception as e:
+        return {
+            "stdout": "",
+            "stderr": str(e),
+            # "context": context  # Include context variables in the result even if an error occurs
+        }
+    finally:
+        # Restore the original stdout and stderr
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+
+async def register_chatbot_extension(register):
+    resource_items = await load_model_info()
+    types = set()
+    tags = set()
+    for resource in resource_items:
+        types.add(resource['type'])
+        tags.update(resource['tags'])
+    types = list(types)
+    tags = list(tags)[:5]
+    resource_item_stats = f"""- keys: {list(resource_items[0].keys())}\n- resource types: {types}\n- Exampletags: {tags}\n""" #Here is an example: {resource_items[0]}
+
+    class ModelZooInfoScript(BaseModel):
+        script: str = Field(..., description="""Executable python script (Python runtime: Pyodide) for querying information""")
+    
+    ModelZooInfoScript.__doc__ = (
+        "Search the BioImage Model Zoo for statistical information by executing Python3 scripts on the resource items."
+        "For exampling counting models, applications, and datasets filtered by tags in the BioImage Model Zoo (bioimage.io). "
+        "The generated scripts will be executed browser pyodide environment, the script can access data through the 'resources' local variable, containing zoo resources as dictionaries. "
+        "Handle any missing fields in zoo items, and ensure outputs are directed to stdout. "
+        "Filter resources by the 'type' key without making remote server requests. 'resources' variable details:\\n"
+    ) + resource_item_stats
+
+
+    class ModelZooSearchInput(BaseModel):
+        """Search the BioImage Model Zoo (bioimage.io) resource items such as models, applications, datasets, etc. in the model zoo and return detailed information. The link format to the models etc. is: https://bioimage.io/#/?id=[ResourceID]"""
+        keywords: List[str] = Field(..., description="List of keywords to search for in the model zoo.")
+        top_k: int = Field(3, description="The maximum number of search results to return. Default is 3. Please be aware each item may contain a large amount of data.")
+        type: Optional[ResourceType] = Field(None, description="The type of resource to search for. Options include 'model', 'dataset', 'application'.")
+
+
+    def get_schema():
+        return {
+            "run_script": ModelZooInfoScript.schema(),
+            "search": ModelZooSearchInput.schema()
+        }
+
+    async def execute_script(kwargs):
+        info_script = ModelZooInfoScript.parse_obj(kwargs)
+        result = execute_code(info_script.script, {"resources": resource_items})
+        return result
+
+    async def execute_search(kwargs):
+        config = ModelZooSearchInput.parse_obj(kwargs)
+        result = search(config.keywords, config.type, config.top_k, resource_items)
+        return result
+
+    await register({
+        "_rintf": True,
+        "id": "bioimage_model_zoo",
+        "type": "bioimageio-chatbot-extension",
+        "name": "BioImage Model Zoo",
+        "description": "Getting information about models, applications, datasets, etc. in the BioImage Model Zoo. It takes a list of keywords or a python script to query the resources in the BioImage Model Zoo.",
+        "get_schema": get_schema,
+        "tools": {
+            "run_script": execute_script,
+            "search": execute_search,
+        }
+    })
+
+
+
+class ImJoyPlugin():
+    async def setup(self):
+        if api.registerChatbotExtension:
+            # Loading inside the chatbot
+            await register_chatbot_extension(api.registerChatbotExtension)
+            await api.showMessage("BioImage Model Zoo Chatbot Extension registered")
+        else:
+            # Use together with the chatbot
+            chatbot = await api.getWindow("BioImage.IO Chatbot")
+            if chatbot:
+                await register_chatbot_extension(chatbot.registerExtension)
+                await api.showMessage("BioImage Model Zoo Chatbot Extension registered")
+
+        await api.log('initialized')
+
+api.export(ImJoyPlugin())
+</script>
