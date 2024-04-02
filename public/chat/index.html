@@ -1295,8 +1295,7 @@ const servicePrompt = `
           if(Object.keys(allAssistants).length > 1){
             const assistantButtons = document.getElementById('assistant-buttons');
             assistantButtons.innerHTML = Object.values(allAssistants).map((a)=>{
-              // <li><a class="dropdown-item" href="#" data-assistant="Melman">BioImage Seeker (Melman)</a></li>
-              return `<li><a class="dropdown-item" href="#" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
+              return `<li><a class="dropdown-item" href="?assistant=${a.name}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
             }).join("\n")
           }
           else{
@@ -1356,13 +1355,6 @@ const servicePrompt = `
         $('.message-holder').empty(); // Clear the messages
         initializeService();
       }
-
-      $('#assistant-buttons li > a').click(function() {
-        const assistantName = $(this).data('assistant');
-        const url = new URL(document.location.href);
-        url.searchParams.set('assistant', assistantName);
-        document.location.href = url.toString();
-      });
 
       $('#reset-btn').click(function () {
         resetChat(); // Call the reset function when the "Reset" button is clicked
