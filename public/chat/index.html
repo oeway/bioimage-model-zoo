@@ -1196,8 +1196,14 @@ Global variables, functions and results will be maintained across multiple code 
           const tokenExpiry = localStorage.getItem('tokenExpiry');
           if (tokenExpiry && new Date(tokenExpiry) > new Date()) {
             console.log("Using saved token:", token)
-            svc = await initializeService();
-            showAppInterface();
+            try{
+              svc = await initializeService();
+              showAppInterface();
+            }
+            catch(e){
+              console.error("Failed to initialize service:", e)
+              showLoginScreen();
+            }
           }
           else {
             showLoginScreen();
