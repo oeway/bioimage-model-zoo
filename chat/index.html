@@ -1325,10 +1325,14 @@ Global variables, functions and results will be maintained across multiple code 
           if (Object.keys(allAssistants).length > 1) {
             const assistantButtons = document.getElementById('assistant-buttons');
             assistantButtons.innerHTML = Object.values(allAssistants).map((a) => {
-              // check if server is in query string
-              const server_url = urlParams.get('server')
-              // if server is in query string, add it to back to the href
-              const href = server_url ? `?assistant=${a.name}&server=${server_url}` : `?assistant=${a.name}`;
+              // get all the existing query parameters
+              const urlParams = new URLSearchParams(window.location.search);
+              // remove the assistant query parameter
+              urlParams.delete('assistant');
+              // add the new assistant query parameter
+              urlParams.set('assistant', a.name);
+              // get the new url
+              const href = '?' + urlParams.toString();
               return `<li><a class="dropdown-item" href="${href}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
             }).join("\n")
           }
