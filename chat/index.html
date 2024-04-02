@@ -1235,7 +1235,7 @@ Global variables, functions and results will be maintained across multiple code 
             "server_url": serverUrl,
             "token": token,
           })
-          const svc = await server.getService(service_id || "bioimageio-chatbot")
+          const svc = await server.getService(service_id || "public/workspace-manager:bioimageio-chatbot")
           await svc.ping()
           const storeSvc = await server.registerService({
             "id": "bioimageio-chatbot-store-" + Math.random().toString(36).substring(7),
