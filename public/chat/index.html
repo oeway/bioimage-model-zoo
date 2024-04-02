@@ -1,115 +1,1755 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <title>BioImage.IO Chatbot</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="Your Personal Assistant in BioImage Analysis">
-    <meta name="author" content="BioImage.IO Team">
-    <meta name="keywords" content="Bioimaging, AI, Chatbot, LLM, GPT, deep learning, image processing">
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@bioimageio" />
-    <meta name="twitter:creator" content="@weioyang" />
-    <meta name="twitter:image" content="https://bioimage.io/static/img/bioimage-io-banner.png" />
-    <meta property="og:url" content="https://bioimage.io" />
-    <meta property="og:title" content="BioImage.IO Chatbot" />
-    <meta property="og:description" content="Your Personal Assistant in BioImage Analysis" />
-    <meta property="og:image" content="https://bioimage.io/static/img/bioimage-io-banner.png" />
-    <meta name="format-detection" content="telephone=no">
-    <link rel="apple-touch-icon" sizes="180x180" href="static/icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="static/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="static/icons/favicon-16x16.png">
-    <link rel="mask-icon" href="static/icons/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="static/icons/favicon.ico" type="image/x-icon" />
-    <link rel="icon" href="static/icons/favicon.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="static/icons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="icon" href="favicon.ico">
-    <script src="https://lib.imjoy.io/imjoy-loader.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BioImage.IO Chatbot</title>
+  <link href="https://www.unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Add the Font Awesome library -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+  <link rel="icon" type="image/x-icon" href="https://bioimage.io/static/icons/favicon.ico">
+  <style>
+    /* Custom CSS */
+    .message-output{
+      margin-left: 32px;
+      background-color: #f8f5f537;
+      padding: 14px;
+      border-radius: 10px;
+      max-width: 90%;
+      word-break: break-word;
+      padding: 10px;
+      border: #90909075;
+      border-style: solid;
+      max-height: 200px;
+      overflow: auto;
+    }
+    .message-output > img {
+      max-width: 100%;
+      height: auto;
+    }
+    .message-output > audio {
+      width: 100%;
+    }
+    .message-output > video {
+      width: 100%;
+    }
+    .message-output > iframe {
+      width: 100%;
+      height: 300px;
+    }
+    .message-output > pre {
+      font-size: small;
+      font-family: monospace;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+    .file-selected {
+      background-color: #036ffc;
+      border-radius: 4px;
+      padding: 5px;
+      color: white;
+    }
+
+    .form-label {
+      font-size: 11px;
+      max-height: 100px;
+      overflow: auto;
+      margin-left: 35px;
+      color: #808080b0;
+    }
+
+    .markdown-body {
+      max-width: calc(100% - 40px);
+    }
+
+    .rounded-icon-container {
+      margin-left: 2px;
+      margin-right: 2px;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ddd;
+      /* or any color you prefer */
+    }
+
+    /* Styles for the message container */
+    #chat1 .message-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+    }
+
+    #chat1 .message-container.user-message {
+      flex-direction: row-reverse;
+    }
+
+    #chat1 .message-container i {
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    #chat1 .message-container.robot-message i {
+      margin-right: 0;
+      margin-left: 10px;
+    }
+
+    #chat1 .message-container .message-content {
+      background-color: #f2f2f2;
+      padding: 14px;
+      border-radius: 10px;
+      max-width: 90%;
+      word-break: break-word;
+    }
+
+    #chat1 .message-container.user-message .message-content {
+      background-color: #dff9fb;
+    }
+
+    .spinner {
+      display: inline-block;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+    }
+
+    #chat1 textarea {
+      height: 20px;
+      resize: none;
+      overflow: hidden;
+    }
+
+
+    .feedback-buttons {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    .feedback-button {
+      margin-right: 2px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+      /* Initially, both buttons are visible */
+    }
+
+    .small-grey-button {
+      font-size: 14px;
+      /* Adjust the font size as needed */
+      color: #ffc107ad;
+      /* Change the color to grey or any other desired shade */
+      background-color: transparent;
+      /* Set the background to transparent */
+      border: none;
+      /* Remove the border */
+      padding: 0;
+      /* Remove padding to make it smaller */
+    }
+
+    .small-grey-button i {
+      font-size: 16px;
+      /* Adjust the icon size as needed */
+      margin-right: 5px;
+      /* Add space between the icon and text (if any) */
+    }
+
+
+    .feedback-button:hover {
+      background-color: #dee2e6;
+    }
+
+    .feedback-button:last-child {
+      margin-right: 0;
+      /* Remove margin for the last button */
+    }
+
+    .step {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 10px; /* Round corners */
+      background-color: #007bff; /* Example background color */
+      color: white;
+      font-size: 0.8em;
+    }
+
+    .announcement-banner {
+      background-color: #fff;
+      color: #000;
+      text-align: center;
+      padding: 15px;
+      margin-top: 0px;
+      /* Adjust margin as needed */
+      border: 2px solid #007bff;
+      /* Prominent border color */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      /* Add a subtle shadow for prominence */
+    }
+
+    .announcement-banner__text {
+      font-size: 18px;
+      /* Adjust font size as needed */
+    }
+
+    .announcement-banner__text a {
+      color: #007bff;
+    }
+
+    .announcement-banner__controls {
+      margin-top: 10px;
+    }
+
+    .announcement-button {
+      margin-right: 10px;
+    }
+
+    .announcement-banner {
+      display: none;
+      /* other styles remain unchanged */
+    }
+
+    /* Add consistent styling for the login card */
+    #login-card {
+      margin: 0 auto;
+      /* Center the card horizontally */
+      max-width: 400px;
+      /* Adjust the width as needed */
+    }
+
+    /* Style the login button similar to the chat send button */
+    #login-button {
+      width: 100%;
+    }
+
+    /* Apply consistent styling to the chat container */
+    #chat1 {
+      margin: 0 auto;
+      /* Center the chat container horizontally */
+    }
+    .window {
+      /* Avoid window with 0 height */
+      min-height: 220px !important;
+    }
+
+    .chat-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
-<body style="width:100%;height:100vh;">
-    <div id="spinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <img src="../static/img/loading.gif" alt="Loading..." />
+
+<body>
+  <div class="announcement-banner">
+    <div class="announcement-banner__text">
+      Thank you for trying out the BioImage.IO Chatbot!
+
+      <p>Please provide feedback by clicking
+        <button class="feedback-button like-button small-grey-button">
+          <i class="fas fa-thumbs-up"></i>
+        </button>
+        or
+        <button class="feedback-button unlike-button small-grey-button">
+          <i class="fas fa-thumbs-down"></i>
+        </button> for each response, or by clicking the 'Feedback' button below.
+      </p>
+
+      <p>Note that the chatbot is still in beta and is being actively developed, we will log the message you input into the chatbot for further investigation of issues and support our development. See <a
+            href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md" target="_blank">the
+            Disclaimer</a> for more details. If you want to to remove your chat logs, please contact us via <a href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>.</p>
+            <button class="feedback-button" onclick="confirmDisclaimer()">OK, got it!</button>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" value="" id="dont-ask-again-check">
+        <label class="form-check-label" for="dont-ask-again-check">
+          Don't ask me again
+        </label>
+      </div>      
     </div>
-    <div id="window-container" style="height: 100vh"></div>
-    <script>
-        // Show the spinner
-        document.getElementById('spinner').style.display = 'block';
+  </div>
 
-        const chatbotExtensions = {}
-        const updateCallbacks = []
+  <div id="loading-container" class="container mt-5">
+    <div class="card">
+      <div class="card-header" style="text-align: center">
+        <img src="https://bioimage.io/static/img/bioimage-io-icon.svg" alt="BioImage.IO Icon"
+          style="height: 100px; margin-right: 10px">
+        <h3>Initializing BioImage.IO Chatbot...</h3>
+      </div>
+    </div>
+  </div>
 
-        loadImJoyCore().then((imjoyCore) => {
-            const imjoy = new imjoyCore.ImJoy({
-                imjoy_api: {
-                    async registerChatbotExtension(plugin, config) {
-                        chatbotExtensions[config.name] = config
-                        // make a copy of the updateCallbacks
-                        const _updateCallbacks = [...updateCallbacks]
-                        for (const cb of _updateCallbacks) {
-                            cb(config) // TODO: we should remove callbacks that are not needed anymore
+  <div id="login-container" style="display: none;" class="container mt-5">
+    <div class="card" id="login-card">
+      <div class="card-header">
+        <img src="https://bioimage.io/static/img/bioimage-io-icon.svg" alt="BioImage.IO Icon"
+          style="height: 24px; margin-right: 10px">
+        BioImage.IO Chatbot
+      </div>
+      <div class="card-body"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <h3 class="text-center">Welcome to BioImage.IO Chatbot</h3>
+        <button id="login-button" class="btn btn-primary">Login</button>
+        <div class="login-spinner spinner" style="display:none"></div>
+        <br>
+        <a href="https://ai.imjoy.io/public/apps/hypha-login/" target="_blank">Sign up here</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="app-container" style="display: none;">
+    <div id="menu-container"></div>
+    <div class="container mt-5">
+      <div class="card" id="chat1">
+        <div class="card-header chat-dialog-header">
+          <div>
+            <img src="https://bioimage.io/static/img/bioimage-io-icon.svg" alt="BioImage.IO Icon"
+              style="height: 24px; margin-right: 10px">
+            BioImage.IO Chatbot
+          </div>
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="assistant-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Assistants
+            </button>
+            <div id="assistant-buttons" class="dropdown-menu dropdown-menu-right" aria-labelledby="assistant-menu-button">
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="message-holder"></div>
+          <div class="form-outline">
+            <pre class="form-label" for="textMessageArea" id="status-text">Ready to chat! Type your message and press
+              enter!</pre>
+            <div style="position: relative; display: flex; align-items: center; gap: 10px;">
+              <!-- label for="fileUpload" style="cursor: pointer; flex-shrink: 0;">
+                <i class="fas fa-paperclip" style="font-size: 1.2rem;" id="paperclipIcon"></i>
+              </label>
+              <input type="file" id="fileUpload" style="visibility: hidden; position: absolute;"
+                onchange="fileSelected()" -->
+              <textarea class="form-control message" id="textMessageArea" rows="1"
+                style="flex-grow: 1; border: 1px solid #ced4da; border-radius: .25rem; height: 36px; padding: .375rem .75rem;"></textarea>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary mt-3 send-btn"><i class="fas fa-paper-plane"></i>Send</button>
+          <button type="button" class="btn btn-primary mt-3" id="mount-folder-btn">
+            <i class="fas fa-folder"></i> Mount Files
+          </button>
+          <button type="button" class="btn btn-primary mt-3" style="display: none" id="console-btn">
+            <i class="fas fa-terminal"></i> Code Interpreter
+          </button>
+          <!-- Add an "Edit Profile" button to toggle the profile options -->
+          <button type="button" class="btn btn-info mt-3" id="edit-profile-btn">
+            <i class="fas fa-pen"></i>Edit Profile
+          </button>
+          <!-- Add a "Reset" button to restart the session -->
+          <button type="button" class="btn btn-secondary mt-3" id="reset-btn">
+            <i class="fas fa-sync-alt"></i>Reset
+          </button>
+          <!-- Add the "Feedback" button -->
+          <button type="button" class="btn btn-info mt-3" id="feedback-btn">
+            <i class="fas fa-comment"></i> Feedback
+          </button>
+          <button type="button" class="btn btn-outline-secondary mt-3" id="advanced-options-btn">
+            <i class="fas fa-ellipsis-h"></i> Options
+          </button>
+          <!-- Console window initially collapsed -->
+          <div id="console-window" style="display: none;" class="collapse">
+            <div id="terminal"></div>
+          </div>
+
+          <!-- Profile options initially collapsed -->
+          <div id="profile-options" class="collapse">
+            <input type="text" class="form-control mt-3" id="userNameInput" placeholder="Enter your name...">
+            <input type="text" class="form-control mt-3" id="userOccupationInput"
+              placeholder="Enter your occupation...">
+            <input type="text" class="form-control mt-3" id="userBackgroundInput"
+              placeholder="Enter your background...">
+            <!-- Add a "Save" button for the user profile -->
+            <button type="button" class="btn btn-success mt-3" id="save-profile-btn">
+              Save
+            </button>
+          </div>
+
+          <!-- Feedback form initially collapsed -->
+          <div id="feedback-form" class="collapse">
+            <textarea class="form-control mt-3" id="generalFeedback"
+              placeholder="Tell us your experience about Bioimage.IO chatbot..." rows="3"></textarea>
+            <!-- Save Feedback button -->
+            <button type="button" class="btn btn-success mt-3" id="save-feedback-btn">
+              Submit Feedback
+            </button>
+          </div>
+          <!-- Add the "Extensions" dropdown menu -->
+          <div id="advanced-options" class="collapse">
+            <br>
+            <span>Extensions: </span>
+            <select multiple="multiple" style="width: calc(100% - 100px);" id="extensions"></select>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer text-center">
+        <!-- Helper message for personalized answers -->
+        <p class="mt-3">Warning: BioImage.IO Chatbot can make mistakes. Consider checking important information.</p>
+        <p class="mt-3">Tips: Customize your profile to get personalized answers based on your background.</p>
+        <p>If you find our chatbot helpful for you, please consider cite us: <a href="https://arxiv.org/abs/2310.18351" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/b151f4a4752252b73a5a8b484197840b0bc50c7c18d4b4ddad2b89a8e90d36f0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f61725869762d323331302e31383335312d7265642e737667" alt="arXiv" data-canonical-src="https://img.shields.io/badge/arXiv-2310.18351-red.svg" style="max-width: 100%;"></a></p>
+        <a href="https://ai4life.eurobioimaging.eu/" target="_blank"><img
+            src="https://ai4life.eurobioimaging.eu/wp-content/uploads/2022/09/AI4Life-logo_giraffe-nodes-2048x946.png"
+            alt="AI4Life Icon" style="height: 80px; margin-right: 10px">
+        </a>
+        <br>
+        <a href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md"
+          target="_blank">Disclaimer for BioImage.IO Chatbot</a>
+        <br>
+        <a href="https://github.com/bioimage-io/bioimageio-chatbot/" target="_blank"
+          style="text-decoration: none; color: inherit;">
+          <span class="badge bg-secondary"><i class="fab fa-github" style="font-size: 12px;"></i>Github</span>
+        </a>
+        <span class="badge bg-secondary">bioimageio-chatbot v0.1.0</span>
+        <br>
+
+        <a href="https://badge.fury.io/py/bioimageio-chatbot" target="_blank"><img
+            src="https://badge.fury.io/py/bioimageio-chatbot.svg" alt="PyPI version" height="18"></a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://unpkg.com/jquery.terminal@2.3.0/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.3.0/css/jquery.terminal.min.css"/>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.7.0/dist/multiple-select.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://unpkg.com/multiple-select@1.7.0/dist/multiple-select.min.js"></script>
+  <script src="https://www.unpkg.com/imjoy-rpc@0.5.46/dist/hypha-rpc-websocket.min.js"></script>
+  <script src="https://lib.imjoy.io/imjoy-loader.js"></script>
+  <script src="https://unpkg.com/marked@2.1.3/lib/marked.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+  <script src="https://www.unpkg.com/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+  <script src="/chat/worker-manager.js"></script>
+  <script>
+    const fileSecret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const urlParams = new URLSearchParams(window.location.search);
+    const workerManager = new PyodideWorkerManager()
+    let worker;
+    let currentMessageId;
+    let mountedFolder;
+    let extensions = [];
+    let envPrompt = "";
+    const registeredExtensions = []
+    function fileSelected() {
+      var input = document.getElementById('fileUpload');
+      var label = document.getElementById('paperclipIcon');
+      if (input.files && input.files[0]) {
+        label.classList.add('file-selected');
+        label.title = "Selected file: " + input.files[0].name;
+      } else {
+        label.classList.remove('file-selected');
+      }
+    }
+
+    function base64ToArrayBuffer(base64) {
+      // Decode the base64 string into a binary string
+      let binary_string = window.atob(base64.split(',')[1]);
+      let len = binary_string.length;
+      let bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+          bytes[i] = binary_string.charCodeAt(i);
+      }
+      return bytes; // This is the ArrayBuffer
+    }
+
+    function removeFileSelected() {
+      var input = document.getElementById('fileUpload');
+      var label = document.getElementById('paperclipIcon');
+      input.value = '';
+      label.classList.remove('file-selected');
+    }
+
+    function toggleConsole(){
+      const consoleBtn = document.getElementById('console-btn');
+      const consoleWindow = document.getElementById('console-window');
+      if(consoleWindow.style.display === 'none'){
+        consoleWindow.style.display = 'block';
+        consoleBtn.innerHTML = '<i class="fas fa-terminal"></i> Hide Console'
+      }
+      else{
+        consoleWindow.style.display = 'none';
+        consoleBtn.innerHTML = '<i class="fas fa-terminal"></i> Code Interpreter'
+      }
+    }
+
+    function updateDropdownOptions(extensions) {
+      const options = extensions.map((ext)=>{
+        return {
+          text: `${ext.name}: ${ext.description}`,
+          value: ext.id
+        }
+      })
+    
+      var $select = $('#extensions');
+    
+      // Clear existing options
+      $select.empty();
+    
+      // Add new options from the 'options' array
+      options.forEach(function(option) {
+        $select.append($('<option>', { 
+          value: option.value, 
+          text : option.text.slice(0, 128) + (option.text.length > 128 ? "..." : "")
+        }));
+      });
+    
+      // Refresh the multipleSelect to reflect the changes
+      $select.multipleSelect('refresh');
+      $select.multipleSelect('checkAll');
+    }
+
+    async function getFileHandle(directoryHandle, relPath) {
+      // Remove leading '/' if present
+      if (relPath.startsWith('/')) {
+        relPath = relPath.substring(1);
+      }
+    
+      const pathSegments = relPath.split('/');
+      let currentHandle = directoryHandle;
+      const fileName = pathSegments.pop();
+      for (const segment of pathSegments) {
+        if (segment === '') continue;  // Skip empty segments
+        if ((await currentHandle.queryPermission({mode: 'read'})) === 'granted') {
+          if (currentHandle.kind === 'directory') {
+            currentHandle = await currentHandle.getDirectoryHandle(segment);
+          } else {
+            currentHandle = await currentHandle.getFileHandle(segment);
+          }
+        } else {
+          throw new Error(`Permission denied to read ${segment}`);
+        }
+      }
+      currentHandle = await currentHandle.getFileHandle(fileName);
+      return currentHandle;
+    }
+    
+
+    async function readFileContent(fileHandle) {
+      const file = await fileHandle.getFile();
+      const reader = new FileReader();
+    
+      return new Promise((resolve, reject) => {
+        reader.onloadend = () => {
+          if (reader.error) {
+            reject(reader.error);
+          } else {
+            resolve(new Uint8Array(reader.result));
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function getSelectedExtensions() {
+      var selectedValues = $('#extensions').val(); // Gets the array of selected values
+  
+      const exts = []
+      // If you want to do something with these values, you can iterate over them
+      for (var i = 0; i < selectedValues.length; i++) {
+          exts.push(extensions.find(ext=>ext.id === selectedValues[i]))
+      }
+  
+      return exts; // Returns the array of selected values
+    }
+    
+    const storage = {};
+    function uuidv4() {
+      return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+    }
+    function encodeData(result) {
+        if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
+            return result;
+        } else if (Array.isArray(result)) {
+            return result.map(encodeData);
+        } else if (typeof result === 'object') {
+            if(result._rtype){
+              let key = uuidv4(); // Implement or import uuidv4 function
+              storage[key] = result;
+              return {
+                  rtype: "obj",
+                  reference_id: key
+              };
+            }
+            let encodedObject = {};
+            for (let [key, value] of Object.entries(result)) {
+                encodedObject[key] = encodeData(value);
+            }
+            return encodedObject;
+        } else {
+            let key = uuidv4(); // Implement or import uuidv4 function
+            storage[key] = result;
+            return {
+                rtype: "obj",
+                reference_id: key
+            };
+        }
+    }
+
+    function decodeData(result) {
+        if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
+            return result;
+        } else if (Array.isArray(result)) {
+            return result.map(decodeData);
+        } else if (typeof result === 'object') {
+            if ('rtype' in result && result['rtype'] === "obj") {
+                let key = result['reference_id'];
+                return storage[key];
+            } else {
+                let decodedObject = {};
+                for (let [key, value] of Object.entries(result)) {
+                    decodedObject[key] = decodeData(value);
+                }
+                return decodedObject;
+            }
+        } else {
+            return result;
+        }
+    }
+
+    // this function is used to remove the __rpc_object__ attribute from the object
+    // this is important to make sure the function is correctly encoded and send to imjoy_rpc
+    function _removeRpcObj(obj){
+      if(obj && obj.__rpc_object__){
+        delete obj.__rpc_object__
+      }
+      else if(obj && Array.isArray(obj)){
+        for(let i=0; i<obj.length; i++){
+          _removeRpcObj(obj[i])
+        }
+      }
+      else if(obj && typeof obj === 'object'){
+        for(let k in obj){
+          _removeRpcObj(obj[k])
+        }
+      }
+    }
+    
+    async function _registerExtension(extension) {
+      // convert legacy extension to new format
+      if(!extension.tools && extension.execute){
+        extension.id = extension.name.replace(/\s+/g, '-')
+        extension.type = "bioimageio-chatbot-extension"
+        extension.tools = {
+          _: extension.execute
+        }
+        const get_schema = extension.get_schema
+        if(get_schema){
+          extension.get_schema = async function(){
+            const schema = await get_schema()
+            return {
+              _: schema
+            }
+          }
+        }
+        delete extension.execute
+      }
+      if(!extension.id || !extension.tools || !extension.get_schema) 
+        throw new Error("Invalid extension")
+      if(extension.type != "bioimageio-chatbot-extension")
+        throw new Error(`Invalid extension ${extension.id}, type should be bioimageio-chatbot-extension`)
+      _removeRpcObj(extension)
+
+      const schemas = await extension.get_schema()
+      for(let k of Object.keys(schemas)){
+        const schema = schemas[k]
+        if(!schema || !schema.title || schema.title.includes(" "))
+          throw new Error("Invalid title in schema: " + k)
+        if(!schema.description){
+          throw new Error("Schema description is required: " + k)}
+      }
+
+      extensions.push(extension);
+      // remove duplicates
+      extensions = extensions.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i)
+      registeredExtensions.push(extension);
+      updateDropdownOptions(extensions);
+    }
+
+    function confirmDisclaimer(){
+      $('.announcement-banner').hide();
+      if(document.getElementById('dont-ask-again-check').checked)
+      localStorage.setItem('do-not-ask-again', 'true')
+      else
+      localStorage.setItem('do-not-ask-again', 'false')
+    }
+
+    $(document).ready(async function () {
+      let svc;
+      let token = null;
+      const spinner = `<div class="spinner"></div>`; // Spinner HTML
+      let enableCodeInterpreter = urlParams.get('enable-code-interpreter') === "true";
+      let assistantName = urlParams.get('assistant') || "Melman";
+      let serverUrl = urlParams.get('server') || "https://chat.bioimage.io";
+      let allAssistants = {};
+      let assistantIcon = "https://bioimage.io/static/img/bioimage-io-icon.svg"
+      let imjoyApi = null;
+      let dataStore = {};
+      
+      // add button class primary to the selected assistant button
+      // use assistant-buttons to find the buttons container
+      $('#assistant-buttons li > a[data-assistant="' + assistantName + '"]').css('background', '#007bff').css('color', 'white');
+      // Function to show the login screen
+      function showLoginScreen() {
+        $('#loading-container').hide();
+        $('#login-container').show();
+        $('#app-container').hide();
+      }
+
+      // Function to show the app interface
+      async function showAppInterface() {
+        $('#loading-container').hide();
+        $('#login-container').hide();
+        $('#app-container').show();
+        if(localStorage.getItem('do-not-ask-again') !== 'true')
+        $('.announcement-banner').show();
+        if(window.self !== window.top){
+          const imjoyRPC = await loadImJoyRPC()
+          const api = await imjoyRPC.setupRPC({name: 'BioImage.IO Chatbot'});
+          await api.export({setup(){}, async run(ctx){
+            assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || "Melman"
+            if(api.getChatbotExtensions){
+              const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
+              for(let ext of Object.values(extensions)){
+                _registerExtension(ext)
+                console.log(`Registered extension: ${ext.name} (${ext.description}) for assistant ${assistantName}`)
+              }
+            }
+          },
+          registerExtension: _registerExtension,
+          getAllExtensions(){
+            return extensions.map(ext=>ext.id)
+          },
+          getSelectedExtensions(){
+            // return the extenion names
+            return getSelectedExtensions().map(ext=>ext.id)
+          },
+          setSelectedExtensions(selected){
+            $('#extensions').multipleSelect('setSelects', Array.from(selected))
+          },
+        });
+        imjoyApi = api;
+        }
+        else{
+          loadImJoyCore().then((imjoyCore)=>{
+              const imjoy = new imjoyCore.ImJoy({
+                  imjoy_api: {
+                    async registerExtension(plugin, config){
+                      return await _registerExtension(config)
+                    }
+                  },
+              })
+              imjoy.start({workspace: 'default'}).then(()=>{
+                imjoyApi = imjoy.api;
+              })
+          })
+          
+        }
+      }
+
+      function setupCodeInterpreter(){
+// check if the browser is not Chromium based then tell the user to use Chromium based browser
+if(!window.showOpenFilePicker){
+  const warning = document.createElement("div")
+  warning.innerHTML = `<br><div class="alert alert-warning" role="alert">
+  <strong>Warning!</strong> The code interpreter is only supported in Chromium based browsers (e.g. Chrome, Edge, Brave, etc.), please use a Chromium based browser to use the code interpreter.
+</div>`
+// insert the warning after the chat-dialog-header
+  $('#chat1 .chat-dialog-header').after(warning)
+}
+$('#console-btn').show()
+const bioengineStartupScript = `
+import sys
+import numpy as np
+from imjoy_rpc.hypha import connect_to_server
+
+class BioEngine():
+    """
+    The BioEngine service allows you to run models and perform inference tasks.
+    Here is a list of async functions:
+     - "list_models" function to list available models.
+     - "get_model_info" function to get detailed input/output information about a specific model.
+     - "run_model" function to run a model with the given input and parameters.
+    For every model in the BioEngine, you can call the "get_model_info" function to get detailed information (input/output formats, etc.) about a specific model, then call the "run_model" function to run the model with the given input and parameters.
+    Importantly, you need to reshape the input image to the correct format to match the exact dimensions required by the model.
+    """
+
+    async def initialize(self):
+        """Initialize the BioEngine service."""
+        server = await connect_to_server(
+            {"server_url": "https://ai.imjoy.io"}
+        )
+        self.triton = await server.get_service("public/workspace-manager:triton-client")
+        assert self.triton, "Triton client not found."
+        print("BioEngine initialized, you can now use it directly to run models.")
+
+    async def list_models(self):
+        """
+        The function returns a list of available models. Returns a list of dictionaries, each containing the model ID, name, and description.
+        """
+        return [
+          {"id": "cellpose", "name": "Cellpose", "description": "Cellpose model for cell segmentation."},
+          {"id": "affable-shark", "name": "Affable Shark", "description": "Affable Shark model for image segmentation."}
+        ]
+    
+    async def get_model_info(self, model_id: str):
+        """
+        get_model_info(model_id: str)
+        The function returns detailed information about a specific model. The input to the "get_model_info" function is the model ID. The model ID is the unique identifier of the model you want to get information about.
+        """
+        if model_id == "cellpose":
+            return """
+            Cellpose model for cell segmentation. You can run this model with "run_model" using the following arguments:
+            - input_image (float32 numpy array): an image with required input dimensions is: (channel, W, H).
+            - kwargs (dict): optional parameters for the model, you can specify the estimated object diameter as, e.g. {"diameter": 10} and also the model type as, e.g. {"model_type": "cyto"}.
+            The return value is the segmented mask with shape [channel, W, H].
+            """
+        else:
+            return """
+            You can run the model with "run_model" using the following arguments:
+            - input_image (float32 numpy array): an image with required input dimensions is: (batch, channel, W, H).
+            - kwargs: should be None for this model.
+            The return value is the segmented mask with shape (batch, channel, W, H)
+            """
+
+    async def run_model(self, model_id, input_image, kwargs=None):
+        """
+        Run a specified model with the provided input image and optional parameters. The input image should be a numpy array with the required dimensions.
+
+        Parameters:
+          model_id (str): The unique identifier of the model to run. For example, "cellpose" to run the Cellpose model.
+          input_image (np.array): The image data to process. This should be a numpy array. The format required may vary depending on the model.
+          kwargs (dict, optional): Additional arguments to pass to the model. This should be a dictionary for cellpose model, where the possible keys are: "diameter" and "model_type", and other models should be None. 
+
+        Returns:
+          np.array: The output of the model. For the "cellpose" model, this will be the segmented mask. For other models, this will be the result of the model's outputs.
+        """
+        kwargs = kwargs or {}
+        if not hasattr(self, "triton"):
+            await self.initialize()
+        input_image = input_image.astype("float32")
+        if model_id == "cellpose":
+            assert input_image.ndim == 3, "Input image should have shape (channel, W, H)"
+            assert input_image.shape[0] == 1, "Input image should have a single channel"
+            # Run cellpose model
+            ret = await self.triton.execute(
+                inputs=[input_image, kwargs],
+                model_name="cellpose-python",
+                decode_json=True,
+            )
+            assert "mask" in ret, "Model execution failed"
+            return ret["mask"]
+        else:
+            # Run inference
+            ret = await self.triton.execute(
+                inputs=[{"inputs": [input_image], "model_id": model_id}],
+                model_name="bioengine-model-runner",
+                serialization="imjoy",
+            )
+            result = ret["result"]
+            assert result.get("success") == True, "Model execution failed: " + result.get("error")
+            mask = result['outputs'][0]
+            return mask
+
+# define the bioengine so you can use it to run models
+bioengine = BioEngine()
+
+sys.modules["bioengine"] = bioengine
+# mask = await bioengine.run_model("cellpose", image[None, ...].astype(np.float32), {"diameter": 10})
+# mask = await bioengine.run_model("affable-shark", image[None, None, ...], {})
+`
+
+codeInterperterPrompt = `
+## Instructions for Code Interpreter
+Assist users in bioimage analysis within a Pyodide environment.
+You will generate and run script in the code interpreter to help users analyze their data.
+The code interperter is a Jupyter notebook-like environment, it support top-level await operations and the asyncio event loop is already running, so you can call "await func()" directly without wrapping in a async function or using asyncio.run.
+The environment has access to remote servers, so you can fetch remote data by using python modules "requests" or "imjoy_rpc.hypha" for connect to the Hypha/BioEngine server.
+User data will be mounted to the \`/mnt\` directory. Use "os.listdir('/mnt')" to explore available files before processing.
+The code interpreter can produce outputs such as stdout or stderr, matplotlib plots, and image/audio displays which is rendered in the user interface. For key results (e.g. result images), display them in the final response to the user.
+Global variables, functions and results will be maintained across multiple code interpreter executions, so you can reuse them in the next steps.
+
+**Image Processing and Visualization**:
+- For image analysis tasks, you should first inspect the files loaded by the user, then load the image analyse the image type and shape, and process or run the model on the image.
+- For image loading and manipulation, utilize \`imageio\` for reading and writing images, compatible with a wide range of formats.
+- After the analysis, saving the result using imageio and displaying images using matplotlib.
+- If needed, use the Vision Inspector to inspect user's images, result images and plots. To inspect the analysis results, pass inputs and outputs together to the vision inspector.  
+- Use the BioEngine service to run AI models (cellpose and any other models in the model zoo).
+  To use a service, first import it (e.g. import bioengine), then run a script to print e.g. "bioengine.__doc__" first to obtain the documentation of the service. Then based on the documentation, decide which function(s) to call, the detailed usage of each function can be obtained by printing "service.func.__doc__". 
+
+  **Example usage**:
+  \`\`\`
+  import bioengine
+  print(bioengine.__doc__)
+  print(bioengine.run_model.__doc__)
+  image = np.random.rand(1, 256, 256).astype('float32')
+  mask = await bioengine.run_model("cellpose", image, {"diameter": 10})
+  \`\`\
+`
+
+// IDEA:
+// Have a list of services that the chatbot can select from, each with brief description
+// Add a tool to query the usage of each service and its functions
+// Then the chatbot can first select a service, then select a function from that service
+// The chatbot can then run the function with the given parameters
+const servicePrompt = `
+`
+        // show mount button
+        workerManager.createWorker().then(async w => {
+          $('#mount-folder-btn').show();
+          if(mountedFolder){
+            await worker.mount("/mnt", mountedFolder);
+          }
+          worker = w;
+          console.log("Worker created:", worker);
+          await worker.runScript(bioengineStartupScript, {skip_record: true});
+          // await worker.runScript(`print(bioengine.__doc__)`);
+          // let summary = await worker.renderSummary();
+          envPrompt = codeInterperterPrompt + `\nUser:`
+          // await worker.runScript(`print('Hello from worker')`);
+         _registerExtension({
+            id: "code_interpreter",
+            name: "Code Interpreter",
+            description: `Use the code interpreter to run Python scripts to help users with request related to their data or code.\n`,
+            type: "bioimageio-chatbot-extension",
+            async get_schema() {
+              let description = `Run Python scripts.`// In the script, you have access to two defined functions: "store_put" and "store_get" for save and resume variables. You can call "store_put(key, obj) to store object for future use, and in a next step use "store_get(key)" to retrieve it back.
+              if(mountedFolder){
+                description += `\n\nUser has mounted files (from ${mountedFolder.name}) under /mnt, you have read and write access to /mnt. The download link for the files is ${dataStore.base_url}/file?token=${fileSecret}&path=/mnt/...`
+              }
+              else{
+                description += `\n\nUser has not mounted any files yet, use the "Mount Files" button to mount a folder for data access.`
+              }
+              return {
+                run_script: {
+                  "type": "object",
+                  "title": "RunScript",
+                  "description": description,
+                  "properties": {
+                      "script": {
+                          "type": "string",
+                          "description": "Python script to execute",
+                      },
+                  },
+                  "required": ["script"],
+                  "allow_additional_properties": false,
+                }
+              };
+            },
+            tools: {
+              async run_script(config) {
+                  console.log("CodeInterpreter running script:", config.script)
+                  const container = document.getElementById(`output-${currentMessageId}`) // $(`#output-${messageId}`).
+                  container.style.display = "block";
+                  // create a title with emoji for the code interpreter
+                  const title = document.createElement("p")
+                  title.innerHTML = spinner + "🐍 Code Interpreter"
+
+                  container.appendChild(title)
+                  try{
+                    const result = await worker.runScript(config.script, {output_container: container})
+                    console.log("CodeInterpreter result:", result)
+                    // worker.render(container)
+                    container.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    // envPrompt = await worker.renderSummary();
+                    let summary = await worker.renderSummary();
+                    summary = servicePrompt + `\nTry to reuse what has been executed and results in the code interpreter, here is the execution history:\n--------------\n${summary}\n--------------\nUser:`
+                    envPrompt = codeInterperterPrompt + summary;
+                    // result is a list of objects,
+                    // filter out the objects
+                    // if type=img, then clip the content to 10 characters
+                    // if type=audio, then clip the content to 10 characters
+                    // remove the attrs from the result
+                    const filteredResult = result.map((obj) => {
+                      let content;
+                        if (obj.type === "audio" || obj.type === "img") {
+                          // create random id
+                          const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + (obj.type === "audio" ? ".wav" : ".png")
+                          dataStore[id] = obj
+                          content = `${obj.type}: ${dataStore.base_url}/file?token=${fileSecret}&id=${id}`
                         }
-                    },
-                    getChatbotExtensions(plugin, updateCallback) {
-                        if (updateCallback) updateCallbacks.push(updateCallback)
-                        return chatbotExtensions
-                    },
-                },
-                //imjoy config
-            })
-            imjoy.start({ workspace: 'default' }).then(async () => {
-                const api = imjoy.api;
-                // get origin url
-                const url = new URL(window.location.href);
-                const origin = url.origin;
-                const currentUrlParams = new URLSearchParams(window.location.search);
-                const chatUrl = new URL('https://chat.bioimage.io/public/apps/bioimageio-chatbot-client/chat');
-                chatUrl.search = currentUrlParams.toString();
-
-                await api.createWindow({ src: chatUrl.toString(), name: "BioImageIO Chatbot", window_id: "window-container" });
-                await api.loadPlugin("https://raw.githubusercontent.com/bioimage-io/bioimageio-chatbot/main/bioimageio_chatbot/static/bioimage-model-zoo-extension.imjoy.html");
-
-                // Hide the spinner
-                document.getElementById('spinner').style.display = 'none';
-            })
+                        else if (obj.type === "stdout") {
+                          content = obj.content
+                        }
+                        else if (obj.type === "stderr") {
+                          content = "stderr: " + obj.content
+                        }
+                        else {
+                          content = obj.type + ": " + obj.content
+                        }
+                        return content
+                    })
+                    return filteredResult;
+                  }
+                  catch(e){
+                    console.error("CodeInterpreter error:", e)
+                    return [e.toString()]
+                  }
+                  finally{
+                    $('.spinner').remove();
+                  }
+              },
+            }
+          })
+          
+          $('#mount-folder-btn').click(async function () {
+            const dirHandle = await showDirectoryPicker();
+            if ((await dirHandle.queryPermission({ mode: "readwrite" })) !== "granted") {
+                if (
+                    (await dirHandle.requestPermission({ mode: "readwrite" })) !== "granted"
+                ) {
+                    throw Error("Unable to read and write directory");
+                }
+            }
+            // show spinner
+            $('#mount-folder-btn').append(spinner);
+            try{
+              // disable send message
+              $('#send-btn').prop('disabled', true);
+              await worker.mount("/mnt", dirHandle);
+              console.log("Mounted folder:", dirHandle);
+              console.log(`Files are also available at ${dataStore.base_url}/file?token=${fileSecret}&path=/mnt/...`)
+              mountedFolder = dirHandle;
+              $('#mount-folder-btn').text(`Mount Files (${mountedFolder.name})`);
+              // emulate a message to show the user that the folder has been mounted
+              // set the input and press send
+              $('#textMessageArea').val(`I just mounted my local data folder (original name: "${mountedFolder.name}") as /mnt.`);
+              $('.send-btn').click();
+            }
+            finally{
+              $('.spinner').remove();
+              $('#send-btn').prop('disabled', false);
+              $('#mount-folder-btn').text(`Data Folder: ${mountedFolder.name}`);
+            }
+          });
+          $('.spinner').remove();
+          $('#mount-folder-btn').show();
+          $('#terminal').terminal(async function(command, term) {
+            if(command.trim() === ""){
+              return;
+            }
+            try{
+              const results = await worker.runScript(command);
+              for(let result of results){
+                if(result.type === 'stdout')
+                  term.echo(result.content)
+                else if(result.type === 'stderr')
+                  term.echo('[[;red;]' + $.terminal.escape_formatting(result.content) + ']')
+                else if(result.type === 'img'){
+                  term.echo(`[[@;;;;${result.content}]]`);
+                }
+                else{
+                  term.echo(result.content)
+                }
+              }
+              console.log("CodeInterpreter Summary:", await worker.renderSummary())
+            }
+            catch(e){
+              term.echo('[[;red;]' + e.toString() + ']')
+            }
+          }, {
+            greetings: 'Welcome to the code interpreter terminal!',
+            name: 'Code Interpreter',
+            height: 200,
+            prompt: 'Code Interpreter> '
+          });
+        }).catch((e)=>{
+          console.error("Failed to create worker:", e)
+          $('#mount-folder-btn').hide();
+          alert("Failed to setup code interpreter, error:" + e)
         })
-    </script>
-    <style>
-        #menu-container {
-            opacity: 0.4;
+        
+      }
+
+      // Function to handle the login callback
+      function login_callback(context) {
+        window.open(context.login_url)
+      }
+
+      // Attach a click event handler to the login button
+      $('#login-button').on('click', async function () {
+        // Hide the login screen and show the spinner while logging in
+        $('.login-button').hide();
+        $('.login-spinner').show();
+
+        try {
+          // try to load token from localstorage before trying to get it, after getting it save it to localstorage with a expiry time (3h), when using a saved token, always check the expiry time
+          try{
+            token = localStorage.getItem('token');
+            if(token){
+              const tokenExpiry = localStorage.getItem('tokenExpiry');
+              if(tokenExpiry && new Date(tokenExpiry) > new Date()){
+                console.log("Using saved token:", token)
+              }
+              else{
+                // Call the login function to get the token
+                token = await hyphaWebsocketClient.login({
+                  "server_url": serverUrl,
+                  "login_callback": login_callback,
+                });
+                localStorage.setItem('token', token);
+                localStorage.setItem('tokenExpiry', new Date(Date.now() + 3*60*60*1000).toISOString());
+              }
+            }
+            else{
+              // Call the login function to get the token
+              token = await hyphaWebsocketClient.login({
+                "server_url": serverUrl,
+                "login_callback": login_callback,
+              });
+              localStorage.setItem('token', token);
+              localStorage.setItem('tokenExpiry', new Date(Date.now() + 3*60*60*1000).toISOString());
+            }
+            if(!token){
+              throw new Error("Failed to get token")
+            }
+            // If the login is successful, proceed to initialize the service
+            svc = await initializeService();
+          }
+          catch(e){
+            console.error("Failed to login:", e)
+            token = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('tokenExpiry');
+            alert("Failed to login, please reload the page and try again, error:" + e)
+            throw e;
+          }
+          
+          // Show the app interface
+          showAppInterface();
+        } catch (e) {
+          // Handle login error
+          console.error("Login failed:", e);
+
+          // Show an error message and allow the user to try again
+          $('#login-error-message').text("Login failed. Please try again.");
+          $('.login-spinner').hide();
+          $('.login-button').show();
+        }
+      });
+
+      const login_required = "LOGIN_REQUIRED";
+      if (login_required !== "false") {
+        token = localStorage.getItem('token');
+        if(token){
+          const tokenExpiry = localStorage.getItem('tokenExpiry');
+          if(tokenExpiry && new Date(tokenExpiry) > new Date()){
+            console.log("Using saved token:", token)
+            svc = await initializeService();
+            showAppInterface();
+          }
+          else{
+            showLoginScreen();
+          }
+        }
+        else
+          showLoginScreen();
+      }
+      else {
+        svc = await initializeService();
+
+        showAppInterface();
+      }
+      // Manually toggle the collapse for profile options
+      $('#edit-profile-btn').click(function () {
+        $('#profile-options').collapse('toggle');
+      });
+
+      $('#console-btn').click(function () {
+        toggleConsole();
+      });
+
+      $('#mount-folder-btn').hide();
+      async function initializeService() {
+        $('.message-holder').append(spinner);
+        showConnectingStatus();
+        
+        try {
+          // get service_id from query string
+          const service_id = urlParams.get('service_id');
+          const extension_services = urlParams.getAll('extension');
+          const server = await hyphaWebsocketClient.connectToServer({
+            "server_url": serverUrl,
+            "token": token,
+          })
+          const svc = await server.getService(service_id || "bioimageio-chatbot")
+          await svc.ping()
+          const storeSvc = await server.registerService({
+            "id": "bioimageio-chatbot-store-" + Math.random().toString(36).substring(7),
+            "type": "functions",
+            "config": {
+                "visibility": "public",
+                "require_context": true
+            },
+            "file": async function(event, context) {
+                const query_string = event.query_string
+                // parse query string
+                const params = new URLSearchParams(query_string);
+                const path = params.get('path');
+                const fileToken = params.get('token');
+                if(fileToken !== fileSecret){
+                  return {
+                    status: 403,
+                    body: "Permission denied"
+                  }
+                }
+                if(path){
+                  if(!path.startsWith("/mnt")){
+                    return {
+                      status: 403,
+                      body: "Permission denied"
+                    }
+                  }
+                  // extract the path after /mnt
+                  // and read it from mountedFolder
+                  const relPath = path.substring(4)
+                  const fileHandle = await getFileHandle(mountedFolder, relPath);
+                  const fileContent = await readFileContent(fileHandle);
+                  const size = fileContent.length;
+                  // get the mime types for all the image types, otherwise return application/octet-stream
+                  const mimeType = relPath.endsWith('.png') ? 'image/png' : relPath.endsWith('.jpg') ? 'image/jpeg' : relPath.endsWith('.jpeg') ? 'image/jpeg' : relPath.endsWith('.gif') ? 'image/gif' : relPath.endsWith('.wav') ? 'audio/wav' : 'application/octet-stream';
+                  return {
+                    status: 200,
+                    headers: {'Content-Type': mimeType, 'Content-Length': `${size}`, 'Content-Disposition': `inline; filename="${relPath.split('/').pop()}"`},
+                    body: fileContent
+                  };
+                }
+                const key = params.get('id');
+                if(!dataStore[key]){
+                  return {
+                    status: 404,
+                    body: "Not found"
+                  }
+                }
+                else{
+                  const obj = dataStore[key]
+                  if(obj.type === "img" || obj.type === "audio"){
+                    return {
+                      status: 200,
+                      headers: {'Content-Type': obj.type === "img" ? 'image/png' : 'audio/wav'},
+                      // obj.content will be something like data:image/png;base64,...
+                      // lets convert the base64 encoded string to arraybuffer
+                      body: base64ToArrayBuffer(obj.content)
+                    };
+                  }
+                  else{
+                    return {
+                      status: 200,
+                      headers: {'Content-Type': 'application/json'},
+                      body: JSON.stringify(obj)
+                    };
+                  }
+                }
+            },
+            "list": async function(event, context) {
+                return {
+                  status: 200,
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify(Object.keys(dataStore))
+                };
+            }
+        })
+        dataStore.base_url = `${server.config.public_base_url}/${server.config.workspace}/apps/${storeSvc.id.split(':')[1]}`;
+        console.log("Store service registered, you can access it via:", `${dataStore.base_url}/list`)
+          allAssistants = svc.assistants;
+          const assistant = allAssistants[assistantName];
+          if(assistant.code_interpreter){
+            enableCodeInterpreter = true;
+          }
+          if(enableCodeInterpreter){
+            setupCodeInterpreter();
+          }
+          if(Object.keys(allAssistants).length > 1){
+            const assistantButtons = document.getElementById('assistant-buttons');
+            assistantButtons.innerHTML = Object.values(allAssistants).map((a)=>{
+              // <li><a class="dropdown-item" href="#" data-assistant="Melman">BioImage Seeker (Melman)</a></li>
+              return `<li><a class="dropdown-item" href="#" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
+            }).join("\n")
+          }
+          else{
+            $('#assistant-menu-button').hide();
+          }
+          if (!assistant) {
+            throw new Error(`Assistant ${assistantName} not found`);
+          }
+          assistantIcon = assistant.icon || assistantIcon;
+          document.getElementById('assistant-menu-button').innerHTML = `${assistant.alias} (${assistant.name})`;
+          const builtinExtensions = assistant.extensions;
+          // clear extension except registered from ImJoy
+          extensions = [];
+          for(let ext of registeredExtensions){
+            extensions.push(ext)
+          }
+          builtinExtensions.forEach((ext) => {
+            extensions.push(ext)
+          });
+          for(let ext of extension_services){
+            try{
+              console.log("Getting extension service:", ext)
+              const extSvc = await server.getService(ext)
+              console.log("Got extension service:", ext, extSvc)
+              extSvc._rintf = true
+              extSvc.id = extSvc.id.split(":")[1]
+              await _registerExtension(extSvc)
+              console.log(`Registered extension: ${extSvc.name} (${extSvc.description})`, extSvc)
+            }
+            catch(e){
+              console.error("Failed to connect to extension service:", ext, e)
+              alert(`Failed to connect to extension service: ${ext}, error: ${e}`)
+            }
+          }
+          updateDropdownOptions(extensions);
+          showReadyStatus();
+          appendRobotMessage(allAssistants[assistantName]['welcome_message'], "message-0"); // Append robot message to the message container
+          return svc;
+        }
+        catch (e) {
+          // If connection fails, show an error message in the status
+          showErrorStatus(`Failed to connect to the server. ${e}`);
+          alert(`Failed to connect to BioImage.IO Chatbot server. ${e}`)
+          throw e;
+        }
+        finally {
+          $('.spinner').remove();
+        }
+      }
+      // Reset the chat session and clear chat history
+      function resetChat() {
+        sessionId = generateSessionID(); // Generate a new session ID
+        envPrompt = "";
+        chat_history.length = 0; // Clear the chat history
+        code = ''; // Reset code
+        error_message = ''; // Reset error message
+        $('.message-holder').empty(); // Clear the messages
+        initializeService();
+      }
+
+      $('#assistant-buttons li > a').click(function() {
+        const assistantName = $(this).data('assistant');
+        const url = new URL(document.location.href);
+        url.searchParams.set('assistant', assistantName);
+        document.location.href = url.toString();
+      });
+
+      $('#reset-btn').click(function () {
+        resetChat(); // Call the reset function when the "Reset" button is clicked
+      });
+
+      // Load user profile from local storage
+      const savedUserProfile = JSON.parse(localStorage.getItem('userProfile'));
+      if (savedUserProfile) {
+        $('#userNameInput').val(savedUserProfile.name);
+        $('#userOccupationInput').val(savedUserProfile.occupation);
+        $('#userBackgroundInput').val(savedUserProfile.background);
+      }
+
+      // Save button click event to save the user profile to local storage
+      $('#save-profile-btn').click(function () {
+        const userName = $('#userNameInput').val();
+        const userOccupation = $('#userOccupationInput').val();
+        const userBackground = $('#userBackgroundInput').val();
+
+        // Create a user_profile object with name, occupation, and background
+        const user_profile = {
+          name: userName,
+          occupation: userOccupation,
+          background: userBackground
+        };
+
+        // Save the user profile to local storage
+        localStorage.setItem('userProfile', JSON.stringify(user_profile));
+
+        // Collapse the profile options after saving
+        $('#profile-options').collapse('hide');
+      });
+      var code;
+      var error_message;
+      // Add this event listener to automatically resize the textarea based on its content
+      var textarea = document.getElementById('textMessageArea');
+      textarea.addEventListener('input', autoResize, false);
+      autoResize.call(textarea);
+
+      var renderer = new marked.Renderer();
+      marked.setOptions({
+        gfm: true,
+        tables: true,
+        breaks: true,
+        pedantic: false,
+        smartLists: true,
+        smartypants: false
+      });
+
+      renderer.link = function (href, title, text) {
+        return '<a target="_blank" href="' + href + '" title="' + title + '">' + text + '</a>';
+      }
+
+      function autoResize() {
+        this.style.height = (this.scrollHeight) + 'px';
+      }
+      //svc = await initializeService();
+
+      const chat_history = [];
+
+      let sessionId = generateSessionID();
+      console.log("Session ID:", sessionId);
+
+
+      async function sendMessage(e) {
+        e.preventDefault();
+
+        // Get the text message
+        const message = $('.message').val();
+
+        // Get the selected file
+        const fileInput = document.getElementById('fileUpload');
+        if(fileInput){
+          const selectedFile = fileInput.files[0];
+
+          // Check if a file is selected
+          if (selectedFile) {
+            // Read the selected file as a data URL (base64)
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              const imageData = reader.result; // Extract base64 data
+              sendChatMessage(message, imageData);
+              removeFileSelected();
+            };
+            reader.readAsDataURL(selectedFile);
+            
+          } else {
+            // No file selected, send only text message
+            sendChatMessage(message, null);
+            fileInput.value = ''; // Clear the file input
+          }
+  
+        }
+        else{
+          sendChatMessage(message, null);
+        }
+       
+        // Clear the input fields
+        $('.message').val('').focus();
+
+      }
+
+      function completeCodeBlocks(markdownText) {
+        const codeBlockIndicator = '```';
+
+        // Replace "```" in JSON strings with "```"
+        markdownText = markdownText.replace(/```/g, '```');
+
+        // Split text by code block indicator
+        const parts = markdownText.split(codeBlockIndicator);
+
+        // If there's an odd number of parts, it means a code block is not closed
+        if (parts.length > 1 && parts.length % 2 !== 0) {
+          // Append a closing code block indicator
+          markdownText += `\n${codeBlockIndicator}`;
         }
 
-        #menu-container:hover {
-            opacity: 1.0;
+        return markdownText;
+      }
+      
+
+      async function sendChatMessage(textMessage, imageData) {
+        const userName = $('#userNameInput').val();
+        const userOccupation = $('#userOccupationInput').val();
+        const userBackground = $('#userBackgroundInput').val();
+        const selectedChannel = $('#channelSelect').val();
+
+        // Create a user_profile object with name, occupation, and background
+        let user_profile = {
+          name: userName,
+          occupation: userOccupation,
+          background: userBackground
+        };
+
+        appendUserMessage(textMessage);
+
+        // Show 'Thinking...' status while waiting for the server's response
+        showThinkingStatus();
+        
+        currentMessageId = "message-" + (chat_history.length+2)
+        appendRobotMessage("", currentMessageId); // Append robot message to the message container
+        $(`#spinner-${currentMessageId}`).show();
+
+        let accumulatedArgs = ""
+       function statusCallback(message) {
+          if (message.type === 'function_call') {
+            if (message.status === 'in_progress') {
+              accumulatedArgs += message.arguments
+            }
+            else {
+              accumulatedArgs = message.arguments
+            }
+            const args = accumulatedArgs.replace(/\\n/g, '\n');
+            
+            content = // `<details> <summary>${message.name}</summary>`+
+              "## Generating response for " + message.name + "...\n\n" +
+              args;
+            // + "</details>";
+            $(`#content-${currentMessageId}`).html(marked(completeCodeBlocks(content), { renderer: renderer }));
+          }
+          else if (message.type === 'text') {
+            if (message.status === 'in_progress') {
+              accumulatedArgs += message.content
+            }
+            else{
+              accumulatedArgs = message.content
+            }
+            $(`#content-${currentMessageId}`).html(marked(completeCodeBlocks(accumulatedArgs), { renderer: renderer }));
+          }
+        }
+        try {
+          if(envPrompt && envPrompt.length > 0){
+            textMessage = envPrompt + textMessage
+          }
+          // Call the chat function with text and image data
+          response = await svc.chat(textMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
+          // const regex = /!\[.*?\]\(data:.+?\)/g;
+          // const replacementText = '`image placeholder`';
+          // responseWithoutImage = response.replace(regex, replacementText);
+          console.log(response)
+          chat_history.push({ role: 'user', content: textMessage });
+          chat_history.push({ role: 'assistant', content: response.text });
+          showReadyStatus();
+
+        }
+        catch (e) {
+          // generate an error message to simulate how Melman from Madagascar would respond to an error
+          response = {text: "Oh no! I'm sorry, I don't know how to answer that. Please try again."};
+          showErrorStatus(`The server failed to respond, please try again. ${e}`);
+          console.error(e);
+        }
+        finally {
+          // Remove spinner and set status back to 'Ready to chat' after finishing
+          $('.spinner').remove();
+          $(`#spinner-${currentMessageId}`).hide();
+          // Convert the message to HTML using the marked library
+          const steps = response.steps;
+          let message = response.text && marked(response.text, { renderer: renderer }) || "";
+          if(steps && steps.length > 0){
+            let details = "<details> <summary>🔍More Details</summary>\n\n"
+            for(let step of steps){
+              details = details + `<div class="step">${step.name}</div>\n\n\`\`\`\n\n${JSON.stringify(step.details, null, 2)}\n\n\`\`\`\n\n`
+            }
+            details = details + "\n\n</details>"
+            details = marked(details, { renderer: renderer })
+            message = message + details
+          }
+          $(`#content-${currentMessageId}`).html(message);
+        }
+      }
+
+      function appendUserMessage(message) {
+        let messageContainer = `<div class="message-container user-message">
+                                  <div class="rounded-icon-container">
+                                   <i class="fas fa-user" style="margin-left: 10px;margin-bottom: 3px;"></i>
+                                  </div>
+                                   <div class="message-content">${message}</div>
+                                </div>`;
+        $('.message-holder').append(messageContainer);
+      }
+
+      function appendRobotMessage(htmlMessage, messageId) {
+        const iconUrl = assistantIcon;
+        const messageContainer = `<div class="message-container robot-message" id="container-${messageId}">
+          <div class="rounded-icon-container">
+            <img src="${iconUrl}" alt="${assistantName}" width="20" height="20">
+          </div>
+          <div class="message-content markdown-body">
+            <h3 id="spinner-${messageId}" style="display:none;"><div class="spinner" style='display: inline-block;width:25px;height:25px;margin-bottom:-4px;'></div>🤔Thinking...</h3>
+            <div id="content-${messageId}">${htmlMessage}</div>
+          </div>
+        </div>
+        <div class="message-output" style="display:none;" id="output-${messageId}"></div>
+        <div class="feedback-buttons"  id="${messageId}" style="margin-left: 35px; margin-top: -6px;"> <!-- Add margin-top here -->
+          <button class="feedback-button like-button small-grey-button"><i class="fas fa-thumbs-up"></i></button>
+          <button class="feedback-button unlike-button small-grey-button"><i class="fas fa-thumbs-down"></i></button>
+        </div>`;
+        $('.message-holder').append(messageContainer);
+      }
+      // Function to update the status text
+      function updateStatus(status) {
+        $('#status-text').text(status);
+      }
+      // Function to show the status as 'Connecting to server...'
+      function showConnectingStatus() {
+        updateStatus('Connecting to server...');
+      }
+      // Function to show the status as 'Thinking...'
+      function showThinkingStatus() {
+        updateStatus('🤔Thinking...');
+      }
+
+      // Function to show the status as 'Ready to chat'
+      function showReadyStatus() {
+        updateStatus('Ready to chat! Type your message and press enter!');
+      }
+
+      // Function to show the error message in the status
+      function showErrorStatus(errorMessage) {
+        updateStatus('Error: ' + errorMessage);
+      }
+
+      // Function to generate session id
+      function generateSessionID() {
+        // Create a timestamp to ensure uniqueness
+        const timestamp = new Date().getTime();
+
+        // Generate a random number to add randomness
+        const random = Math.random();
+
+        // Combine timestamp and random number to create the session ID
+        const sessionID = `${timestamp}-${random}`;
+
+        return sessionID;
+      }
+
+      // Call the function to generate a session ID
+
+      async function showFeedbackWindow() {
+        // Show a prompt to collect user feedback
+        const feedbackMessage = prompt('Please share your thoughts about this response, thank you!', '');
+
+        if (feedbackMessage !== null) {
+          const feedbackType = $(this).hasClass('like-button') ? 'like' : 'unlike';
+
+          // get the messageId
+          const messageId = $(this).parent().attr('id');
+          // remove message- from the messageId and convert to integer
+          const messageIndex = parseInt(messageId.replace('message-', ''));
+          // get the chat history until messageIndex
+          const chatMessages = chat_history.slice(0, messageIndex);
+          const feedbackData = {
+            type: feedbackType,
+            feedback: feedbackMessage,
+            messages: chatMessages,
+            session_id: sessionId
+          };
+
+          // Call the 'svc.report()' function to send the feedback data
+          try {
+            await svc.report(feedbackData);
+          }
+          catch (e) {
+            console.error(e);
+            alert(`Failed to send feedback, error: ${e}`);
+            return;
+          }
+          // Hide the unclicked button
+          const otherButton = $(this).hasClass('like-button')
+            ? $('.unlike-button', $(this).parent())
+            : $('.like-button', $(this).parent());
+          otherButton.hide();
+
+          // Disable the clicked button
+          $(this).prop('disabled', true).off('click');
+        }
+      }
+
+      // Attach a click event handler to the 'like' and 'unlike' buttons
+      $('.message-holder').on('click', '.feedback-button', showFeedbackWindow);
+
+
+      $("#textMessageArea").on("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent the default new line behavior
+          if (event.shiftKey) {
+            textarea.value += "\n"; // Add a new line when Shift is held
+          } else {
+            sendMessage(event); // Send the message when Enter is pressed
+          }
+        }
+      });
+
+      $('.send-btn').on('click', sendMessage);
+
+
+      $('#advanced-options-btn').click(function () {
+        $('#advanced-options').collapse('toggle');
+      });
+
+      // Add a click event handler for the "Feedback" button
+      $('#feedback-btn').click(function () {
+        // Show the feedback form
+        $('#feedback-form').collapse('toggle');
+
+        // Set the initial height of the textarea dynamically to show three lines
+        const lineHeight = 20; // You may need to adjust this based on your font size
+        $('#generalFeedback').css('height', (lineHeight * 5) + 'px');
+      });
+
+      // Add a click event handler for the "Save Feedback" button
+      $('#save-feedback-btn').click(async function () {
+        // Get the general feedback message from the textarea
+        const generalFeedback = $('#generalFeedback').val();
+
+        // Create a feedbackData object
+        const feedbackData = {
+          type: 'general', // Set the type to 'general feedback'
+          feedback: generalFeedback,
+          messages: chat_history, // Include chat history
+          session_id: sessionId
+        };
+
+        // Call the 'svc.report()' function to send the feedback data
+        try {
+          await svc.report(feedbackData);
+        }
+        catch (e) {
+          console.error(e);
+          alert(`Failed to send feedback, error: ${e}`);
+          return;
         }
 
-        .window {
-            min-height: 200px;
-        }
-    </style>
-      <!-- Matomo -->
-    <script>
-        var _paq = window._paq = window._paq || [];
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-        var u="https://bioimage.matomo.cloud/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src='//cdn.matomo.cloud/bioimage.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-        })();
-    </script>
-    <!-- End Matomo Code -->
+        // Clear the input field
+        $('#generalFeedback').val('');
+
+        // Collapse the feedback form
+        $('#feedback-form').collapse('hide');
+
+        alert("Thank you for your feedback!");
+      });
+
+    });
+  </script>
+  <!-- https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.3.0/github-markdown.min.css -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.3.0/github-markdown-light.css" />
 </body>
 
 </html>
