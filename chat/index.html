@@ -12,7 +12,7 @@
   <link rel="icon" type="image/x-icon" href="https://bioimage.io/static/icons/favicon.ico">
   <style>
     /* Custom CSS */
-    .message-output{
+    .message-output {
       margin-left: 32px;
       background-color: #f8f5f537;
       padding: 14px;
@@ -25,26 +25,32 @@
       max-height: 200px;
       overflow: auto;
     }
-    .message-output > img {
+
+    .message-output>img {
       max-width: 100%;
       height: auto;
     }
-    .message-output > audio {
+
+    .message-output>audio {
       width: 100%;
     }
-    .message-output > video {
+
+    .message-output>video {
       width: 100%;
     }
-    .message-output > iframe {
+
+    .message-output>iframe {
       width: 100%;
       height: 300px;
     }
-    .message-output > pre {
+
+    .message-output>pre {
       font-size: small;
       font-family: monospace;
       white-space: pre-wrap;
       margin: 0;
     }
+
     .file-selected {
       background-color: #036ffc;
       border-radius: 4px;
@@ -178,8 +184,10 @@
     .step {
       display: inline-block;
       padding: 1px 6px;
-      border-radius: 10px; /* Round corners */
-      background-color: #007bff; /* Example background color */
+      border-radius: 10px;
+      /* Round corners */
+      background-color: #007bff;
+      /* Example background color */
       color: white;
       font-size: 0.8em;
     }
@@ -238,6 +246,7 @@
       margin: 0 auto;
       /* Center the chat container horizontally */
     }
+
     .window {
       /* Avoid window with 0 height */
       min-height: 220px !important;
@@ -279,16 +288,18 @@
         </button> for each response, or by clicking the 'Feedback' button below.
       </p>
 
-      <p>Note that the chatbot is still in beta and is being actively developed, we will log the message you input into the chatbot for further investigation of issues and support our development. See <a
-            href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md" target="_blank">the
-            Disclaimer</a> for more details. If you want to to remove your chat logs, please contact us via <a href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>.</p>
-            <button class="feedback-button" onclick="confirmDisclaimer()">OK, got it!</button>
+      <p>Note that the chatbot is still in beta and is being actively developed, we will log the message you input into
+        the chatbot for further investigation of issues and support our development. See <a
+          href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md" target="_blank">the
+          Disclaimer</a> for more details. If you want to to remove your chat logs, please contact us via <a
+          href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>.</p>
+      <button class="feedback-button" onclick="confirmDisclaimer()">OK, got it!</button>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" value="" id="dont-ask-again-check">
         <label class="form-check-label" for="dont-ask-again-check">
           Don't ask me again
         </label>
-      </div>      
+      </div>
     </div>
   </div>
 
@@ -332,10 +343,12 @@
             BioImage.IO Chatbot
           </div>
           <div class="dropdown">
-            <button class="btn dropdown-toggle" type="button" id="assistant-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn dropdown-toggle" type="button" id="assistant-menu-button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
               Assistants
             </button>
-            <div id="assistant-buttons" class="dropdown-menu dropdown-menu-right" aria-labelledby="assistant-menu-button">
+            <div id="assistant-buttons" class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="assistant-menu-button">
             </div>
           </div>
         </div>
@@ -355,7 +368,8 @@
                 style="flex-grow: 1; border: 1px solid #ced4da; border-radius: .25rem; height: 36px; padding: .375rem .75rem;"></textarea>
             </div>
           </div>
-          <button type="button" id="send-btn" class="btn btn-primary mt-3"><i class="fas fa-paper-plane"></i>Send</button>
+          <button type="button" id="send-btn" class="btn btn-primary mt-3"><i
+              class="fas fa-paper-plane"></i>Send</button>
           <button type="button" class="btn btn-primary mt-3" id="mount-folder-btn">
             <i class="fas fa-folder"></i> Mount Files
           </button>
@@ -416,7 +430,11 @@
         <!-- Helper message for personalized answers -->
         <p class="mt-3">Warning: BioImage.IO Chatbot can make mistakes. Consider checking important information.</p>
         <p class="mt-3">Tips: Customize your profile to get personalized answers based on your background.</p>
-        <p>If you find our chatbot helpful for you, please consider cite us: <a href="https://arxiv.org/abs/2310.18351" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/b151f4a4752252b73a5a8b484197840b0bc50c7c18d4b4ddad2b89a8e90d36f0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f61725869762d323331302e31383335312d7265642e737667" alt="arXiv" data-canonical-src="https://img.shields.io/badge/arXiv-2310.18351-red.svg" style="max-width: 100%;"></a></p>
+        <p>If you find our chatbot helpful for you, please consider cite us: <a href="https://arxiv.org/abs/2310.18351"
+            target="_blank" rel="nofollow"><img
+              src="https://camo.githubusercontent.com/b151f4a4752252b73a5a8b484197840b0bc50c7c18d4b4ddad2b89a8e90d36f0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f61725869762d323331302e31383335312d7265642e737667"
+              alt="arXiv" data-canonical-src="https://img.shields.io/badge/arXiv-2310.18351-red.svg"
+              style="max-width: 100%;"></a></p>
         <a href="https://ai4life.eurobioimaging.eu/" target="_blank"><img
             src="https://ai4life.eurobioimaging.eu/wp-content/uploads/2022/09/AI4Life-logo_giraffe-nodes-2048x946.png"
             alt="AI4Life Icon" style="height: 80px; margin-right: 10px">
@@ -440,7 +458,7 @@
 
   <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://unpkg.com/jquery.terminal@2.3.0/js/jquery.terminal.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.3.0/css/jquery.terminal.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.3.0/css/jquery.terminal.min.css" />
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.7.0/dist/multiple-select.min.css">
 
@@ -479,7 +497,7 @@
       let len = binary_string.length;
       let bytes = new Uint8Array(len);
       for (let i = 0; i < len; i++) {
-          bytes[i] = binary_string.charCodeAt(i);
+        bytes[i] = binary_string.charCodeAt(i);
       }
       return bytes; // This is the ArrayBuffer
     }
@@ -491,40 +509,40 @@
       label.classList.remove('file-selected');
     }
 
-    function toggleConsole(){
+    function toggleConsole() {
       const consoleBtn = document.getElementById('console-btn');
       const consoleWindow = document.getElementById('console-window');
-      if(consoleWindow.style.display === 'none'){
+      if (consoleWindow.style.display === 'none') {
         consoleWindow.style.display = 'block';
         consoleBtn.innerHTML = '<i class="fas fa-terminal"></i> Hide Console'
       }
-      else{
+      else {
         consoleWindow.style.display = 'none';
         consoleBtn.innerHTML = '<i class="fas fa-terminal"></i> Code Interpreter'
       }
     }
 
     function updateDropdownOptions(extensions) {
-      const options = extensions.map((ext)=>{
+      const options = extensions.map((ext) => {
         return {
           text: `${ext.name}: ${ext.description}`,
           value: ext.id
         }
       })
-    
+
       var $select = $('#extensions');
-    
+
       // Clear existing options
       $select.empty();
-    
+
       // Add new options from the 'options' array
-      options.forEach(function(option) {
-        $select.append($('<option>', { 
-          value: option.value, 
-          text : option.text.slice(0, 128) + (option.text.length > 128 ? "..." : "")
+      options.forEach(function (option) {
+        $select.append($('<option>', {
+          value: option.value,
+          text: option.text.slice(0, 128) + (option.text.length > 128 ? "..." : "")
         }));
       });
-    
+
       // Refresh the multipleSelect to reflect the changes
       $select.multipleSelect('refresh');
       $select.multipleSelect('checkAll');
@@ -535,13 +553,13 @@
       if (relPath.startsWith('/')) {
         relPath = relPath.substring(1);
       }
-    
+
       const pathSegments = relPath.split('/');
       let currentHandle = directoryHandle;
       const fileName = pathSegments.pop();
       for (const segment of pathSegments) {
         if (segment === '') continue;  // Skip empty segments
-        if ((await currentHandle.queryPermission({mode: 'read'})) === 'granted') {
+        if ((await currentHandle.queryPermission({ mode: 'read' })) === 'granted') {
           if (currentHandle.kind === 'directory') {
             currentHandle = await currentHandle.getDirectoryHandle(segment);
           } else {
@@ -554,12 +572,12 @@
       currentHandle = await currentHandle.getFileHandle(fileName);
       return currentHandle;
     }
-    
+
 
     async function readFileContent(fileHandle) {
       const file = await fileHandle.getFile();
       const reader = new FileReader();
-    
+
       return new Promise((resolve, reject) => {
         reader.onloadend = () => {
           if (reader.error) {
@@ -574,16 +592,16 @@
 
     function getSelectedExtensions() {
       var selectedValues = $('#extensions').val(); // Gets the array of selected values
-  
+
       const exts = []
       // If you want to do something with these values, you can iterate over them
       for (var i = 0; i < selectedValues.length; i++) {
-          exts.push(extensions.find(ext=>ext.id === selectedValues[i]))
+        exts.push(extensions.find(ext => ext.id === selectedValues[i]))
       }
-  
+
       return exts; // Returns the array of selected values
     }
-    
+
     const storage = {};
     function uuidv4() {
       return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -591,84 +609,84 @@
       );
     }
     function encodeData(result) {
-        if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
-            return result;
-        } else if (Array.isArray(result)) {
-            return result.map(encodeData);
-        } else if (typeof result === 'object') {
-            if(result._rtype){
-              let key = uuidv4(); // Implement or import uuidv4 function
-              storage[key] = result;
-              return {
-                  rtype: "obj",
-                  reference_id: key
-              };
-            }
-            let encodedObject = {};
-            for (let [key, value] of Object.entries(result)) {
-                encodedObject[key] = encodeData(value);
-            }
-            return encodedObject;
-        } else {
-            let key = uuidv4(); // Implement or import uuidv4 function
-            storage[key] = result;
-            return {
-                rtype: "obj",
-                reference_id: key
-            };
+      if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
+        return result;
+      } else if (Array.isArray(result)) {
+        return result.map(encodeData);
+      } else if (typeof result === 'object') {
+        if (result._rtype) {
+          let key = uuidv4(); // Implement or import uuidv4 function
+          storage[key] = result;
+          return {
+            rtype: "obj",
+            reference_id: key
+          };
         }
+        let encodedObject = {};
+        for (let [key, value] of Object.entries(result)) {
+          encodedObject[key] = encodeData(value);
+        }
+        return encodedObject;
+      } else {
+        let key = uuidv4(); // Implement or import uuidv4 function
+        storage[key] = result;
+        return {
+          rtype: "obj",
+          reference_id: key
+        };
+      }
     }
 
     function decodeData(result) {
-        if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
-            return result;
-        } else if (Array.isArray(result)) {
-            return result.map(decodeData);
-        } else if (typeof result === 'object') {
-            if ('rtype' in result && result['rtype'] === "obj") {
-                let key = result['reference_id'];
-                return storage[key];
-            } else {
-                let decodedObject = {};
-                for (let [key, value] of Object.entries(result)) {
-                    decodedObject[key] = decodeData(value);
-                }
-                return decodedObject;
-            }
+      if (result === null || typeof result === 'string' || typeof result === 'number' || typeof result === 'boolean') {
+        return result;
+      } else if (Array.isArray(result)) {
+        return result.map(decodeData);
+      } else if (typeof result === 'object') {
+        if ('rtype' in result && result['rtype'] === "obj") {
+          let key = result['reference_id'];
+          return storage[key];
         } else {
-            return result;
+          let decodedObject = {};
+          for (let [key, value] of Object.entries(result)) {
+            decodedObject[key] = decodeData(value);
+          }
+          return decodedObject;
         }
+      } else {
+        return result;
+      }
     }
 
     // this function is used to remove the __rpc_object__ attribute from the object
     // this is important to make sure the function is correctly encoded and send to imjoy_rpc
-    function _removeRpcObj(obj){
-      if(obj && obj.__rpc_object__){
+    function _removeRpcObj(obj) {
+      if (obj && obj.__rpc_object__) {
         delete obj.__rpc_object__
       }
-      else if(obj && Array.isArray(obj)){
-        for(let i=0; i<obj.length; i++){
+      else if (obj && Array.isArray(obj)) {
+        for (let i = 0; i < obj.length; i++) {
           _removeRpcObj(obj[i])
         }
       }
-      else if(obj && typeof obj === 'object'){
-        for(let k in obj){
+      else if (obj && typeof obj === 'object') {
+        for (let k in obj) {
           _removeRpcObj(obj[k])
         }
       }
     }
-    
+
     async function _registerExtension(extension) {
       // convert legacy extension to new format
-      if(!extension.tools && extension.execute){
+      if (!extension.tools && extension.execute) {
         extension.id = extension.name.replace(/\s+/g, '-')
         extension.type = "bioimageio-chatbot-extension"
         extension.tools = {
           _: extension.execute
         }
         const get_schema = extension.get_schema
-        if(get_schema){
-          extension.get_schema = async function(){
+        if (get_schema) {
+          extension.get_schema = async function () {
             const schema = await get_schema()
             return {
               _: schema
@@ -677,34 +695,35 @@
         }
         delete extension.execute
       }
-      if(!extension.id || !extension.tools || !extension.get_schema) 
+      if (!extension.id || !extension.tools || !extension.get_schema)
         throw new Error("Invalid extension")
-      if(extension.type != "bioimageio-chatbot-extension")
+      if (extension.type != "bioimageio-chatbot-extension")
         throw new Error(`Invalid extension ${extension.id}, type should be bioimageio-chatbot-extension`)
       _removeRpcObj(extension)
 
       const schemas = await extension.get_schema()
-      for(let k of Object.keys(schemas)){
+      for (let k of Object.keys(schemas)) {
         const schema = schemas[k]
-        if(!schema || !schema.title || schema.title.includes(" "))
+        if (!schema || !schema.title || schema.title.includes(" "))
           throw new Error("Invalid title in schema: " + k)
-        if(!schema.description){
-          throw new Error("Schema description is required: " + k)}
+        if (!schema.description) {
+          throw new Error("Schema description is required: " + k)
+        }
       }
 
       extensions.push(extension);
       // remove duplicates
-      extensions = extensions.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i)
+      extensions = extensions.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i)
       registeredExtensions.push(extension);
       updateDropdownOptions(extensions);
     }
 
-    function confirmDisclaimer(){
+    function confirmDisclaimer() {
       $('.announcement-banner').hide();
-      if(document.getElementById('dont-ask-again-check').checked)
-      localStorage.setItem('do-not-ask-again', 'true')
+      if (document.getElementById('dont-ask-again-check').checked)
+        localStorage.setItem('do-not-ask-again', 'true')
       else
-      localStorage.setItem('do-not-ask-again', 'false')
+        localStorage.setItem('do-not-ask-again', 'false')
     }
 
     $(document).ready(async function () {
@@ -718,7 +737,7 @@
       let assistantIcon = "https://bioimage.io/static/img/bioimage-io-icon.svg"
       let imjoyApi = null;
       let dataStore = {};
-      
+
       // add button class primary to the selected assistant button
       // use assistant-buttons to find the buttons container
       $('#assistant-buttons li > a[data-assistant="' + assistantName + '"]').css('background', '#007bff').css('color', 'white');
@@ -734,71 +753,72 @@
         $('#loading-container').hide();
         $('#login-container').hide();
         $('#app-container').show();
-        if(localStorage.getItem('do-not-ask-again') !== 'true')
-        $('.announcement-banner').show();
-        if(window.self !== window.top){
+        if (localStorage.getItem('do-not-ask-again') !== 'true')
+          $('.announcement-banner').show();
+        if (window.self !== window.top) {
           const imjoyRPC = await loadImJoyRPC()
-          const api = await imjoyRPC.setupRPC({name: 'BioImage.IO Chatbot'});
-          await api.export({setup(){}, async run(ctx){
-            assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || "Melman"
-            if(api.getChatbotExtensions){
-              const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
-              for(let ext of Object.values(extensions)){
-                _registerExtension(ext)
-                console.log(`Registered extension: ${ext.name} (${ext.description}) for assistant ${assistantName}`)
-              }
-            }
-          },
-          registerExtension: _registerExtension,
-          getAllExtensions(){
-            return extensions.map(ext=>ext.id)
-          },
-          getSelectedExtensions(){
-            // return the extenion names
-            return getSelectedExtensions().map(ext=>ext.id)
-          },
-          setSelectedExtensions(selected){
-            $('#extensions').multipleSelect('setSelects', Array.from(selected))
-          },
-        });
-        imjoyApi = api;
-        }
-        else{
-          loadImJoyCore().then((imjoyCore)=>{
-              const imjoy = new imjoyCore.ImJoy({
-                  imjoy_api: {
-                    async registerChatbotExtension(plugin, config){
-                      return await _registerExtension(config)
-                    }
-                  },
-              })
-              imjoy.start({workspace: 'default'}).then(async ()=>{
-                imjoyApi = imjoy.api;
-                if(assistantName === 'Melman'){
-                  console.log("Loading the Model Zoo extension...")
-                  const baseUrl = location.href.split('?')[0]
-                  const plugin = await imjoyApi.loadPlugin(`${baseUrl}/bioimage-model-zoo-extension.imjoy.html`)
-                  await plugin.setup();
-                  console.log("Model Zoo extension loaded.")
+          const api = await imjoyRPC.setupRPC({ name: 'BioImage.IO Chatbot' });
+          await api.export({
+            setup() { }, async run(ctx) {
+              assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || "Melman"
+              if (api.getChatbotExtensions) {
+                const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
+                for (let ext of Object.values(extensions)) {
+                  _registerExtension(ext)
+                  console.log(`Registered extension: ${ext.name} (${ext.description}) for assistant ${assistantName}`)
                 }
-              })
+              }
+            },
+            registerExtension: _registerExtension,
+            getAllExtensions() {
+              return extensions.map(ext => ext.id)
+            },
+            getSelectedExtensions() {
+              // return the extenion names
+              return getSelectedExtensions().map(ext => ext.id)
+            },
+            setSelectedExtensions(selected) {
+              $('#extensions').multipleSelect('setSelects', Array.from(selected))
+            },
+          });
+          imjoyApi = api;
+        }
+        else {
+          loadImJoyCore().then((imjoyCore) => {
+            const imjoy = new imjoyCore.ImJoy({
+              imjoy_api: {
+                async registerChatbotExtension(plugin, config) {
+                  return await _registerExtension(config)
+                }
+              },
+            })
+            imjoy.start({ workspace: 'default' }).then(async () => {
+              imjoyApi = imjoy.api;
+              if (assistantName === 'Melman') {
+                console.log("Loading the Model Zoo extension...")
+                const baseUrl = location.href.split('?')[0]
+                const plugin = await imjoyApi.loadPlugin(`${baseUrl}/bioimage-model-zoo-extension.imjoy.html`)
+                await plugin.setup();
+                console.log("Model Zoo extension loaded.")
+              }
+            })
           })
-          
+
         }
       }
 
-      function setupCodeInterpreter(){
-// check if the browser is not Chromium based then tell the user to use Chromium based browser
-if(!window.showOpenFilePicker){
-  const warning = document.createElement("div")
-  warning.innerHTML = `<br><div class="alert alert-warning" role="alert">
+      function setupCodeInterpreter() {
+        // check if the browser is not Chromium based then tell the user to use Chromium based browser
+        if (!window.showOpenFilePicker) {
+          const warning = document.createElement("div")
+          warning.innerHTML = `<br><div class="alert alert-warning" role="alert">
   <strong>Warning!</strong> The code interpreter is only supported in Chromium based browsers (e.g. Chrome, Edge, Brave, etc.), please use a Chromium based browser to use the code interpreter.
 </div>`
-// insert the warning after the chat-dialog-header
-  $('#chat1 .chat-dialog-header').after(warning)
-}
-$('#console-btn').show()
-const bioengineStartupScript = `
+          // insert the warning after the chat-dialog-header
+          $('#chat1 .chat-dialog-header').after(warning)
+        }
+        $('#console-btn').show()
+        const bioengineStartupScript = `
 import sys
 import numpy as np
 from imjoy_rpc.hypha import connect_to_server
@@ -899,7 +919,7 @@ sys.modules["bioengine"] = bioengine
 # mask = await bioengine.run_model("affable-shark", image[None, None, ...], {})
 `
 
-codeInterperterPrompt = `
+        codeInterperterPrompt = `
 ## Instructions for Code Interpreter
 Assist users in bioimage analysis within a Pyodide environment.
 You will generate and run script in the code interpreter to help users analyze their data.
@@ -927,37 +947,37 @@ Global variables, functions and results will be maintained across multiple code 
   \`\`\
 `
 
-// IDEA:
-// Have a list of services that the chatbot can select from, each with brief description
-// Add a tool to query the usage of each service and its functions
-// Then the chatbot can first select a service, then select a function from that service
-// The chatbot can then run the function with the given parameters
-const servicePrompt = `
+        // IDEA:
+        // Have a list of services that the chatbot can select from, each with brief description
+        // Add a tool to query the usage of each service and its functions
+        // Then the chatbot can first select a service, then select a function from that service
+        // The chatbot can then run the function with the given parameters
+        const servicePrompt = `
 `
         // show mount button
         workerManager.createWorker().then(async w => {
           $('#mount-folder-btn').show();
-          if(mountedFolder){
+          if (mountedFolder) {
             await worker.mount("/mnt", mountedFolder);
           }
           worker = w;
           console.log("Worker created:", worker);
-          await worker.runScript(bioengineStartupScript, {skip_record: true});
+          await worker.runScript(bioengineStartupScript, { skip_record: true });
           // await worker.runScript(`print(bioengine.__doc__)`);
           // let summary = await worker.renderSummary();
           envPrompt = codeInterperterPrompt + `\nUser:`
           // await worker.runScript(`print('Hello from worker')`);
-         _registerExtension({
+          _registerExtension({
             id: "code_interpreter",
             name: "Code Interpreter",
             description: `Use the code interpreter to run Python scripts to help users with request related to their data or code.\n`,
             type: "bioimageio-chatbot-extension",
             async get_schema() {
               let description = `Run Python scripts.`// In the script, you have access to two defined functions: "store_put" and "store_get" for save and resume variables. You can call "store_put(key, obj) to store object for future use, and in a next step use "store_get(key)" to retrieve it back.
-              if(mountedFolder){
+              if (mountedFolder) {
                 description += `\n\nUser has mounted files (from ${mountedFolder.name}) under /mnt, you have read and write access to /mnt. The download link for the files is ${dataStore.base_url}/file?token=${fileSecret}&path=/mnt/...`
               }
-              else{
+              else {
                 description += `\n\nUser has not mounted any files yet, use the "Mount Files" button to mount a folder for data access.`
               }
               return {
@@ -966,10 +986,10 @@ const servicePrompt = `
                   "title": "RunScript",
                   "description": description,
                   "properties": {
-                      "script": {
-                          "type": "string",
-                          "description": "Python script to execute",
-                      },
+                    "script": {
+                      "type": "string",
+                      "description": "Python script to execute",
+                    },
                   },
                   "required": ["script"],
                   "allow_additional_properties": false,
@@ -978,72 +998,72 @@ const servicePrompt = `
             },
             tools: {
               async run_script(config) {
-                  console.log("CodeInterpreter running script:", config.script)
-                  const container = document.getElementById(`output-${currentMessageId}`) // $(`#output-${messageId}`).
-                  container.style.display = "block";
-                  // create a title with emoji for the code interpreter
-                  const title = document.createElement("p")
-                  title.innerHTML = spinner + "🐍 Code Interpreter"
+                console.log("CodeInterpreter running script:", config.script)
+                const container = document.getElementById(`output-${currentMessageId}`) // $(`#output-${messageId}`).
+                container.style.display = "block";
+                // create a title with emoji for the code interpreter
+                const title = document.createElement("p")
+                title.innerHTML = spinner + "🐍 Code Interpreter"
 
-                  container.appendChild(title)
-                  try{
-                    const result = await worker.runScript(config.script, {output_container: container})
-                    console.log("CodeInterpreter result:", result)
-                    // worker.render(container)
-                    container.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                    // envPrompt = await worker.renderSummary();
-                    let summary = await worker.renderSummary();
-                    summary = servicePrompt + `\nTry to reuse what has been executed and results in the code interpreter, here is the execution history:\n--------------\n${summary}\n--------------\nUser:`
-                    envPrompt = codeInterperterPrompt + summary;
-                    // result is a list of objects,
-                    // filter out the objects
-                    // if type=img, then clip the content to 10 characters
-                    // if type=audio, then clip the content to 10 characters
-                    // remove the attrs from the result
-                    const filteredResult = result.map((obj) => {
-                      let content;
-                        if (obj.type === "audio" || obj.type === "img") {
-                          // create random id
-                          const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + (obj.type === "audio" ? ".wav" : ".png")
-                          dataStore[id] = obj
-                          content = `${obj.type}: ${dataStore.base_url}/file?token=${fileSecret}&id=${id}`
-                        }
-                        else if (obj.type === "stdout") {
-                          content = obj.content
-                        }
-                        else if (obj.type === "stderr") {
-                          content = "stderr: " + obj.content
-                        }
-                        else {
-                          content = obj.type + ": " + obj.content
-                        }
-                        return content
-                    })
-                    return filteredResult;
-                  }
-                  catch(e){
-                    console.error("CodeInterpreter error:", e)
-                    return [e.toString()]
-                  }
-                  finally{
-                    $('.spinner').remove();
-                  }
+                container.appendChild(title)
+                try {
+                  const result = await worker.runScript(config.script, { output_container: container })
+                  console.log("CodeInterpreter result:", result)
+                  // worker.render(container)
+                  container.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                  // envPrompt = await worker.renderSummary();
+                  let summary = await worker.renderSummary();
+                  summary = servicePrompt + `\nTry to reuse what has been executed and results in the code interpreter, here is the execution history:\n--------------\n${summary}\n--------------\nUser:`
+                  envPrompt = codeInterperterPrompt + summary;
+                  // result is a list of objects,
+                  // filter out the objects
+                  // if type=img, then clip the content to 10 characters
+                  // if type=audio, then clip the content to 10 characters
+                  // remove the attrs from the result
+                  const filteredResult = result.map((obj) => {
+                    let content;
+                    if (obj.type === "audio" || obj.type === "img") {
+                      // create random id
+                      const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + (obj.type === "audio" ? ".wav" : ".png")
+                      dataStore[id] = obj
+                      content = `${obj.type}: ${dataStore.base_url}/file?token=${fileSecret}&id=${id}`
+                    }
+                    else if (obj.type === "stdout") {
+                      content = obj.content
+                    }
+                    else if (obj.type === "stderr") {
+                      content = "stderr: " + obj.content
+                    }
+                    else {
+                      content = obj.type + ": " + obj.content
+                    }
+                    return content
+                  })
+                  return filteredResult;
+                }
+                catch (e) {
+                  console.error("CodeInterpreter error:", e)
+                  return [e.toString()]
+                }
+                finally {
+                  $('.spinner').remove();
+                }
               },
             }
           })
-          
+
           $('#mount-folder-btn').click(async function () {
             const dirHandle = await showDirectoryPicker();
             if ((await dirHandle.queryPermission({ mode: "readwrite" })) !== "granted") {
-                if (
-                    (await dirHandle.requestPermission({ mode: "readwrite" })) !== "granted"
-                ) {
-                    throw Error("Unable to read and write directory");
-                }
+              if (
+                (await dirHandle.requestPermission({ mode: "readwrite" })) !== "granted"
+              ) {
+                throw Error("Unable to read and write directory");
+              }
             }
             // show spinner
             $('#mount-folder-btn').append(spinner);
-            try{
+            try {
               // disable send message
               $('#send-btn').prop('disabled', true);
               await worker.mount("/mnt", dirHandle);
@@ -1056,7 +1076,7 @@ const servicePrompt = `
               $('#textMessageArea').val(`I just mounted my local data folder (original name: "${mountedFolder.name}") as /mnt.`);
               $('#send-btn').click();
             }
-            finally{
+            finally {
               $('.spinner').remove();
               $('#send-btn').prop('disabled', false);
               $('#mount-folder-btn').text(`Data Folder: ${mountedFolder.name}`);
@@ -1065,27 +1085,27 @@ const servicePrompt = `
           $('.spinner').remove();
           $('#mount-folder-btn').show();
           // empty termina first
-          $('#terminal').terminal(async function(command, term) {
-            if(command.trim() === ""){
+          $('#terminal').terminal(async function (command, term) {
+            if (command.trim() === "") {
               return;
             }
-            try{
+            try {
               const results = await worker.runScript(command);
-              for(let result of results){
-                if(result.type === 'stdout')
+              for (let result of results) {
+                if (result.type === 'stdout')
                   term.echo(result.content)
-                else if(result.type === 'stderr')
+                else if (result.type === 'stderr')
                   term.echo('[[;red;]' + $.terminal.escape_formatting(result.content) + ']')
-                else if(result.type === 'img'){
+                else if (result.type === 'img') {
                   term.echo(`[[@;;;;${result.content}]]`);
                 }
-                else{
+                else {
                   term.echo(result.content)
                 }
               }
               console.log("CodeInterpreter Summary:", await worker.renderSummary())
             }
-            catch(e){
+            catch (e) {
               term.echo('[[;red;]' + e.toString() + ']')
             }
           }, {
@@ -1094,12 +1114,12 @@ const servicePrompt = `
             height: 200,
             prompt: 'Code Interpreter> '
           });
-        }).catch((e)=>{
+        }).catch((e) => {
           console.error("Failed to create worker:", e)
           $('#mount-folder-btn').hide();
           alert("Failed to setup code interpreter, error:" + e)
         })
-        
+
       }
 
       // Function to handle the login callback
@@ -1115,39 +1135,39 @@ const servicePrompt = `
 
         try {
           // try to load token from localstorage before trying to get it, after getting it save it to localstorage with a expiry time (3h), when using a saved token, always check the expiry time
-          try{
+          try {
             token = localStorage.getItem('token');
-            if(token){
+            if (token) {
               const tokenExpiry = localStorage.getItem('tokenExpiry');
-              if(tokenExpiry && new Date(tokenExpiry) > new Date()){
+              if (tokenExpiry && new Date(tokenExpiry) > new Date()) {
                 console.log("Using saved token:", token)
               }
-              else{
+              else {
                 // Call the login function to get the token
                 token = await hyphaWebsocketClient.login({
                   "server_url": serverUrl,
                   "login_callback": login_callback,
                 });
                 localStorage.setItem('token', token);
-                localStorage.setItem('tokenExpiry', new Date(Date.now() + 3*60*60*1000).toISOString());
+                localStorage.setItem('tokenExpiry', new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString());
               }
             }
-            else{
+            else {
               // Call the login function to get the token
               token = await hyphaWebsocketClient.login({
                 "server_url": serverUrl,
                 "login_callback": login_callback,
               });
               localStorage.setItem('token', token);
-              localStorage.setItem('tokenExpiry', new Date(Date.now() + 3*60*60*1000).toISOString());
+              localStorage.setItem('tokenExpiry', new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString());
             }
-            if(!token){
+            if (!token) {
               throw new Error("Failed to get token")
             }
             // If the login is successful, proceed to initialize the service
             svc = await initializeService();
           }
-          catch(e){
+          catch (e) {
             console.error("Failed to login:", e)
             token = null;
             localStorage.removeItem('token');
@@ -1155,7 +1175,7 @@ const servicePrompt = `
             alert("Failed to login, please reload the page and try again, error:" + e)
             throw e;
           }
-          
+
           // Show the app interface
           showAppInterface();
         } catch (e) {
@@ -1172,14 +1192,14 @@ const servicePrompt = `
       const login_required = "LOGIN_REQUIRED";
       if (login_required !== "false") {
         token = localStorage.getItem('token');
-        if(token){
+        if (token) {
           const tokenExpiry = localStorage.getItem('tokenExpiry');
-          if(tokenExpiry && new Date(tokenExpiry) > new Date()){
+          if (tokenExpiry && new Date(tokenExpiry) > new Date()) {
             console.log("Using saved token:", token)
             svc = await initializeService();
             showAppInterface();
           }
-          else{
+          else {
             showLoginScreen();
           }
         }
@@ -1204,7 +1224,7 @@ const servicePrompt = `
       async function initializeService() {
         $('#chat1 .chat-dialog-header').append(spinner);
         showConnectingStatus();
-        
+
         try {
           // disable send message
           $('#send-btn').prop('disabled', true);
@@ -1221,90 +1241,90 @@ const servicePrompt = `
             "id": "bioimageio-chatbot-store-" + Math.random().toString(36).substring(7),
             "type": "functions",
             "config": {
-                "visibility": "public",
-                "require_context": true
+              "visibility": "public",
+              "require_context": true
             },
-            "file": async function(event, context) {
-                const query_string = event.query_string
-                // parse query string
-                const params = new URLSearchParams(query_string);
-                const path = params.get('path');
-                const fileToken = params.get('token');
-                if(fileToken !== fileSecret){
+            "file": async function (event, context) {
+              const query_string = event.query_string
+              // parse query string
+              const params = new URLSearchParams(query_string);
+              const path = params.get('path');
+              const fileToken = params.get('token');
+              if (fileToken !== fileSecret) {
+                return {
+                  status: 403,
+                  body: "Permission denied"
+                }
+              }
+              if (path) {
+                if (!path.startsWith("/mnt")) {
                   return {
                     status: 403,
                     body: "Permission denied"
                   }
                 }
-                if(path){
-                  if(!path.startsWith("/mnt")){
-                    return {
-                      status: 403,
-                      body: "Permission denied"
-                    }
-                  }
-                  // extract the path after /mnt
-                  // and read it from mountedFolder
-                  const relPath = path.substring(4)
-                  const fileHandle = await getFileHandle(mountedFolder, relPath);
-                  const fileContent = await readFileContent(fileHandle);
-                  const size = fileContent.length;
-                  // get the mime types for all the image types, otherwise return application/octet-stream
-                  const mimeType = relPath.endsWith('.png') ? 'image/png' : relPath.endsWith('.jpg') ? 'image/jpeg' : relPath.endsWith('.jpeg') ? 'image/jpeg' : relPath.endsWith('.gif') ? 'image/gif' : relPath.endsWith('.wav') ? 'audio/wav' : 'application/octet-stream';
-                  return {
-                    status: 200,
-                    headers: {'Content-Type': mimeType, 'Content-Length': `${size}`, 'Content-Disposition': `inline; filename="${relPath.split('/').pop()}"`},
-                    body: fileContent
-                  };
-                }
-                const key = params.get('id');
-                if(!dataStore[key]){
-                  return {
-                    status: 404,
-                    body: "Not found"
-                  }
-                }
-                else{
-                  const obj = dataStore[key]
-                  if(obj.type === "img" || obj.type === "audio"){
-                    return {
-                      status: 200,
-                      headers: {'Content-Type': obj.type === "img" ? 'image/png' : 'audio/wav'},
-                      // obj.content will be something like data:image/png;base64,...
-                      // lets convert the base64 encoded string to arraybuffer
-                      body: base64ToArrayBuffer(obj.content)
-                    };
-                  }
-                  else{
-                    return {
-                      status: 200,
-                      headers: {'Content-Type': 'application/json'},
-                      body: JSON.stringify(obj)
-                    };
-                  }
-                }
-            },
-            "list": async function(event, context) {
+                // extract the path after /mnt
+                // and read it from mountedFolder
+                const relPath = path.substring(4)
+                const fileHandle = await getFileHandle(mountedFolder, relPath);
+                const fileContent = await readFileContent(fileHandle);
+                const size = fileContent.length;
+                // get the mime types for all the image types, otherwise return application/octet-stream
+                const mimeType = relPath.endsWith('.png') ? 'image/png' : relPath.endsWith('.jpg') ? 'image/jpeg' : relPath.endsWith('.jpeg') ? 'image/jpeg' : relPath.endsWith('.gif') ? 'image/gif' : relPath.endsWith('.wav') ? 'audio/wav' : 'application/octet-stream';
                 return {
                   status: 200,
-                  headers: {'Content-Type': 'application/json'},
-                  body: JSON.stringify(Object.keys(dataStore))
+                  headers: { 'Content-Type': mimeType, 'Content-Length': `${size}`, 'Content-Disposition': `inline; filename="${relPath.split('/').pop()}"` },
+                  body: fileContent
                 };
+              }
+              const key = params.get('id');
+              if (!dataStore[key]) {
+                return {
+                  status: 404,
+                  body: "Not found"
+                }
+              }
+              else {
+                const obj = dataStore[key]
+                if (obj.type === "img" || obj.type === "audio") {
+                  return {
+                    status: 200,
+                    headers: { 'Content-Type': obj.type === "img" ? 'image/png' : 'audio/wav' },
+                    // obj.content will be something like data:image/png;base64,...
+                    // lets convert the base64 encoded string to arraybuffer
+                    body: base64ToArrayBuffer(obj.content)
+                  };
+                }
+                else {
+                  return {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(obj)
+                  };
+                }
+              }
+            },
+            "list": async function (event, context) {
+              return {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.keys(dataStore))
+              };
             }
-        })
-        dataStore.base_url = `${server.config.public_base_url}/${server.config.workspace}/apps/${storeSvc.id.split(':')[1]}`;
-        console.log("Store service registered, you can access it via:", `${dataStore.base_url}/list`)
+          })
+          dataStore.base_url = `${server.config.public_base_url}/${server.config.workspace}/apps/${storeSvc.id.split(':')[1]}`;
+          console.log("Store service registered, you can access it via:", `${dataStore.base_url}/list`)
           allAssistants = svc.assistants;
           const assistant = allAssistants[assistantName];
-          if(assistant.code_interpreter){
+          if (assistant.code_interpreter) {
             enableCodeInterpreter = true;
           }
-          if(enableCodeInterpreter){
+          if (enableCodeInterpreter) {
             setupCodeInterpreter();
           }
-          if(Object.keys(allAssistants).length > 1){
+          if (Object.keys(allAssistants).length > 1) {
             const assistantButtons = document.getElementById('assistant-buttons');
-            assistantButtons.innerHTML = Object.values(allAssistants).map((a)=>{
+            assistantButtons.innerHTML = Object.values(allAssistants).map((a) => {
               // check if server is in query string
               const server_url = urlParams.get('server')
               // if server is in query string, add it to back to the href
@@ -1312,7 +1332,7 @@ const servicePrompt = `
               return `<li><a class="dropdown-item" href="${href}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
             }).join("\n")
           }
-          else{
+          else {
             $('#assistant-menu-button').hide();
           }
           if (!assistant) {
@@ -1323,14 +1343,14 @@ const servicePrompt = `
           const builtinExtensions = assistant.extensions;
           // clear extension except registered from ImJoy
           extensions = [];
-          for(let ext of registeredExtensions){
+          for (let ext of registeredExtensions) {
             extensions.push(ext)
           }
           builtinExtensions.forEach((ext) => {
             extensions.push(ext)
           });
-          for(let ext of extension_services){
-            try{
+          for (let ext of extension_services) {
+            try {
               console.log("Getting extension service:", ext)
               const extSvc = await server.getService(ext)
               console.log("Got extension service:", ext, extSvc)
@@ -1339,7 +1359,7 @@ const servicePrompt = `
               await _registerExtension(extSvc)
               console.log(`Registered extension: ${extSvc.name} (${extSvc.description})`, extSvc)
             }
-            catch(e){
+            catch (e) {
               console.error("Failed to connect to extension service:", ext, e)
               alert(`Failed to connect to extension service: ${ext}, error: ${e}`)
             }
@@ -1440,12 +1460,12 @@ const servicePrompt = `
 
         // Get the text message
         const message = $('.message').val();
-        if(!message){
+        if (!message) {
           return;
         }
         // Get the selected file
         const fileInput = document.getElementById('fileUpload');
-        if(fileInput){
+        if (fileInput) {
           const selectedFile = fileInput.files[0];
 
           // Check if a file is selected
@@ -1458,18 +1478,18 @@ const servicePrompt = `
               removeFileSelected();
             };
             reader.readAsDataURL(selectedFile);
-            
+
           } else {
             // No file selected, send only text message
             sendChatMessage(message, null);
             fileInput.value = ''; // Clear the file input
           }
-  
+
         }
-        else{
+        else {
           sendChatMessage(message, null);
         }
-       
+
         // Clear the input fields
         $('.message').val('').focus();
 
@@ -1492,7 +1512,7 @@ const servicePrompt = `
 
         return markdownText;
       }
-      
+
 
       async function sendChatMessage(textMessage, imageData) {
         const userName = $('#userNameInput').val();
@@ -1511,13 +1531,13 @@ const servicePrompt = `
 
         // Show 'Thinking...' status while waiting for the server's response
         showThinkingStatus();
-        
-        currentMessageId = "message-" + (chat_history.length+2)
+
+        currentMessageId = "message-" + (chat_history.length + 2)
         appendRobotMessage("", currentMessageId); // Append robot message to the message container
         $(`#spinner-${currentMessageId}`).show();
 
         let accumulatedArgs = ""
-       function statusCallback(message) {
+        function statusCallback(message) {
           if (message.type === 'function_call') {
             if (message.status === 'in_progress') {
               accumulatedArgs += message.arguments
@@ -1526,7 +1546,7 @@ const servicePrompt = `
               accumulatedArgs = message.arguments
             }
             const args = accumulatedArgs.replace(/\\n/g, '\n');
-            
+
             content = // `<details> <summary>${message.name}</summary>`+
               "## Generating response for " + message.name + "...\n\n" +
               args;
@@ -1537,22 +1557,22 @@ const servicePrompt = `
             if (message.status === 'in_progress') {
               accumulatedArgs += message.content
             }
-            else{
+            else {
               accumulatedArgs = message.content
             }
             $(`#content-${currentMessageId}`).html(marked(completeCodeBlocks(accumulatedArgs), { renderer: renderer }));
           }
         }
 
-        window.generateResponse = async function(){
-          if(envPrompt && envPrompt.length > 0){
+        window.generateResponse = async function () {
+          if (envPrompt && envPrompt.length > 0) {
             textMessage = envPrompt + textMessage
           }
           $("#regenerate-btn-small").remove();
-          $("#" +currentMessageId).append(spinner);
+          $("#" + currentMessageId).append(spinner);
           // disable send message
           $('#send-btn').prop('disabled', true);
-          try{
+          try {
             // Call the chat function with text and image data
             response = await svc.chat(textMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
             // const regex = /!\[.*?\]\(data:.+?\)/g;
@@ -1564,9 +1584,9 @@ const servicePrompt = `
             // Convert the message to HTML using the marked library
             const steps = response.steps;
             let message = response.text && marked(response.text, { renderer: renderer }) || "";
-            if(steps && steps.length > 0){
+            if (steps && steps.length > 0) {
               let details = "<details> <summary>🔍More Details</summary>\n\n"
-              for(let step of steps){
+              for (let step of steps) {
                 details = details + `<div class="step">${step.name}</div>\n\n\`\`\`\n\n${JSON.stringify(step.details, null, 2)}\n\n\`\`\`\n\n`
               }
               details = details + "\n\n</details>"
@@ -1575,11 +1595,11 @@ const servicePrompt = `
             }
             $(`#content-${currentMessageId}`).html(message);
           }
-          catch(e){
+          catch (e) {
             throw e
           }
-          finally{
-            $("#" +currentMessageId).append(`<button class="small-grey-button" style="color:gray" id="regenerate-btn-small" onclick="generateResponse()"><i class="fas fa-redo"></i></button>`);
+          finally {
+            $("#" + currentMessageId).append(`<button class="small-grey-button" style="color:gray" id="regenerate-btn-small" onclick="generateResponse()"><i class="fas fa-redo"></i></button>`);
             // remove spinner
             $('.spinner').remove();
             showReadyStatus();
@@ -1593,7 +1613,7 @@ const servicePrompt = `
           // generate an error message to simulate how Melman from Madagascar would respond to an error
           const message = marked("Oh no! I'm sorry, an unexpected error occurred. Please try again.", { renderer: renderer })
           $(`#content-${currentMessageId}`).html(message + `<button class="btn btn-info" id="regenerate-btn"><i class="fas fa-sync-alt"></i>Regenerate</button>`);
-          $('#regenerate-btn').click(async function(){
+          $('#regenerate-btn').click(async function () {
             $(`#content-${currentMessageId}`).html("Regenerating response...");
             await window.generateResponse();
           })
@@ -1606,7 +1626,7 @@ const servicePrompt = `
           // Remove spinner and set status back to 'Ready to chat' after finishing
           $('.spinner').remove();
           $(`#spinner-${currentMessageId}`).hide();
-          
+
         }
       }
 
