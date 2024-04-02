@@ -1305,7 +1305,11 @@ const servicePrompt = `
           if(Object.keys(allAssistants).length > 1){
             const assistantButtons = document.getElementById('assistant-buttons');
             assistantButtons.innerHTML = Object.values(allAssistants).map((a)=>{
-              return `<li><a class="dropdown-item" href="?assistant=${a.name}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
+              // check if server is in query string
+              const server_url = urlParams.get('server')
+              // if server is in query string, add it to back to the href
+              const href = server_url ? `?assistant=${a.name}&server=${server_url}` : `?assistant=${a.name}`;
+              return `<li><a class="dropdown-item" href="${href}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
             }).join("\n")
           }
           else{
