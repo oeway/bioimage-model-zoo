@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "fcd3088104083e0785cc02e14387041d",
+    "revision": "f9a3341b6a445a074558e8542e86bf3f",
     "url": "/chat/index.html"
   },
   {
