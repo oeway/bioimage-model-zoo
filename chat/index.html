@@ -1532,7 +1532,8 @@ const servicePrompt = `
             $(`#content-${currentMessageId}`).html(marked(completeCodeBlocks(accumulatedArgs), { renderer: renderer }));
           }
         }
-        try {
+
+        async function sendChat(){
           if(envPrompt && envPrompt.length > 0){
             textMessage = envPrompt + textMessage
           }
@@ -1547,11 +1548,15 @@ const servicePrompt = `
           chat_history.push({ role: 'user', content: textMessage });
           chat_history.push({ role: 'assistant', content: response.text });
           showReadyStatus();
+        }
 
+        try {
+          await sendChat();
         }
         catch (e) {
           // generate an error message to simulate how Melman from Madagascar would respond to an error
-          response = {text: "Oh no! I'm sorry, I don't know how to answer that. Please try again."};
+          const message = marked("Oh no! I'm sorry, an unexpected error occurred. Please try again.", { renderer: renderer })
+          $(`#content-${currentMessageId}`).html(message + `<button class="btn btn-info" onclick="sendChat()"><i class="fas fa-sync-alt"></i>Regenerate</button>`);
           showErrorStatus(`The server failed to respond, please try again. ${e}`);
           console.error(e);
         }
