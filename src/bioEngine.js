@@ -181,19 +181,7 @@ export async function setupBioEngine() {
         }
       });
       app.addMenuItem({
-        label: "🎢 Playground",
-        callback() {
-          api.createWindow({ src: "https://if.imjoy.io" });
-        }
-      });
-      app.addMenuItem({
-        label: "📓 Notebooks",
-        callback() {
-          api.createWindow({ src: "https://jupyter.imjoy.io" });
-        }
-      });
-      app.addMenuItem({
-        label: "🤖 BioImage.IO Chatbot",
+        label: "🤖 Chatbot",
         async callback() {
           await api.showMessage("Loading BioImage.IO Chatbot...");
           await api.createWindow({
@@ -207,6 +195,18 @@ export async function setupBioEngine() {
           await app.loadPlugin(
             `${baseUrl}/chat/bioimage-model-zoo-extension.imjoy.html`
           );
+        }
+      });
+      app.addMenuItem({
+        label: "🎢 Playground",
+        callback() {
+          api.createWindow({ src: "https://if.imjoy.io" });
+        }
+      });
+      app.addMenuItem({
+        label: "📓 Notebooks",
+        callback() {
+          api.createWindow({ src: "https://jupyter.imjoy.io" });
         }
       });
       // expose global variables
