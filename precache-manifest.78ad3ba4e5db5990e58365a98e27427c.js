@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/bioimage-model-zoo-extension.imjoy.html"
   },
   {
-    "revision": "86991c2e13692aaf5976154df001e976",
+    "revision": "4cc291d17e82499aedb275e6314626bd",
     "url": "/chat/index.html"
   },
   {
@@ -24,7 +24,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/about.7fe7bb41.css"
   },
   {
-    "revision": "a29234ae3f40ba940923",
+    "revision": "4c3e91e58d98739a6647",
     "url": "/css/app.506dbc2e.css"
   },
   {
@@ -52,7 +52,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "354e759f136fb677dd355917d7cd3bc4",
+    "revision": "937e2feda966d5a52a0c1aafe6916ccd",
     "url": "/index.html"
   },
   {
@@ -60,8 +60,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/about.4e9986f2.js"
   },
   {
-    "revision": "a29234ae3f40ba940923",
-    "url": "/js/app.ca95257e.js"
+    "revision": "4c3e91e58d98739a6647",
+    "url": "/js/app.1ea8e3f0.js"
   },
   {
     "revision": "73bcd060214a008e0087",

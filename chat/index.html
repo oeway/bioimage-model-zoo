@@ -797,8 +797,8 @@
               imjoyApi = imjoy.api;
               if (assistantName === 'Melman') {
                 console.log("Loading the Model Zoo extension...")
-                const baseUrl = location.href.split('?')[0]
-                const plugin = await imjoyApi.loadPlugin(`${baseUrl}/bioimage-model-zoo-extension.imjoy.html`)
+                const baseUrl = location.origin
+                const plugin = await imjoyApi.loadPlugin(`${baseUrl}/chat/bioimage-model-zoo-extension.imjoy.html`)
                 await plugin.setup();
                 console.log("Model Zoo extension loaded.")
               }
