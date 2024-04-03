@@ -265,7 +265,7 @@ self.onmessage = async (event) => {
             const { mountPoint, dirHandle } = event.data.mount
             if(mountedFs[mountPoint]){
                 console.log("Unmounting native FS:", mountPoint)
-                await self.pyodide.umountNativeFS(mountPoint)
+                await self.pyodide.FS.unmount(mountPoint)
                 delete mountedFs[mountPoint]
             }
             const nativefs = await self.pyodide.mountNativeFS(mountPoint, dirHandle)
