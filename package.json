@@ -17,6 +17,7 @@
     "@tensorflow/tfjs-core": "^4.17.0",
     "axios": "^0.21.2",
     "buefy": "^0.8.0",
+    "ci": "^2.3.0",
     "core-js": "^3.6.5",
     "doi-regex": "^0.1.10",
     "dompurify": "^2.0.17",
