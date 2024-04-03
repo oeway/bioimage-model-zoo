@@ -195,13 +195,15 @@ export async function setupBioEngine() {
       app.addMenuItem({
         label: "🤖 BioImage.IO Chatbot",
         async callback() {
-          await api.showMessage("Loading BioImage.IO Chatbot...")
+          await api.showMessage("Loading BioImage.IO Chatbot...");
           await api.createWindow({
             src: "https://bioimage.io/chat",
             name: "BioImage.IO Chatbot"
           });
-          const baseUrl = location.origin
-          await api.showMessage("Loading BioImage Model Zoo extension for the chatbot, this may take a while...")
+          const baseUrl = location.origin;
+          await api.showMessage(
+            "Loading BioImage Model Zoo extension for the chatbot, this may take a while..."
+          );
           await app.loadPlugin(
             `${baseUrl}/chat/bioimage-model-zoo-extension.imjoy.html`
           );
