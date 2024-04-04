@@ -48,7 +48,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/fonts/materialdesignicons-webfont.dc85ceeb.woff2"
   },
   {
-    "revision": "81440fc775ad11da2bd066224bc102cc",
+    "revision": "704222da29321bd5fb82c5f5750ac21c",
     "url": "/index.ejs"
   },
   {
