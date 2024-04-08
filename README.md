@@ -25,3 +25,13 @@ All the developers, contributors and community members of the BioImage.IO are re
 
 ## User Agreement
 By using the BioImage.IO website and/or viewing material on the website, you agree to become bound by the terms of this [User Agreement](./docs/terms_of_service.md). If you do not agree to the Disclaimer, Terms of Use, and Privacy Statements of this User Agreement, do not use this website or any portion thereof in any form or manner.
+
+## Development
+
+Start a development server:
+
+```bash
+ntl dev
+# or run without netlify functions: 
+npm run serve
+```
