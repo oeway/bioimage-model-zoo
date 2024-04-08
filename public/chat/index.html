@@ -776,7 +776,11 @@
           const api = await imjoyRPC.setupRPC({ name: 'BioImage.IO Chatbot' });
           await api.export({
             setup() { }, async run(ctx) {
-              assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || "Melman"
+              let defaultAssistant = "Skyler";
+              if(!allAssistants.includes(assistantName)) {
+                defaultAssistant = "Melman"
+              }
+              assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || defaultAssistant;
               if (api.getChatbotExtensions) {
                 const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
                 for (let ext of Object.values(extensions)) {
