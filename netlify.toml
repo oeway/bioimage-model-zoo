@@ -1,0 +1,8 @@
+[dev] 
+  command = "npm run serve" 
+  autoLaunch = false
+  targetPort = 8080
+  port = 8083
+[build]
+  publish = "dist"
+  functions = "netlify/functions"
