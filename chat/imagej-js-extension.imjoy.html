@@ -34,7 +34,7 @@ class ImJoyPlugin {
       if (chatbot) {
         await this.registerExtensions(chatbot.registerExtension)
       } else {
-        chatbot = await api.createWindow({src: "https://bioimage.io/chat", name: "BioImage.IO Chatbot"})
+        chatbot = await api.createWindow({src: "https://bioimage.io/chat", w: 28, h: 20, name: "BioImage.IO Chatbot"})
         await this.registerExtensions(chatbot.registerExtension)
       }
       let ij = await api.getWindow("ImageJ.JS")
