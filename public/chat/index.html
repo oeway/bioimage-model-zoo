@@ -777,7 +777,7 @@
           await api.export({
             setup() { }, async run(ctx) {
               let defaultAssistant = "Skyler";
-              if(!allAssistants.includes(assistantName)) {
+              if(!allAssistants[assistantName]) {
                 defaultAssistant = "Melman"
               }
               assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || defaultAssistant;
