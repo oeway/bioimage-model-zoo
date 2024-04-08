@@ -780,7 +780,7 @@
               if(!allAssistants[assistantName]) {
                 defaultAssistant = "Melman"
               }
-              assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant_name) || defaultAssistant;
+              assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant) || defaultAssistant;
               if (api.getChatbotExtensions) {
                 const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
                 for (let ext of Object.values(extensions)) {
