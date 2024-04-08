@@ -74,6 +74,9 @@ class ImJoyPlugin {
             if(!ij){
               ij = await api.createWindow({src: "https://ij.imjoy.io/", name: "ImageJ.JS"})
             }
+            // patch example images
+            // replace https://imagej.nih.gov/ij/images/ to https://imagej.net/images/
+            config.macro = config.macro.replace(/https:\/\/imagej.nih.gov\/ij\/images\//g, 'https://imagej.net/images/')
             await ij.runMacro(config.macro)
           },
       }
