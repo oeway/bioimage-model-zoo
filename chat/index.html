@@ -747,7 +747,12 @@
       let token = null;
       const spinner = `<div class="spinner"></div>`; // Spinner HTML
       let enableCodeInterpreter = urlParams.get('enable-code-interpreter') === "true";
-      let assistantName = urlParams.get('assistant') || "Melman";
+      let defaultAssistant = "Melman";
+      if (window.self !== window.top) {
+        defaultAssistant = "Skyler";
+        $('#assistant-menu-button').hide();
+      }
+      let assistantName = urlParams.get('assistant') || defaultAssistant;
       let serverUrl = urlParams.get('server') || "https://chat.bioimage.io";
       let allAssistants = {};
       let assistantIcon = "https://bioimage.io/static/img/bioimage-io-icon.svg"
@@ -777,9 +782,6 @@
           await api.export({
             setup() { }, async run(ctx) {
               let defaultAssistant = "Skyler";
-              if(!allAssistants[assistantName]) {
-                defaultAssistant = "Melman"
-              }
               assistantName = urlParams.get('assistant') || (ctx.config && ctx.config.assistant) || defaultAssistant;
               if (api.getChatbotExtensions) {
                 const extensions = await api.getChatbotExtensions(_registerExtension) // object with name: extension
