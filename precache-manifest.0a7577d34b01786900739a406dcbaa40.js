@@ -8,6 +8,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/bioimage-model-zoo-extension.imjoy.html"
   },
   {
+    "revision": "6af36e479f0d9cfdc3a473d08be81884",
+    "url": "/chat/imagej-js-extension.imjoy.html"
+  },
+  {
     "revision": "8059dfcea1d31b71681b685f4c38b3d9",
     "url": "/chat/index.html"
   },
