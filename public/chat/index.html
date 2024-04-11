@@ -1386,14 +1386,19 @@ Global variables, functions and results will be maintained across multiple code 
             try {
               console.log("Getting extension service:", ext)
               let svcId, extServer;
-              debugger
-              // format my_workspace/client:my_service@ai.imjoy.io
-              if(ext.includes("@")){
-                svcId = ext.split("@")[0]
-                const serverUrl = ext.split("@")[1]
+              // Full service url format: https://ai.imjoy.io/<workspace>/services/<service_id>
+              if(ext.startsWith("http")){
+                // service id should be resolved to "<workspace>/<service_id>" (remove services)
+                let url = new URL(ext);
+                let pathParts = url.pathname.split('/');
+                let workspace = pathParts[1]; // assuming the workspace is the first part of the path
+                let serviceId = pathParts[3]; // assuming the service ID is the third part of the path
+                svcId = `${workspace}/${serviceId}`;
+                
+                const serverUrl = url.origin;
                 try{
                   const server = await hyphaWebsocketClient.connectToServer({
-                    "server_url": `https://${serverUrl}`,
+                    "server_url": serverUrl,
                     "token": token,
                   })
                   extServer = server
@@ -1409,7 +1414,7 @@ Global variables, functions and results will be maintained across multiple code 
                 extServer = server
               }
               const extSvc = await extServer.getService(svcId)
-              console.log("Got extension service:", ext, extSvc)
+              console.log("Got extension service:", svcId, extSvc)
               extSvc._rintf = true
               extSvc.id = extSvc.id.split(":")[1]
               await _registerExtension(extSvc)
