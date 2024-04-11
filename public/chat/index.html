@@ -1385,7 +1385,30 @@ Global variables, functions and results will be maintained across multiple code 
           for (let ext of extension_services) {
             try {
               console.log("Getting extension service:", ext)
-              const extSvc = await server.getService(ext)
+              let svcId, extServer;
+              debugger
+              // format my_workspace/client:my_service@ai.imjoy.io
+              if(ext.includes("@")){
+                svcId = ext.split("@")[0]
+                const serverUrl = ext.split("@")[1]
+                try{
+                  const server = await hyphaWebsocketClient.connectToServer({
+                    "server_url": `https://${serverUrl}`,
+                    "token": token,
+                  })
+                  extServer = server
+                }
+                catch(e){
+                  console.error("Failed to connect to extension server:", serverUrl, e)
+                  alert(`Failed to connect to extension server: ${serverUrl}, error: ${e}`)
+                  break;
+                }
+              }
+              else{
+                svcId = ext
+                extServer = server
+              }
+              const extSvc = await extServer.getService(svcId)
               console.log("Got extension service:", ext, extSvc)
               extSvc._rintf = true
               extSvc.id = extSvc.id.split(":")[1]
