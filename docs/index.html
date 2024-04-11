@@ -70,6 +70,20 @@
         theme: 'classic',
         tabComments: true,
         tabHeadings: true
+      },
+      markdown: {
+        renderer: {
+          image(src, title, alt) {
+            // resolve src to basePath
+            // e.g. http://localhost:8080/docs#/user_guide/a.jpg -> docs/user_guide/a.jpg
+            if(!src.startsWith('http') && !src.startsWith('/')){
+              const url = new URL(src, window.location.href.replace(/#\//, '/')); // remove hash
+              src = url.pathname;
+            }
+            const [width, height] = (title && title.startsWith('=')) ? title.slice(1).split('x').map(v => v.trim()).filter(Boolean) : [];
+            return `<img src="${src}" alt="${alt}"${width ? ` width="${width}"` : ''}${height ? ` height="${height}"` : ''}>`;
+          }
+        }
       }
     };
   </script>
