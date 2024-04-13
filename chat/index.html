@@ -451,6 +451,7 @@
           <button type="button" class="btn btn-outline-secondary mt-3" id="advanced-options-btn" data-toggle="tooltip" data-bs-delay='{"show":"0", "hide":"100"}' title="Toggle specific extensions to refine responses, focusing on particular areas of expertise as needed.">
             <i class="fas fa-ellipsis-h"></i> Options
           </button>
+          <pre style="font-size: small;color: darkgray;" id="quota-text"></pre>
           <!-- Console window initially collapsed -->
           <div id="console-window" style="display: none;" class="collapse">
             <div id="terminal"></div>
@@ -1704,6 +1705,9 @@ Global variables, functions and results will be maintained across multiple code 
             console.log("Current Text message:", fullTextMessage);
             console.log("Current Chat history:", chat_history);
             // Convert the message to HTML using the marked library
+            if(response.remaining_quota !== undefined){
+              $('#quota-text').text(`Remaining Message Quota: ${response.remaining_quota}`);
+            }
             const steps = response.steps;
             let message = response.text && marked(response.text, { renderer: renderer }) || "";
             if (steps && steps.length > 0) {
