@@ -1706,7 +1706,7 @@ Global variables, functions and results will be maintained across multiple code 
             console.log("Current Chat history:", chat_history);
             // Convert the message to HTML using the marked library
             if(response.remaining_quota !== undefined){
-              $('#quota-text').text(`Remaining Message Quota: ${response.remaining_quota}`);
+              $('#quota-text').text(`Remaining Message Quota: ${response.remaining_quota} (reset hourly)`);
             }
             const steps = response.steps;
             let message = response.text && marked(response.text, { renderer: renderer }) || "";
