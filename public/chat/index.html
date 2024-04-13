@@ -83,7 +83,39 @@
       background-color: #ddd;
       /* or any color you prefer */
     }
-
+    
+    /* Styles for the tooltip button */
+    .tooltip .tooltip-inner {
+      max-width: none; /* Override the default max-width */
+      width: 250px; /* Set a specific width for your tooltip */
+      text-align: justify;
+      background-color: #f1eaea; /* Change to your preferred background color */
+      color: #333; /* Change to your preferred text color */
+    }
+    
+    .tooltip .tooltip-arrow::before {
+      border-left-color: #ffffff; /* Match the tooltip-inner background color */
+      /* You will need to set the appropriate border color for each arrow direction if you are using multiple tooltip placements */
+    }
+    
+    #tooltip-button {
+      padding: 5px; /* Reduce padding */
+      font-size: 12px; /* Reduce font size */
+      /* Optionally, if you've set a height and width, you can adjust them too. */
+      /* height: 20px; */
+      /* width: 20px; */
+      color: #cbc4c4; /* Adjust the color as needed */
+      border: none;
+      background: transparent;
+    }
+    
+    #tooltip-button:hover {
+      color: #555; /* Adjust hover color as needed */
+    }
+    #tooltip-button .fa-question-circle {
+      /* If the icon itself is too large, reduce its size by targeting the font-awesome icon */
+      font-size: 16px; /* Adjust the size of the icon as needed */
+    }
     /* Styles for the message container */
     #chat1 .message-container {
       display: flex;
@@ -363,6 +395,17 @@
               aria-haspopup="true" aria-expanded="false">
               Assistants
             </button>
+            <button class="btn" type="button" id="tooltip-button" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" data-bs-delay='{"show":"100", "hide":"100"}' title="">
+              <i class="fas fa-question-circle"></i>
+            </button>
+            <script>
+              document.getElementById('tooltip-button').setAttribute('title', 
+                '<b>Melman:</b> An assistant specializing in searching through bioimage analysis tools, including the BioImage Model Zoo, the BioImage Archive, biii.eu, and others, to provide comprehensive support in bioimaging.<br>' +
+                '<b>Nina:</b> Your tutor for learning about bioimage analysis and AI. Nina is the perfect guide, offering detailed explanations and support throughout your learning journey.<br>' +
+                '<b>Bridget:</b> Offers tools to analyze your images directly or helps you construct a Python pipeline for advanced image processing tasks.<br>' +
+                '<b>Skyler:</b> Facilitates the integration of bioimaging tools and workflows, making it easier to apply advanced analysis techniques in your research.'
+              );
+            </script>
             <div id="assistant-buttons" class="dropdown-menu dropdown-menu-right"
               aria-labelledby="assistant-menu-button">
             </div>
@@ -384,27 +427,28 @@
                 style="flex-grow: 1; border: 1px solid #ced4da; border-radius: .25rem; height: 36px; padding: .375rem .75rem;"></textarea>
             </div>
           </div>
-          <button type="button" id="send-btn" class="btn btn-primary mt-3"><i
-              class="fas fa-paper-plane"></i>Send</button>
-          <button type="button" class="btn btn-primary mt-3" id="mount-folder-btn">
+          <button type="button" id="send-btn" class="btn btn-primary mt-3" data-toggle="tooltip" title="Click to send your message">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>          
+          <button type="button" class="btn btn-primary mt-3" id="mount-folder-btn" data-toggle="tooltip" title="Upload your image data, supporting file exploration and bioimage analysis.">
             <i class="fas fa-folder"></i> Mount Files
           </button>
-          <button type="button" class="btn btn-primary mt-3" style="display: none" id="console-btn">
+          <button type="button" class="btn btn-primary mt-3" style="display: none" id="console-btn" data-bs-delay='{"show":"0", "hide":"50"}' title="A tool for running Python scripts in a Jupyter notebook-like environment, supporting image analysis, data fetching, and visualization, with capabilities to maintain session state across executions.">
             <i class="fas fa-terminal"></i> Code Interpreter
           </button>
           <!-- Add an "Edit Profile" button to toggle the profile options -->
-          <button type="button" class="btn btn-info mt-3" id="edit-profile-btn">
+          <button type="button" class="btn btn-info mt-3" id="edit-profile-btn" data-toggle="tooltip" data-bs-delay='{"show":"0", "hide":"50"}' title="Edit your profile information">
             <i class="fas fa-pen"></i>Edit Profile
           </button>
           <!-- Add a "Reset" button to restart the session -->
-          <button type="button" class="btn btn-secondary mt-3" id="reset-btn">
+          <button type="button" class="btn btn-secondary mt-3" id="reset-btn" data-toggle="tooltip" data-bs-delay='{"show":"0", "hide":"100"}' title="Restart the conversation. Useful for addressing errors or starting fresh.">
             <i class="fas fa-sync-alt"></i>Reset
           </button>
           <!-- Add the "Feedback" button -->
-          <button type="button" class="btn btn-info mt-3" id="feedback-btn">
+          <button type="button" class="btn btn-info mt-3" id="feedback-btn" data-toggle="tooltip" data-bs-delay='{"show":"0", "hide":"100"}' title="Provide feedback on your experience with the chatbot.">
             <i class="fas fa-comment"></i> Feedback
           </button>
-          <button type="button" class="btn btn-outline-secondary mt-3" id="advanced-options-btn">
+          <button type="button" class="btn btn-outline-secondary mt-3" id="advanced-options-btn" data-toggle="tooltip" data-bs-delay='{"show":"0", "hide":"100"}' title="Toggle specific extensions to refine responses, focusing on particular areas of expertise as needed.">
             <i class="fas fa-ellipsis-h"></i> Options
           </button>
           <!-- Console window initially collapsed -->
@@ -486,6 +530,18 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
   <script src="https://www.unpkg.com/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
   <script src="/chat/worker-manager.js"></script>
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl, {
+        html: true,  // Enable HTML content in the tooltip
+        boundary: 'viewport', // Keep the tooltip within the bounds of the viewport
+        placement: 'auto'
+      })
+    })
+  </script>
+  
+  
   <script>
     const fileSecret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     const urlParams = new URLSearchParams(window.location.search);
