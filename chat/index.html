@@ -552,7 +552,7 @@
     let mountedFolder;
     let extensions = [];
     let envPrompt = "";
-    const registeredExtensions = []
+    let registeredExtensions = []
     function fileSelected() {
       var input = document.getElementById('fileUpload');
       var label = document.getElementById('paperclipIcon');
@@ -784,9 +784,11 @@
         }
       }
 
+      // remove extension with the same id in extensions
+      extensions = extensions.filter(ext => ext.id !== extension.id)
       extensions.push(extension);
-      // remove duplicates
-      extensions = extensions.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i)
+      // remove extension with the same id in registeredExtensions (const variable)
+      registeredExtensions = registeredExtensions.filter(ext => ext.id !== extension.id)
       registeredExtensions.push(extension);
       updateDropdownOptions(extensions);
     }
