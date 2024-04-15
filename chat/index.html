@@ -1270,33 +1270,41 @@ Global variables, functions and results will be maintained across multiple code 
         }
       });
 
-      const login_required = "LOGIN_REQUIRED";
-      if (login_required !== "false") {
-        token = localStorage.getItem('token');
-        if (token) {
-          const tokenExpiry = localStorage.getItem('tokenExpiry');
-          if (tokenExpiry && new Date(tokenExpiry) > new Date()) {
-            console.log("Using saved token:", token)
-            try{
-              svc = await initializeService();
-              showAppInterface();
+      const tokenQuery = urlParams.get('token');
+      if (tokenQuery) {
+        token = tokenQuery;
+        svc = await initializeService();
+        showAppInterface();
+      }
+      else{
+        const login_required = "LOGIN_REQUIRED";
+        if (login_required !== "false") {
+          token = localStorage.getItem('token');
+          if (token) {
+            const tokenExpiry = localStorage.getItem('tokenExpiry');
+            if (tokenExpiry && new Date(tokenExpiry) > new Date()) {
+              console.log("Using saved token:", token)
+              try{
+                svc = await initializeService();
+                showAppInterface();
+              }
+              catch(e){
+                console.error("Failed to initialize service:", e)
+                showLoginScreen();
+              }
             }
-            catch(e){
-              console.error("Failed to initialize service:", e)
+            else {
               showLoginScreen();
             }
           }
-          else {
+          else
             showLoginScreen();
-          }
         }
-        else
-          showLoginScreen();
-      }
-      else {
-        svc = await initializeService();
+        else {
+          svc = await initializeService();
 
-        showAppInterface();
+          showAppInterface();
+        }
       }
       // Manually toggle the collapse for profile options
       $('#edit-profile-btn').click(function () {
