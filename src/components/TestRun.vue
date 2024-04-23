@@ -10,6 +10,7 @@
     </b-button>
     <div id="test-run-body" v-if="this.switch">
       <div id="bioengine-web-client"></div>
+      <div id="ij-tips">💡Tip: Drag and drop your own image file below to try out the model. We support formats like .tiff, .png, and .jpg </div>
       <div id="ij-container"></div>
     </div>
   </div>
@@ -19,6 +20,9 @@
 #bioengine-web-client {
   width: 100%;
   height: 100%;
+  margin-bottom: 10px;
+}
+#ij-tips {
   margin-bottom: 10px;
 }
 #ij-container {
@@ -86,8 +90,7 @@ export default {
           window_id: "ij-container"
       });
       api.createWindow({
-        //src: `https://bioimage-io.github.io/bioengine-web-client/?model=${this.resourceItem.id}`,
-        src: `http://localhost:5173/bioengine-web-client/?new_ij_window=true&model=${this.resourceItem.id}`,
+        src: `https://bioimage-io.github.io/bioengine-web-client/?model=${this.resourceItem.id}`,
         title: "Bioengine Web Client",
         window_id: "bioengine-web-client",
       });
