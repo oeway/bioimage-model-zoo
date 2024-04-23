@@ -11,10 +11,7 @@
     "format": "prettier --write \"{src,tests}/**/**\""
   },
   "dependencies": {
-    "@d4c/numjs": "^0.17.34",
     "@mdi/font": "^5.3.45",
-    "@tensorflow/tfjs-backend-cpu": "^4.17.0",
-    "@tensorflow/tfjs-core": "^4.17.0",
     "axios": "^0.21.2",
     "buefy": "^0.8.0",
     "ci": "^2.3.0",

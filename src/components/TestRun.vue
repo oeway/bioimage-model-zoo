@@ -10,7 +10,10 @@
     </b-button>
     <div id="test-run-body" v-if="this.switch">
       <div id="bioengine-web-client"></div>
-      <div id="ij-tips">💡Tip: Drag and drop your own image file below to try out the model. We support formats like .tiff, .png, and .jpg </div>
+      <div id="ij-tips">
+        💡Tip: Drag and drop your own image file below to try out the model. We
+        support formats like .tiff, .png, and .jpg
+      </div>
       <div id="ij-container"></div>
     </div>
   </div>
@@ -33,8 +36,6 @@
 </style>
 
 <script>
-
-
 export default {
   name: "TestRunForm",
   props: {
@@ -45,12 +46,10 @@ export default {
   },
   data: () => ({
     switch: false,
-    api: null,
+    api: null
   }),
-  computed: {
-  },
-  watch: {
-  },
+  computed: {},
+  watch: {},
   methods: {
     async turnOn() {
       this.switch = true;
@@ -84,18 +83,17 @@ export default {
     async loadBioengineWebClient() {
       const api = this.api;
       api.createWindow({
-          src: "https://ij.imjoy.io/",
-          name: "ImageJ.JS",
-          fullscreen: false,
-          window_id: "ij-container"
+        src: "https://ij.imjoy.io/",
+        name: "ImageJ.JS",
+        fullscreen: false,
+        window_id: "ij-container"
       });
       api.createWindow({
         src: `https://bioimage-io.github.io/bioengine-web-client/?model=${this.resourceItem.id}`,
         title: "Bioengine Web Client",
-        window_id: "bioengine-web-client",
+        window_id: "bioengine-web-client"
       });
     }
-
   }
 };
 </script>
