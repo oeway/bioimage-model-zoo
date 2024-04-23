@@ -123,6 +123,14 @@ export async function setupBioEngine() {
       window.app.progress = progress;
       window.app.$forceUpdate();
     },
+    async resizeWindow(_plugin, width, height) {
+      console.log(_plugin, width, height);
+      const windowElem = _plugin.window_id;
+      if (windowElem) {
+        windowElem.style.width = width;
+        windowElem.style.height = height;
+      }
+    },
     async showMessage(_plugin, msg, duration) {
       duration = duration || 5;
       if (_plugin && _plugin.config.namespace) {
