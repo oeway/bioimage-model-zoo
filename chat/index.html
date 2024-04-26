@@ -1412,6 +1412,9 @@ Global variables, functions and results will be maintained across multiple code 
           console.log("Store service registered, you can access it via:", `${dataStore.base_url}/list`)
           allAssistants = svc.assistants;
           const assistant = allAssistants[assistantName];
+          if(!assistant) {
+            throw new Error(`Assistant "${assistantName}" not found`)
+          }
           if (assistant.code_interpreter) {
             enableCodeInterpreter = true;
           }
