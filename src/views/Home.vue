@@ -700,7 +700,8 @@ export default {
       selectedCategory: null,
       displayMode: "card",
       currentTags: [],
-      selectedPartner: null
+      selectedPartner: null,
+      bioEngineConfigs: {},
     };
   },
   mounted: async function() {
@@ -749,14 +750,14 @@ export default {
         "https://raw.githubusercontent.com/bioimage-io/bioengine-model-runner/gh-pages/manifest.bioengine.json"
       );
       const bioEngineManifest = await response.json();
-      const bioEngineConfigs = {};
+      self.bioEngineConfigs = {};
       for (let conf of bioEngineManifest.collection)
-        if (conf.id) bioEngineConfigs[conf.id] = conf;
+        if (conf.id) self.bioEngineConfigs[conf.id] = conf;
       await this.$store.dispatch("fetchResourceItems", {
         repo,
         manifest_url,
         transform(item) {
-          return normalizeItem(self, item, bioEngineConfigs);
+          return normalizeItem(self, item, self.bioEngineConfigs);
         }
       });
 
@@ -916,6 +917,7 @@ export default {
           for (let k of Object.keys(newRDF)) {
             if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
           }
+          Object.assign(item, normalizeItem(this, item, this.bioEngineConfigs))
 
           item.links = item.links || [];
           // add training data
