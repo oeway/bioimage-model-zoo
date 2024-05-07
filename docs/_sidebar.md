@@ -15,8 +15,6 @@
   - [Upload models through Zenodo](/contribute_models/contribute_zenodo.md)
 * [Other contributions](/contribute_others/README.md)
 * [Resources for developers](/resources_developers/README.md)
-  - [Python BioImageIO core package](pythoncorepackage)
-  - [Java BioImageIO library](javacorepackage)
 * [Consumer Software](/consumer_software/README.md)
   - [Tutorials](/consumer_software/tutorials.md)
   - [Model Runner](/consumer_software/model_runner.md)
