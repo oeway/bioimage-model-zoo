@@ -701,7 +701,7 @@ export default {
       displayMode: "card",
       currentTags: [],
       selectedPartner: null,
-      bioEngineConfigs: {},
+      bioEngineConfigs: {}
     };
   },
   mounted: async function() {
@@ -917,7 +917,7 @@ export default {
           for (let k of Object.keys(newRDF)) {
             if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
           }
-          Object.assign(item, normalizeItem(this, item, this.bioEngineConfigs))
+          Object.assign(item, normalizeItem(this, item, this.bioEngineConfigs));
 
           item.links = item.links || [];
           // add training data
