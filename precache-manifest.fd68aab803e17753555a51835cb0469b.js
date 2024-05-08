@@ -24,11 +24,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/worker-manager.js"
   },
   {
-    "revision": "90a1aa562eb09165f0d1",
+    "revision": "90b59dcc01dc4db59938",
     "url": "/css/about.7fe7bb41.css"
   },
   {
-    "revision": "be60fbeaf44aa8803611",
+    "revision": "d379224800f28a0f0726",
     "url": "/css/app.99fe3a68.css"
   },
   {
@@ -56,16 +56,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "7b0737a699a2f2f54f428a2077c505e2",
+    "revision": "c4fcbf7ac66e72de9eea7f6af87d01e2",
     "url": "/index.html"
   },
   {
-    "revision": "90a1aa562eb09165f0d1",
-    "url": "/js/about.1d6c0467.js"
+    "revision": "90b59dcc01dc4db59938",
+    "url": "/js/about.8fb47916.js"
   },
   {
-    "revision": "be60fbeaf44aa8803611",
-    "url": "/js/app.98cc4c11.js"
+    "revision": "d379224800f28a0f0726",
+    "url": "/js/app.c34d2668.js"
   },
   {
     "revision": "50e06bab017c22e78b85",
