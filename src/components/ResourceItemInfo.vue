@@ -335,7 +335,7 @@ export default {
             const temp = resourceItem.documentation.split("/");
             baseUrl = temp.slice(0, temp.length - 1).join("/");
           }
-          if (resourceItem.documentation.endsWith(".md")) {
+          if (resourceItem.documentation.endsWith(".md") || resourceItem.documentation.endsWith(".md/content")) {
             resourceItem.baseUrl = baseUrl;
             resourceItem.docs = raw_docs;
           } else if (resourceItem.documentation) {
