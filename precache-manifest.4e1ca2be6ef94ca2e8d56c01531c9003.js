@@ -16,7 +16,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/index.html"
   },
   {
-    "revision": "8d23460b6eb250e5d3cd123bf7cabf30",
+    "revision": "e01b1f1d98c7961d1d62f2781234b1be",
     "url": "/chat/pyodide-worker.js"
   },
   {

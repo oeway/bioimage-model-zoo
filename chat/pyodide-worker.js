@@ -246,8 +246,12 @@ self.onmessage = async (event) => {
             self.pyodide.globals.set("source", source)
             self.pyodide.globals.set("io_context", io_context && self.pyodide.toPy(io_context))
             outputs = []
+            // copy mounted files into pyodide
+            for(const mountPoint of Object.keys(mountedFs)){
+                await mountedFs[mountPoint].syncfs(true)
+            }
             await self.pyodide.runPythonAsync("await run(source, io_context)")
-            // synchronize the file system
+            // copy files back to the native fs
             for(const mountPoint of Object.keys(mountedFs)){
                 await mountedFs[mountPoint].syncfs()
             }
