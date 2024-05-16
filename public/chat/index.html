@@ -1040,6 +1040,10 @@ Global variables, functions and results will be maintained across multiple code 
           $('#mount-folder-btn').show();
           if (mountedFolder) {
             await worker.mount("/mnt", mountedFolder);
+            $('#mount-folder-btn').text(`Mount Files (${mountedFolder.name})`);
+          }
+          else{
+            $('#mount-folder-btn').text(`Mount Files`);
           }
           worker = w;
           console.log("Worker created:", worker);
@@ -1519,6 +1523,7 @@ Global variables, functions and results will be maintained across multiple code 
         chat_history.length = 0; // Clear the chat history
         code = ''; // Reset code
         error_message = ''; // Reset error message
+        mountedFolder = null;
         $('.message-holder').empty(); // Clear the messages
         initializeService();
       }
