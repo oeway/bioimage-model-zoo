@@ -246,15 +246,12 @@ self.onmessage = async (event) => {
             self.pyodide.globals.set("source", source)
             self.pyodide.globals.set("io_context", io_context && self.pyodide.toPy(io_context))
             outputs = []
-            // copy mounted files into pyodide
-            for(const mountPoint of Object.keys(mountedFs)){
-                await mountedFs[mountPoint].syncfs(true)
-            }
+            // see https://github.com/pyodide/pyodide/blob/b177dba277350751f1890279f5d1a9096a87ed13/src/js/api.ts#L546
+            // sync native ==> browser
+            await new Promise((resolve, _) => Module.FS.syncfs(true, resolve));
             await self.pyodide.runPythonAsync("await run(source, io_context)")
-            // copy files back to the native fs
-            for(const mountPoint of Object.keys(mountedFs)){
-                await mountedFs[mountPoint].syncfs()
-            }
+            // sync browser ==> native
+            await new Promise((resolve, _) => Module.FS.syncfs(false, resolve)),
             console.log("Execution done", outputs)
             self.postMessage({ executionDone: true, outputs })
             outputs = []
