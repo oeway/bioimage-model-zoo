@@ -236,13 +236,6 @@ async def run(source, io_context):
         except:
             traceback.print_exc()
             raise
-
-def help():
-    return """Welcome to Python (Pyodide, WebAssembly)!
-This code interperter is a Jupyter notebook-like environment, it support top-level await operations and the asyncio event loop is already running, so you can call "await func()" directly without wrapping in a async function or using asyncio.run.
-The environment has access to remote servers, so you can fetch remote data by using python modules "requests" or "imjoy_rpc.hypha" for connect to the Hypha/BioEngine server.
-User data will be mounted to the \`/mnt\` directory. Use "os.listdir('/mnt')" to explore available files before processing.
-"""
 `
 const mountedFs = {}
 
