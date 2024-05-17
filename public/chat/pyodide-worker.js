@@ -248,10 +248,10 @@ self.onmessage = async (event) => {
             outputs = []
             // see https://github.com/pyodide/pyodide/blob/b177dba277350751f1890279f5d1a9096a87ed13/src/js/api.ts#L546
             // sync native ==> browser
-            await new Promise((resolve, _) => Module.FS.syncfs(true, resolve));
+            await new Promise((resolve, _) => self.pyodide.FS.syncfs(true, resolve));
             await self.pyodide.runPythonAsync("await run(source, io_context)")
             // sync browser ==> native
-            await new Promise((resolve, _) => Module.FS.syncfs(false, resolve)),
+            await new Promise((resolve, _) => self.pyodide.FS.syncfs(false, resolve)),
             console.log("Execution done", outputs)
             self.postMessage({ executionDone: true, outputs })
             outputs = []
