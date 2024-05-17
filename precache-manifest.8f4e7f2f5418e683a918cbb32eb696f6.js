@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/imagej-js-extension.imjoy.html"
   },
   {
-    "revision": "200e84d0c240c638282c33d483e9f41c",
+    "revision": "ecccdf7aab1087b0f213d9e3a0948c4f",
     "url": "/chat/index.html"
   },
   {
