@@ -12,11 +12,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chat/imagej-js-extension.imjoy.html"
   },
   {
-    "revision": "9e676400a66c8877277ce0d15d1fca28",
+    "revision": "200e84d0c240c638282c33d483e9f41c",
     "url": "/chat/index.html"
   },
   {
-    "revision": "e01b1f1d98c7961d1d62f2781234b1be",
+    "revision": "78fe54be4dbbcc8241bfd61f98172cbe",
     "url": "/chat/pyodide-worker.js"
   },
   {
