@@ -1047,7 +1047,7 @@ Global variables, functions and results will be maintained across multiple code 
 `
         // show mount button
         workerManager.createWorker().then(async w => {
-          $('#mount-folder-btn').show();
+          if (window.showOpenFilePicker) $('#mount-folder-btn').show();
           if (mountedFolder) {
             await worker.mount("/mnt", mountedFolder);
             $('#mount-folder-btn').text(`Mount Files (${mountedFolder.name})`);
@@ -1178,7 +1178,7 @@ Global variables, functions and results will be maintained across multiple code 
             }
           });
           $('.spinner').remove();
-          $('#mount-folder-btn').show();
+          if (window.showOpenFilePicker) $('#mount-folder-btn').show();
           // empty termina first
           $('#terminal').terminal(async function (command, term) {
             if (command.trim() === "") {
