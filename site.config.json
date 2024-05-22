@@ -4,7 +4,7 @@
   "site_logo": "/static/img/bioimage-io-logo-white.svg",
   "author": "BioImage.IO Team",
   "keywords": "Bioimaging, AI, deep learning, image processing",
-  "description": "Bioimage.io -- an AI model repository for deep learning.",
+  "description": "BioImage.IO -- an AI model repository for deep learning.",
   "twitter_site": "@bioimageio",
   "twitter_creator": "@weioyang",
   "twitter_image": "https://bioimage.io/static/img/bioimage-io-banner.png",

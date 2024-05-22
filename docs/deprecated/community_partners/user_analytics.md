@@ -2,7 +2,7 @@
 
 We provide the analytics service to help consumer software to keep track of their resource (including model, datasets etc.) downloads.
 
-## Report resource downloads
+### Report resource downloads
 
 To help us maintain the resource download statistics at BioImage.IO, please send a report to our analytics service when a resource item is downloaded.
 
@@ -22,7 +22,7 @@ In the above URL, you need to provide the following parameters:
  * `[CONSUMER VERSION]`: The software version for the consumer software.
 
 
-## Obtain resource usage statistics
+### Obtain resource usage statistics
 You can get the user statistics from via the HTTP API, for example:
  * To get the global statistics of the whole website: `https://bioimage.matomo.cloud/?module=API&method=Live.getCounters&idSite=1&lastMinutes=30&format=JSON&token_auth=anonymous`
  * To get the number of downloads: `https://bioimage.matomo.cloud/?module=API&method=Actions.getDownloads&idSite=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous`
