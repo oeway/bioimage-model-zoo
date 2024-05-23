@@ -514,7 +514,7 @@ function normalizeItem(self, item, bioEngineConfigs) {
   if (item.id in bioEngineConfigs) {
     item.links.push("imjoy/imjoy");
   }
-  if (item.training_data) {
+  if (item.training_data && !item.links.includes(item.training_data.id)) {
     item.links.push(item.training_data.id);
   }
   for (let link_key of item.links) {
@@ -917,6 +917,7 @@ export default {
           for (let k of Object.keys(newRDF)) {
             if (k !== "rdf_source" && k !== "id") item[k] = newRDF[k];
           }
+          delete item.badges;
           Object.assign(item, normalizeItem(this, item, this.bioEngineConfigs));
 
           item.links = item.links || [];

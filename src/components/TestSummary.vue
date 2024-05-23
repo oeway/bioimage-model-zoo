@@ -3,7 +3,7 @@
     It has been tested with:
     <code
       v-for="(tests, consumer) in summary.tests"
-      :key="consumer"
+      :key="'code-' + consumer"
       style="margin: 2px;"
     >
       {{ consumer + " " }}
@@ -17,7 +17,7 @@
     <div
       v-show="showAll"
       v-for="(tests, consumer) in summary.tests"
-      :key="consumer"
+      :key="'details-' + consumer"
       class="container"
     >
       <h3>{{ consumer }}</h3>
