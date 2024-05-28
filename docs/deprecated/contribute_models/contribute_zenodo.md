@@ -1,6 +1,6 @@
 # Uploading a Model to Zenodo for BioImage Model Zoo
 
-**Note:** This tutorial provides a temporary solution for uploading models to the BioImage Model Zoo via Zenodo while the upload feature on the BioImage.io website is being fixed.
+**Note:** This tutorial provides a temporary solution for uploading models to the BioImage Model Zoo via Zenodo while the upload feature on the BioImage.IO website is being fixed.
 
 ## Purpose
 This tutorial will guide you through the process of uploading a model to the BioImage Model Zoo community on Zenodo. The BioImage Model Zoo project aims to collect and share bioimage analysis models, and your contribution is valuable. Follow the steps below to upload your model.
@@ -12,7 +12,7 @@ This tutorial will guide you through the process of uploading a model to the Bio
    <img src="contribute_models/zenodo_upload_01.png" alt="Zenodo initial page" align="center" width="1000"/>
    
 2. On the right, close to your username, click the "New upload" button to begin the model upload process. Make sure that the repository is set as public. 
-The files in the BioImage.io zip have to be uploaded one-by-one (See the example in the image below). Note that you can drag & drop all together at once.
+The files in the BioImage.IO zip have to be uploaded one-by-one (See the example in the image below). Note that you can drag & drop all together at once.
    <!-- ![New upload](contribute_models/zenodo_upload_04.png) -->
    <img src="contribute_models/zenodo_upload_04.png" alt="New upload" align="center" width="1000"/>
 
@@ -28,4 +28,4 @@ The files in the BioImage.io zip have to be uploaded one-by-one (See the example
 
 
 ## Conclusion
-You've successfully uploaded your model to the BioImage Model Zoo community on Zenodo. Thank you for your contribution to the BioImage Model Zoo project. Remember that this is a temporary solution while the upload feature on the BioImage.io website is being fixed. We appreciate your patience and support!
+You've successfully uploaded your model to the BioImage Model Zoo community on Zenodo. Thank you for your contribution to the BioImage Model Zoo project. Remember that this is a temporary solution while the upload feature on the BioImage.IO website is being fixed. We appreciate your patience and support!

@@ -1,6 +1,6 @@
 # Terms of Service Agreement
 
-Welcome to BioImage.io! Our website, https://bioimage.io (the "Site") is owned and operated by the AI4Life consortium ("AI4Life"). By accessing or using the Site and related services (collectively, the "Services"), you ("you" or "User") agree to be legally bound by the following terms and conditions ("Terms of Service" or "Terms").
+Welcome to BioImage.IO! Our website, https://bioimage.io (the "Site") is owned and operated by the AI4Life consortium ("AI4Life"). By accessing or using the Site and related services (collectively, the "Services"), you ("you" or "User") agree to be legally bound by the following terms and conditions ("Terms of Service" or "Terms").
 
 If you disagree with these Terms, you must not use the Site or Services. Please read these Terms carefully before using the Site or Services.
 
