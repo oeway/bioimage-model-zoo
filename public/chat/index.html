@@ -891,21 +891,27 @@
       function setupCodeInterpreter() {
         // check if the browser is not Chromium based then tell the user to use Chromium based browser
         if (!window.showOpenFilePicker) {
-          const warning = document.createElement("div")
-          warning.classList.add("alert")
-          warning.classList.add("alert-warning")
-          warning.role = "alert"
-          warning.innerHTML = `<strong>Warning!</strong> While the code interpreter works in non-Chromium based browsers, the ability to mount data folders to the chatbot is only supported in Chromium based browsers (e.g. Chrome, Edge, Brave, etc.). Please use a Chromium based browser for full functionality.`
-          // insert the warning after the chat-dialog-header
-          $('#chat1 .chat-dialog-header').after(warning)
+            if (!document.getElementById('non-chromium-warning')) {
+                const warning = document.createElement("div")
+                warning.classList.add("alert")
+                warning.classList.add("alert-warning")
+                warning.id = "non-chromium-warning"
+                warning.role = "alert"
+                warning.innerHTML = `<strong>Warning!</strong> While the code interpreter works in non-Chromium based browsers, the ability to mount data folders to the chatbot is only supported in Chromium based browsers (e.g. Chrome, Edge, Brave, etc.). Please use a Chromium based browser for full functionality.`
+                // insert the warning after the chat-dialog-header
+                $('#chat1 .chat-dialog-header').after(warning)
+            }
         }
-        else{
-          const info = document.createElement("div")
-          info.classList.add("alert")
-          info.classList.add("alert-info")
-          info.role = "alert"
-          info.innerHTML = `<strong>Info:</strong> The code interpreter runs entirely in-browser. Mounted data stays in-browser, won't be uploaded to any server. Code execution results, like print messages, are sent to the chat server. WARNING: Please ALWAYS keep a backup before mounting your data folder.`
-          $('#chat1 .chat-dialog-header').after(info)
+        else {
+            if (!document.getElementById('chromium-info')) {
+                const info = document.createElement("div")
+                info.classList.add("alert")
+                info.classList.add("alert-info")
+                info.id = "chromium-info"
+                info.role = "alert"
+                info.innerHTML = `<strong>Info:</strong> The code interpreter runs entirely in-browser. Mounted data stays in-browser, won't be uploaded to any server. Code execution results, like print messages, are sent to the chat server. WARNING: Please ALWAYS keep a backup before mounting your data folder.`
+                $('#chat1 .chat-dialog-header').after(info)
+            }
         }
         $('#console-btn').show()
         const bioengineStartupScript = `
