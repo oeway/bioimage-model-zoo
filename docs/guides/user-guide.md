@@ -1,12 +1,17 @@
-<!-- docs/user_guide/how-tos_guide.md -->
+# User Guide
+This guide is intended for users wanting to consume or use models from the BioImage Model Zoo. There are plenty of models in the BioImage Model Zoo that you can use in your own software, in the software of our community partners or you can even download them and use them in a notebook or code of your own.
 
-# How-To use bioimage.io 
+## Downloading and using Models from the BioImage Model Zoo
 
-## Download a model
+See a [video](https://oc.embl.de/index.php/s/eJOIdzDVJpToETd) about using a model from the BioImage Model Zoo in different software.
 
-<img src="user_guide/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
+<img src="./guides/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
 
-## Consumer-software guidelines
+
+## Using BioImage Model Zoo models in different software
+
+### BiaPy
+TBD
 
 ### DeepImageJ
 
@@ -19,8 +24,9 @@ This will give you all the necessary Plugins to run bioimage.io models at the mo
       1) Download a deepImageJ model from the BioImage Model Zoo repository.
       2) Use `DeepImageJ Install Model` in ImageJ to install the `.zip` file that you just downloaded: choose the `Private model` option and `From ZIP file`.
       3) In the `zip` file you just downloaded, there is an `exampleImage.tif`that you can open in ImageJ and process with the model you just downloaded.
-      4) See a detailed tutorial [here](https://deepimagej.github.io/deepimagej/tutorials.html).      
+      4) See a detailed tutorial [here](https://deepimagej.github.io/tutorials.html).      
 
+For more detailed information about the connection between the BioImage Model Zoo and deepImageJ, see deepImageJ wiki [here](https://github.com/deepimagej/deepimagej-plugin/wiki/BioImage-Model-Zoo-Connection).
 
 ### Fiji
 **Note: Fiji only supports Tensorflow 1 models at the moment!**
@@ -33,7 +39,7 @@ This will give you all the necessary Plugins to run bioimage.io models at the mo
    b) For any other bioimage.io model, go to Plugins > bioimage.io > bioimage.io prediction. 
 4.  Continuing from 3b) you will arrive at this window:
 
-<img src="user_guide/fiji_bioimage_predict.jpg" alt="Fiji bioimage.io prediction" width="60%"/>
+<img src="./guides/fiji_bioimage_predict.jpg" alt="Fiji bioimage.io prediction" width="60%"/>
 
 The configuration fields should be self-explanatory.
 
@@ -41,12 +47,11 @@ The configuration fields should be self-explanatory.
 
 
 ### Ilastik
-
 TBD
 
 ###  ImJoy
-
 TBD
+
 
 ### ZeroCostDL4Mic
 **Note: [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki) allows you trainig models and upload them to the BioImage Model Zoo or fine-tune existing ones!**
@@ -55,3 +60,12 @@ TBD
 2. Unzip the model `.zip` file so you can use it later in the notebook.
 3. Open the ZeroCostDL4Mic notebook that corresponds to the model you downloaded. 
 4. When required, specify the path to the unziped folder containing the model.
+
+## Best Practices for Model Usage
+TBD
+
+## Use Cases
+- [Use-case 1: Stardist H&E nucleus segmentation](https://github.com/bioimage-io/use-cases/tree/main/case1-stardist)
+- [Use-case 2: 3D U-Net for cell-segmentation in light microscopy](https://github.com/bioimage-io/use-cases/tree/main/case2-finetuning)
+- [Use-case 3: Classification, imjoy & python library usage](https://github.com/bioimage-io/use-cases/tree/main/case3-devtools)
+- [Use-case 4: Domain adaptation for mitochondria segmentation in EM](https://github.com/bioimage-io/use-cases/tree/main/case4-research)
