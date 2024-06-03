@@ -1,7 +1,9 @@
 <!-- docs/_sidebar.md -->
 * [Welcome](/README.md)
 * [Getting Started](/getting_started/README.md)
-* [Guides](/guides/README.md)
+* [User Guide](/guides/user-guide.md)
+* [Developers Guide](/guides/developers-guide.md)
+* [Community Partners Guide](/guides/community-partners-guide.md)
 * [Tools and Resources](/tools_and_resources/README.md)
 * [Help Desk](/help_desk/README.md)
 * [Terms of Service](/terms_of_service.md)
