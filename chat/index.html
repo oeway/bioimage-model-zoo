@@ -292,7 +292,7 @@
     }
 
     .details-box {
-      border: 2px solid #c1bfbf;
+      border: 2px solid #c1bfbf66;
       border-radius: 10px;
       padding: 10px;
       margin: 10px 0;
@@ -1756,100 +1756,133 @@ Global variables, functions and results will be maintained across multiple code 
         }
 
         window.generateResponse = async function (chatIndex) {
-          let fullTextMessage = textMessage;
-          if (envPrompt && envPrompt.length > 0) {
-            fullTextMessage = envPrompt + fullTextMessage
-          }
-          $("#regenerate-btn-small").remove();
-          $("#" + currentMessageId).append(spinner);
-          // disable send message
-          $('#send-btn').prop('disabled', true);
-          try {
-            // fix chat_history to chatIndex
-            chat_history.length = chatIndex;
-            // Call the chat function with text and image data
-            response = await svc.chat(fullTextMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
-            // const regex = /!\[.*?\]\(data:.+?\)/g;
-            // const replacementText = '`image placeholder`';
-            // responseWithoutImage = response.replace(regex, replacementText);
-            console.log(response)
-            chat_history.push({ role: 'user', content: textMessage });
-            chat_history.push({ role: 'assistant', content: response.text });
-            console.log("Current Text message:", fullTextMessage);
-            console.log("Current Chat history:", chat_history);
-            // Convert the message to HTML using the marked library
-            if(response.remaining_quota !== undefined){
-              $('#quota-text').text(`Remaining Message Quota: ${response.remaining_quota} (reset hourly)`);
+          try{
+            let fullTextMessage = textMessage;
+            if (envPrompt && envPrompt.length > 0) {
+              fullTextMessage = envPrompt + fullTextMessage
             }
-            const steps = response.steps;
-            let message = response.text && marked(response.text, { renderer: renderer }) || "";
-            if (steps && steps.length > 0) {
-              let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n"
-              for (let step of steps) {
-                details += `### ${step.name}\n\n`;
+            $("#regenerate-btn-small").remove();
+            $("#" + currentMessageId).append(spinner);
+            // disable send message
+            $('#send-btn').prop('disabled', true);
 
-                if (step.details.details) {
-                  for (let detail of step.details.details) {
-                    details += `-----\n#### Tool Call: ${detail.name}\n\n`;
+              // fix chat_history to chatIndex
+              chat_history.length = chatIndex;
+              // Call the chat function with text and image data
+              response = await svc.chat(fullTextMessage, chat_history, user_profile, statusCallback, sessionId, getSelectedExtensions(), assistantName);
+              // const regex = /!\[.*?\]\(data:.+?\)/g;
+              // const replacementText = '`image placeholder`';
+              // responseWithoutImage = response.replace(regex, replacementText);
+              console.log(response)
+              chat_history.push({ role: 'user', content: textMessage });
+              chat_history.push({ role: 'assistant', content: response.text });
+              console.log("Current Text message:", fullTextMessage);
+              console.log("Current Chat history:", chat_history);
+              // Convert the message to HTML using the marked library
+              if(response.remaining_quota !== undefined){
+                $('#quota-text').text(`Remaining Message Quota: ${response.remaining_quota} (reset hourly)`);
+              }
+              const steps = response.steps;
+              let message = response.text && marked(response.text, { renderer: renderer }) || "";
+              if (steps && steps.length > 0) {
+                let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n"
+                for (let step of steps) {
+                  details += `### ${step.name}\n\n`;
 
-                    if (detail.args && detail.args.length > 0) {
-                      details += "Arguments:\n\n";
-                      for (let arg of detail.args) {
-                        const argValue = JSON.stringify(arg);
-                        details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
+                  if (step.details.details) {
+                    for (let detail of step.details.details) {
+                      details += `-----\n#### Tool Call: ${detail.name}\n\n`;
+
+                      if (detail.args && detail.args.length > 0) {
+                        details += "Arguments:\n\n";
+                        for (let arg of detail.args) {
+                          const argValue = JSON.stringify(arg);
+                          details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
+                        }
+                        details += "\n\n";
                       }
-                      details += "\n\n";
-                    }
 
-                    if (detail.kwargs) {
-                      for (let kwarg in detail.kwargs) {
-                        const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg]);
-                        details += `**- ${kwarg}**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                      if (detail.kwargs) {
+                        for (let kwarg in detail.kwargs) {
+                          const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg]);
+                          details += `**- ${kwarg}**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                        }
+                        details += "\n\n";
                       }
-                      details += "\n\n";
                     }
                   }
                 }
+                details += "\n\n</details>";
+                details = marked(details, { renderer: renderer });
+                message = message + details;
               }
-              details += "\n\n</details>";
-              details = marked(details, { renderer: renderer });
-              message = message + details;
-            }
-            $(`#content-${currentMessageId}`).html(message);
+              $(`#content-${currentMessageId}`).html(message);
+          
           }
           catch (e) {
-            throw e
+            // generate an error message to simulate how Melman from Madagascar would respond to an error
+            let details = "Oh no! I'm sorry, an unexpected error occurred. Please try again. \n\n<details class='details-box'> <summary>🔍More Details</summary>\n\n"
+            details += `The server reported the following error:\n\n`;
+            details += `\`\`\`\n${e}\n\`\`\`\n\n`;
+            if(`${e}`.includes('model_not_found')){
+              details += "The model you requested could not be found. This issue may be due to insufficient funds in the OpenAI account associated with the chatbot server. Please check the account balance and try again.\n\n";
+            }
+            details += "For OpenAI related error, you can find more details about [API Errors](https://platform.openai.com/docs/guides/error-codes/api-errors).\n\n";
+            details += "\n\n</details>";
+            const message = marked(details, { renderer: renderer });
+
+            // Add a 'Report Issue' button to the HTML string
+            const html = `
+              ${message}
+              <button class="btn btn-info" id="regenerate-btn"><i class="fas fa-sync-alt"></i>Regenerate</button>
+              <button class="btn btn-danger" id="report-issue-btn"><i class="fas fa-exclamation-triangle"></i>Report Issue</button>
+            `;
+
+            $(`#content-${currentMessageId}`).html(html);
+
+            // Add an event listener to the 'Report Issue' button
+            $(`#content-${currentMessageId}`).on('click', '#report-issue-btn', async () => {
+              const chatMessages = chat_history.slice(0, chatIndex);
+              const feedbackData = {
+                type: "error",
+                feedback: "An unexpected error occurred.",
+                messages: chatMessages,
+                session_id: sessionId
+              };
+
+              try {
+                await svc.report(feedbackData);
+              }
+              catch (e) {
+                console.error(e);
+                alert(`Failed to send feedback, error: ${e}`);
+                return;
+              }
+            });
+            $('#regenerate-btn').click(async function () {
+              $(`#content-${currentMessageId}`).html("Regenerating response...");
+              await window.generateResponse(chatIndex);
+            })
+            showErrorStatus(`The server failed to respond, please try again.`);
+            console.error(e);
           }
           finally {
             $("#" + currentMessageId).append(`<button class="small-grey-button" style="color:gray" id="regenerate-btn-small" onclick="generateResponse(${chatIndex})"><i class="fas fa-redo"></i></button>`);
             // remove spinner
             $('.spinner').remove();
             showReadyStatus();
+            // Enable the send message button
+            $('#send-btn').prop('disabled', false);
+            // Remove spinner and set status back to 'Ready to chat' after finishing
+            $('.spinner').remove();
+            $(`#spinner-${currentMessageId}`).hide();
+
           }
         }
         const chatIndex = chat_history.length;
-        try {
-          await window.generateResponse(chatIndex);
-        }
-        catch (e) {
-          // generate an error message to simulate how Melman from Madagascar would respond to an error
-          const message = marked("Oh no! I'm sorry, an unexpected error occurred. Please try again.", { renderer: renderer })
-          $(`#content-${currentMessageId}`).html(message + `<button class="btn btn-info" id="regenerate-btn"><i class="fas fa-sync-alt"></i>Regenerate</button>`);
-          $('#regenerate-btn').click(async function () {
-            $(`#content-${currentMessageId}`).html("Regenerating response...");
-            await window.generateResponse(chatIndex);
-          })
-          showErrorStatus(`The server failed to respond, please try again. ${e}`);
-          console.error(e);
-        }
-        finally {
-          // Enable the send message button
-          $('#send-btn').prop('disabled', false);
-          // Remove spinner and set status back to 'Ready to chat' after finishing
-          $('.spinner').remove();
-          $(`#spinner-${currentMessageId}`).hide();
-
-        }
+        
+        await window.generateResponse(chatIndex);
+        
       }
 
       function appendUserMessage(message) {
