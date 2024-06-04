@@ -1177,6 +1177,8 @@ Global variables, functions and results will be maintained across multiple code 
                 }
                 finally {
                   $('.spinner').remove();
+                  // remove the kill button
+                  stopBtn.remove()
                 }
               },
             }
@@ -1203,8 +1205,10 @@ Global variables, functions and results will be maintained across multiple code 
               $('#mount-folder-btn').text(`Mount Files (${mountedFolder.name})`);
               // emulate a message to show the user that the folder has been mounted
               // set the input and press send
-              $('#textMessageArea').val(`I just mounted my local data folder (original name: "${mountedFolder.name}") as /mnt.`);
-              $('#send-btn').click();
+              setTimeout(()=>{
+                $('#textMessageArea').val(`I just mounted my local data folder (original name: "${mountedFolder.name}") as /mnt.`);
+                $('#send-btn').click();
+              }, 100)
             }
             finally {
               $('.spinner').remove();
@@ -1934,6 +1938,10 @@ Global variables, functions and results will be maintained across multiple code 
 
       $("#textMessageArea").on("keydown", function (event) {
         if (event.key === "Enter") {
+          // check if send button is disabled
+          if ($('#send-btn').prop('disabled') === true) {
+            return;
+          }
           event.preventDefault(); // Prevent the default new line behavior
           if (event.shiftKey) {
             textarea.value += "\n"; // Add a new line when Shift is held
