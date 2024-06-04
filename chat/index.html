@@ -892,7 +892,7 @@
         }
       }
 
-      function setupCodeInterpreter() {
+      async function setupCodeInterpreter() {
         // check if the browser is not Chromium based then tell the user to use Chromium based browser
         if (!window.showOpenFilePicker) {
             if (!document.getElementById('non-chromium-warning')) {
@@ -1053,10 +1053,10 @@ Global variables, functions and results will be maintained across multiple code 
         // Add a tool to query the usage of each service and its functions
         // Then the chatbot can first select a service, then select a function from that service
         // The chatbot can then run the function with the given parameters
-        const servicePrompt = `
-`
+        const servicePrompt = ``
         // show mount button
-        workerManager.createWorker().then(async w => {
+        try{
+          const w = await workerManager.createWorker()
           if (window.showOpenFilePicker) $('#mount-folder-btn').show();
           if (mountedFolder) {
             await worker.mount("/mnt", mountedFolder);
@@ -1111,6 +1111,31 @@ Global variables, functions and results will be maintained across multiple code 
                 title.innerHTML = spinner + "🐍 Code Interpreter"
 
                 container.appendChild(title)
+                // create a stop button to kill the worker
+                const stopBtn = document.createElement("button")
+                stopBtn.classList.add("small-grey-button")
+                stopBtn.classList.add("btn-danger")
+                stopBtn.style.color = "red"
+                stopBtn.style.marginLeft = "10px"
+
+                // add a new icon
+                const icon = document.createElement("i")
+                icon.classList.add("fas")
+                icon.classList.add("fa-power-off") // replace with the class name of your new icon
+                stopBtn.appendChild(icon)
+
+                stopBtn.innerHTML += " Kill"
+                stopBtn.onclick = async function () {
+                  await worker.close()
+                  container.innerHTML = "Worker terminated."
+                  console.log('Worker terminated, restarting code interpreter...')
+                  await setupCodeInterpreter()
+                }
+
+                // append the button to the title element
+                title.appendChild(stopBtn)
+                
+                
                 try {
                   const result = await worker.runScript(config.script, { output_container: container })
                   console.log("CodeInterpreter result:", result)
@@ -1219,12 +1244,12 @@ Global variables, functions and results will be maintained across multiple code 
             height: 200,
             prompt: 'Code Interpreter> '
           });
-        }).catch((e) => {
+        }
+        catch (e) {
           console.error("Failed to create worker:", e)
           $('#mount-folder-btn').hide();
           alert("Failed to setup code interpreter, error:" + e)
-        })
-
+        }
       }
 
       // Function to handle the login callback

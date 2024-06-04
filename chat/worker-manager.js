@@ -42,6 +42,10 @@ class PyodideWorkerManager {
     const worker = new Worker("/chat/pyodide-worker.js")
     await new Promise(resolve => (worker.onmessage = () => resolve()))
     this.workers[id] = worker
+    worker.kill = () => {
+      worker.terminate()
+      worker.terminated = true;
+    }
     this.workerRecords[id] = []
     this.hyphaServices[id] = []
     const self = this
@@ -90,7 +94,7 @@ class PyodideWorkerManager {
 
   async closeWorker(id) {
     if (this.workers[id]) {
-      this.workers[id].terminate()
+      this.workers[id].kill();
       delete this.workers[id]
       delete this.workerRecords[id]
       delete this.workerApps[id]
@@ -213,8 +217,16 @@ class PyodideWorkerManager {
       delete ioContext.output_container
     }
     const worker = await this.getWorker(workerId)
+    if(worker.terminated){
+      throw new Error("Worker already terminated")
+    }
     return new Promise((resolve, reject) => {
       worker.onerror = e => console.error(e)
+      worker.kill = () => {
+        worker.terminate()
+        worker.terminated = true;
+        reject("Python runtime was killed")
+      }
       const outputs = []
       const handler = e => {
         if (e.data.type !== undefined) {
