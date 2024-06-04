@@ -58,9 +58,28 @@ import traceback
 import wave
 import pyodide_http
 
-pyodide_http.patch_all()  # Patch all libraries
+python_version = f"{sys.version_info.major}.{sys.version_info.minor}"; print(python_version)
 
-time.sleep = js.spin
+pyodide_http.patch_all()  # Patch all libraries
+help_string = f"""
+Welcome to BioImage.IO Chatbot Debug console!
+Python {python_version} on Pyodide {pyodide.__version__}
+
+In this console, you can run Python code and interact with the code interpreter used by the chatbot.
+You can inspect variables, run functions, and more.
+
+If this is your first time using Python, you should definitely check out
+the tutorial on the internet at https://docs.python.org/{python_version}/tutorial/.
+Enter the name of any module, keyword, or topic to get help on writing
+Python programs and using Python modules.  To quit this help utility and
+return to the interpreter, just type "quit".
+To get a list of available modules, keywords, symbols, or topics, type
+"modules", "keywords", "symbols", or "topics".  Each module also comes
+with a one-line summary of what it does; to list the modules whose name
+or summary contain a given string such as "spam", type "modules spam".
+"""
+
+__builtins__.help = lambda *args, **kwargs: print(help_string)
 
 # patch hypha services
 import imjoy_rpc.hypha
