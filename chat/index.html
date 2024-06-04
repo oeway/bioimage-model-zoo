@@ -1794,7 +1794,7 @@ Global variables, functions and results will be maintained across multiple code 
 
                   if (step.details.details) {
                     for (let detail of step.details.details) {
-                      details += `-----\n#### Tool Call: ${detail.name}\n\n`;
+                      details += `-----\n#### Tool Call: \`${detail.name}\`\n\n`;
 
                       if (detail.args && detail.args.length > 0) {
                         details += "Arguments:\n\n";
@@ -1808,7 +1808,10 @@ Global variables, functions and results will be maintained across multiple code 
                       if (detail.kwargs) {
                         for (let kwarg in detail.kwargs) {
                           const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg]);
-                          details += `**- ${kwarg}**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                          if(kwargValue.includes('\n'))
+                            details += `**- \`${kwarg}\`**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                          else
+                            details += `**- \`${kwarg}\`**: \`${kwargValue}\`\n\n`;
                         }
                         details += "\n\n";
                       }
