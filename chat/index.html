@@ -291,6 +291,12 @@
       justify-content: space-between;
     }
 
+    .details-box {
+      border: 2px solid #c1bfbf;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+    }
 
 
     @keyframes spin {
@@ -1778,13 +1784,36 @@ Global variables, functions and results will be maintained across multiple code 
             const steps = response.steps;
             let message = response.text && marked(response.text, { renderer: renderer }) || "";
             if (steps && steps.length > 0) {
-              let details = "<details> <summary>🔍More Details</summary>\n\n"
+              let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n"
               for (let step of steps) {
-                details = details + `<div class="step">${step.name}</div>\n\n\`\`\`\n\n${JSON.stringify(step.details, null, 2)}\n\n\`\`\`\n\n`
+                details += `### ${step.name}\n\n`;
+
+                if (step.details.details) {
+                  for (let detail of step.details.details) {
+                    details += `-----\n#### Tool Call: ${detail.name}\n\n`;
+
+                    if (detail.args && detail.args.length > 0) {
+                      details += "Arguments:\n\n";
+                      for (let arg of detail.args) {
+                        const argValue = JSON.stringify(arg);
+                        details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
+                      }
+                      details += "\n\n";
+                    }
+
+                    if (detail.kwargs) {
+                      for (let kwarg in detail.kwargs) {
+                        const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg]);
+                        details += `**- ${kwarg}**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                      }
+                      details += "\n\n";
+                    }
+                  }
+                }
               }
-              details = details + "\n\n</details>"
-              details = marked(details, { renderer: renderer })
-              message = message + details
+              details += "\n\n</details>";
+              details = marked(details, { renderer: renderer });
+              message = message + details;
             }
             $(`#content-${currentMessageId}`).html(message);
           }
