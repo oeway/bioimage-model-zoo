@@ -1790,14 +1790,13 @@ Global variables, functions and results will be maintained across multiple code 
               if (steps && steps.length > 0) {
                 let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n"
                 for (let step of steps) {
-                  details += `### ${step.name}\n\n`;
+                  details += `## ${step.name}\n\n`;
 
                   if (step.details.details) {
                     for (let detail of step.details.details) {
-                      details += `-----\n#### Tool Call: \`${detail.name}\`\n\n`;
-
+                      details += `-----\n### Tool Call: \`${detail.name}\`\n\n`;
+                      details += "#### Arguments:\n\n";
                       if (detail.args && detail.args.length > 0) {
-                        details += "Arguments:\n\n";
                         for (let arg of detail.args) {
                           const argValue = JSON.stringify(arg);
                           details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
@@ -1819,9 +1818,9 @@ Global variables, functions and results will be maintained across multiple code 
                       if(detail.result){
                         const result = typeof detail.result === 'string' ? detail.result : JSON.stringify(detail.result, null, 2);
                         if(result.includes('\n'))
-                          details += `**Result**:\n\n\`\`\`\n${result}\n\`\`\`\n\n`;
+                          details += `#### Result:\n\n\`\`\`\n${result}\n\`\`\`\n\n`;
                         else
-                          details += `**Result**: \`${result}\`\n\n`;
+                          details += `#### Result: \`${result}\`\n\n`;
                       }
                     }
                   }
