@@ -1738,10 +1738,13 @@ Global variables, functions and results will be maintained across multiple code 
             }
             const args = accumulatedArgs.replace(/\\n/g, '\n');
 
-            content = // `<details> <summary>${message.name}</summary>`+
-              "## Generating response for " + message.name + "...\n\n" +
-              args;
-            // + "</details>";
+            if(message.name ==="CompleteUserQuery"){
+             content = `## ✅Generating Final Response...\n\n` +
+             args;
+            }
+            else{
+              content = "## ⏳Calling tool 🛠️ `" + message.name + "`...\n\n" + args;
+            }
             $(`#content-${currentMessageId}`).html(marked(completeCodeBlocks(content), { renderer: renderer }));
           }
           else if (message.type === 'text') {
