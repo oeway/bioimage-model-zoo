@@ -1827,7 +1827,14 @@ Global variables, functions and results will be maintained across multiple code 
           }
           catch (e) {
             // generate an error message to simulate how Melman from Madagascar would respond to an error
-            let details = "Oh no! I'm sorry, an unexpected error occurred. Please try again. \n\n<details class='details-box'> <summary>🔍More Details</summary>\n\n"
+            // let's split the error message and check if the starts with `openai`
+            // if yes, let's say that it's likely to be an error caused by the malfunction of the OpenAI server
+
+            let details = "Oh no! I'm sorry, an unexpected error occurred."
+            if (`${e}`.includes('openai.')) {
+              details += " It seems that the OpenAI server is malfunctioning. Please try again later."
+            }
+            details += " \n\n<details class='details-box'> <summary>🔍More Details</summary>\n\n"
             details += `The server reported the following error:\n\n`;
             details += `\`\`\`\n${e}\n\`\`\`\n\n`;
             if(`${e}`.includes('model_not_found')){
