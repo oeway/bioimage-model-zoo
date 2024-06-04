@@ -812,7 +812,11 @@
         $('#assistant-menu-button').hide();
       }
       let assistantName = urlParams.get('assistant') || defaultAssistant;
-      let serverUrl = urlParams.get('server') || "https://chat.bioimage.io";
+      let defaultServerUrl = "https://chat.bioimage.io";
+      if(window.location.origin.startsWith('http://localhost') || window.location.origin.startsWith('http://127.0.0.1')){
+        defaultServerUrl = window.location.origin;
+      }
+      let serverUrl = urlParams.get('server') || defaultServerUrl;
       let allAssistants = {};
       let assistantIcon = "https://bioimage.io/static/img/bioimage-io-icon.svg"
       let imjoyApi = null;

@@ -4,26 +4,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "c78515b1ef4d1a6613dac1baf49cfc9f",
-    "url": "/chat/bioimage-model-zoo-extension.imjoy.html"
-  },
-  {
-    "revision": "0950c54d6cabe9a9d29995413636a7c2",
-    "url": "/chat/imagej-js-extension.imjoy.html"
-  },
-  {
-    "revision": "7d03bf252d66a930bf5996b3465f5a1f",
-    "url": "/chat/index.html"
-  },
-  {
-    "revision": "78fe54be4dbbcc8241bfd61f98172cbe",
-    "url": "/chat/pyodide-worker.js"
-  },
-  {
-    "revision": "479f7b5675e76dd9a1d57c8ec528a789",
-    "url": "/chat/worker-manager.js"
-  },
-  {
     "revision": "add8f253683bdcd02f7f",
     "url": "/css/about.7fe7bb41.css"
   },
