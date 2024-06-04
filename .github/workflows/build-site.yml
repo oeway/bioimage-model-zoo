@@ -54,10 +54,11 @@ jobs:
       # then extract the files under bioimageio_chatbot/static and store it under dist/chat
       - name: Download and extract static files
         run: |
-          wget https://github.com/bioimage-io/bioimageio-chatbot/archive/refs/heads/main.zip
-          unzip main.zip 'bioimageio-chatbot-main/bioimageio_chatbot/static/*' -d dist/chat
-          mv dist/chat/bioimageio-chatbot-main/bioimageio_chatbot/static/* dist/chat/
-          rm -rf dist/chat/bioimageio-chatbot-main
+          curl -LOk https://github.com/bioimage-io/bioimageio-chatbot/archive/refs/heads/main.zip
+          unzip main.zip
+          mkdir -p dist/chat
+          cp -r bioimageio-chatbot-main/bioimageio_chatbot/static/* dist/chat
+          rm -rf main.zip bioimageio-chatbot-main
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3.5.0
         env:
