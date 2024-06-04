@@ -1807,13 +1807,21 @@ Global variables, functions and results will be maintained across multiple code 
 
                       if (detail.kwargs) {
                         for (let kwarg in detail.kwargs) {
-                          const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg]);
+                          const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg], null, 2);
                           if(kwargValue.includes('\n'))
                             details += `**- \`${kwarg}\`**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
                           else
                             details += `**- \`${kwarg}\`**: \`${kwargValue}\`\n\n`;
                         }
                         details += "\n\n";
+                      }
+
+                      if(detail.result){
+                        const result = typeof detail.result === 'string' ? detail.result : JSON.stringify(detail.result, null, 2);
+                        if(result.includes('\n'))
+                          details += `**Result**:\n\n\`\`\`\n${result}\n\`\`\`\n\n`;
+                        else
+                          details += `**Result**: \`${result}\`\n\n`;
                       }
                     }
                   }
