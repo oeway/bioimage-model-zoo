@@ -404,14 +404,6 @@
             <button class="btn" type="button" id="tooltip-button" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" data-bs-delay='{"show":"100", "hide":"100"}' title="">
               <i class="fas fa-question-circle"></i>
             </button>
-            <script>
-              document.getElementById('tooltip-button').setAttribute('title', 
-                '<b>Melman:</b> An assistant specializing in searching through bioimage analysis tools, including the BioImage Model Zoo, the BioImage Archive, biii.eu, and others, to provide comprehensive support in bioimaging.<br>' +
-                '<b>Nina:</b> Your tutor for learning about bioimage analysis and AI. Nina is the perfect guide, offering detailed explanations and support throughout your learning journey.<br>' +
-                '<b>Bridget:</b> Offers tools to analyze your images directly or helps you construct a Python pipeline for advanced image processing tasks.<br>' +
-                '<b>Skyler:</b> Facilitates the integration of bioimaging tools and workflows, making it easier to apply advanced analysis techniques in your research.'
-              );
-            </script>
             <div id="assistant-buttons" class="dropdown-menu dropdown-menu-right"
               aria-labelledby="assistant-menu-button">
             </div>
@@ -429,6 +421,15 @@
               </label>
               <input type="file" id="fileUpload" style="visibility: hidden; position: absolute;"
                 onchange="fileSelected()" -->
+                <!-- Replace the existing label and input with the following: -->
+              <div class="dropdown">
+                <button class="btn" style="padding: 0px;" type="button" aria-haspopup="true" aria-expanded="false" id="at-assistant-button"  data-toggle="dropdown" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" data-bs-delay='{"show":"100", "hide":"100"}' title="">
+                  <i class="fas fa-at" style="font-size: 1.2rem;" id="atIcon"></i>
+                </button>
+                <div id="at-buttons" class="dropdown-menu dropdown-menu-left"
+                  aria-labelledby="at-assistant-button">
+                </div>
+              </div>
               <textarea class="form-control message" id="textMessageArea" rows="1"
                 style="flex-grow: 1; border: 1px solid #ced4da; border-radius: .25rem; height: 36px; padding: .375rem .75rem;"></textarea>
             </div>
@@ -538,6 +539,12 @@
   <script src="https://www.unpkg.com/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
   <script src="/chat/worker-manager.js"></script>
   <script>
+    document.getElementById('tooltip-button').setAttribute('title', 
+      '<b>Melman:</b> An assistant specializing in searching through bioimage analysis tools, including the BioImage Model Zoo, the BioImage Archive, biii.eu, and others, to provide comprehensive support in bioimaging.<br>' +
+      '<b>Nina:</b> Your tutor for learning about bioimage analysis and AI. Nina is the perfect guide, offering detailed explanations and support throughout your learning journey.<br>' +
+      '<b>Bridget:</b> Offers tools to analyze your images directly or helps you construct a Python pipeline for advanced image processing tasks.<br>' +
+      '<b>Skyler:</b> Facilitates the integration of bioimaging tools and workflows, making it easier to apply advanced analysis techniques in your research.'
+    );
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -1493,6 +1500,41 @@ Global variables, functions and results will be maintained across multiple code 
               const href = '?' + urlParams.toString();
               return `<li><a class="dropdown-item" href="${href}" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
             }).join("\n")
+
+            const atAssistantButton = document.getElementById("at-buttons");
+            atAssistantButton.innerHTML = Object.values(allAssistants).map((a) => {
+              return `<li><a class="dropdown-item" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
+            }).join("\n");
+
+            // Get all the dropdown items
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+            // Add a 'click' event listener to each dropdown item
+            dropdownItems.forEach(item => {
+              item.addEventListener('click', function(event) {
+                // Prevent the default action
+                event.preventDefault();          
+                // Get the selected assistant's name
+                const assistantName = this.getAttribute('data-assistant');
+
+                // Get the textarea
+                const textarea = document.getElementById('textMessageArea');
+
+                // Get the current content of the textarea
+                const currentContent = textarea.value;
+
+                // Check if the current content starts with an @ symbol followed by any word
+                const match = currentContent.match(/^@(\w+)/);
+
+                // If it does, replace the existing @xxx with the selected assistant's name
+                // If it doesn't, prepend the selected assistant's name to the current content
+                const newContent = match ? currentContent.replace(match[0], '@' + assistantName) : '@' + assistantName + ' ' + currentContent;
+
+                // Set the new content to the textarea
+                textarea.value = newContent;
+
+              });
+            });
           }
           else {
             $('#assistant-menu-button').hide();
@@ -1620,7 +1662,6 @@ Global variables, functions and results will be maintained across multiple code 
       var textarea = document.getElementById('textMessageArea');
       textarea.addEventListener('input', autoResize, false);
       autoResize.call(textarea);
-
       var renderer = new marked.Renderer();
       marked.setOptions({
         gfm: true,
