@@ -1503,11 +1503,14 @@ Global variables, functions and results will be maintained across multiple code 
 
             const atAssistantButton = document.getElementById("at-buttons");
             atAssistantButton.innerHTML = Object.values(allAssistants).map((a) => {
-              return `<li><a class="dropdown-item" data-assistant="${a.name}">${a.alias}(${a.name})</a></li>`
+              if(a.name !== assistantName)
+                return `<li><a class="dropdown-item at-button" data-assistant="${a.name}">${a.alias} (${a.name})</a></li>`
+              else
+                return ""
             }).join("\n");
 
             // Get all the dropdown items
-            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const dropdownItems = document.querySelectorAll('.at-button');
 
             // Add a 'click' event listener to each dropdown item
             dropdownItems.forEach(item => {
