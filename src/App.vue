@@ -39,7 +39,7 @@
             <b-icon icon="plus"></b-icon>
             <span>Contribute</span>
           </a> -->
-          <a class="navbar-item" href="#/upload">
+          <a class="navbar-item" href="https://bioimageio-uploader.netlify.app/" target="_blank">
             <b-icon icon="plus"></b-icon>
             <span>Upload</span>
           </a>
