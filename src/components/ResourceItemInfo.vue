@@ -5,14 +5,15 @@
       &nbsp;&nbsp;<badges :badges="resourceItem.badges"></badges>
     </section>
     <section>
-      <pre class="resource-id">🆔</pre>
-      <pre ref="resourceId" class="resource-id">{{ resourceItem.id }}</pre>
-
-      <b-button
-        size="is-small"
-        icon-left="content-copy"
-        @click="copyText(resourceItem.id)"
-      ></b-button>
+      <template v-if="resourceItem.id !== resourceItem.nickname">
+        <pre class="resource-id">🆔</pre>
+        <pre ref="resourceId" class="resource-id">{{ resourceItem.id }}</pre>
+        <b-button
+          size="is-small"
+          icon-left="content-copy"
+          @click="copyText(resourceItem.id)"
+        ></b-button>
+      </template>
 
       <pre
         style="margin-left: 20px;"

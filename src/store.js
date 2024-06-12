@@ -162,6 +162,8 @@ export const store = new Vuex.Store({
       state.resourceItems = state.resourceItems.map(item => {
         // make sure the id and links are in lowercase
         item.id = item.id || randId();
+        // use the id as the nickname if not provided
+        item.nickname = item.nickname || item.id;
         item.id = item.id.toLowerCase();
         item.links = item.links || [];
         item.tags = item.tags || [];
