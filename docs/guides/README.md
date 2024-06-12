@@ -165,9 +165,23 @@ You've successfully uploaded your model to the BioImage Model Zoo community on Z
 ####  Model Documentation
 ##### Model naming
 
-Models are expected to be used by life-scientists, thus, it is expected that the naming is human readable but also informative enough regarding the final application and the biological tissue being analysed. Example:
-   
-   **Name:** `Neuron Segmentation in EM (Membrane Prediction)`, `B. Sutilist bacteria segmentation - Widefield microscopy - 2D UNet`
+The model name should follow this format:
+> Living Matter - Microscopy Modality (optional) - Task - Network Architecture
+
+- **Living Matter**: Specify the biological data the network was trained on, such as Mitochondria, HeLa Cells, etc.
+- **Microscopy Modality**: This field is optional and should be abbreviated if included. Examples include EM for Electron Microscopy, LS for LightSheet Microscopy, Conf. for Confocal, etc.
+- **Task**: Describe the primary task the network is performing, such as Instance Segmentation, Restoration, Denoising, etc.
+- **Network Architecture**: Indicate the network architecture, such as StarDist 2D, UNet 3D, etc.
+
+**Examples:**
+- **HeLa Cells - Conf. - Instance Segmentation - UNet 2D**
+- **Mitochondria - EM - Denoising - DenoiseNet**
+- **C. elegans - LS - Restoration - StarDist 3D**
+- **Mouse Brain - EM - Segmentation - DeepLabV3**
+
+These guidelines will help ensure that the models are easily identifiable and provide essential information at a glance.
+
+If additional details are necessary, it is recommended to include them in the model's description.
 
    
 ##### Model Tags
