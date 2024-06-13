@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { randId } from "./utils";
-import { ZenodoClient } from "./utils.js";
+import { ZenodoClient, concatAndResolveUrl } from "./utils.js";
 import siteConfig from "../site.config.json";
 
 Vue.use(Vuex);
@@ -131,6 +131,9 @@ export const store = new Vuex.Store({
       item.authors = item.authors.map(author =>
         typeof author === "string" ? { name: author } : author
       );
+      if (item.source && !item.source.startsWith("http")) {
+        item.source = encodeURI(concatAndResolveUrl(item.root_url, item.source));
+      }
       item.config = item.config || {};
       if (item.owners) {
         const userId = state.zenodoClient && state.zenodoClient.getUserId();

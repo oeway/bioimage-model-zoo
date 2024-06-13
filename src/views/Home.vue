@@ -365,6 +365,9 @@ function normalizeItem(self, item, bioEngineConfigs) {
   if (item.type === "dataset") {
     if (!item.download_url && item.source) item.download_url = item.source;
   }
+  if (item.source && !item.source.startsWith("http")) {
+    item.source = encodeURI(concatAndResolveUrl(item.root_url, item.source));
+  }
 
   item.covers = item.covers.map(cover => {
     if (!cover.startsWith("http") && item.root_url) {
