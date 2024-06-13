@@ -46,7 +46,19 @@ The configuration fields should be self-explanatory.
 
 
 ### Ilastik
-TBD
+In version 1.4.0, ilastik introduced the [Neural Network workflow](https://www.ilastik.org/documentation/nn/nn), which allows you to easily load models from the BioImage Model Zoo and run them on your images.
+
+A [video tutorial](https://www.youtube.com/watch?v=PfXCKNhsOLw) demonstrating the workflow and how to load models is available on the ilastik team's [YouTube channel](https://www.youtube.com/@ilastikTeam).
+
+The simplest steps to try it out are, in short:
+
+1. Download and install the [newest ilastik version](https://www.ilastik.org/download)
+2. Create a "Neural Network Classification (Local)" project
+3. Select your input image(s)
+4. Choose a suitable model from the BioImage Model Zoo, copy the model nickname
+5. Paste the model nickname into ilastik
+6. Run Live Prediction to preview the model's output on the currently displayed data
+7. Export predictions for the full image
 
 ###  ImJoy
 TBD
