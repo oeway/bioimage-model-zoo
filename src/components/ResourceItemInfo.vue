@@ -127,7 +127,13 @@
       <h2>
         Test Summary
       </h2>
-      <span v-if="resourceItem.type == 'model'">
+      <span
+        v-if="
+          resourceItem.type == 'model' &&
+            resourceItem.apps &&
+            resourceItem.apps.some(app => app.isLinkedApp)
+        "
+      >
         This {{ resourceItem.type }} can be used in:
         <app-icons :onlyLinked="true" :apps="resourceItem.apps"></app-icons>
         <br />
@@ -237,8 +243,8 @@ export default {
     if (!this.resourceItem.test_summary) {
       // replace the trailing file name "rdf.yaml" into "test_summary.yaml"
       const url = this.resourceItem.source.replace(
-        /rdf\.yaml$/,
-        "test_summary.yaml"
+        /\/files\/rdf\.yaml$/,
+        "/test_summary.yaml"
       );
       fetchTestSummary(url).then(summary => {
         this.resourceItem.test_summary = summary;

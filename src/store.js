@@ -132,7 +132,9 @@ export const store = new Vuex.Store({
         typeof author === "string" ? { name: author } : author
       );
       if (item.source && !item.source.startsWith("http")) {
-        item.source = encodeURI(concatAndResolveUrl(item.root_url, item.source));
+        item.source = encodeURI(
+          concatAndResolveUrl(item.root_url, item.source)
+        );
       }
       item.config = item.config || {};
       if (item.owners) {

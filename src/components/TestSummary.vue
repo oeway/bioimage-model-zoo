@@ -1,5 +1,5 @@
 <template>
-  <div class="test-summary">
+  <div class="test-summary" v-if="Object.keys(summary.tests).length > 1">
     It has been tested with:
     <code
       v-for="(tests, consumer) in summary.tests"
