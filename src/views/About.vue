@@ -33,12 +33,12 @@
     <br />
     <section style="text-align: center;">
       <b-button
-        @click="openUrl('/docs/#/contribute_models/README')"
+        @click="openUrl('/docs/#/guides/developers-guide')"
         v-if="siteConfig.contribute_url"
         >Contribute Models</b-button
       >
       <b-button
-        @click="openUrl('/docs/#/community_partners/README')"
+        @click="openUrl('/docs/#/guides/community-partners-guide')"
         v-if="siteConfig.join_partners_url"
         >Join Community Partners</b-button
       >
