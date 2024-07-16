@@ -1,5 +1,21 @@
 # Developers Guide
 
+## Content
+- [Models in the BioImage Model Zoo](#models-in-the-bioimage-model-zoo)
+    - [Model contribution requirements](#model-contribution-requirements)
+    - [Upload a model to the BioImage Model Zoo](#upload-a-model-to-the-bioimage-model-zoo)
+    - [Upload a model through Zenodo](#upload-a-model-through-zenodo)
+    - [Model Documentation](#model-documentation)
+        - [Model naming](#model-naming)
+        - [Model Tags](#model-tags)
+        - [Model links](#model-links)
+        - [Representative Covers](#representative-covers)
+        - [Considerations for the model description file](#considerations-for-the-model-description-file)
+        - [Model Resource Description File Specification (0.4.9)](#model-resource-description-file-specification-049)
+    - [Considerations for the model description file](#considerations-for-the-model-description-file)
+    - [Model Resource Description File Specification (0.4.9)](#model-resource-description-file-specification-049)
+- [Other Contributions](#other-contributions)
+
 ## Models in the BioImage Model Zoo
 A BioImage.IO model is a zip file containing all the items, technical description and metadata of the model, together with the trained architecture of the model. Briefly, a BioImage.IO model has at least, the following items:
 * Trained model in the correct format (check the Resource Description File Specifications for the [supported formats](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md))
@@ -168,7 +184,7 @@ _optional*_ with an asterisk indicates the field is optional depending on the va
 * <a id="timestamp"></a>`timestamp` _(required DateTime)_ Timestamp of the initial creation of this model in [ISO 8601](#https://en.wikipedia.org/wiki/ISO_8601) format.
 * <a id="weights"></a>`weights` _(required Dict\[String, Union\[KerasHdf5WeightsEntry | OnnxWeightsEntry | PytorchStateDictWeightsEntry | TensorflowJsWeightsEntry | TensorflowSavedModelBundleWeightsEntry | TorchscriptWeightsEntry\]\])_ 
     1.  _(String)_ Format of this set of weights. One of: pytorch_state_dict, torchscript, keras_hdf5, tensorflow_js, tensorflow_saved_model_bundle, onnx
-    1.  _(Union\[KerasHdf5WeightsEntry | OnnxWeightsEntry | PytorchStateDictWeightsEntry | TensorflowJsWeightsEntry | TensorflowSavedModelBundleWeightsEntry | TorchscriptWeightsEntry\])_ The weights for this model. Weights can be given for different formats, but should otherwise be equivalent. See [weight_formats_spec_0_4.md](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/weight_formats_spec_0_4.md) for the required and optional fields per weight format. The available weight formats determine which consumers can use this model.
+    1.  _(Union\[KerasHdf5WeightsEntry | OnnxWeightsEntry | PytorchStateDictWeightsEntry | TensorflowJsWeightsEntry | TensorflowSavedModelBundleWeightsEntry | TorchscriptWeightsEntry\])_ The weights for this model. Weights can be given for different formats, but should otherwise be equivalent. See [weights for Model Description v0.5](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_v0-5.md#weights-weightsdescr) for the required and optional fields per weight format. The available weight formats determine which consumers can use this model.
 * <a id="attachments"></a>`attachments` _(optional Attachments)_ Additional unknown keys are allowed. Attachments is a Dict with the following keys:
     * <a id="attachments:files"></a>`files` _(optional List\[Union\[URI→String | Path→String\]\])_ File attachments; included when packaging the resource.
 * <a id="badges"></a>`badges` _(optional List\[Badge\])_ a list of badges
