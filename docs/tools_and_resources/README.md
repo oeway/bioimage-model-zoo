@@ -75,5 +75,9 @@ See [here](https://github.com/imjoy-team/ImJoy-core#use-your-web-application-ins
 For example, [Kaibu](https://kaibu.org) is a standlone web app that compatible with the BioEngine. Because it [loads the imjoy-rpc library](https://github.com/imjoy-team/kaibu/blob/efd355eff95da9aa0f7eb97103585b753063c05d/public/index.html#L45) and [exposed api functions for ImJoy](https://github.com/imjoy-team/kaibu/blob/master/src/imjoyAPI.js).
 
 ### How to submit BioEngine Apps to the website?
-
 If you are one of our [community partners](https://github.com/bioimage-io/bioimage.io/blob/master/docs/join-partners.md), you can add the app url to your model repository. Otherwise, please submit your BioEngine Apps to BioImage.IO by posting the url [here](https://github.com/bioimage-io/bioimage-io-models/issues/26).
+
+
+## BioImage.IO Colab
+[BioImageIO Colab](https://github.com/bioimage-io/bioimageio-colab) is a working-in-progress project that supports collaborative data annotation in the browser using the BioEngine and [Kaibu](https://kaibu.org). It allows the safe dissemination of images embedded in an image annotation tool (Kaibu) and stores the corresponding annotations in a source directory. This functionality is enabled by the connection to the BioEngine server. Users can test demos for crowd-sourced annotation and model fine-tuning using pre-configured Jupyter notebooks in Google Colab. BioImageIO Colab is based on two main components: Kaibu, a web-browser annotation tool, and the BioEngine server, facilitating a seamless and interactive collaborative annotation experience.
+

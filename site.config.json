@@ -29,7 +29,7 @@
     { "label": "Feedback Form",
       "tooltip": "Give us some feedback through this Google Form",
       "logo": "/static/img/feedback-icon.png", 
-      "url": "https://docs.google.com/forms/d/e/1FAIpQLSfhRaldWH-CSJvSxHzxpG1_HGnNzQ-evpMcaJMo1HaSuLaCMA/viewform?usp=sf_link"
+      "url": "https://forms.gle/CA1yK4pUKMqBPtso8"
     },
     { "label": "Source Code",
       "tooltip": "Github Repository",
