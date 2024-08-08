@@ -179,3 +179,11 @@ These Terms constitute the entire agreement between you and AI4Life with respect
 You may not assign, transfer, or sublicense any of your rights under these Terms without AI4Life's prior written consent. AI4Life's failure to enforce any right or provision in these Terms shall not constitute a waiver of such right or provision.
 
 If you have any questions or concerns about these Terms or Content appearing on the Site, please contact us at <ai4life@eurobioimaging.eu>.
+
+## Change Log
+
+| Version | Date | Author | Description of changes |
+| --- | --- | --- | --- |
+| v1 | 16.02.23 | Caterina Fuster Barcelo, Arrate Muñoz Barrutia | Initial draft |
+| V2 | 28.02.23 | Perttu Tuuppa, Arrate Muñoz Barrutia | Revised by Eurobioimaging lawer |
+| V3 | 08.08.24 | Perttu Tuuppa, Wei Ouyang, and Joanna Hård | Updated terms for additional services |
