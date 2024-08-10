@@ -790,10 +790,17 @@
       const schemas = await extension.get_schema()
       for (let k of Object.keys(schemas)) {
         const schema = schemas[k]
-        if (!schema || !schema.title || schema.title.includes(" "))
-          throw new Error("Invalid title in schema: " + k)
+        if (!schema || !schema.title)
+          throw new Error("Schema title is required: " + k)
         if (!schema.description) {
           throw new Error("Schema description is required: " + k)
+        }
+      }
+
+      if (extension.get_state){
+        const state = await extension.get_state()
+        if (!state || typeof state !== 'object') {
+          throw new Error("Invalid state returned from get_state: " + state)
         }
       }
 
