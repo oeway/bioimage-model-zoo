@@ -341,12 +341,7 @@
           <i class="fas fa-thumbs-down"></i>
         </button> for each response, or by clicking the 'Feedback' button below.
       </p>
-
-      <p>Note that the chatbot is still in beta and is being actively developed, we will log the message you input into
-        the chatbot for further investigation of issues and support our development. See <a
-          href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md" target="_blank">the
-          Disclaimer</a> for more details. If you want to to remove your chat logs, please contact us via <a
-          href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>.</p>
+      <p>Note that the BioImage.IO Chatbot is part of a research project focused on Text and Data Mining (TDM) and is still in beta, being actively developed. The chatbot is intended for research and educational purposes only and is not meant for production or commercial use. We log the messages you input into the chatbot to support ongoing research, improve the service, and investigate any issues. Please be aware that the chatbot utilizes copyrighted materials under the EU's TDM exception. For more details, see <a href="https://github.com/bioimage-io/bioimageio-chatbot/blob/main/docs/DISCLAIMER.md" target="_blank">the Disclaimer</a>. If you are an author and wish to opt-out your material or if you want your chat logs removed, please contact us via <a href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>.</p>
       <button class="feedback-button" onclick="confirmDisclaimer()">OK, got it!</button>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" value="" id="dont-ask-again-check">
@@ -491,6 +486,7 @@
             <br>
             <span>Extensions: </span>
             <select multiple="multiple" style="width: calc(100% - 100px);" id="extensions"></select>
+            <div id="about-extensions" style="margin-top:10px"></div>
           </div>
         </div>
       </div>
@@ -1607,6 +1603,7 @@ Global variables, functions and results will be maintained across multiple code 
             }
           }
           updateDropdownOptions(extensions);
+          updateAboutExtensions(extensions);
           showReadyStatus();
           appendRobotMessage(allAssistants[assistantName]['welcome_message'], "message-0"); // Append robot message to the message container
           return svc;
@@ -1685,6 +1682,81 @@ Global variables, functions and results will be maintained across multiple code 
       renderer.link = function (href, title, text) {
         return '<a target="_blank" href="' + href + '" title="' + title + '">' + text + '</a>';
       }
+
+      function updateAboutExtensions(extensions) {
+        $('#about-extensions').empty();
+    
+        // Create the card structure
+        const card = document.createElement('div');
+        card.className = 'card';
+        const cardHeader = `
+        <div class="card-header">
+            <img src="https://bioimage.io/static/img/bioimage-io-icon.svg" alt="BioImage.IO Icon" style="height: 24px; margin-right: 10px">
+            About BioImage.IO Chatbot Extensions
+        </div>`;
+        
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+    
+        // Add leading text
+        const leadingText = `<div class="leading-text">
+    <p>Our chatbot is enhanced by a diverse set of extensions that utilize the following valuable sources. We extend our sincere gratitude to all contributors, particularly the original authors whose works have significantly enriched this project. These sources are primarily used for research purposes, in accordance with the European Union's copyright exception on Text and Data Mining (TDM) under <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32019L0790" target="_blank">Directive (EU) 2019/790</a>.</p>
+    <p>If you are an author of any material used within these extensions and wish to have your content removed or updated, we respectfully request that you contact us directly. You can do so via <a href="https://oeway.typeform.com/to/K3j2tJt7" target="_blank">this form</a>. We will promptly address your concerns and ensure that your material is removed from our system.</p>
+    <p><strong>Notice:</strong> Users of this chatbot are kindly reminded to carefully check with the original sources for accuracy and completeness. For any work derived from these sources, please ensure that you respect their respective licenses and adhere to the conditions set forth by the original authors.</p>
+</div>`;
+    
+        // Append title and leading text to the card body
+        cardBody.innerHTML = leadingText;
+    
+        // Initialize a markdown renderer
+        const renderer = new marked.Renderer();
+    
+        for (const ext of extensions) {
+            const extInfo = document.createElement('div');
+    
+            // Start creating markdown content with improved formatting
+            let markdownContent = `### ${ext.name} 📚\n\n#### ${ext.description}\n\n`;
+    
+            // Iterate through each tool in the extension info
+            for (const [key, tool] of Object.entries(ext.info)) {
+                markdownContent += `----\n**${tool.name} 🛠️**\n\n`;
+                markdownContent += `**📝 Description**: ${tool.description}\n\n`;
+                if(tool.authors && tool.authors.length > 0){
+                  markdownContent += `**👥 Authors**:\n`;
+                  for (const author of tool.authors) {
+                      markdownContent += `- ${author.name}, *${author.organization}*\n`;
+                  }
+                }
+                if(tool.license){
+                  markdownContent += `**📜 License**: ${tool.license}\n\n`;
+                }
+                if (tool.reference) {
+                  markdownContent += `**🔗 [Reference](${tool.reference})**: ${tool.reference}\n\n`;
+                }
+            }
+    
+            // Convert markdown content to HTML using marked
+            const renderedContent = marked(markdownContent, { renderer: renderer });
+    
+            // Wrap the content in a collapsible <details> block
+            extInfo.innerHTML = `
+                <details class='details-box'>
+                    <summary>Extension: ${ext.name}</summary>
+                    ${renderedContent}
+                </details>
+            `;
+    
+            // Append the rendered content to the card body
+            cardBody.appendChild(extInfo);
+        }
+    
+        // Combine the card structure
+        card.innerHTML = cardHeader;
+        card.appendChild(cardBody);
+    
+        // Append the entire card to the about-extensions section
+        $('#about-extensions').append(card);
+    } 
 
       function autoResize() {
         this.style.height = (this.scrollHeight) + 'px';
@@ -1838,49 +1910,85 @@ Global variables, functions and results will be maintained across multiple code 
               }
               const steps = response.steps;
               let message = response.text && marked(response.text, { renderer: renderer }) || "";
+
               if (steps && steps.length > 0) {
-                let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n"
-                for (let step of steps) {
-                  details += `## ${step.name}\n\n`;
+                  let details = "<details class='details-box'> <summary>🔍More Details</summary>\n\n";
+                  
+                  for (let step of steps) {
+                      details += `## ${step.name}\n\n`;
 
-                  if (step.details.details) {
-                    for (let detail of step.details.details) {
-                      details += `-----\n### Tool Call: \`${detail.name}\`\n\n`;
-                      details += "#### Arguments:\n\n";
-                      if (detail.args && detail.args.length > 0) {
-                        for (let arg of detail.args) {
-                          const argValue = JSON.stringify(arg);
-                          details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
-                        }
-                        details += "\n\n";
-                      }
+                      if (step.details.details) {
+                          for (let detail of step.details.details) {
+                              details += `-----\n### Tool Call: \`${detail.name}\`\n\n`;
+                              details += "#### Arguments:\n\n";
+                              
+                              if (detail.args && detail.args.length > 0) {
+                                  for (let arg of detail.args) {
+                                      const argValue = JSON.stringify(arg);
+                                      details += `\`\`\`\n${argValue}\n\`\`\`\n\n`;
+                                  }
+                                  details += "\n\n";
+                              }
 
-                      if (detail.kwargs) {
-                        for (let kwarg in detail.kwargs) {
-                          const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg], null, 2);
-                          if(kwargValue.includes('\n'))
-                            details += `**- \`${kwarg}\`**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
-                          else
-                            details += `**- \`${kwarg}\`**: \`${kwargValue}\`\n\n`;
-                        }
-                        details += "\n\n";
-                      }
+                              if (detail.kwargs) {
+                                  for (let kwarg in detail.kwargs) {
+                                      const kwargValue = typeof detail.kwargs[kwarg] === 'string' ? detail.kwargs[kwarg] : JSON.stringify(detail.kwargs[kwarg], null, 2);
+                                      if (kwargValue.includes('\n')) {
+                                          details += `**- \`${kwarg}\`**:\n\n\`\`\`\n${kwargValue}\n\`\`\`\n\n`;
+                                      } else {
+                                          details += `**- \`${kwarg}\`**: \`${kwargValue}\`\n\n`;
+                                      }
+                                  }
+                                  details += "\n\n";
+                              }
 
-                      if(detail.result){
-                        const result = typeof detail.result === 'string' ? detail.result : JSON.stringify(detail.result, null, 2);
-                        if(result.includes('\n'))
-                          details += `#### Result:\n\n\`\`\`\n${result}\n\`\`\`\n\n`;
-                        else
-                          details += `#### Result: \`${result}\`\n\n`;
+                              if (detail.result) {
+                                  const result = typeof detail.result === 'string' ? detail.result : JSON.stringify(detail.result, null, 2);
+                                  if (result.includes('\n')) {
+                                      details += `#### Result:\n\n\`\`\`\n${result}\n\`\`\`\n\n`;
+                                  } else {
+                                      details += `#### Result: \`${result}\`\n\n`;
+                                  }
+                              }
+
+                              // Check for the existence of 'info' and display it if available
+                              if (detail.info) {
+                                const tool = detail.info;
+                                details += `----\n> **Source:**\n>\n`;  // Quoted title "Source"
+                                details += `> **📚 Source Name**: ${tool.name}\n>\n`;  // Quoted source name with book emoji
+                                
+                                details += `> **📝 Description**: ${tool.description}\n>\n`;  // Quoted description
+                                
+                                if (tool.authors && tool.authors.length > 0) {
+                                    details += `> **👥 Authors**:\n>`;
+                                    for (const author of tool.authors) {
+                                        details += `\n> - ${author.name}, *${author.organization}*`;
+                                    }
+                                    details += `\n>\n`;  // Ensure spacing after authors
+                                }
+                                
+                                if (tool.license) {
+                                    details += `> **📜 License**: ${tool.license}\n>\n`;
+                                }
+                                
+                                if (tool.reference) {
+                                    details += `> **🔗 [Reference](${tool.reference})**: ${tool.reference}\n>\n`;
+                                }
+                                details += `----\n`;  // Close the quoted section
+                              }
+
+
+                          }
                       }
-                    }
                   }
-                }
-                details += "\n\n</details>";
-                details = marked(details, { renderer: renderer });
-                message = message + details;
+
+                  details += "\n\n</details>";
+                  details = marked(details, { renderer: renderer });
+                  message = message + details;
               }
+
               $(`#content-${currentMessageId}`).html(message);
+
           
           }
           catch (e) {
