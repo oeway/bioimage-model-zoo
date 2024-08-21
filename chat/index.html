@@ -783,6 +783,8 @@
         throw new Error(`Invalid extension ${extension.id}, type should be bioimageio-chatbot-extension`)
       _removeRpcObj(extension)
 
+      ext.info = ext.info || {}
+
       const schemas = await extension.get_schema()
       for (let k of Object.keys(schemas)) {
         const schema = schemas[k]
