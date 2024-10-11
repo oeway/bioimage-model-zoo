@@ -35,7 +35,7 @@ jobs:
     - run: npm run check-format
     - run: npm run build
     - name: Save build output
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: built-output
         path: ./dist
