@@ -59,7 +59,6 @@
   "splash_feature_list": [
     "Integrated with Fiji, ilastik, ImJoy and more",
     "Try model instantly with BioEngine",
-    "Contribute your models via Github",
     "Link models to datasets and applications"
   ],
   "table_view": {
