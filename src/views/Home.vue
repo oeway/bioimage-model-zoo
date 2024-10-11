@@ -528,9 +528,14 @@ function normalizeItem(self, item, bioEngineConfigs) {
       )
     )
       continue;
-    const linked = self.resourceItems.filter(
-      item => item.id.toLowerCase() === link_key.toLowerCase()
-    );
+    const linked = self.resourceItems.filter(item => {
+      try {
+        return item.id.toLowerCase() === link_key.toLowerCase();
+      } catch (e) {
+        console.error("Invalid item found: ", item);
+        return false;
+      }
+    });
 
     for (let lit of linked) {
       item.apps.unshift({
@@ -659,6 +664,8 @@ function normalizeItem(self, item, bioEngineConfigs) {
       });
     }
   }
+
+  console.log("================>id", item.id);
   return item;
 }
 
@@ -922,7 +929,6 @@ export default {
           }
           delete item.badges;
           Object.assign(item, normalizeItem(this, item, this.bioEngineConfigs));
-
           item.links = item.links || [];
           // add training data
           if (item.training_data) {
