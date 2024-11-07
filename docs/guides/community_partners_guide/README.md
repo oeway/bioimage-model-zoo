@@ -180,11 +180,11 @@ The admin team of BioImage.IO will discuss the request and decide whether to app
 
 Upon approval, we will guide you to follow these steps in order to incorporate your contribution to BioImage.IO:
 
-1. Firstly, please create or choose a GitHub repo for hosting your resource collection that you would like to contribute. We recommend to create a dedicated repository in your organization for this purpose. As an example you might want to take a look at the [ilastik collection](https://github.com/ilastik/bioimage-io-resources/blob/main/collection.yaml).
-1. Add a [collection RDF](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/collection_spec_latest.md) in your chosen repository, which lists all resources you would like to contribute. For this, you will also need to prepare the icons of your software or project.
-1. Setup CI service for testing your collection RDF. Please refer to [how to setup CI service](/community_partners/how_to_join?id=how-to-setup-ci-service-for-a-community-partners39-repo).
-1. Make a PR (or an issue) in the BioImage.IO Collection repo to link your collection to the [collection_rdf_template.yaml](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml)(under `config.partners`). We only require the link to your collection RDF here and need to agree on a partner id for you.
-1. To make the maintainance easier, we also ask you to add one of the admin member as collabrators in your resource collection repository. This will make it easier for us to help you maintaining your collection, and keep synchronized in case we make changes to the specification.
+1. First, you will need to create a PR to insert relevant metadata into [bioimageio_collection_config.json](https://github.com/bioimage-io/collection/blob/4087336ad00bff0198f5de83c94aa13be357840d/bioimageio_collection_config.json) under `"partners"`. 
+Checkout [ilastik partner entry](https://github.com/bioimage-io/collection/blob/4087336ad00bff0198f5de83c94aa13be357840d/bioimageio_collection_config.json#L283-L301) for an example.
+2. Then, you will need to add the Community Partner Compatibility Checks. Any community partner is invited to add a GitHub Actions workflow in this repo (please make a PR) that generates reports on its software compatibility with new and updated resources in the bioimage.io collection.
+See [ilastik compatibility checks worfklow](https://github.com/bioimage-io/collection/blob/main/.github/workflows/check_compatibility_ilastik.yaml) for an example.
+
 
 ## How to register a software or application?
 
@@ -192,57 +192,7 @@ A community partner can have one or multiple associated software, you can regist
 
 To see an example, you can find the [source for the ilastik app](https://github.com/ilastik/bioimage-io-resources/blob/main/src/ilastik-app.imjoy.html) and also the corresponding entry in the collection file [here](https://github.com/ilastik/bioimage-io-resources/blob/2d2f1b12b185b1b880bfb679ed2aa981bf88d1ed/collection.yaml#L45-L59).
 
-## How to setup CI service for a community partners' repo?
 
-The CI service is an useful tool to autotomize the maintenance of the model repo and ensure a high quality for all BioImage.IO resources. 
-You basically need to add some testing scripts to your repo and  configure it using CI services such as Github Actions,  Travis or Circle CI etc. The testing script will be triggered by a new commit or pull request to the repo. For simplicity, we recommend Github Actions which can be triggered by adding a yaml file under the folder `.github/workflows`. For example, here is an example file [.github/workflows/compile-manifest.yml](https://github.com/deepimagej/models/blob/master/.github/workflows/compile-manifest.yml) that we used to verify the model spec in the central repo.
-
-There are at least three steps are recommended:
- 1. Run the [`compile_model_manifest.py`](https://github.com/bioimage-io/bioimage-io-models/blob/master/manifest.bioimage.io.yaml) script to make sure the manifest can be correctly compiled.
- 2. Verify the yaml files according to model spec with [.github.com/bioimage-io/python-bioimage-io](https://github.com/bioimage-io/python-bioimage-io).
- 3. If possible, test every models added to the repo.
-
-As a start, you can use [.github/workflows/compile-manifest.yml](https://github.com/deepimagej/models/blob/master/.github/workflows/compile-manifest.yml) as your template.
-
-See more information here: https://github.com/bioimage-io/collection-bioimage-io#contribute-resource-test-summaries
-
-
-## Report User Analytics
-
-We provide the analytics service to help consumer software to keep track of their resource (including model, datasets etc.) downloads.
-
-### Report resource downloads
-
-To help us maintain the resource download statistics at BioImage.IO, please send a report to our analytics service when a resource item is downloaded.
-
-Under the hood, we use [matomo](https://matomo.org) to track the user downloads. It provide tracking api in various programming languages and frameworks, see here: https://developer.matomo.org/api-reference/tracking-api.
-
-The easiest way to report a model download is to send an http request to matomo.
-
-
-You need to construct an URL to report the download:
-
-`https://bioimage.matomo.cloud/matomo.php?download=https://doi.org/[MODEL DOI]&idsite=1&rec=1&r=646242&h=13&m=35&s=20&url=http://bioimage.io/#/?id=[MODEL DOI]&uadata={"brands":[{"brand":"[CONSUMER ID]","version":"[CONSUMER VERSION]"}]}`
-
-
-In the above URL, you need to provide the following parameters:
- * `[MODEL DOI]`: The resource doi, it should be similar to `10.5281/zenodo.55555555`. Also note that Zenodo deposit has concept doi and version doi, we recommend to use the concept doi such that the downloads across versions can be aggregated.
- * `[CONSUMER ID]`: The id for the registered consumer software, for example: `ilastik` or `deepimagej`.
- * `[CONSUMER VERSION]`: The software version for the consumer software.
-
-
-### Obtain resource usage statistics
-You can get the user statistics from via the HTTP API, for example:
- * To get the global statistics of the whole website: `https://bioimage.matomo.cloud/?module=API&method=Live.getCounters&idSite=1&lastMinutes=30&format=JSON&token_auth=anonymous`
- * To get the number of downloads: `https://bioimage.matomo.cloud/?module=API&method=Actions.getDownloads&idSite=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous`
- * To get the number of downloads for a specific resource (via DOI): ```https://bioimage.matomo.cloud/?module=API&method=Actions.getDownload&downloadUrl=https://doi.org/`[MODEL DOI]`&idSite=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous```. To see an example, click here: https://bioimage.matomo.cloud/?module=API&method=Actions.getDownload&downloadUrl=https://doi.org/test&idSite=1&idCustomReport=1&period=year&date=2023-03-01&format=JSON&token_auth=anonymous
-
- For more detailed API, see here: https://developer.matomo.org/api-reference/reporting-api
-
- 
-Please note that the reports are not processed in realtime, this means you won't see the statistics for your reports immediately:
- - In the report request, we need to configure the date properly. For example, we can change period to `year` and date to `2023-03-01` (see here: https://developer.matomo.org/api-reference/Piwik/Period)
- - The report will only be generated every 15 minutes: https://matomo.org/faq/general/faq_41/ so we won't see the report immediately.
 
 ## BioImage.IO Partner Collection
 
