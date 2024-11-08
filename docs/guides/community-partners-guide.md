@@ -298,48 +298,11 @@ If you want to join as a community partner, please send the link to BioImage.IO 
 
 ## How to contribute tests summaries
 
-As BioImage.IO community partner may contribute test summaries. As defined in [bioimageio.core](https://github.com/bioimage-io/core-bioimage-io-python/blob/d435fcdb38c8b2152ac0d20f61ee498d88e7f1d0/bioimageio/core/common.py#L4) a test summary is a dictionary with the following keys:
- - name: str
- - source_name: str
- - status: Literal["passed", "failed"]
- - error: Union[None, str]
- - traceback: Optional[List[str]]
- - nested_errors: Optional[Dict[str, dict]]
- - bioimageio_spec_version: str
- - bioimageio_core_version: str
- - warnings: dict
-
-In the [BioImage.IO collection template](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml), where a community partner is registered, the location of `test_summaries` and how to trigger them can be specified as well.
-The location of partner test summaries is specified by a GitHub repository `repository`, where test summaries are hosted in `deploy_branch`/`deploy_folder`.
-To update the test summaries (for new or updated resources) `workflow` specifies a GitHub Actions workflow to trigger from `workflow_ref` by @bioimageiobot. 
-For the automatic trigger machanism to work the partner `repository` needs to invite @bioimageiobot as a collaborator and the `workflow` needs to run on `workflow_dispatch` with a `pending_matrix` input.
-
-Let's take a look at an example: the [ilastik partner entry](https://github.com/bioimage-io/collection-bioimage-io/blob/aa4742d33394809e44e63ce48f9bac9ad3518122/collection_rdf_template.yaml#L63-L68
-) below specifies that test summaries are hosted at [ilastik/bioimage-io-resources/tree/gh-pages/test_summaries](https://github.com/ilastik/bioimage-io-resources/tree/gh-pages/test_summaries). 
-The [test_bioimageio_resources.yaml](https://github.com/ilastik/bioimage-io-resources/blob/main/.github/workflows/test_bioimageio_resources.yaml) is regularly dispatched by @bioimageiobot to keep test summaries up-to-date.
-
-```yaml
-id: ilastik
-repository: ilastik/bioimage-io-resources
-branch: main
-collection_file_name: collection.yaml
-test_summaries:
-  repository: ilastik/bioimage-io-resources
-  deploy_branch: gh-pages
-  deploy_folder: test_summaries
-  workflow: test_bioimageio_resources.yaml
-  workflow_ref: refs/heads/main
-```
-
-The test summaries are expected to follow the folder/file name pattern "<resource_id>/<version_id>/test_summary_*.yaml", where * can be any string to differentiate different test settings.
+We provide community partners with a mechanism to contribute and update compatibiliy checks describing why a given bioimage.io resource is compatible with their tool (or why not).
+Details and how to set this up are described [here](https://github.com/bioimage-io/collection?tab=readme-ov-file#add-community-partner-compatibility-checks).
 
 ### Display of partner test summaries
 
-Once a community partner is registered to contribute test summaries with the `test_summaries` data explained above, the main [BioImage.IO CI](https://github.com/bioimage-io/collection-bioimage-io/blob/main/.github/workflows/auto_update_main.yaml) collects these summaries. The collection including these collected test summaries are displayed on bioimage.io. Currently test summaries are rendered like so:
+Once a community partner is setup to contribute test summaries, they will show up in the relevant resource card details on bioimage.io.
+Currently test summaries are rendered like so:
 ![image](https://user-images.githubusercontent.com/15139589/226955477-6f8a8917-423f-4b9e-b08a-17bdb276aa2c.png)
-
-
-### Updating test summaries
-
-The main [BioImage.IO CI](https://github.com/bioimage-io/collection-bioimage-io/blob/main/.github/workflows/auto_update_main.yaml) triggers the partner's CI for new or updated resources.
-Additionally, the parter may decide at any time to rerun (some of) their tests if changes on their side (like a new version release of their software) requires additional tests or a reevaluation. 
