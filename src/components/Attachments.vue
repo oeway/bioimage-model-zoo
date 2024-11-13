@@ -98,7 +98,7 @@ export default {
     },
     normalizedAttachments: function() {
       const converted = {};
-      if (this.attachments)
+      if (this.attachments && !Array.isArray(this.attachments))
         for (let k of Object.keys(this.attachments)) {
           if (k === "files") continue;
           const items = this.attachments[k];
