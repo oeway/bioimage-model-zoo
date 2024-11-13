@@ -545,7 +545,7 @@ api.export(new ImJoyPlugin())
 Note that in order to contribute resources to the BioImage.IO Model Zoo you do not need to become a community partner. How to contribute resources is described [here](/contribute_models/README.md). The role of a community partner is described [here](/community_partners/README.md).
 
 
-If you are eligible and willing to join as a community partner, please submit a request issue [here](https://github.com/bioimage-io/collection-bioimage-io/issues/new) with relevant information including the following:
+If you are eligible and willing to join as a community partner, please submit a request issue [here](https://github.com/bioimage-io/collection/issues/new) with relevant information including the following:
 1. Description of your software, organization, company or team.
 2. Description of the resources that you plan to contribute. Please also include the url to your project repo.
 3. Description of future plans on how your project will be maintained.

@@ -28,7 +28,7 @@ In some cases, the model may need additional files.
 
 ### Model contribution requirements
 
-- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md) with `format_version>= 0.4.5`. 
+- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md). 
 - The model is expected to be cross-compatible among the consumer software, and should always run on at least one.
 - The model should be well documented (i.e., human readable name and rich description tailored for life-scientists, citations)
 - The model should be public and can be used by anyone under the chosen licensing conditions.
@@ -50,53 +50,13 @@ Two options:
       
 **2. Upload the model to the BioImage Model Zoo**
 
-To upload a model to the BioImage Model Zoo, you have a tutorial video of the process step by step available [here](https://oc.embl.de/index.php/s/JBWwJGgsXh0vYM6).
-         
-<img src="./guides/contribute_model.png" align="center" width="1000"/>
+    1. Visit the [bioimageio](https://bioimage.io) website and click the "Upload" button to access the model upload page.
+    2. Log in using your Google or GitHub account.
+    3. Upload a resource file, which can be a single zip archive containing all necessary files, or you can select/drag and drop individual files. The 'rdf.yaml' file needed for uploading can be created in the next step.
+    4. In the "Review and Edit Your Model" section, provide all necessary metadata to create the 'rdf.yaml' file. Ensure to give a descriptive name and description, and add the maintainer responsible for the upload. See the Model Documentation below for details such as how to name your model.
+    5. Once ready, click "Validate" and wait for your model to be reviewed.
 
-For a detailed explanation, follow these steps:
-1. In [BioImage.IO](https://bioimage.io/), click on `+Upload` and follow the steps:
-        
-2. Log in to Zenodo and give access to the BioEngine application. You will see an automatic message once you are logged in. If not, refresh the page. This step needs to be done only for the first time you upload a model. 
-
-3. Upload your model RDF. 
-<img src="./guides/upload_1.png" align="center" width="500"/>
-
-4. Complete the missing fields.
-<img src="./guides/upload_2.png" align="center" width="500"/>
-        
-<img src="./guides/upload_3.png" align="center" width="500"/>
-    
-5. A [Pull Request (PR)](https://github.com/bioimage-io/collection-bioimage-io/pulls/bioimageiobot) is generated (this process may take some minutes). In the PR, the model is tested by a Continuous Integration (CI) workflow for its technical correctness. and reviewed by a maintainer from the BioImage.IO team. This PR is aimed for further discussions between model contributors and the BioImage.IO team.
-
-6. Once the model passes all checks and has the approval of a maintainer, it will be added to the BioImage.IO collection and displayed in the webpage (this process may take some minutes). 
-
-### Upload a model through Zenodo
-**Note:** This tutorial provides a temporary solution for uploading models to the BioImage Model Zoo via Zenodo while the upload feature on the BioImage.IO website is being fixed.
-
-This tutorial will guide you through the process of uploading a model to the BioImage Model Zoo community on Zenodo. The BioImage Model Zoo project aims to collect and share bioimage analysis models, and your contribution is valuable. Follow the steps below to upload your model.
-
-1. Open your web browser and navigate to the Zenodo website at [https://zenodo.org/](https://zenodo.org). You need to create a Zenodo account if you do not have one. 
-   <!-- ![Zenodo initial page](contribute_models/zenodo_upload_01.png) -->
-   <img src="./guides/zenodo_upload_01.png" alt="Zenodo initial page" align="center" width="1000"/>
-   
-2. On the right, close to your username, click the "New upload" button to begin the model upload process. Make sure that the repository is set as public. 
-The files in the BioImage.IO zip have to be uploaded one-by-one (See the example in the image below). Note that you can drag & drop all together at once.
-   <!-- ![New upload](contribute_models/zenodo_upload_04.png) -->
-   <img src="./guides/zenodo_upload_04.png" alt="New upload" align="center" width="1000"/>
-
-3. Add `bioimage.io` on Keywords and subjects. This is crucial for us to identify your submission.
-   <!-- ![Find BioImage.IO community](contribute_models/zenodo_upload_03.png) -->
-   <img src="./guides/zenodo_upload_03.png" alt="Find BioImage.IO community" align="center" width="1000"/>
-   
-4. Follow the on-screen instructions to provide the required information about your model. Make sure to include a clear description, relevant tags, and any necessary documentation.
-
-5. Once finished, click on Submit.
-   
-6. Your model will be proposed as a new contribution to the BioImage Model Zoo automatically. If the model passes all the tests, it will be automatically displayed in the Zoo. If the model does not pass the test, the GitHub users indicated in `maintainers` in the `rdf.yaml` file will be noitified through GitHub. This process can take 12-24h.
-
-You've successfully uploaded your model to the BioImage Model Zoo community on Zenodo. Thank you for your contribution to the BioImage Model Zoo project. Remember that this is a temporary solution while the upload feature on the BioImage.IO website is being fixed. We appreciate your patience and support!
-
+All models and resources in the BioImage Model Zoo undergo testing and validation before being accepted for publication. Some modifications may be required to meet the publication specifications after uploading.
 
 ###  Model Documentation
 #### Model naming

@@ -168,10 +168,9 @@ api.export(new ImJoyPlugin())
 
 ## How to join as a community partner?
 
-Note that in order to contribute resources to the BioImage.IO Model Zoo you do not need to become a community partner. How to contribute resources is described [here](/contribute_models/README.md). The role of a community partner is described [here](/community_partners/README.md).
+Note that in order to contribute resources to the BioImage.IO Model Zoo you do not need to become a community partner. How to contribute resources is described [in the developers guide](https://bioimage.io/docs/#/guides/developers-guide). The role of a community partner is described above.
 
-
-If you are eligible and willing to join as a community partner, please submit a request issue [here](https://github.com/bioimage-io/collection-bioimage-io/issues/new) with relevant information including the following:
+If you are eligible and willing to join as a community partner, please submit a request issue [here](https://github.com/bioimage-io/collection/issues/new) with relevant information including the following:
 1. Description of your software, organization, company or team.
 2. Description of the resources that you plan to contribute. Please also include the url to your project repo.
 3. Description of future plans on how your project will be maintained.
@@ -180,11 +179,10 @@ The admin team of BioImage.IO will discuss the request and decide whether to app
 
 Upon approval, we will guide you to follow these steps in order to incorporate your contribution to BioImage.IO:
 
-1. Firstly, please create or choose a GitHub repo for hosting your resource collection that you would like to contribute. We recommend to create a dedicated repository in your organization for this purpose. As an example you might want to take a look at the [ilastik collection](https://github.com/ilastik/bioimage-io-resources/blob/main/collection.yaml).
-1. Add a [collection RDF](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/collection_spec_latest.md) in your chosen repository, which lists all resources you would like to contribute. For this, you will also need to prepare the icons of your software or project.
-1. Setup CI service for testing your collection RDF. Please refer to [how to setup CI service](/community_partners/how_to_join?id=how-to-setup-ci-service-for-a-community-partners39-repo).
-1. Make a PR (or an issue) in the BioImage.IO Collection repo to link your collection to the [collection_rdf_template.yaml](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml)(under `config.partners`). We only require the link to your collection RDF here and need to agree on a partner id for you.
-1. To make the maintainance easier, we also ask you to add one of the admin member as collabrators in your resource collection repository. This will make it easier for us to help you maintaining your collection, and keep synchronized in case we make changes to the specification.
+1. First, you will need to create a PR to insert relevant metadata into [bioimageio_collection_config.json](https://github.com/bioimage-io/collection/blob/4087336ad00bff0198f5de83c94aa13be357840d/bioimageio_collection_config.json) under `"partners"`. 
+Checkout [ilastik partner entry](https://github.com/bioimage-io/collection/blob/4087336ad00bff0198f5de83c94aa13be357840d/bioimageio_collection_config.json#L283-L301) for an example.
+2. Then, you will need to add the Community Partner Compatibility Checks. Any community partner is invited to add a GitHub Actions workflow in this repo (please make a PR) that generates reports on its software compatibility with new and updated resources in the bioimage.io collection.
+See [ilastik compatibility checks worfklow](https://github.com/bioimage-io/collection/blob/main/.github/workflows/check_compatibility_ilastik.yaml) for an example.
 
 ## How to register a software or application?
 
@@ -300,48 +298,11 @@ If you want to join as a community partner, please send the link to BioImage.IO 
 
 ## How to contribute tests summaries
 
-As BioImage.IO community partner may contribute test summaries. As defined in [bioimageio.core](https://github.com/bioimage-io/core-bioimage-io-python/blob/d435fcdb38c8b2152ac0d20f61ee498d88e7f1d0/bioimageio/core/common.py#L4) a test summary is a dictionary with the following keys:
- - name: str
- - source_name: str
- - status: Literal["passed", "failed"]
- - error: Union[None, str]
- - traceback: Optional[List[str]]
- - nested_errors: Optional[Dict[str, dict]]
- - bioimageio_spec_version: str
- - bioimageio_core_version: str
- - warnings: dict
-
-In the [BioImage.IO collection template](https://github.com/bioimage-io/collection-bioimage-io/blob/main/collection_rdf_template.yaml), where a community partner is registered, the location of `test_summaries` and how to trigger them can be specified as well.
-The location of partner test summaries is specified by a GitHub repository `repository`, where test summaries are hosted in `deploy_branch`/`deploy_folder`.
-To update the test summaries (for new or updated resources) `workflow` specifies a GitHub Actions workflow to trigger from `workflow_ref` by @bioimageiobot. 
-For the automatic trigger machanism to work the partner `repository` needs to invite @bioimageiobot as a collaborator and the `workflow` needs to run on `workflow_dispatch` with a `pending_matrix` input.
-
-Let's take a look at an example: the [ilastik partner entry](https://github.com/bioimage-io/collection-bioimage-io/blob/aa4742d33394809e44e63ce48f9bac9ad3518122/collection_rdf_template.yaml#L63-L68
-) below specifies that test summaries are hosted at [ilastik/bioimage-io-resources/tree/gh-pages/test_summaries](https://github.com/ilastik/bioimage-io-resources/tree/gh-pages/test_summaries). 
-The [test_bioimageio_resources.yaml](https://github.com/ilastik/bioimage-io-resources/blob/main/.github/workflows/test_bioimageio_resources.yaml) is regularly dispatched by @bioimageiobot to keep test summaries up-to-date.
-
-```yaml
-id: ilastik
-repository: ilastik/bioimage-io-resources
-branch: main
-collection_file_name: collection.yaml
-test_summaries:
-  repository: ilastik/bioimage-io-resources
-  deploy_branch: gh-pages
-  deploy_folder: test_summaries
-  workflow: test_bioimageio_resources.yaml
-  workflow_ref: refs/heads/main
-```
-
-The test summaries are expected to follow the folder/file name pattern "<resource_id>/<version_id>/test_summary_*.yaml", where * can be any string to differentiate different test settings.
+We provide community partners with a mechanism to contribute and update compatibiliy checks describing why a given bioimage.io resource is compatible with their tool (or why not).
+Details and how to set this up are described [here](https://github.com/bioimage-io/collection?tab=readme-ov-file#add-community-partner-compatibility-checks).
 
 ### Display of partner test summaries
 
-Once a community partner is registered to contribute test summaries with the `test_summaries` data explained above, the main [BioImage.IO CI](https://github.com/bioimage-io/collection-bioimage-io/blob/main/.github/workflows/auto_update_main.yaml) collects these summaries. The collection including these collected test summaries are displayed on bioimage.io. Currently test summaries are rendered like so:
+Once a community partner is setup to contribute test summaries, they will show up in the relevant resource card details on bioimage.io.
+Currently test summaries are rendered like so:
 ![image](https://user-images.githubusercontent.com/15139589/226955477-6f8a8917-423f-4b9e-b08a-17bdb276aa2c.png)
-
-
-### Updating test summaries
-
-The main [BioImage.IO CI](https://github.com/bioimage-io/collection-bioimage-io/blob/main/.github/workflows/auto_update_main.yaml) triggers the partner's CI for new or updated resources.
-Additionally, the parter may decide at any time to rerun (some of) their tests if changes on their side (like a new version release of their software) requires additional tests or a reevaluation. 
