@@ -46,7 +46,7 @@ def matches_keywords(text: str, keywords: List[str]) -> bool:
 
 def search_item(item: Dict[str, Any], keywords: List[str]) -> bool:
     search_fields = [item.get('id', ''), item.get('nickname', ''), item.get('name', ''),
-        item.get('nickname_icon', ''), item.get('license', ''), item.get('description', '')
+        item.get('nickname_icon', ''), item.get('license', ''), item.get('description', ''), item.get('created')
     ] + [tag for tag in item.get('tags', [])]
     search_fields += [author['name'] for author in item.get('authors', [])]
     return any(matches_keywords(field, keywords) for field in search_fields)
@@ -64,7 +64,7 @@ def search(keywords, type, top_k, resource_items: List[Dict[str, Any]]) -> List[
     return filtered_items
 
 async def load_model_info():
-    response = await fetch("https://bioimage-io.github.io/collection-bioimage-io/collection.json")
+    response = await fetch("https://uk1s3.embassy.ebi.ac.uk/public-datasets/bioimage.io/collection.json")
     model_info = await response.json()
     model_info = model_info.to_py()
     resource_items = model_info['collection']
