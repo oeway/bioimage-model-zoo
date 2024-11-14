@@ -528,7 +528,7 @@
 
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://unpkg.com/multiple-select@1.7.0/dist/multiple-select.min.js"></script>
-  <script src="https://www.unpkg.com/imjoy-rpc@0.5.46/dist/hypha-rpc-websocket.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hypha-rpc@0.20.38/dist/hypha-rpc-websocket.min.js"></script>
   <script src="https://lib.imjoy.io/imjoy-loader.js"></script>
   <script src="https://unpkg.com/marked@2.1.3/lib/marked.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
@@ -741,7 +741,7 @@
     }
 
     // this function is used to remove the __rpc_object__ attribute from the object
-    // this is important to make sure the function is correctly encoded and send to imjoy_rpc
+    // this is important to make sure the function is correctly encoded and send to hypha_rpc
     function _removeRpcObj(obj) {
       if (obj && obj.__rpc_object__) {
         delete obj.__rpc_object__
@@ -1042,7 +1042,7 @@ sys.modules["bioengine"] = bioengine
 Assist users in bioimage analysis within a Pyodide environment.
 You will generate and run script in the code interpreter to help users analyze their data.
 The code interperter is a Jupyter notebook-like environment, it support top-level await operations and the asyncio event loop is already running, so you can call "await func()" directly without wrapping in a async function or using asyncio.run.
-The environment has access to remote servers, so you can fetch remote data by using python modules "requests" or "imjoy_rpc.hypha" for connect to the Hypha/BioEngine server.
+The environment has access to remote servers, so you can fetch remote data by using python modules "requests" or "hypha_rpc" for connect to the Hypha/BioEngine server.
 User data will be mounted to the \`/mnt\` directory. After mounting, use "os.listdir('/mnt')" to explore available files and ask user what they want to do with the data before other actions.
 The code interpreter can produce outputs such as stdout or stderr, matplotlib plots, and image/audio displays which is rendered in the user interface. For key results (e.g. result images), display them in the final response to the user.
 Global variables, functions and results will be maintained across multiple code interpreter executions, so try to save the intermediate results into global variables that can be subsequently reused.
@@ -1401,7 +1401,7 @@ Global variables, functions and results will be maintained across multiple code 
             "server_url": serverUrl,
             "token": token,
           })
-          const svc = await server.getService(service_id || "public/workspace-manager:bioimageio-chatbot")
+          const svc = await server.getService(service_id || "public/bioimageio-chatbot")
           await svc.ping()
           if(svc.version) $('#chatbot-version-badge').text(`bioimageio-chatbot ${svc.version}`);
           const storeSvc = await server.registerService({
