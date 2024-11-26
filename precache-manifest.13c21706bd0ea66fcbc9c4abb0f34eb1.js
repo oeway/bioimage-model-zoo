@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CNAME"
   },
   {
-    "revision": "70063ef134ec3b9d7c71",
-    "url": "/css/about.e4b954c9.css"
+    "revision": "96b98f0c2248fd68b736",
+    "url": "/css/about.ebe8c1d6.css"
   },
   {
-    "revision": "c5541ee20df57e17a087",
+    "revision": "09a685b01c317bc7331e",
     "url": "/css/app.b5b0088e.css"
   },
   {
@@ -36,16 +36,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.ejs"
   },
   {
-    "revision": "47d415e1fbe350cc0bdf8d29f74bba28",
+    "revision": "378e591fcb7b19f8d787d0c8ab352863",
     "url": "/index.html"
   },
   {
-    "revision": "70063ef134ec3b9d7c71",
-    "url": "/js/about.13466948.js"
+    "revision": "96b98f0c2248fd68b736",
+    "url": "/js/about.1cc23e58.js"
   },
   {
-    "revision": "c5541ee20df57e17a087",
-    "url": "/js/app.27bb33f7.js"
+    "revision": "09a685b01c317bc7331e",
+    "url": "/js/app.260e2f65.js"
   },
   {
     "revision": "50e06bab017c22e78b85",
@@ -378,6 +378,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "ddcb047f6ee67ea6c0e8943f490a6ce0",
     "url": "/static/img/AI4Life-logo-giraffe.png"
+  },
+  {
+    "revision": "c858684c012aa4edf16d9c05b7cb8ccd",
+    "url": "/static/img/EuropeanFlag-Funded by the EU-POS.jpg"
   },
   {
     "revision": "7ef6b603f28146be8c89b325d5b75741",
