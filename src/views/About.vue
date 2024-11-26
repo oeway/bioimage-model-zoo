@@ -76,10 +76,9 @@
       </div>
     </div>
 
-    <div style="text-align: center" v-if="siteConfig.footnote">
-      <p>{{ siteConfig.footnote }}</p>
+    <div style="text-align: center">
       <p>
-        The giraffe icon used in the BioImage logo is adapted from the
+        The giraffe icon used in the BioImage.IO logo is adapted from the
         <a href="https://twemoji.twitter.com/" target="_blank"
           >Twemoji project</a
         >
@@ -87,6 +86,9 @@
         <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>
         license.
       </p>
+      <p>{{ siteConfig.footnote1 }}</p>
+      <img style="width: 250px" :src="siteConfig.footnote_image" />
+      <p>{{ siteConfig.footnote2 }}</p>
     </div>
     <br />
   </div>

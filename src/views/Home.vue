@@ -166,8 +166,10 @@
           </b-tooltip>
         </div>
       </div>
-      <div style="text-align: center" v-if="siteConfig.footnote">
-        <p>{{ siteConfig.footnote }}</p>
+      <div style="text-align: center" v-if="siteConfig.show_footnote">
+        <p style="font-size: 13px;">{{ siteConfig.footnote1 }}</p>
+        <img style="width: 250px" :src="siteConfig.footnote_image" />
+        <p style="font-size: 13px;">{{ siteConfig.footnote2 }}</p>
       </div>
     </footer>
     <modal
