@@ -11,7 +11,18 @@ See a [video](https://oc.embl.de/index.php/s/eJOIdzDVJpToETd) about using a mode
 ## Using BioImage Model Zoo models in different software
 
 ### BiaPy
-TBD
+**Note: BiaPy empowers users to train custom models or fine-tune existing ones for bioimaging tasks and upload them to the BioImage Model Zoo. BiaPy supports models exported with PyTorch.**
+
+BiaPy adapts to users of all expertise levels, offering multiple ways to run and interact with models:
+- Graphical User Interface (GUI): Ideal for beginners.
+- No-Coding Jupyter Notebooks: Simplified workflows for those without programming knowledge.
+- Docker Containers: Ensure reproducibility and isolation.
+- Command Line Interface (CLI): Perfect for advanced users.
+
+How you interact with BioImage Model Zoo models also depends on your chosen method. Get started with the resources below:
+- [BiaPy Landing Page](https://biapyx.github.io/): Your gateway to all things BiaPy.
+- [BiaPy Documentation](https://biapy.readthedocs.io/en/latest/index.html): In-depth guides and tutorials.
+- [BioImage Model Zoo in BiaPy](https://biapy.readthedocs.io/en/latest/get_started/bmz.html): Learn how to work with models from the BioImage Model Zoo.
 
 ### DeepImageJ
 
