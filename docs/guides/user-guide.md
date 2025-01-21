@@ -72,6 +72,17 @@ TBD
 3. Open the ZeroCostDL4Mic notebook that corresponds to the model you downloaded. 
 4. When required, specify the path to the unziped folder containing the model.
 
+### DL4MicEverywhere
+[DL4MicEverywhere](https://github.com/HenriquesLab/DL4MicEverywhere) is a user-friendly platform that offers long-term reproducible and cross-compatible deep learning workflows using Docker containers and user-friendly interactive notebooks. It supports easy containerization and integration of reproducible deep learning techniques following the Zoo's standards, and validation of functional containerization across operating systems.
+
+1. **[Installation instructions](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/docs/USER_GUIDE.md)**
+
+2. **[Quick start for containerised notebooks](https://github.com/HenriquesLab/DL4MicEverywhere/tree/main?tab=readme-ov-file#quickstart-macoslinuxwindows)**
+
+3. **[Containerizing your workflow and integrating it within the Zoo's collection](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/CONTRIBUTING.md)**
+
+4. **[Full DL4MicEverywhere documentation](https://github.com/HenriquesLab/DL4MicEverywhere)**
+
 ## Best Practices for Model Usage
 TBD
 
