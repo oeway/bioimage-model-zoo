@@ -61,7 +61,35 @@ The configuration fields should be self-explanatory.
 TBD
 
 ###  ImJoy
-TBD
+[ImJoy](https://imjoy.io) is a flexible platform for running computational workflows in the browser or using Python. While it doesn’t directly reference the BioImage Model Zoo (BMZ), it supports seamless integration of BMZ models via plugins and Python.
+
+1. Install ImJoy and the Plugin Engine
+      - Use the [ImJoy Web App](https://imjoy.io) for browser-based workflows.
+      - For advanced Python-based workflows, install the **Plugin Engine**:  
+            ```bash
+            pip install imjoy
+            imjoy --start
+            ```
+2. Download and Set Up a BMZ Model
+      - Visit the [BioImage Model Zoo](https://bioimage.io/) and download a model with its rdf.yaml file.
+      - Optionally, use `bioimageio.core` to interact with BMZ models:
+            ```bash
+            pip install bioimageio.core
+            ```
+3. Run the Model in ImJoy
+      - **Browser-based Plugins**: Install and run plugins compatible with your model. Learn more in the [Quick Start Guide](https://imjoy.io/docs/#/quick-start).
+      - **Python-based Execution**: Connect ImJoy to the Plugin Engine and run BMZ models in Python. Example:
+      ```python
+      import bioimageio.core
+      rdf = bioimageio.core.resource_io.load_resource_description("/path/to/rdf.yaml")
+      model = bioimageio.core.create_model(rdf)
+      result = model.predict(input_data)
+      print(result)
+      ```
+4. Learn More
+      - **[ImJoy Documentation](https://imjoy.io/docs/)**: Explore the full capabilities of ImJoy.
+      - **[BioImage Model Zoo Documentation](https://bioimage.io/docs/)**: Discover more about BMZ models.
+      - **[bioimageio.core Library](https://github.com/bioimage-io/core-bioimage-io-python)**: Dive into the Python library for BMZ models.
 
 
 ### ZeroCostDL4Mic
