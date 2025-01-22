@@ -58,7 +58,8 @@ The configuration fields should be self-explanatory.
 
 
 ### Ilastik
-TBD
+
+See https://www.ilastik.org/documentation/nn/nn
 
 ###  ImJoy
 TBD
