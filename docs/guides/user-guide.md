@@ -62,7 +62,37 @@ The configuration fields should be self-explanatory.
 See https://www.ilastik.org/documentation/nn/nn
 
 ###  ImJoy
-TBD
+[ImJoy](https://imjoy.io) is a flexible platform for running computational workflows in the browser or using Python. While it doesn’t directly reference the BioImage Model Zoo (BMZ), it supports seamless integration of BMZ models via plugins and Python.
+
+1. Install ImJoy and the Plugin Engine
+      - Use the [ImJoy Web App](https://imjoy.io) for browser-based workflows.
+      - For advanced Python-based workflows, install the **Plugin Engine**:  
+            ```bash
+            pip install imjoy
+            imjoy --start
+            ```
+2. Download and Set Up a BMZ Model
+      - Visit the [BioImage Model Zoo](https://bioimage.io/) and download a model with its rdf.yaml file.
+      - Optionally, use `bioimageio.core` to interact with BMZ models:
+            ```bash
+            pip install bioimageio.core
+            ```
+3. Run BMZ Models in  ImJoy
+      - BioImage.IO Plugin: Use the [BioImage.IO plugin](https://bioimage-io.github.io/bioengine-web-client/) for easy integration and execution of BMZ models directly in ImJoy.
+      - **Browser-based Plugins**: Install and run plugins compatible with your model. Learn more in the [Quick Start Guide](https://imjoy.io/docs/#/quick-start).
+      - **Python-based Execution**: Connect ImJoy to the Plugin Engine and run BMZ models in Python. Example:
+      ```python
+      import bioimageio.core
+      rdf = bioimageio.core.resource_io.load_resource_description("/path/to/rdf.yaml")
+      model = bioimageio.core.create_model(rdf)
+      result = model.predict(input_data)
+      print(result)
+      ```
+4. Learn More
+      - **[BioImage.IO Plugin](https://bioimage-io.github.io/bioengine-web-client/)**: Plugin from ImJoy to the BioImage Model Zoo.
+      - **[ImJoy Documentation](https://imjoy.io/docs/)**: Explore the full capabilities of ImJoy.
+      - **[BioImage Model Zoo Documentation](https://bioimage.io/docs/)**: Discover more about BMZ models.
+      - **[bioimageio.core Library](https://github.com/bioimage-io/core-bioimage-io-python)**: Dive into the Python library for BMZ models.
 
 
 ### ZeroCostDL4Mic
@@ -72,6 +102,17 @@ TBD
 2. Unzip the model `.zip` file so you can use it later in the notebook.
 3. Open the ZeroCostDL4Mic notebook that corresponds to the model you downloaded. 
 4. When required, specify the path to the unziped folder containing the model.
+
+### DL4MicEverywhere
+[DL4MicEverywhere](https://github.com/HenriquesLab/DL4MicEverywhere) is a user-friendly platform that offers long-term reproducible and cross-compatible deep learning workflows using Docker containers and user-friendly interactive notebooks. It supports easy containerization and integration of reproducible deep learning techniques following the Zoo's standards, and validation of functional containerization across operating systems.
+
+1. **[Installation instructions](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/docs/USER_GUIDE.md)**
+
+2. **[Quick start for containerised notebooks](https://github.com/HenriquesLab/DL4MicEverywhere/tree/main?tab=readme-ov-file#quickstart-macoslinuxwindows)**
+
+3. **[Containerizing your workflow and integrating it within the Zoo's collection](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/CONTRIBUTING.md)**
+
+4. **[Full DL4MicEverywhere documentation](https://github.com/HenriquesLab/DL4MicEverywhere)**
 
 ## Best Practices for Model Usage
 TBD
