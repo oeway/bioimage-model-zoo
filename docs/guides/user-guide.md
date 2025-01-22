@@ -76,7 +76,8 @@ TBD
             ```bash
             pip install bioimageio.core
             ```
-3. Run the Model in ImJoy
+3. Run BMZ Models in  ImJoy
+      - BioImage.IO Plugin: Use the [BioImage.IO plugin](https://bioimage-io.github.io/bioengine-web-client/) for easy integration and execution of BMZ models directly in ImJoy.
       - **Browser-based Plugins**: Install and run plugins compatible with your model. Learn more in the [Quick Start Guide](https://imjoy.io/docs/#/quick-start).
       - **Python-based Execution**: Connect ImJoy to the Plugin Engine and run BMZ models in Python. Example:
       ```python
@@ -87,6 +88,7 @@ TBD
       print(result)
       ```
 4. Learn More
+      - **[BioImage.IO Plugin](https://bioimage-io.github.io/bioengine-web-client/)**: Plugin from ImJoy to the BioImage Model Zoo.
       - **[ImJoy Documentation](https://imjoy.io/docs/)**: Explore the full capabilities of ImJoy.
       - **[BioImage Model Zoo Documentation](https://bioimage.io/docs/)**: Discover more about BMZ models.
       - **[bioimageio.core Library](https://github.com/bioimage-io/core-bioimage-io-python)**: Dive into the Python library for BMZ models.
