@@ -38,7 +38,9 @@ In some cases, the model may need additional files.
 - The model should be public and can be used by anyone under the chosen licensing conditions.
 
 ### Craete a BioImage.IO model
-To upload a model to the BioImage Model Zoo, the model must adhere to the specifications of the BioImage.IO format. This ensures compatibility and standardization across the platform. You can find the [latest specifications here](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md). Creating a model involves exporting or packaging it into a specific format with defined characteristics. Below are the various ways to create a model in the BioImage.IO format.
+To upload a model to the BioImage Model Zoo, the model must be described in the BioImage.IO metadata format and pass reproducibility tests.
+This ensures compatibility and standardization across the platform. You can find the [latest metadata specifications here](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md).
+Below are the various ways to create a BioImage.IO compatible model description.
 
 #### 1. Using the `bioimageio.core` Python Library
 This is the most recommended and streamlined method. The library provides tools for automatic export and validation of models.
