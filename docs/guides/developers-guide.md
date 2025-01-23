@@ -45,7 +45,7 @@ Below are the various ways to create a BioImage.IO compatible model description.
 #### 1. Using the `bioimageio.core` Python Library
 This is the most recommended and streamlined method. The library provides tools for programmatic creation and validation of model descriptions.
 - **Programmatic Export:**  
-  Use the library to export your model programmatically in Python. See the example code in this [Jupyter Notebook](https://github.com/bioimage-io/core-bioimage-io-python/blob/main/example/model_creation.ipynb).  
+  Use the library to programmatically create a model description in Python, see https://github.com/bioimage-io/core-bioimage-io-python?tab=readme-ov-file#-use-in-python for documentation and examples.
   The primary function for building a model is `bioimageio.core.build_model`. Check its input parameters to understand what is required. Here you can also find an [example notebook](https://github.com/bioimage-io/core-bioimage-io-python/blob/main/presentations/create_ambitious_sloth.ipynb) that demonstrates how to create a model description from scratch. 
 
 - **Manual Generation:**  
