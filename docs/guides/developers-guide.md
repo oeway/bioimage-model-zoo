@@ -37,7 +37,7 @@ In some cases, the model may need additional files.
 - The model should be well documented (i.e., human readable name and rich description tailored for life-scientists, citations)
 - The model should be public and can be used by anyone under the chosen licensing conditions.
 
-### Craete a BioImage.IO model
+### Create a BioImage.IO model
 To upload a model to the BioImage Model Zoo, the model must be described in the BioImage.IO metadata format and pass reproducibility tests.
 This ensures compatibility and standardization across the platform. You can find the [latest metadata specifications here](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md).
 Below are the various ways to create a BioImage.IO compatible model description.
@@ -46,9 +46,6 @@ Below are the various ways to create a BioImage.IO compatible model description.
 This is the most recommended and streamlined method. The library provides tools for programmatic creation and validation of model descriptions.
 - **Programmatic Export:**  
   Use the library to programmatically create a model description in Python, see https://github.com/bioimage-io/core-bioimage-io-python?tab=readme-ov-file#-use-in-python for documentation and examples.
-
-- **Manual Generation:**  
-  If you prefer a manual approach, you can create the model resource description file (`rdf.yaml`) yourself. The [BioImage.IO Model Resource Description File Specifications](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md) outline the required and optional fields for the file. Examples of RDF files can be found on the BioImage Model Zoo website.
 
 - **Validation of the Model:**  
   After creating the model, ensure it meets the required specifications by performing the following checks:
@@ -72,7 +69,15 @@ In both cases, follow the steps outlined in the respective notebooks to generate
 #### 3. Using a Graphical User Interface (GUI)
 #TODO by Tomaz
 Each method allows flexibility based on your expertise and tools at hand. Always validate your model before uploading to ensure compliance with BioImage.IO specifications.
-      
+
+#### 4. Manual Generatoin
+If you prefer a manual approach, you can create the model resource description file (`rdf.yaml`) yourself. Note that we have registered our metadata format with [JSON Schema Store](https://www.schemastore.org/json/), which allows you to use an editor or plugin supporting the json schemdas from schematore.org for validation. 
+
+One way to go is to use [VSCode](https://code.visualstudio.com) with the [YAML pluin by RedHat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml). When doing so, ensure your file is named `bioimageio.yaml` instead of `rdf.yaml` to enable the schema recognition.
+
+Our json schema docs can be found [here](https://bioimage-io.github.io/spec-bioimage-io/bioimageio_schema_latest/index.html). Additionally, the [BioImage.IO Model Resource Description File Specifications](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md) outline the required and optional fields for the file. You can find examples of RDF files on the BioImgae Model Zoo website. 
+
+
 ### Upload the model to the BioImage Model Zoo
 Once you have created a model in the BioImage.IO format, you can upload it to the BioImage Model Zoo. The process is straightforward and involves the following steps:
 1. Visit the [bioimageio](https://bioimage.io) website and click the "Upload" button to access the model upload page.
