@@ -78,7 +78,7 @@ Once you have created a model in the BioImage.IO format, you can upload it to th
 1. Visit the [bioimageio](https://bioimage.io) website and click the "Upload" button to access the model upload page.
 2. Log in using your Google or GitHub account.
 3. Upload a resource file, which can be a single zip archive containing all necessary files, or you can select/drag and drop individual files. The 'rdf.yaml' file needed for uploading can be created in the next step.
-4. Automatically once added the yaml file, you will have to "Review and Edit Your Model", to do this, provide all necessary metadata to create the 'rdf.yaml' file if it was not done yet. Ensure to give a descriptive name and description, and add the maintainer responsible for the upload. See the Model Documentation below for details such as how to name your model. 
+4. Once the yaml file is added you are automatically redirected to "Review and Edit Your Model". In this section, you should provide all necessary metadata to create the 'rdf.yaml' file if it was not done yet. Ensure to give a descriptive name and description, and add the maintainer responsible for the upload. See the Model Documentation below for details such as how to name your model. 
     **Important**: For the model description and information, please check the [model documentation section](#model-documentation).
 5. Once ready, click "Validate" and wait for your model to be reviewed.
 
