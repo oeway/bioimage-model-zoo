@@ -39,30 +39,70 @@ This will give you all the necessary Plugins to run bioimage.io models at the mo
 
 For more detailed information about the connection between the BioImage Model Zoo and deepImageJ, see deepImageJ wiki [here](https://github.com/deepimagej/deepimagej-plugin/wiki/BioImage-Model-Zoo-Connection).
 
-### Fiji
-**Note: Fiji only supports Tensorflow 1 models at the moment!**
-
-1. Install the [CSBDeep-Plugin](https://github.com/CSBDeep/CSBDeep_website/wiki/CSBDeep-in-Fiji-%E2%80%93-Installation) in Fiji.
-This will give you all the necessary Plugins to run bioimage.io models at the moment.
-2. Open the image you want to run the model on
-3. a) If your model is a [CSBDeep](https://imagej.net/CSBDeep) one, go to Plugins > CSBDeep and choose either "N2V", "DenoiSeg" or "Run your network"(default)
-   
-   b) For any other bioimage.io model, go to Plugins > bioimage.io > bioimage.io prediction. 
-4.  Continuing from 3b) you will arrive at this window:
-
-<img src="./guides/fiji_bioimage_predict.jpg" alt="Fiji bioimage.io prediction" width="60%"/>
-
-The configuration fields should be self-explanatory.
-
-5. Click "OK" to run the model prediction.
-
 
 ### Ilastik
+*Compatible frameworks: PyTorch (via TikTorch)*
 
-See https://www.ilastik.org/documentation/nn/nn
+1. **Install the software and necessary plugins/extensions**:
+   - Install ilastik from the [official website](https://www.ilastik.org/).
+   - For remote execution, install the TikTorch backend following the instructions in the [TikTorch GitHub repository](https://github.com/ilastik/tiktorch#installation).
+
+2. **Download and set up a model from the BioImage Model Zoo**:
+   - Visit the [ilastik Model Zoo on BioImage.IO](https://bioimage.io/#/?partner=ilastik) to find compatible pre-trained models.
+   - To load a model into ilastik:
+     - Copy the model's DOI or nickname from the BioImage Model Zoo and paste it into the text field in ilastik’s Neural Network Classification workflow. Click the arrow button to download and initialize the model.
+     - Alternatively, download the model as a `.zip` archive, then drag and drop it into the text field or use the file dialog to load it.
+
+3. **Run the model**:
+   - **Local Workflow**:
+     - Start ilastik, create a new project with the "Neural Network Classification (local)" workflow, and load your data in the Data Selection applet.
+     - Initialize the model and press the "Live Predict" button to generate predictions.
+   - **Remote Workflow**:
+     - Set up TikTorch on the remote machine and note the IP/hostname and port.
+     - In ilastik, create a new project with the "Neural Network Classification (remote)" workflow, configure the server, and select the device (e.g., CPU or CUDA).
+     - Load the data and proceed through the workflow as in the local variant.
+
+4. **Export the results**:
+   - Use the [Data Export applet](https://www.ilastik.org/documentation/basics/export) to save your predictions.
+   - To try another model, unload the current model using the red cross below the text field, then clear the selected model and repeat the process.
+
+5. **Learn more**:
+   - [Ilastik Documentation](https://www.ilastik.org/documentation)
+   - [TikTorch Repository](https://github.com/ilastik/tiktorch)
+   - [BioImage Model Zoo](https://bioimage.io/#/?partner=ilastik)
 
 ###  ImJoy
-TBD
+[ImJoy](https://imjoy.io) is a flexible platform for running computational workflows in the browser or using Python. While it doesn’t directly reference the BioImage Model Zoo (BMZ), it supports seamless integration of BMZ models via plugins and Python.
+
+1. Install ImJoy and the Plugin Engine
+      - Use the [ImJoy Web App](https://imjoy.io) for browser-based workflows.
+      - For advanced Python-based workflows, install the **Plugin Engine**:  
+            ```bash
+            pip install imjoy
+            imjoy --start
+            ```
+2. Download and Set Up a BMZ Model
+      - Visit the [BioImage Model Zoo](https://bioimage.io/) and download a model with its rdf.yaml file.
+      - Optionally, use `bioimageio.core` to interact with BMZ models:
+            ```bash
+            pip install bioimageio.core
+            ```
+3. Run BMZ Models in  ImJoy
+      - BioImage.IO Plugin: Use the [BioImage.IO plugin](https://bioimage-io.github.io/bioengine-web-client/) for easy integration and execution of BMZ models directly in ImJoy.
+      - **Browser-based Plugins**: Install and run plugins compatible with your model. Learn more in the [Quick Start Guide](https://imjoy.io/docs/#/quick-start).
+      - **Python-based Execution**: Connect ImJoy to the Plugin Engine and run BMZ models in Python. Example:
+      ```python
+      import bioimageio.core
+      rdf = bioimageio.core.resource_io.load_resource_description("/path/to/rdf.yaml")
+      model = bioimageio.core.create_model(rdf)
+      result = model.predict(input_data)
+      print(result)
+      ```
+4. Learn More
+      - **[BioImage.IO Plugin](https://bioimage-io.github.io/bioengine-web-client/)**: Plugin from ImJoy to the BioImage Model Zoo.
+      - **[ImJoy Documentation](https://imjoy.io/docs/)**: Explore the full capabilities of ImJoy.
+      - **[BioImage Model Zoo Documentation](https://bioimage.io/docs/)**: Discover more about BMZ models.
+      - **[bioimageio.core Library](https://github.com/bioimage-io/core-bioimage-io-python)**: Dive into the Python library for BMZ models.
 
 
 ### ZeroCostDL4Mic
@@ -73,8 +113,32 @@ TBD
 3. Open the ZeroCostDL4Mic notebook that corresponds to the model you downloaded. 
 4. When required, specify the path to the unziped folder containing the model.
 
+### DL4MicEverywhere
+[DL4MicEverywhere](https://github.com/HenriquesLab/DL4MicEverywhere) is a user-friendly platform that offers long-term reproducible and cross-compatible deep learning workflows using Docker containers and user-friendly interactive notebooks. It supports easy containerization and integration of reproducible deep learning techniques following the Zoo's standards, and validation of functional containerization across operating systems.
+
+1. **[Installation instructions](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/docs/USER_GUIDE.md)**
+
+2. **[Quick start for containerised notebooks](https://github.com/HenriquesLab/DL4MicEverywhere/tree/main?tab=readme-ov-file#quickstart-macoslinuxwindows)**
+
+3. **[Containerizing your workflow and integrating it within the Zoo's collection](https://github.com/HenriquesLab/DL4MicEverywhere/blob/main/CONTRIBUTING.md)**
+
+4. **[Full DL4MicEverywhere documentation](https://github.com/HenriquesLab/DL4MicEverywhere)**
+
+### CAREamics
+*CAREamics is a producer of BioImage Model Zoo models.*
+
+1. **Create and export models in the BioImage Model Zoo format**:
+   - CAREamics allows you to train models and export them in the BioImage Model Zoo format for sharing and reuse.
+   - Refer to the [Noise2Void SEM Example](https://careamics.github.io/0.1/applications/Noise2Void/SEM/#export-the-model) for detailed steps on exporting a model in the BMZ format.
+
+2. **Learn more**:
+   - Full documentation is available at [CAREamics Documentation](https://careamics.github.io/0.1/).
+
+
 ## Best Practices for Model Usage
-TBD
+To ensure reliable and accurate results when using models from the BioImage Model Zoo, it is crucial to select a model suited to your specific dataset and application. Carefully review the model's documentation, particularly the "Validation" section, which provides steps for testing the model with your data. Quantitatively evaluate the model’s performance to confirm it meets your requirements and identifies potential limitations. 
+
+For additional guidance on using deep learning models in microscopy and related fields, refer to the paper [Best practices for scientifically rigorous deep learning in microscopy](https://www.nature.com/articles/s41592-021-01284-3). Adhering to these practices ensures robust and reproducible analyses.
 
 ## Use Cases
 - [Use-case 1: Stardist H&E nucleus segmentation](https://github.com/bioimage-io/use-cases/tree/main/case1-stardist)
