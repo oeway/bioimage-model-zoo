@@ -71,8 +71,6 @@ For more detailed information about the connection between the BioImage Model Zo
    - [TikTorch Repository](https://github.com/ilastik/tiktorch)
    - [BioImage Model Zoo](https://bioimage.io/#/?partner=ilastik)
 
-
-
 ###  ImJoy
 [ImJoy](https://imjoy.io) is a flexible platform for running computational workflows in the browser or using Python. While it doesn’t directly reference the BioImage Model Zoo (BMZ), it supports seamless integration of BMZ models via plugins and Python.
 
