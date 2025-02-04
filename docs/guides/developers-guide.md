@@ -3,7 +3,7 @@
 ## Content
 - [Models in the BioImage Model Zoo](#models-in-the-bioimage-model-zoo)
     - [Model contribution requirements](#model-contribution-requirements)
-    - [Create a BioImage.IO model](#craete-a-bioimageio-model)
+    - [Create a BioImage.IO model](#create-a-bioimageio-model)
         - [Using the `bioimageio.core` Python Library](#using-the-bioimageiocore-python-library)
         - [Through a Community Partner](#through-a-community-partner)
         - [Using a Graphical User Interface (GUI)](#using-a-graphical-user-interface-gui)
@@ -32,7 +32,7 @@ In some cases, the model may need additional files.
 
 ### Model contribution requirements
 
-- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md). 
+- Follow the [BioImage.IO Model Resource Description File Specification (RDF)](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md).
 - The model is expected to be cross-compatible among the consumer software, and should always run on at least one.
 - The model should be well documented (i.e., human readable name and rich description tailored for life-scientists, citations)
 - The model should be public and can be used by anyone under the chosen licensing conditions.
@@ -44,25 +44,53 @@ Below are the various ways to create a BioImage.IO compatible model description.
 
 #### 1. Using the `bioimageio.core` Python Library
 This is the most recommended and streamlined method. The library provides tools for programmatic creation and validation of model descriptions.
-- **Programmatic Export:**  
+- **Programmatic Export:**
   Use the library to programmatically create a model description in Python, see https://github.com/bioimage-io/core-bioimage-io-python?tab=readme-ov-file#-use-in-python for documentation and examples.
 
-- **Validation of the Model:**  
-  After creating the model, ensure it meets the required specifications by performing the following checks:
-  - **Static Validation:** Validate the model format using the `bioimageio.core` library. Example:  
+- **Manual Generation:**
+  If you prefer a manual approach, you can create the model resource description file (`rdf.yaml`) yourself. The [BioImage.IO Model Resource Description File Specifications](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md) outline the required and optional fields for the file. Examples of RDF files can be found on the BioImage Model Zoo website.
+
+### Validate a BioImage.IO model
+
+  After creating a model description, please check that it adheres to our metadata specification and that additional quality checks implemented in the bioimageio.core Python package pass. To this end we provide the bioimageio command line interface (CLI) that is part of the bioimageio.core Python package:
+
+1. Install conda. (We recommend using [miniforge](https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge))
+1. Create a conda environment that includes the bioimageio.core Python package. (Replace `pytorch` with any dependencies of your model.)
+
     ```bash
-    bioimageio validate /path/to/rdf.yaml
+    conda create --name bioimageio -c conda-forge bioimageio.core pytorch
     ```
-  - **Dynamic Validation:** Test the model’s deployment to ensure it generates the expected output. Example:  
+
+1. Activate your new conda environment (we named it 'bioimageio' in the previous step)
+
     ```bash
-    bioimageio test-model --weights tensorflow_saved_model_bundle --device cpu /path/to/rdf.yaml
+    conda activate bioimageio
+    ```
+
+1. Use the `bioimageio` CLI to test your model
+
+    ```bash
+    bioimageio test rdf.yaml
+    ```
+
+1. (optional) checkout additional options to `bioimageio test`
+
+    ```bash
+    bioimageio test --help
+    ```
+
+1. (optional) checkout other available `bioimageio` commands
+
+    ```bash
+    bioimageio --help
     ```
 
 #### 2. Through a Community Partner
+
 Several community partners provide tools to create models in the BioImage.IO format. Examples include:
 
-- **[ZeroCostDL4Mic Notebooks](https://github.com/HenriquesLab/ZeroCostDL4Mic):** These notebooks enable retraining or fine-tuning of existing models and export them in the correct format.  
-- **[BiaPy](https://biapy.readthedocs.io/en/latest/):** BiaPy also supports model creation in the BioImage.IO format.  
+- **[ZeroCostDL4Mic Notebooks](https://github.com/HenriquesLab/ZeroCostDL4Mic):** These notebooks enable retraining or fine-tuning of existing models and export them in the correct format.
+- **[BiaPy](https://biapy.readthedocs.io/en/latest/):** BiaPy also supports model creation in the BioImage.IO format.
 
 In both cases, follow the steps outlined in the respective notebooks to generate your model. Once the process is complete, you can upload the model to the BioImage Model Zoo.
 
@@ -70,20 +98,12 @@ In both cases, follow the steps outlined in the respective notebooks to generate
 #TODO by Tomaz
 Each method allows flexibility based on your expertise and tools at hand. Always validate your model before uploading to ensure compliance with BioImage.IO specifications.
 
-#### 4. Manual Generatoin
-If you prefer a manual approach, you can create the model resource description file (`rdf.yaml`) yourself. Note that we have registered our metadata format with [JSON Schema Store](https://www.schemastore.org/json/), which allows you to use an editor or plugin supporting the json schemdas from schematore.org for validation. 
-
-One way to go is to use [VSCode](https://code.visualstudio.com) with the [YAML pluin by RedHat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml). When doing so, ensure your file is named `bioimageio.yaml` instead of `rdf.yaml` to enable the schema recognition.
-
-Our json schema docs can be found [here](https://bioimage-io.github.io/spec-bioimage-io/bioimageio_schema_latest/index.html). Additionally, the [BioImage.IO Model Resource Description File Specifications](https://github.com/bioimage-io/spec-bioimage-io/blob/gh-pages/user_docs/model_descr_latest.md) outline the required and optional fields for the file. You can find examples of RDF files on the BioImgae Model Zoo website. 
-
-
 ### Upload the model to the BioImage Model Zoo
 Once you have created a model in the BioImage.IO format, you can upload it to the BioImage Model Zoo. The process is straightforward and involves the following steps:
 1. Visit the [bioimageio](https://bioimage.io) website and click the "Upload" button to access the model upload page.
 2. Log in using your Google or GitHub account.
 3. Upload a resource file, which can be a single zip archive containing all necessary files, or you can select/drag and drop individual files. The 'rdf.yaml' file needed for uploading can be created in the next step.
-4. Once the yaml file is added you are automatically redirected to "Review and Edit Your Model". In this section, you should provide all necessary metadata to create the 'rdf.yaml' file if it was not done yet. Ensure to give a descriptive name and description, and add the maintainer responsible for the upload. See the Model Documentation below for details such as how to name your model. 
+4. Automatically once added the yaml file, you will have to "Review and Edit Your Model", to do this, provide all necessary metadata to create the 'rdf.yaml' file if it was not done yet. Ensure to give a descriptive name and description, and add the maintainer responsible for the upload. See the Model Documentation below for details such as how to name your model.
     **Important**: For the model description and information, please check the [model documentation section](#model-documentation).
 5. Once ready, click "Validate" and wait for your model to be reviewed.
 
@@ -94,7 +114,7 @@ All models and resources in the BioImage Model Zoo undergo testing and validatio
 #### Model naming
 
 Models are expected to be used by life-scientists, thus, it is expected that the naming is human readable but also informative enough regarding the final application and the biological tissue being analysed. Example:
-   
+
    **Name:** `Neuron Segmentation in EM (Membrane Prediction)`, `B. Sutilist bacteria segmentation - Widefield microscopy - 2D UNet`
 
    
@@ -102,12 +122,12 @@ Models are expected to be used by life-scientists, thus, it is expected that the
 The tags in the model RDF are used to search for each model in the BioImage Model Zoo. The more informative tags you write, the easier it will be for a potential user to find your model. Example:
 
    **My model description**: An encoder-decoder trained for denoising of point-scanning super-resolution microsocpy images of HeLa cells microtubules
-   
+
    **Tags**: `denoising`, `PSSR`, `microtubules`, `encoder-decoder`, `deblurring`, `fluorescence`, `2D`, `HeLa cells`, `deepimagej`, `ilastik`, `image restoration`, `trained-model` etc.
 
 #### Model links
 The BioImage Model Zoo is a software webpage. Each model is displayed with an interactive card that can have datasets, notebooks, applications, consumer-software or test-run buttons linked. Example:
-    
+
    **Links**: `imjoy/BioImageIO-Packager`, `ilastik/ilastik`, `deepimagej/deepimagej`, `zero/dataset_fnet_3d_zerocostdl4mic` etc.
 
 #### Representative Covers
@@ -147,7 +167,7 @@ _optional*_ with an asterisk indicates the field is optional depending on the va
 * <a id="inputs"></a>`inputs` _(required List\[InputTensor\])_ Describes the input tensors expected by this model.
     1.  _(InputTensor)_   is a Dict with the following keys:
         * <a id="inputs:axes"></a>`axes` _(Axes→String)_ Axes identifying characters from: bitczyx. Same length and order as the axes in `shape`.
-            
+
             | character | description |
             | --- | --- |
             |  b  |  batch (groups multiple samples) |
@@ -194,7 +214,7 @@ _optional*_ with an asterisk indicates the field is optional depending on the va
         * <a id="cite:url"></a>`url` _(String)_ url to cite (alternatively specify `doi`)
 * <a id="config"></a>`config` _(optional YamlDict→Dict\[Any, Any\])_ A custom configuration field that can contain any keys not present in the RDF spec. This means you should not store, for example, github repo URL in `config` since we already have the `git_repo` key defined in the spec.
     Keys in `config` may be very specific to a tool or consumer software. To avoid conflicted definitions, it is recommended to wrap configuration into a sub-field named with the specific domain or tool name, for example:
-    
+
     ```yaml
        config:
           bioimage_io:  # here is the domain name
@@ -239,7 +259,7 @@ _optional*_ with an asterisk indicates the field is optional depending on the va
 * <a id="outputs"></a>`outputs` _(optional List\[OutputTensor\])_ Describes the output tensors from this model.
     1.  _(OutputTensor)_   is a Dict with the following keys:
         * <a id="outputs:axes"></a>`axes` _(Axes→String)_ Axes identifying characters from: bitczyx. Same length and order as the axes in `shape`.
-            
+
             | character | description |
             | --- | --- |
             |  b  |  batch (groups multiple samples) |
