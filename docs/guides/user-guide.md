@@ -134,6 +134,53 @@ For more detailed information about the connection between the BioImage Model Zo
 2. **Learn more**:
    - Full documentation is available at [CAREamics Documentation](https://careamics.github.io/0.1/).
 
+### QuPath
+#### Supported models
+QuPath aims to support models that take a single 2D input image and output a single 2D image.
+QuPath may not always be able to accurately support BioImageIO models that require whole-image
+normalisation (as QuPath does not assume that it can always read all the pixels in an image) and
+does not currently support custom pre- and post-processing scripts.
+
+With QuPath's Deep Java Library extension installed, you can install both TensorFlow and PyTorch.
+In this case, you can use models with TensorFlow saved and unzipped model bundles (assuming
+you’re not using Apple silicon) and PyTorch using Torchscript only. ONNX model format might
+work via QuPath’s built-in OpenCV (if you’re very lucky), or if you
+[build QuPath from source](https://qupath.readthedocs.io/en/latest/docs/reference/building.html#building)
+adding the OnnxRuntime engine to DJL.
+
+#### Instructions
+1. - Download and install QuPath according to
+     [the instructions in the documentation](https://qupath.readthedocs.io/en/latest/docs/intro/installation.html).
+   - Launch QuPath.
+   - Install [the `bioimageio` extension](https://github.com/qupath/qupath-extension-bioimageio)
+     according to the instructions on [the QuPath documentation](https://qupath.readthedocs.io/en/latest/docs/intro/extensions.html).
+   - Optionally, install [the Deep Java Library extension](https://github.com/qupath/qupath-extension-djl/)
+     and use this extension to download PyTorch and TensorFlow.
+
+2. Download and unzip a model from the BioImage Model Zoo. Version 0.1.0 of QuPath's bioimageio extension only
+   supported models using the 0.4.x version of the BioImageIO model spec; future versions should also
+   support models using 0.5.x formats.
+
+
+3. Create a pixel classifier for a supported model by running the command
+   `Extensions -> Bioimage Model Zoo -> Create pixel classifier (Bioimage Model Zoo)` and locating the previously downloaded model zip.
+
+4. More detailed instructions can be found at [QuPath's readthedocs BioImage Model Zoo page](https://qupath.readthedocs.io/en/latest/docs/deep/bioimage.html)
+
+### DeepIcy
+#### Supported models
+DeepIcy supports every model with one input image in the following formats: tensorflow_saved_model_bundle, torchscript and onnx. In addition it supports end-to-end stardist and cellpose.
+
+#### Instructions
+1. - Download and install Icy.
+   - Go to Online Plugins, enable beta versions.
+   - Look for DeepIcy and install.
+
+2. Download a model. Open DeepIcy and  click on the Bioimage.io button. Find the model that you like and click on install.
+
+3. Run a model. Click on the button `Local`, if it exists, if not, you are already there. Open the image of interest and click on `Run`.
+
+4. More instructions can be found here: https://icy.bioimageanalysis.org/plugin/deepicy/
 
 ## Best Practices for Model Usage
 To ensure reliable and accurate results when using models from the BioImage Model Zoo, it is crucial to select a model suited to your specific dataset and application. Carefully review the model's documentation, particularly the "Validation" section, which provides steps for testing the model with your data. Quantitatively evaluate the model’s performance to confirm it meets your requirements and identifies potential limitations. 
