@@ -1,24 +1,32 @@
 # Developers Guide
+This guide is intended for developers who want to contribute models to the BioImage Model Zoo. It provides detailed instructions on creating, validating, and uploading models to the platform. By following these steps, you can ensure that your models are compatible with BioImage.IO consumer software and accessible to the broader life-sciences community.
 
 ## Content
 - [Models in the BioImage Model Zoo](#models-in-the-bioimage-model-zoo)
-    - [Model contribution requirements](#model-contribution-requirements)
-    - [Create a BioImage.IO model](#create-a-bioimageio-model)
-        - [Using the `bioimageio.core` Python Library](#using-the-bioimageiocore-python-library)
-        - [Through a Community Partner](#through-a-community-partner)
-        - [Using a Graphical User Interface (GUI)](#using-a-graphical-user-interface-gui)
-    - [Upload a model to the BioImage Model Zoo](#upload-a-model-to-the-bioimage-model-zoo)
-    - [Upload a model through Zenodo](#upload-a-model-through-zenodo)
-    - [Model Documentation](#model-documentation)
-        - [Model naming](#model-naming)
-        - [Model Tags](#model-tags)
-        - [Model links](#model-links)
-        - [Representative Covers](#representative-covers)
-        - [Considerations for the model description file](#considerations-for-the-model-description-file)
-        - [Model Resource Description File Specification (0.4.9)](#model-resource-description-file-specification-049)
-    - [Considerations for the model description file](#considerations-for-the-model-description-file)
-    - [Model Resource Description File Specification (0.4.9)](#model-resource-description-file-specification-049)
-- [Other Contributions](#other-contributions)
+  - [Model contribution requirements](#model-contribution-requirements)
+  - [Create a BioImage.IO model](#create-a-bioimageio-model)
+  - [Validate a BioImage.IO model](#validate-a-bioimageio-model)
+  - [Upload the model to the BioImage Model Zoo](#upload-the-model-to-the-bioimage-model-zoo)
+
+- [Model Documentation](#model-documentation)
+  - [Model naming](#model-naming)
+  - [Model Tags](#model-tags)
+  - [Model links](#model-links)
+  - [Representative Covers](#representative-covers)
+
+- [Considerations for the model description file](#considerations-for-the-model-description-file)
+
+- [Model Resource Description File Specification](#model-resource-description-file-specification)
+  - [User-Friendly Documentation](#linking-to-comprehensive-rdf-documentation)
+  - [Developer-Focused Documentation](#developer-focused-documentation)
+  - [JSON Schema](#json-schema)
+  - [Interactive Rendered Documentation](#interactive-rendered-documentation)
+  - [Validation and Examples](#validation-and-examples)
+
+- [Other contributions](#other-contributions)
+  - [Submit to BioImage.IO](#submit-to-bioimageio)
+
+
 
 ## Models in the BioImage Model Zoo
 A BioImage.IO model is a zip file containing all the items, technical description and metadata of the model, together with the trained architecture of the model. Briefly, a BioImage.IO model has at least, the following items:
@@ -163,11 +171,11 @@ To support users and developers, we provide a centralized set of resources for u
 1. **User-Friendly Documentation**  
    [View the user-friendly documentation](https://bioimage-io.github.io/spec-bioimage-io/bioimageio_schema_latest/index.html) for an interactive schema overview. This resource simplifies the RDF structure, showing required and optional fields in a clear, navigable format.
 
-    <img src="./user-friendly-documentation.png" alt="User-friendly schema example" width="60%"/>
+    <img src="./guides/user-friendly-documentation.png" alt="User-friendly schema example" width="60%"/>
 
 2. **Developer-Focused Documentation**  
    For technical details, visit the [developer-focused documentation](https://bioimage-io.github.io/spec-bioimage-io/bioimageio/spec/model/v0_5.html#ModelDescr). This documentation provides in-depth explanations of each RDF field, tailored for software developers.
-    <img src="./developer-focused-documentation.png" alt="Developer Focused Documentation" width="60%"/>
+    <img src="./guides/developer-focused-documentation.png" alt="Developer Focused Documentation" width="60%"/>
 
 3. **JSON Schema**  
    Access the RDF specification in JSON Schema format:
@@ -179,7 +187,7 @@ To support users and developers, we provide a centralized set of resources for u
 4. **Interactive Rendered Documentation**  
    Explore the [interactive, flattened documentation](https://bioimage-io.github.io/spec-bioimage-io/interactive_docs_v0-5.html) for a consolidated view of RDF types and constraints. This tool is ideal for refining your RDF file.
     
-    <img src="./interactive-rendered-documentation.png" alt="Rendered documentation example" width="60%"/>
+    <img src="./guides/interactive-rendered-documentation.png" alt="Rendered documentation example" width="60%"/>
 
 5. **Validation and Examples**  
    Use the `bioimageio.core` Python package to validate your RDF files:
