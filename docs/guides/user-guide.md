@@ -1,6 +1,22 @@
 # User Guide
 This guide is intended for users wanting to consume or use models from the BioImage Model Zoo. There are plenty of models in the BioImage Model Zoo that you can use in your own software, in the software of our community partners or you can even download them and use them in a notebook or code of your own.
 
+## Content
+- [Downloading and using Models from the BioImage Model Zoo](#downloading-and-using-models-from-the-bioimage-model-zoo)
+- [Using BioImage Model Zoo models in different software](#using-bioimage-model-zoo-models-in-different-software)
+  - [BiaPy](#biapy)
+  - [DeepImageJ](#deepimagej)
+  - [Ilastik](#ilastik)
+  - [ImJoy](#imjoy)
+  - [ZeroCostDL4Mic](#zerocostdl4mic)
+  - [DL4MicEverywhere](#dl4miceverywhere)
+  - [CAREamics](#careamics)
+  - [QuPath](#qupath)
+  - [SpotMAX](#spotmax)
+  - [DeepIcy](#deepicy)
+- [Best Practices for Model Usage](#best-practices-for-model-usage)
+- [Use Cases](#use-cases)
+
 ## Downloading and using Models from the BioImage Model Zoo
 
 See a [video](https://oc.embl.de/index.php/s/eJOIdzDVJpToETd) about using a model from the BioImage Model Zoo in different software.
@@ -8,7 +24,7 @@ See a [video](https://oc.embl.de/index.php/s/eJOIdzDVJpToETd) about using a mode
 <img src="./guides/download_model_packager.jpg" alt="bioimage.io download" width="60%"/>
 
 
-## Using BioImage Model Zoo models in different software
+## Using BioImage Model Zoo models in different software (Community Partners)
 
 ### BiaPy
 **Note: BiaPy empowers users to train custom models or fine-tune existing ones for bioimaging tasks and upload them to the BioImage Model Zoo. BiaPy supports models exported with PyTorch.**
@@ -147,6 +163,19 @@ you’re not using Apple silicon) and PyTorch using Torchscript only. ONNX model
 work via QuPath’s built-in OpenCV (if you’re very lucky), or if you
 [build QuPath from source](https://qupath.readthedocs.io/en/latest/docs/reference/building.html#building)
 adding the OnnxRuntime engine to DJL.
+
+### SpotMAX
+SpotMAX supports models that take a single 2D or 3D input image. There is no limit to the number of images that the model returns, however, SpotMAX will use only one. The index of the output image to be used is a user-selected parameter. 
+
+1. Install [SpotMAX](https://spotmax.readthedocs.io/en/latest/index.html) by following [this guide](https://spotmax.readthedocs.io/en/latest/install/index.html)
+
+2. Run the SpotMAX GUI (see [this guide](https://spotmax.readthedocs.io/en/latest/run/gui/index.html)). On the parameters list on the right-hand side of the GUI, scroll down to the `Spots channel` section and, at the `Spots segmentation method` parameter, select `BioImage.IO model`. See [here](https://spotmax.readthedocs.io/en/latest/parameters/parameters_description.html#confval-Spots-segmentation-method) for more info about the parameter. 
+
+3. Click on the button beside the parameter with the "Cog" icon to set up the model. Provide the model location as a DOI, URL, or locally downloaded zip folder. For models that return multiple images, select the index of the output image to be used. 
+
+4. Since running the model is only a part of the analysis, you will need to set up all the other parameters first. SpotMAX will run the BioImage.IO model as part of the spot detection and quantification pipeline. Check out our [documentation](https://spotmax.readthedocs.io/en/latest/parameters/index.html) for more details about the other parameters. 
+
+If you encounter issues, feel free to report your problem either on our [GitHub page](https://github.com/SchmollerLab/SpotMAX) or on the [Image.sc Forum](https://forum.image.sc/)] using the tag `spotmax`.
 
 #### Instructions
 1. - Download and install QuPath according to
