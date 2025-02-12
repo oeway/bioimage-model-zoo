@@ -164,6 +164,26 @@ work via QuPath’s built-in OpenCV (if you’re very lucky), or if you
 [build QuPath from source](https://qupath.readthedocs.io/en/latest/docs/reference/building.html#building)
 adding the OnnxRuntime engine to DJL.
 
+#### Instructions
+
+1. - Download and install QuPath according to
+     [the instructions in the documentation](https://qupath.readthedocs.io/en/latest/docs/intro/installation.html).
+   - Launch QuPath.
+   - Install [the `bioimageio` extension](https://github.com/qupath/qupath-extension-bioimageio)
+     according to the instructions on [the QuPath documentation](https://qupath.readthedocs.io/en/latest/docs/intro/extensions.html).
+   - Optionally, install [the Deep Java Library extension](https://github.com/qupath/qupath-extension-djl/)
+     and use this extension to download PyTorch and TensorFlow.
+
+2. Download and unzip a model from the BioImage Model Zoo. Version 0.1.0 of QuPath's bioimageio extension only
+   supports models using the 0.4.x version of the BioImageIO model spec; versions 0.2.0 onwards also
+   support models using 0.5.x formats.
+
+3. Create a pixel classifier for a supported model by running the command
+   `Extensions -> Bioimage Model Zoo -> Create pixel classifier (Bioimage Model Zoo)` and locating the previously downloaded model zip.
+
+4. More detailed instructions can be found at [QuPath's readthedocs BioImage Model Zoo page](https://qupath.readthedocs.io/en/latest/docs/deep/bioimage.html)
+
+
 ### SpotMAX
 SpotMAX supports models that take a single 2D or 3D input image. There is no limit to the number of images that the model returns, however, SpotMAX will use only one. The index of the output image to be used is a user-selected parameter. 
 
