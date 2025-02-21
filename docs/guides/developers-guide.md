@@ -1,4 +1,4 @@
-# Developers Guide
+# How to contribute models to the BioImage Model Zoo
 This guide is intended for developers who want to contribute models to the BioImage Model Zoo. It provides detailed instructions on creating, validating, and uploading models to the platform. By following these steps, you can ensure that your models are compatible with BioImage.IO consumer software and accessible to the broader life-sciences community.
 
 ## Content
@@ -202,16 +202,3 @@ For further details, visit the [BioImage.IO RDF specification repository](https:
 
 
 
-## Other contributions
-You are welcome to submit your **models**, **datasest**, **applicaitons** and Jupyter **notebooks** to BioImage.IO.
-
-To add an resource item to BioImage.IO, you need to provide a set of basic information about the resouce, including name, description, authors etc. and we will generate a resource card to display in the website.
-
-For Community Partners, you can add models directly to the linked repository. If you are not part of the community partners, you can follow the instructions below to submit resource items (models, datasets etc.) to BioImage.IO.
-
-### Submit to BioImage.IO
-* Step 1, prepare a [`Resource Description File`](/bioimageio_rdf_spec)(RDF) and complete at least the mandatory fields and ideally also the recommended fields for different types of resource.
-
-* Step 2, save the RDF file in one of the public git hosting website, it is recommended to store the RDF file in your project git repository on Github/Gitlab/Bitbucket (make sure it's a public repo). Alternatively, you can post it on [Gist](https://gist.github.com/), copy the the **raw** url to the actual file content.
-
-* Step 3, post the url to the comment box below (if you don't see it, click [here](https://github.com/bioimage-io/bioimage-io-models/issues/26)). And the admin team will check and verify the format and incooperate to BioImage.IO if the submitted file is qualified.
