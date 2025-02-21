@@ -1,4 +1,4 @@
-# User Guide
+# How to use the BioImage Model Zoo
 This guide is intended for users wanting to consume or use models from the BioImage Model Zoo. There are plenty of models in the BioImage Model Zoo that you can use in your own software, in the software of our community partners or you can even download them and use them in a notebook or code of your own.
 
 ## Content

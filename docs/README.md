@@ -5,8 +5,9 @@ Welcome to the official BioImage.IO documentation. Here, you'll find comprehensi
 ## Quick Navigation
 
 - **[Getting Started](/getting_started/README.md)**: Introduction to the BioImage Model Zoo ecosystem, who are we and how can you be part of it.
-- **[User GUide](/guides/user-guide.md)**: This guide is intended for users wanting to consume or use models from the BioImage Model Zoo. There are plenty of models in the BioImage Model Zoo that you can use in your own software, in the software of our community partners or you can even download them and use them in a notebook or code of your own.
-- **[Developers Guide](/guides/developers-guide.md)**: This guide is intended for developers wanting to contribute to the BioImage Model Zoo. You can contribute to the BioImage Model Zoo by adding new models, improving existing models, or by contributing to the ecosystem in other ways.
+- **[How to use the BioImage Model Zoo](/guides/user-guide.md)**: This guide is intended for users wanting to consume or use models from the BioImage Model Zoo. There are plenty of models in the BioImage Model Zoo that you can use in your own software, in the software of our community partners or you can even download them and use them in a notebook or code of your own.
+- **[How to contribute models](/guides/developers-guide.md)**: This guide is intended for developers wanting to contribute or upload models to the BioImage Model Zoo. 
+- **[Other contributions](/guides/other-contributions-guide.md)**: This guide is intended for users wanting to contribute to the BioImage Model Zoo in other ways than uploading models.
 - **[Community Partners Guide](/guides/community-partners-guide.md)**: Community Partners wanting to integrate their software in to the BioImage Model Zoo can follow this guide to learn how to do so. 
 - **[Tools and Resources](/tools_and_resources/README.md)**: Overview of the available tools and resources linked to the BioImage Model Zoo.
 - **[Help Desk](/help_desk/README.md)**: A bit lost? Check the help desk for more information, a glossary page and how to contact us!
