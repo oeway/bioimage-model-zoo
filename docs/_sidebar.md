@@ -3,7 +3,7 @@
 * [Getting Started](/getting_started/README.md)
 * [How to use the BioImage Model Zoo](/guides/user-guide.md)
 * [How to contribute models to the BioImage Model Zoo](/guides/developers-guide.md)
-* [Other contributions](/guides/other-contributions.md)
+* [Other contributions](/guides/other-contributions-guide.md)
 * [Community Partners Guide](/guides/community-partners-guide.md)
 * [Tools and Resources](/tools_and_resources/README.md)
 * [Help Desk](/help_desk/README.md)
